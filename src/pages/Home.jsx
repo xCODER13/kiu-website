@@ -93,7 +93,7 @@ export default function Home() {
             <div>
               {news.map((n, i) => (
                 <div key={n.id} className={`reveal reveal-delay-${i + 1}`} style={{ padding: '.85rem 0', borderBottom: '1px solid var(--border)' }}>
-                  <span style={{ fontSize: 11, color: 'var(--muted)', display: 'block', marginBottom: 3 }}>{n.date}</span>
+                  <span style={{ fontSize: 11, color: 'var(--muted)', display: 'block', marginBottom: 3 }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
                   <p style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.5 }}>{n.title}</p>
                 </div>
               ))}
