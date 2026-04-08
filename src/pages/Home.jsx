@@ -1,19 +1,21 @@
 import { NavLink } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import TelegramPanel from '../components/TelegramPanel'
 import config from '../config'
 import useReveal from '../hooks/useReveal'
 
 
-const NEWS = [
-  { id: 1, date: '14 mart 2025', title: "2025–2026 o'quv yiliga qabul hujjatlari qabul qilinmoqda" },
-  { id: 2, date: '10 mart 2025', title: "KIU talabasi xalqaro olimpiadada oltin medal qo'lga kiritdi" },
-  { id: 3, date: '5 mart 2025',  title: "Germaniya va Polsha universitetlari bilan hamkorlik bitimi imzolandi" },
-  { id: 4, date: '1 mart 2025',  title: "Yangi zamonaviy kutubxona binosi foydalanishga topshirildi" },
-]
-
 export default function Home() {
+  const [news, setNews] = useState([])
+
   useReveal()
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/news`)
+      .then(r => r.json())
+      .then(data => setNews(data.slice(0, 4)))
+      .catch(err => console.log(err))
+  }, [])
 
   useEffect(() => {
     const targets = config.stats.map((s, i) => ({
@@ -89,7 +91,7 @@ export default function Home() {
           </div>
           <div className="grid-2">
             <div>
-              {NEWS.map((n, i) => (
+              {news.map((n, i) => (
                 <div key={n.id} className={`reveal reveal-delay-${i + 1}`} style={{ padding: '.85rem 0', borderBottom: '1px solid var(--border)' }}>
                   <span style={{ fontSize: 11, color: 'var(--muted)', display: 'block', marginBottom: 3 }}>{n.date}</span>
                   <p style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.5 }}>{n.title}</p>
