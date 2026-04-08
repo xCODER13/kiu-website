@@ -100,9 +100,6 @@ export default function Home() {
           <NavLink to="/about">
             <button className="btn btn-primary">Batafsil ma'lumot</button>
           </NavLink>
-          <NavLink to="/teachers">
-            <button className="btn btn-secondary">O'qituvchilar</button>
-          </NavLink>
         </div>
       </div>
 
