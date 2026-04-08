@@ -22,8 +22,7 @@ export default function News() {
   const [activeTab, setActiveTab] = useState('news')
   const [news, setNews] = useState(FALLBACK_NEWS)
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/news')
+  useEffect(() => { fetch(`${import.meta.env.VITE_API_URL}/api/news`)
       .then(r => r.json())
       .then(data => { if (Array.isArray(data) && data.length > 0) setNews(data) })
       .catch(() => {})

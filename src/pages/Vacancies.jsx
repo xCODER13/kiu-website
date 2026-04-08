@@ -47,7 +47,7 @@ export default function Vacancies() {
     e.preventDefault()
     setLoading(true)
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/api/applications', {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/applications`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, name: form.fullName, type: 'vacancy' }),

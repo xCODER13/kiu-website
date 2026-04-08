@@ -29,7 +29,7 @@ export default function Teachers() {
   const [teachers, setTeachers] = useState(FALLBACK_TEACHERS)
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/teachers')
+    fetch(`${import.meta.env.VITE_API_URL}/api/teachers`)
       .then(r => r.json())
       .then(data => { if (data.length > 0) setTeachers(data) })
       .catch(() => {})
