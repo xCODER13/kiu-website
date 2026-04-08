@@ -23,7 +23,7 @@ export default function News() {
   const [news, setNews] = useState(FALLBACK_NEWS)
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/news')
+    fetch(`${import.meta.env.VITE_API_URL}/api/news')
       .then(r => r.json())
       .then(data => { if (Array.isArray(data) && data.length > 0) setNews(data) })
       .catch(() => {})

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, NavLink, Routes, Route } from 'react-router-dom'
 
 
-const API = 'http://localhost:5000/api'
+const API = import.meta.env.VITE_API_URL + '/api'
 const H = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('kiu_token')}` })
 
 // ── ICONS ──

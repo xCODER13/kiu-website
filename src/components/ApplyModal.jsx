@@ -13,7 +13,7 @@ export default function ApplyModal({ onClose }) {
     e.preventDefault()
     setLoading(true)
     try {
-      await fetch('http://localhost:5000/api/applications', {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/applications`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: form.name, phone: form.phone, faculty: form.faculty, message: form.message, type: 'admission' }),

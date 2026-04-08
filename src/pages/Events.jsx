@@ -23,7 +23,7 @@ export default function Events() {
   const [events, setEvents] = useState(FALLBACK_EVENTS)
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/events')
+    fetch(`${import.meta.env.VITE_API_URL}/api/events')
       .then(r => r.json())
       .then(data => { if (data.length > 0) setEvents(data) })
       .catch(() => {})
