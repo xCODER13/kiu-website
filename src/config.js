@@ -51,8 +51,8 @@ const config = {
   ],
 
   admission: {
-    year: '2025',
-    deadline: "1 iyul — 20 avgust 2025 gacha",
+    year: '2026',
+    deadline: "1 iyul — 20 avgust 2026 gacha",
     applyUrl: '#apply',
   },
 
