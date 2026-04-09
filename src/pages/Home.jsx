@@ -65,7 +65,7 @@ export default function Home() {
           </p>
           <div className="reveal reveal-delay-3" style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
           <NavLink to="/admission"><button className="btn btn-primary">Qabul haqida</button></NavLink>
-            <NavLink to="/faculty"><button className="btn btn-primary">Fakultetlar</button></NavLink>
+            <NavLink to="/faculty"><button className="btn btn-primary">Yo'nalishlar</button></NavLink>
           </div>
           <div className="stats-grid reveal reveal-delay-4">
             {config.stats.map((s, i) => (
