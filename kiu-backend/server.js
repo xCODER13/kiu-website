@@ -188,19 +188,5 @@ app.get('/api/telegram/posts', (req, res) => {
     { id: 4, text: "Yangi laboratoriya jihozlari o'rnatildi.", date: '12 mart', type: 'check' },
   ]})
 })
-const PageView = require('./models/PageView')
-
-//Ko'rishlar soni
-app.post('/api/stats/pageview', async (req, res) => {
-  const { page } = req.params
-  const view = await PageView.findOneAndUpdate({ page }, { $inc: { count: 1 } }, { upsert: true, new: true })
-  res.json({ count: view.count })
-})
-
-app.get('/api/views', auth, async (req, res) => {
-  const views = await PageView.find()
-  res.json(views)
-})
-
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server ishlamoqda: http://localhost:${PORT}`))
