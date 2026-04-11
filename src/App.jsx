@@ -24,6 +24,7 @@ import Hemis from './pages/Hemis'
 import International from './pages/International'
 import Documents from './pages/Documents'
 import Vacancies from './pages/Vacancies'
+import usePageView from './hooks/usePageView' 
 
 function ScrollReveal() {
   const location = useLocation()
@@ -58,6 +59,7 @@ export default function App() {
   const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark')
   const [applyOpen, setApplyOpen] = useState(false)
 
+  usePageView()
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
     localStorage.setItem('theme', dark ? 'dark' : 'light')
