@@ -40,7 +40,7 @@ export default function Hemis() {
             </div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>Yordam kerakmi?</div>
-              <div style={{ fontSize: 12, color: 'var(--muted)' }}>HEMIS tizimiga kirish bo'yicha muammolar uchun: +998 55 500 99 44 yoki @KarshistateU</div>
+              <div style={{ fontSize: 12, color: 'var(--muted)' }}>HEMIS tizimiga kirish bo'yicha muammolar uchun: +998 55 500 99 44 yoki @kiu_uz</div>
             </div>
           </div>
         </div>
