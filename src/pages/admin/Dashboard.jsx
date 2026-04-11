@@ -1,3 +1,4 @@
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { useState, useEffect } from 'react'
 import { useNavigate, NavLink, Routes, Route } from 'react-router-dom'
 
@@ -90,6 +91,26 @@ function Stats() {
         ))}
       </div>
 
+{/* Grafik */}
+<div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text)', marginBottom: '1rem' }}>
+    Statistika grafigi
+  </h3>
+  <ResponsiveContainer width="100%" height={250}>
+    <BarChart data={[
+      { name: 'Yangiliklar', value: stats.newsCount },
+      { name: 'Tadbirlar', value: stats.eventsCount },
+      { name: "O'qituvchilar", value: stats.teachersCount },
+      { name: 'Arizalar', value: stats.appsCount },
+      { name: 'Vakansiyalar', value: stats.vacancyApps },
+    ]}>
+      <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+      <YAxis />
+      <Tooltip />
+      <Bar dataKey="value" fill="#7c3aed" radius={[4,4,0,0]} />
+    </BarChart>
+  </ResponsiveContainer>
+</div>
       <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text)', marginBottom: '1rem' }}>Tezkor havolalar</h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 10 }}>
         {NAV.slice(1).map(l => (
