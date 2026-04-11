@@ -66,6 +66,7 @@ function Stats() {
     { label: 'Yangiliklar',        value: stats.newsCount,     color: '#7c3aed', icon: Ic.news,    to: '/admin/news'         },
     { label: 'Tadbirlar',          value: stats.eventsCount,   color: '#4f46e5', icon: Ic.events,  to: '/admin/events'       },
     { label: "O'qituvchilar",      value: stats.teachersCount, color: '#0088cc', icon: Ic.teach,   to: '/admin/teachers'     },
+    { label: 'Yangi arizalar',       value: stats.newApps,      color: '#ff0015', icon: Ic.apps,    to: '/admin/applications' },
     { label: 'Qabul arizalari',    value: stats.appsCount,     color: '#059669', icon: Ic.apps,    to: '/admin/applications' },
     { label: 'Vakansiya arizalari',value: stats.vacancyApps,   color: '#d97706', icon: Ic.vacancy, to: '/admin/vacancies'    },
   ]
