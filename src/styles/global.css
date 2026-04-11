@@ -354,3 +354,8 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
   opacity: 1 !important;
   transform: translateY(0) !important;
 }
+[data-theme="dark"] .section-badge {
+  background: rgba(167, 139, 250, 0.15) !important;
+  border-color: rgba(167, 139, 250, 0.5) !important;
+  color: #c4b5fd !important;
+}
