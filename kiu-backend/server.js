@@ -173,7 +173,7 @@ app.get('/api/stats', auth, async (req, res) => {
     Event.countDocuments(),
     Teacher.countDocuments(),
     Application.countDocuments({ $or: [{ type: 'admission' }, { type: { $exists: false } }, { type: null }, { type: '' }] }),
-    Application.countDocuments({ status: 'new', $or: [{ type: 'admission' }, { type: { $exists: false } }, { type: null }, { type: '' }] }),
+    Application.countDocuments({ status: 'new' }),
     Application.countDocuments({ type: 'vacancy' }),
   ])
   res.json({ newsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps })
