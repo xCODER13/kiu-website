@@ -2,10 +2,10 @@ import { useState } from 'react'
 import config from '../config'
 
 const DEMO_POSTS = [
-  { id: 1, text: "Qabul hujjatlari to'plami yangilandi", date: 'Bugun 09:45', type: 'announce' },
+  { id: 1, text: "Qabul hujjatlari to'plami yangilandi.", date: 'Bugun 09:45', type: 'announce' },
   { id: 2, text: 'Stipendiya arizalari: 25-martgacha qabul qilinadi.', date: 'Kecha 14:20', type: 'edu' },
   { id: 3, text: 'Ochiq eshiklar kuni — 28-mart soat 10:00.', date: '13 mart', type: 'calendar' },
-  { id: 4, text: "Yangi laboratoriya jihozlari o'rnatildi", date: '12 mart', type: 'check' },
+  { id: 4, text: "Yangi laboratoriya jihozlari o'rnatildi.", date: '12 mart', type: 'check' },
 ]
 
 const TgIcon = () => (
