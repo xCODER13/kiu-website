@@ -55,11 +55,12 @@ function PublicLayout({ children, dark, setDark, onApply }) {
 }
 
 export default function App() {
-  const [dark, setDark] = useState(false)
+  const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark')
   const [applyOpen, setApplyOpen] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    localStorage.setItem('theme', dark ? 'dark' : 'light')
   }, [dark])
 
   return (
