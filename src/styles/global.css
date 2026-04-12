@@ -1,3 +1,7 @@
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
@@ -18,7 +22,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   font-family: var(--font-body);
   color: var(--text);
@@ -27,7 +31,7 @@ body {
   font-size: 15px;
   line-height: 1.6;
   overflow-x: hidden;
-  html { scroll-behavior: smooth; overflow-x: hidden; }
+  
 }
 img { max-width: 100%; display: block; }
 a { text-decoration: none; color: inherit; }
