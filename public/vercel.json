@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/((?!robots.txt|sitemap.xml|favicon.svg|favicon.ico|logo.png|icons.svg|image.png|icfai.jfif|inti.png|turiba.jfif|Mediterranea.jfif|moscow state.jfif|Precidency.png|assets|docs|gallery).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
