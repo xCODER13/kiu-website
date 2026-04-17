@@ -98,7 +98,7 @@ export default function Search() {
   return (
     <div ref={wrapRef} style={{ position: 'relative' }}>
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen(o => !o)} aria-label="Search"
         style={{
           background: open ? 'rgba(124,58,237,.08)' : 'none',
           border: `1px solid ${open ? '#7c3aed' : 'var(--border)'}`,
