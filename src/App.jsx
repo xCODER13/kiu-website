@@ -1,29 +1,30 @@
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Suspense, lazy } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ApplyModal from './components/ApplyModal'
-import Home from './pages/Home'
-import Faculty from './pages/Faculty'
-import Admission from './pages/Admission'
-import News from './pages/News'
-import Contact from './pages/Contact'
-import FAQ from './pages/FAQ'
-import Events from './pages/Events'
-import Testimonials from './pages/Testimonials'
-import Achievements from './pages/Achievements'
-import QRCode from './pages/QRCode'
-import Teachers from './pages/Teachers'
-import Gallery from './pages/Gallery'
-import Map from './pages/Map'
-import Chatbot from './pages/Chatbot'
-import Login from './pages/admin/Login'
-import Dashboard from './pages/admin/Dashboard'
-import About from './pages/About'
-import Hemis from './pages/Hemis'
-import International from './pages/International'
-import Documents from './pages/Documents'
-import Vacancies from './pages/Vacancies'
+
+const Home         = lazy(() => import('./pages/Home'))
+const Faculty      = lazy(() => import('./pages/Faculty'))
+const Admission    = lazy(() => import('./pages/Admission'))
+const News         = lazy(() => import('./pages/News'))
+const Contact      = lazy(() => import('./pages/Contact'))
+const FAQ          = lazy(() => import('./pages/FAQ'))
+const Events       = lazy(() => import('./pages/Events'))
+const Testimonials = lazy(() => import('./pages/Testimonials'))
+const Achievements = lazy(() => import('./pages/Achievements'))
+const QRCode       = lazy(() => import('./pages/QRCode'))
+const Teachers     = lazy(() => import('./pages/Teachers'))
+const Gallery      = lazy(() => import('./pages/Gallery'))
+const Map          = lazy(() => import('./pages/Map'))
+const Chatbot      = lazy(() => import('./pages/Chatbot'))
+const Login        = lazy(() => import('./pages/admin/Login'))
+const Dashboard    = lazy(() => import('./pages/admin/Dashboard'))
+const About        = lazy(() => import('./pages/About'))
+const Hemis        = lazy(() => import('./pages/Hemis'))
+const International = lazy(() => import('./pages/International'))
+const Documents    = lazy(() => import('./pages/Documents'))
+const Vacancies    = lazy(() => import('./pages/Vacancies'))
 
 function ScrollReveal() {
   const location = useLocation()
@@ -66,36 +67,38 @@ export default function App() {
   return (
     <>
       <ScrollReveal />
-      <Routes>
-        <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/*" element={<Dashboard />} />
-        <Route path="/*" element={
-          <PublicLayout dark={dark} setDark={setDark} onApply={() => setApplyOpen(true)}>
-            <Routes>
-              <Route path="/"             element={<Home onApply={() => setApplyOpen(true)} />} />
-              <Route path="/faculty"      element={<Faculty />} />
-              <Route path="/admission"    element={<Admission onApply={() => setApplyOpen(true)} />} />
-              <Route path="/news"         element={<News />} />
-              <Route path="/contact"      element={<Contact />} />
-              <Route path="/about"        element={<About />} />
-              <Route path="/hemis"        element={<Hemis />} />
-              <Route path="/international" element={<International />} />
-              <Route path="/documents"    element={<Documents />} />
-              <Route path="/vacancies"    element={<Vacancies />} />
-              <Route path="/faq"          element={<FAQ />} />
-              <Route path="/events"       element={<Events />} />
-              <Route path="/testimonials" element={<Testimonials />} />
-              <Route path="/achievements" element={<Achievements />} />
-              <Route path="/qrcode"       element={<QRCode />} />
-              <Route path="/teachers"     element={<Teachers />} />
-              <Route path="/gallery"      element={<Gallery />} />
-              <Route path="/map"          element={<Map />} />
-              <Route path="/chatbot"      element={<Chatbot />} />
-            </Routes>
-            {applyOpen && <ApplyModal onClose={() => setApplyOpen(false)} />}
-          </PublicLayout>
-        } />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/admin/login" element={<Login />} />
+          <Route path="/admin/*" element={<Dashboard />} />
+          <Route path="/*" element={
+            <PublicLayout dark={dark} setDark={setDark} onApply={() => setApplyOpen(true)}>
+              <Routes>
+                <Route path="/"              element={<Home onApply={() => setApplyOpen(true)} />} />
+                <Route path="/faculty"       element={<Faculty />} />
+                <Route path="/admission"     element={<Admission onApply={() => setApplyOpen(true)} />} />
+                <Route path="/news"          element={<News />} />
+                <Route path="/contact"       element={<Contact />} />
+                <Route path="/about"         element={<About />} />
+                <Route path="/hemis"         element={<Hemis />} />
+                <Route path="/international" element={<International />} />
+                <Route path="/documents"     element={<Documents />} />
+                <Route path="/vacancies"     element={<Vacancies />} />
+                <Route path="/faq"           element={<FAQ />} />
+                <Route path="/events"        element={<Events />} />
+                <Route path="/testimonials"  element={<Testimonials />} />
+                <Route path="/achievements"  element={<Achievements />} />
+                <Route path="/qrcode"        element={<QRCode />} />
+                <Route path="/teachers"      element={<Teachers />} />
+                <Route path="/gallery"       element={<Gallery />} />
+                <Route path="/map"           element={<Map />} />
+                <Route path="/chatbot"       element={<Chatbot />} />
+              </Routes>
+              {applyOpen && <ApplyModal onClose={() => setApplyOpen(false)} />}
+            </PublicLayout>
+          } />
+        </Routes>
+      </Suspense>
     </>
   )
 }
