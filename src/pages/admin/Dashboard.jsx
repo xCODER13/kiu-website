@@ -729,7 +729,7 @@ export default function Dashboard() {
         </div>
 
         {/* Content */}
-        <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
+        <main style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
           <Routes>
             <Route index element={<Stats />} />
             <Route path="news"         element={<NewsAdmin />} />
@@ -740,7 +740,7 @@ export default function Dashboard() {
             <Route path="vacancies"    element={<ApplicationsAdmin type="vacancy" />} />
             <Route path="profile"      element={<ProfileAdmin />} />
           </Routes>
-        </div>
+        </main>
       </div>
     </div>
   )
