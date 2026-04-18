@@ -76,7 +76,7 @@ export default function Footer() {
               ['/qrcode', 'QR Kod', <svg key="q" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>],
             ].map(([to, label, icon]) => (
               <NavLink key={to} to={to}
-                style={{ fontSize: 13, color: '#c4b5fd', display: 'flex', alignItems: 'center', gap: 6 }}
+                style={{ fontSize: 13, color: '#7c3aed', display: 'flex', alignItems: 'center', gap: 6 }}
                 onMouseEnter={e => e.currentTarget.style.color = '#e9d5ff'}
                 onMouseLeave={e => e.currentTarget.style.color = '#c4b5fd'}
               >
