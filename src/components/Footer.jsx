@@ -69,7 +69,7 @@ export default function Footer() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {[
               ['/gallery', 'Fotogalerеya',<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>],
-              ['/map', 'Xarita', <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="1 6 1 22 10 18 10 2 1 6"/><polygon points="14 2 14 18 23 22 23 6 14 2z"/></svg>],
+              ['/map', 'Xarita', <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="1 6 1 22 10 18 10 2 1 6"/><polygon points="14 2 14 18 23 22 23 6 14 2"/></svg>],
               ['/qrcode', 'QR Kod',<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><path d="M17 17h4v4M17 21h4"/></svg>],
             ].map(([to, label, icon]) => (
               <NavLink key={to} to={to} style={{ fontSize: 12, color: '#a78bfa', display: 'flex', alignItems: 'center', gap: 6 }}>
