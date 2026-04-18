@@ -189,4 +189,10 @@ app.get('/api/telegram/posts', (req, res) => {
   ]})
 })
 const PORT = process.env.PORT || 5000
+// Keep alive ping
+setInterval(() => {
+  fetch('https://kiu-backend-9fwp.onrender.com/api/telegram/posts')
+    .then(() => console.log('Ping OK'))
+    .catch(() => console.log('Ping failed'))
+}, 14 * 60 * 1000)
 app.listen(PORT, () => console.log(`Server ishlamoqda: http://localhost:${PORT}`))
