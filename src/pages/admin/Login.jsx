@@ -31,7 +31,7 @@ export default function Login() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #faf5ff, #ede9fe)' }}>
+    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #faf5ff, #ede9fe)' }}>
       <div style={{ background: '#fff', borderRadius: 16, padding: '2.5rem', width: '100%', maxWidth: 400, border: '1px solid var(--border)' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ width: 56, height: 56, borderRadius: 14, background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff' }}>
@@ -61,6 +61,6 @@ export default function Login() {
           </button>
         </form>
       </div>
-    </div>
+    </main>
   )
 }
