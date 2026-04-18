@@ -58,7 +58,7 @@ export default function Footer() {
           ].map(([to, label]) => (
             <NavLink key={to} to={to}
               style={{ display: 'block', fontSize: 13, color: '#9ca3af', marginBottom: 6 }}
-              onMouseEnter={e => e.target.style.color = '#c4b5fd'}
+              onMouseEnter={e => e.target.style.color = '#a78bfa'}
               onMouseLeave={e => e.target.style.color = '#9ca3af'}
             >{label}</NavLink>
           ))}
