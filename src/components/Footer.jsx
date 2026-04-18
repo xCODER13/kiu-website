@@ -5,7 +5,7 @@ import config from '../config'
 export default function Footer() {
   return (
     <footer style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', padding: '2.5rem 0 0' }}>
-      <div className="container" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '2rem', paddingBottom: '1.5rem' }}>
+      <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '2rem', paddingBottom: '1.5rem' }}>
         <div>
           <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', marginBottom: 8 }}>{config.university.name}</h3>
           <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.7, marginBottom: 16 }}>
