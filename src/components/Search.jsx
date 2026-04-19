@@ -85,7 +85,7 @@ export default function Search() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelected(0)
   }, [results])
-  
+
   function go(url) { navigate(url); setOpen(false); setQuery('') }
 
   function handleKey(e) {
@@ -113,21 +113,12 @@ export default function Search() {
 
       {open && (
         <div style={{
-               position: window.innerWidth <= 768 ? 'fixed' : 'absolute',
-              top: window.innerWidth <= 768 ? 0 : 'calc(100% + 10px)',
-              left: window.innerWidth <= 768 ? 0 : 'auto',
-              right: 0,
-              bottom: window.innerWidth <= 768 ? 0 : 'auto',
-              width: window.innerWidth <= 768 ? '100%' : Math.min(420, window.innerWidth - 32),
-              background: 'var(--bg)',
-              border: '1px solid var(--border)',
-              borderRadius: window.innerWidth <= 768 ? 0 : 14,
-              boxShadow: '0 12px 40px rgba(0,0,0,.15)',
-              zIndex: 200,
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: window.innerWidth <= 768 ? 'column' : 'unset',
-          }}>
+          position: 'absolute', top: 'calc(100% + 10px)', right: 0,
+          width: 420, background: 'var(--bg)',
+          border: '1px solid var(--border)', borderRadius: 14,
+          boxShadow: '0 12px 40px rgba(0,0,0,.15)',
+          zIndex: 200, overflow: 'hidden',
+        }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -153,7 +144,7 @@ export default function Search() {
           </div>
 
           {results.length > 0 && (
-            <div style={{ flex: 1, overflowY: 'auto' }}>
+            <div style={{ maxHeight: 340, overflowY: 'auto' }}>
               <div style={{ padding: '6px 1rem', fontSize: 10, color: 'var(--muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.05em', background: 'var(--bg-2)', borderBottom: '1px solid var(--border)' }}>
                 {results.length} natija topildi
               </div>
