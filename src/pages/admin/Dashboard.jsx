@@ -207,29 +207,61 @@ function NewsAdmin() {
         </div>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {news.map(n => (
-          <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-                {n.videoId ? (
-                  <span style={{ fontSize: 10, color: '#ff0000', background: 'rgba(255,0,0,.1)', padding: '2px 8px', borderRadius: 20 }}>Shorts</span>
-                ) : (
-                  <span style={{ fontSize: 10, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20 }}>{n.category || 'umumiy'}</span>
-                )}
-                <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
-              </div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
-              {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
+      {/* Yangiliklar */}
+{news.filter(n => !n.videoId).length > 0 && (
+  <>
+    <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+      Yangiliklar ({news.filter(n => !n.videoId).length})
+    </h3>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '1.5rem' }}>
+      {news.filter(n => !n.videoId).map(n => (
+        <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 10, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20 }}>{n.category || 'umumiy'}</span>
+              <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
             </div>
-            <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-              <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
-              <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
-            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
+            {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
           </div>
-        ))}
-        {news.length === 0 && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>Hali yangilik yo'q</p>}
-      </div>
+          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+            <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
+            <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </>
+)}
+
+{/* Shorts */}
+{news.filter(n => n.videoId).length > 0 && (
+  <>
+    <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+      YouTube Shorts ({news.filter(n => n.videoId).length})
+    </h3>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {news.filter(n => n.videoId).map(n => (
+        <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 10, color: '#ff0000', background: 'rgba(255,0,0,.1)', padding: '2px 8px', borderRadius: 20 }}>Shorts</span>
+              <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
+            {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
+          </div>
+          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+            <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
+            <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </>
+)}
+
+{news.length === 0 && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>Hali yangilik yo'q</p>}
     </div>
   )
 }
