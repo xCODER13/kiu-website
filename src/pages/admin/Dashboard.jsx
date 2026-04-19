@@ -653,12 +653,12 @@ function ProfileAdmin() {
 export default function Dashboard() {
   const navigate    = useNavigate()
   const [collapsed, setCollapsed] = useState(false)
-  const [dark, setDark] = useState(document.documentElement.getAttribute('data-theme') === 'dark')
+  const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark')
   const [search, setSearch] = useState('')
   const tk = localStorage.getItem('kiu_token')
 
   useEffect(() => { if (!tk) navigate('/admin/login') }, [tk, navigate])
-  useEffect(() => { document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light') }, [dark])
+  useEffect(() => { document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light'); localStorage.setItem('theme', dark ? 'dark' : 'light') }, [dark])
 
   const filteredNav = NAV.filter(n => search === '' || n.label.toLowerCase().includes(search.toLowerCase()))
 
