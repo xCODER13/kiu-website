@@ -114,7 +114,8 @@ export default function Search() {
       {open && (
         <div style={{
           position: 'absolute', top: 'calc(100% + 10px)', right: 0,
-          width: 420, background: 'var(--bg)',
+          width: Math.min(420, window.innerWidth - 32),
+          background: 'var(--bg)',
           border: '1px solid var(--border)', borderRadius: 14,
           boxShadow: '0 12px 40px rgba(0,0,0,.15)',
           zIndex: 200, overflow: 'hidden',
@@ -144,7 +145,7 @@ export default function Search() {
           </div>
 
           {results.length > 0 && (
-            <div style={{ maxHeight: 340, overflowY: 'auto' }}>
+            <div style={{ maxHeight: 340, overflowY: 'auto', overscrollBehavior: 'contain' }}>
               <div style={{ padding: '6px 1rem', fontSize: 10, color: 'var(--muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.05em', background: 'var(--bg-2)', borderBottom: '1px solid var(--border)' }}>
                 {results.length} natija topildi
               </div>
