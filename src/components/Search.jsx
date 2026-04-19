@@ -54,6 +54,7 @@ export default function Search() {
   const navigate = useNavigate()
   const wrapRef  = useRef(null)
   const inputRef = useRef(null)
+  const isMobile = window.innerWidth <= 768
 
   useEffect(() => {
     function handler(e) {
@@ -70,6 +71,16 @@ export default function Search() {
       setQuery('')
     }
   }, [open])
+  useEffect(() => {
+    if (isMobile) return
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => 
+    {document.body.style.overflow = ''}
+  }, [open, isMobile])
 
   const results = useMemo(() => {
     if (!query.trim()) return []
@@ -113,12 +124,20 @@ export default function Search() {
 
       {open && (
         <div style={{
-          position: 'absolute', top: 'calc(100% + 10px)', right: 0,
-          width: 420, background: 'var(--bg)',
-          border: '1px solid var(--border)', borderRadius: 14,
-          boxShadow: '0 12px 40px rgba(0,0,0,.15)',
-          zIndex: 200, overflow: 'hidden',
-        }}>
+               position: isMobile ? 'fixed' : 'absolute',
+               top: isMobile ? '70px' : 'calc(100% + 10px)',
+               left: isMobile ? '16px' : 'auto',
+               right: isMobile ? '16px' : 0,
+               width: isMobile ? 'auto' : 420,
+               background: 'var(--bg)',
+               border: '1px solid var(--border)',
+               borderRadius: 14,
+               boxShadow: '0 12px 40px rgba(0,0,0,.15)',
+               zIndex: 200,
+               overflow: 'hidden',
+               maxHeight: isMobile ? 'calc(100vh - 90px)' : 'none',
+               overflowY: isMobile ? 'auto' : 'hidden',
+  }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
