@@ -34,7 +34,7 @@ export default function Login() {
 
   return (
     <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dark ? '#0f0f1a' : 'linear-gradient(135deg, #faf5ff, #ede9fe)' }}>
-      <div style={{ background: '#fff', borderRadius: 16, padding: '2.5rem', width: '100%', maxWidth: 400, border: '1px solid var(--border)' }}>
+      <div style={{ background: dark ? '#1a1a2e' : '#fff', borderRadius: 16, padding: '2.5rem', width: '100%', maxWidth: 400, border: dark ? '1px solid rgba(255,255,255,.1)' : '1px solid var(--border)' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ width: 56, height: 56, borderRadius: 14, background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff' }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
