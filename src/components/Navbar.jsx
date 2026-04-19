@@ -72,7 +72,7 @@ export default function Navbar({ dark, setDark, onApply }) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="mobile-nav" style={{ position: 'fixed', top: 62, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 8, borderTop: '1px solid var(--border)' }}>
+        <div className="mobile-nav" style={{ position: 'fixed', top: 62, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 8, borderTop: '1px solid var(--border)', overflowY: 'auto' }}>
           {links.map(l => (
             <NavLink key={l.to} to={l.to} end={l.to === '/'} onClick={() => setMenuOpen(false)}
               style={({ isActive }) => ({
