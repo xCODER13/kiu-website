@@ -85,6 +85,17 @@ export default function Search() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelected(0)
   }, [results])
+  useEffect(() => {
+    if (window.innerWidth < 768) return
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () =>
+    { document.body.style.overflow = ''}
+  }, [open])
+
 
   function go(url) { navigate(url); setOpen(false); setQuery('') }
 
