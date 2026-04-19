@@ -48,7 +48,7 @@ export default function Login() {
             placeholder="Login"
             value={form.username}
             onChange={e => setForm({ ...form, username: e.target.value })}
-            style={{ padding: '10px 14px', border: '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none' }}
+            style={{ padding: '10px 14px', border: dark ? '1px solid rgba(255,255,255,.15)' : '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', background: dark ? 'rgba(255,255,255,.07)' : '#fff', color: dark ? '#fff' : '#1a1a2e' }}
           />
           <div style={{ position: 'relative' }}>
             <input
@@ -56,7 +56,7 @@ export default function Login() {
              placeholder="Parol"
              value={form.password}
              onChange={e => setForm({ ...form, password: e.target.value })}
-             style={{ width: '100%', padding: '10px 40px 10px 14px', border: '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', boxSizing: 'border-box' }}
+             style={{ width: '100%', padding: '10px 40px 10px 14px', border: dark ? '1px solid rgba(255,255,255,.15)' : '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', background: dark ? 'rgba(255,255,255,.07)' : '#fff', color: dark ? '#fff' : '#1a1a2e', boxSizing: 'border-box' }}
              />
              <button type="button" onClick={() => setShowPass(!showPass)}
               style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex' }}>
