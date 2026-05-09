@@ -24,6 +24,7 @@ import Hemis from './pages/Hemis'
 import International from './pages/International'
 import Documents from './pages/Documents'
 import Vacancies from './pages/Vacancies'
+import SortingHat from './pages/SortingHat'
 
 function ScrollReveal() {
   const location = useLocation()
@@ -91,6 +92,7 @@ export default function App() {
               <Route path="/gallery"      element={<Gallery />} />
               <Route path="/map"          element={<Map />} />
               <Route path="/chatbot"      element={<Chatbot />} />
+              <Route path="/sorting-hat"  element={<SortingHat />} />
             </Routes>
             {applyOpen && <ApplyModal onClose={() => setApplyOpen(false)} />}
           </PublicLayout>
