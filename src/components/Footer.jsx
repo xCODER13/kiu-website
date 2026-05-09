@@ -55,7 +55,7 @@ export default function Footer() {
             ['/testimonials', 'Sharhlar'],
             ['/faq', 'FAQ'],
             ['/chatbot', 'AI Yordamchi'],
-            ['/sorting-hat', 'Qabul testi'],
+            ['/sorting-hat', 'Yonalishni aniqlash'],
           ].map(([to, label]) => (
             <NavLink key={to} to={to}
               style={{ display: 'block', fontSize: 13, color: '#9ca3af', marginBottom: 6 }}
