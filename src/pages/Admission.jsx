@@ -80,7 +80,7 @@ export default function Admission({ onApply }) {
               </button>
  
               <NavLink to="/sorting-hat" style={{ textDecoration: 'none' }}>
-  <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+  <button className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>

@@ -406,13 +406,13 @@ export default function SortingHat() {
   {/* bg stars */}
   {[...Array(7)].map((_, i) => (
     <span key={i} style={{ position: 'absolute', opacity: .15, left: `${8 + i * 13}%`, top: `${15 + Math.sin(i) * 50}%` }}>
-      <IcStar s={12 + i * 2} c="#f7d40f" />
+      <IcStar s={12 + i * 2} c="#7c3aed" />
     </span>
   ))}
 
   {/* Orqaga tugma */}
   <NavLink to="/admission" style={{ textDecoration: 'none', position: 'absolute', top: '1rem', left: '1rem' }}>
-    <button style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'rgba(124,58,237,.1)', color: '#7c3aed', border: '1px solid rgba(124,58,237,.2)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+    <button style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'rgba(124,58,237,.25)', color: '#7c3aed', border: '1px solid rgba(124,58,237,.2)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <line x1="19" y1="12" x2="5" y2="12"/>
         <polyline points="12 19 5 12 12 5"/>
@@ -423,7 +423,7 @@ export default function SortingHat() {
 
   <div style={{ position: 'relative', zIndex: 1 }}>
     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}><IcHat /></div>
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 16px', borderRadius: 20, marginBottom: '0.9rem', border: '1px solid rgba(124,58,237,.2)' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.25)', padding: '5px 16px', borderRadius: 20, marginBottom: '0.9rem', border: '1px solid rgba(124,58,237,.2)' }}>
       <IcStar s={11} c="#7c3aed" /> KIU Sehrli Shlyapasi <IcStar s={11} c="#7c3aed" />
     </div>
     <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '0.6rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
