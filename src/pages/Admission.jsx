@@ -80,15 +80,13 @@ export default function Admission({ onApply }) {
               </button>
  
               <NavLink to="/sorting-hat" style={{ textDecoration: 'none' }}>
-                <button style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', background: 'rgba(255,255,255,.15)', color: '#fff', border: '1px solid rgba(255,255,255,.3)', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all .2s' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,.25)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,.15)'}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                  Yo'nalishni aniqlash
-                </button>
-              </NavLink>
+  <button className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    Yo'nalishni aniqlash
+  </button>
+</NavLink>
             </div>
           </div>
  

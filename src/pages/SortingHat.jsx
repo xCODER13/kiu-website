@@ -402,26 +402,38 @@ export default function SortingHat() {
   return (
     <div className="fade-up">
       {/* ── HERO ── */}
-      <section style={{ padding: '3rem 2rem 2.5rem', background: 'linear-gradient(135deg,#1a1a2e 0%,#2d1b69 50%,#1a1a2e 100%)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        {/* bg stars */}
-        {[...Array(7)].map((_, i) => (
-          <span key={i} style={{ position: 'absolute', opacity: .18, left: `${8 + i * 13}%`, top: `${15 + Math.sin(i) * 50}%` }}>
-            <IcStar s={12 + i * 2} c="#C8960C" />
-          </span>
-        ))}
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}><IcHat /></div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#C8960C', background: 'rgba(200,150,12,.15)', padding: '5px 16px', borderRadius: 20, marginBottom: '0.9rem', border: '1px solid rgba(200,150,12,.3)' }}>
-            <IcStar s={11} /> KIU Sehrli Shlyapasi <IcStar s={11} />
-          </div>
-          <h1 style={{ fontSize: '2rem', color: '#fff', marginBottom: '0.6rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
-            Qaysi yo'nalish siz uchun?
-          </h1>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,.65)', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
-            Bir necha savolga javob bering — tizim qiziqishlaringizni tahlil qilib, eng mos yo'nalishni tavsiya qiladi!
-          </p>
-        </div>
-      </section>
+<section style={{ padding: '3rem 2rem 2.5rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+  {/* bg stars */}
+  {[...Array(7)].map((_, i) => (
+    <span key={i} style={{ position: 'absolute', opacity: .15, left: `${8 + i * 13}%`, top: `${15 + Math.sin(i) * 50}%` }}>
+      <IcStar s={12 + i * 2} c="#7c3aed" />
+    </span>
+  ))}
+
+  {/* Orqaga tugma */}
+  <NavLink to="/admission" style={{ textDecoration: 'none', position: 'absolute', top: '1rem', left: '1rem' }}>
+    <button style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'rgba(124,58,237,.1)', color: '#7c3aed', border: '1px solid rgba(124,58,237,.2)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Qabul sahifasi
+    </button>
+  </NavLink>
+
+  <div style={{ position: 'relative', zIndex: 1 }}>
+    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}><IcHat /></div>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 16px', borderRadius: 20, marginBottom: '0.9rem', border: '1px solid rgba(124,58,237,.2)' }}>
+      <IcStar s={11} c="#7c3aed" /> KIU Sehrli Shlyapasi <IcStar s={11} c="#7c3aed" />
+    </div>
+    <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '0.6rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
+      Qaysi yo'nalish siz uchun?
+    </h1>
+    <p style={{ fontSize: 14, color: 'var(--muted)', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
+      Bir necha savolga javob bering — tizim qiziqishlaringizni tahlil qilib, eng mos yo'nalishni tavsiya qiladi!
+    </p>
+  </div>
+</section>
  
       <section className="section">
         <div className="container" style={{ maxWidth: 680 }}>
