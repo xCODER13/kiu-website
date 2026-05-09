@@ -628,12 +628,12 @@ export default function SortingHat() {
                     </button>
                   </NavLink>
                   <NavLink to="/admission" style={{ textDecoration: 'none' }}>
-                    <button style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'none', color: '#7c3aed', border: '2px solid #7c3aed', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+                    <button style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', color: '#fff', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
                       <IcFile s={15} /> Ariza topshirish
                     </button>
                   </NavLink>
                   <button onClick={startQuiz}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'none', color: 'var(--muted)', border: '2px solid var(--border)', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', color: '#fff', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
                     <IcRefresh s={14} /> Qayta o'tish
                   </button>
                 </div>
