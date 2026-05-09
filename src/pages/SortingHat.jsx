@@ -423,7 +423,7 @@ export default function SortingHat() {
 
   <div style={{ position: 'relative', zIndex: 1 }}>
     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}><IcHat /></div>
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 16px', borderRadius: 20, marginBottom: '0.9rem', border: '1px solid rgba(124,58,237,.25)' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 16px', borderRadius: 20, marginBottom: '0.9rem', border: '1px solid rgba(124,58,237,.2)' }}>
       <IcStar s={11} c="#7c3aed" /> KIU Sehrli Shlyapasi <IcStar s={11} c="#7c3aed" />
     </div>
     <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '0.6rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
