@@ -3,8 +3,6 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const fs = require('fs')
-const path = require('path')
 require('dotenv').config()
 
 const app = express()
@@ -18,7 +16,14 @@ const Teacher     = require('./models/Teacher')
 const Application = require('./models/Application')
 
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB ulandi'))
+  .then(async () => {
+    console.log('MongoDB ulandi')
+    const setting = await mongoose.connection.db.collection('settings').findOne({ key: 'admin_password_hash' })
+    if (setting?.value) {
+      process.env.ADMIN_PASSWORD_HASH = setting.value
+      console.log('Admin parol hash yuklandi')
+    }
+  })
   .catch(err => console.log('MongoDB xatosi:', err))
 
 // ── AUTH MIDDLEWARE ──
@@ -70,17 +75,13 @@ app.post('/api/admin/change-password', auth, async (req, res) => {
 
   try {
     const hash = await bcrypt.hash(newPassword, 12)
-    const envPath = path.resolve(__dirname, '.env')
-    let envContent = fs.readFileSync(envPath, 'utf8')
+    
+    await mongoose.connection.db.collection('settings').updateOne(
+      { key: 'admin_password_hash' },
+      { $set: { value: hash } },
+      { upsert: true }
+    )
 
-    if (envContent.includes('ADMIN_PASSWORD_HASH=')) {
-      envContent = envContent.replace(/ADMIN_PASSWORD_HASH=.*/, `ADMIN_PASSWORD_HASH=${hash}`)
-    } else {
-      envContent += `\nADMIN_PASSWORD_HASH=${hash}`
-    }
-    envContent = envContent.replace(/\nADMIN_PASSWORD=.*/g, '')
-
-    fs.writeFileSync(envPath, envContent)
     process.env.ADMIN_PASSWORD_HASH = hash
     delete process.env.ADMIN_PASSWORD
 
