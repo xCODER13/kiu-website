@@ -565,7 +565,7 @@ export default function SortingHat() {
                 const fac = FACULTIES[key]
                 if (!fac) return null
                 return (
-                  <div key={key} className="card reveal" style={{ marginBottom: '1.1rem', overflow: 'hidden', borderColor: fac.color + '50', position: 'relative' }}>
+                 <div key={key} className="card" style={{ marginBottom: '1.1rem', overflow: 'hidden', borderColor: fac.color + '50', position: 'relative' }}>
                     {/* top stripe */}
                     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: fac.grad }} />
                     <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', paddingTop: 6 }}>
