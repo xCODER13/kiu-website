@@ -406,7 +406,7 @@ export default function SortingHat() {
   {/* bg stars */}
   {[...Array(7)].map((_, i) => (
     <span key={i} style={{ position: 'absolute', opacity: .15, left: `${8 + i * 13}%`, top: `${15 + Math.sin(i) * 50}%` }}>
-      <IcStar s={12 + i * 2} c="#7c3aed" />
+      <IcStar s={12 + i * 2} c="#f7d40f" />
     </span>
   ))}
 
