@@ -362,3 +362,15 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
   color: #c4b5fd !important;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* Teachers page responsive */
+@media (max-width: 640px) {
+  .teachers-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .teachers-layout > div:first-child {
+    position: static !important;
+  }
+}
+details[open] .details-arrow { transform: rotate(180deg); }
+.details-arrow { transition: transform .2s; }
