@@ -172,10 +172,14 @@ app.post('/api/applications', async (req, res) => {
     const isVacancy = application.type === 'vacancy'
     let msg = ""
     if (isVacancy) {
-      msg = "\uD83D\uDCCB Vakansiya arizasi\n\n\uD83D\uDC64 " + application.name + "\n\uD83D\uDCDE " + application.phone
-      if (application.email) msg += "\n\uD83D\uDCE7 " + application.email
-      if (application.position) msg += "\n\uD83D\uDCBC " + application.position
-      if (application.message) msg += "\n\uD83D\uDCAC " + application.message.slice(0, 200)
+  msg = "\uD83D\uDCCB Vakansiya arizasi\n\n\uD83D\uDC64 " + application.name + "\n\uD83D\uDCDE " + application.phone
+  if (application.email) msg += "\n\uD83D\uDCE7 " + application.email
+  if (application.position) msg += "\n\uD83D\uDCBC " + application.position
+  if (application.faculty) msg += "\n\uD83C\uDFEB " + application.faculty
+  if (application.education) msg += "\n\uD83C\uDF93 " + application.education
+  if (application.experience) msg += "\n\uD83D\uDCC5 " + application.experience
+  if (application.message) msg += "\n\uD83D\uDCAC " + application.message.slice(0, 200)
+
     } else {
       msg = "\uD83C\uDF93 Qabul arizasi\n\n\uD83D\uDC64 " + application.name + "\n\uD83D\uDCDE " + application.phone
       if (application.email) msg += "\n\uD83D\uDCE7 " + application.email
