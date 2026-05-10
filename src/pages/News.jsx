@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import TelegramPanel from '../components/TelegramPanel'
+import useApi from '../hooks/useApi'
 
 const FALLBACK_NEWS = [
   { _id: 1, createdAt: new Date('2026-03-18'), title: "Professor-o'qituvchilar Malayziya universitetida stajirovkada" },
@@ -20,13 +21,10 @@ const FALLBACK_SHORTS = [
 
 export default function News() {
   const [activeTab, setActiveTab] = useState('news')
-  const [news, setNews] = useState(FALLBACK_NEWS)
-
-  useEffect(() => { fetch(`${import.meta.env.VITE_API_URL}/api/news`)
-      .then(r => r.json())
-      .then(data => { if (Array.isArray(data) && data.length > 0) setNews(data) })
-      .catch(() => {})
-  }, [])
+  const { data: news, loading, error } = useApi(
+    `${import.meta.env.VITE_API_URL}/api/news`,
+    FALLBACK_NEWS
+  )
 
   const articles = news.filter(n => !n.videoId)
   const shorts = news.filter(n => n.videoId)
@@ -40,6 +38,18 @@ export default function News() {
 
       <section className="section">
         <div className="container">
+          {loading && (
+            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)' }}>
+              <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+              Yuklanmoqda...
+            </div>
+          )}
+          {error && (
+            <div style={{ textAlign: 'center', padding: '0.75rem', marginBottom: '1rem', background: 'rgba(124,58,237,.06)', borderRadius: 10, fontSize: 13, color: 'var(--muted)', border: '1px solid var(--border)' }}>
+              Serverga ulanib bo'lmadi — saqlangan ma'lumotlar ko'rsatilmoqda
+            </div>
+          )}
+          {!loading && (<>
           <div style={{ display: 'flex', gap: 4, marginBottom: '1.5rem', borderBottom: '1px solid var(--border)' }}>
             {[{ key: 'news', label: 'Yangiliklar' }, { key: 'shorts', label: 'YouTube Shorts' }].map(tab => (
               <button key={tab.key} onClick={() => setActiveTab(tab.key)}
@@ -101,6 +111,7 @@ export default function News() {
               </div>
             </div>
           )}
+          </>)}
         </div>
       </section>
     </div>

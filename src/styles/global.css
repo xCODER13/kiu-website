@@ -361,3 +361,4 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
   border-color: rgba(167, 139, 250, 0.5) !important;
   color: #c4b5fd !important;
 }
+@keyframes spin { to { transform: rotate(360deg); } }

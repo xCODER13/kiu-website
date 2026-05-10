@@ -28,3 +28,4 @@ dist-ssr
 kiu-backend/.env
 kiu-backend/.env.*
 !kiu-backend/.env.example
+dist/

@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import useApi from '../hooks/useApi'
 
 const FALLBACK_TEACHERS = [
   { id: 1, name: "Panjiyev Ulug'bek Rustamovich", role: "Rektor", dept: "Kimyo fanlari PhD, dotsent", avatar: "PU" },
   { id: 2, name: "Norinov Faxriyor Kurbonovich", role: "Prorektor", dept: "faxriyor.norinov@karshitestcenter.org", avatar: "NF" },
-  { id: 3, name: "Ibragimov Suxrob ",role: "iqtisodiyot va muhandislik kafedrasi mudiri", dept: "Iqtisodiyot va muhandislik", avatar: "IS" },
+  { id: 3, name: "Ibragimov Suxrob", role: "iqtisodiyot va muhandislik kafedrasi mudiri", dept: "Iqtisodiyot va muhandislik", avatar: "IS" },
   { id: 4, name: "Ochilov Anvar Maxamad o'g'li", role: "O'qituvchi", dept: "Filologiya va tillarni o'qitish", avatar: "OA" },
   { id: 5, name: "Shukurova Nargiza Ikramovna", role: "O'qituvchi", dept: "Ijtimoiy-gumanitar fanlar", avatar: "SN" },
   { id: 6, name: "Murodov Shukrilla Abdusaid o'g'li", role: "Vb. dotsent", dept: "Aniq fanlar kafedrasi", avatar: "MS" },
@@ -14,26 +14,22 @@ const FALLBACK_TEACHERS = [
   { id: 11, name: "Xidoyatova Nigora Shorakibovna", role: "Katta o'qituvchi", dept: "Aniq fanlar kafedrasi", avatar: "XN" },
   { id: 12, name: "Rustamov Mirzoxid Mansur o'g'li", role: "O'qituvchi", dept: "Iqtisodiyot va muhandislik", avatar: "RM" },
   { id: 13, name: "G'afforov Javohir Farhodjon o'g'li", role: "O'qituvchi", dept: "Iqtisodiyot va muhandislik", avatar: "GJ" },
-  { id: 14, name: "Abdushukurova Sevara Shavkatovna", role: "Oqituvchi", dept: "Ingliz tili", avatar: "AS" },
+  { id: 14, name: "Abdushukurova Sevara Shavkatovna", role: "O'qituvchi", dept: "Ingliz tili", avatar: "AS" },
   { id: 15, name: "To'rayev Dostonjon Erkin o'g'li", role: "O'qituvchi", dept: "Iqtisodiyot va muhandislik", avatar: "TD" },
-  {id: 16, name: "Tursunov Mirolim ", role: "O'qituvchi", dept: "Iqtisodiyot va muhandislik", avatar: "TM" },
-  {id: 17, name: "Rashidov Azizjon ", role: "O'qituvchi", dept: "Iqtisodiyot va muhandislik", avatar: "RA" },
-  {id: 18, name: "Gulzoda Muhiddinova", role: "O'qituvchi", dept: "Iqtisodiyot va muhandislik", avatar: "GM" },
-  {id: 19, name: "Faxriddin Samarov", role: "O'qituvchi", dept: "Ijtimoiy-gumanitar fanlar", avatar: "FS" },
-  {id: 20, name: "Malohat Rahimova", role: "O'qituvchi", dept: "Filologiya va tillarni o'qitish", avatar: "MR" },
+  { id: 16, name: "Tursunov Mirolim", role: "O'qituvchi", dept: "Iqtisodiyot va muhandislik", avatar: "TM" },
+  { id: 17, name: "Rashidov Azizjon", role: "O'qituvchi", dept: "Iqtisodiyot va muhandislik", avatar: "RA" },
+  { id: 18, name: "Gulzoda Muhiddinova", role: "O'qituvchi", dept: "Iqtisodiyot va muhandislik", avatar: "GM" },
+  { id: 19, name: "Faxriddin Samarov", role: "O'qituvchi", dept: "Ijtimoiy-gumanitar fanlar", avatar: "FS" },
+  { id: 20, name: "Malohat Rahimova", role: "O'qituvchi", dept: "Filologiya va tillarni o'qitish", avatar: "MR" },
 ]
 
 const colors = ['#7c3aed','#4f46e5','#0088cc','#059669','#d97706','#db2777']
 
 export default function Teachers() {
-  const [teachers, setTeachers] = useState(FALLBACK_TEACHERS)
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/teachers`)
-      .then(r => r.json())
-      .then(data => { if (data.length > 0) setTeachers(data) })
-      .catch(() => {})
-  }, [])
+  const { data: teachers, loading, error } = useApi(
+    `${import.meta.env.VITE_API_URL}/api/teachers`,
+    FALLBACK_TEACHERS
+  )
 
   return (
     <div className="fade-up">
@@ -43,19 +39,32 @@ export default function Teachers() {
       </section>
       <section className="section">
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
-            {teachers.map((t, i) => (
-              <div key={t._id} className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
-                <div style={{ width: 64, height: 64, borderRadius: '50%', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff', fontSize: 18, fontWeight: 700 }}>
-                  {t.avatar || t.name?.slice(0,2).toUpperCase()}
+          {loading && (
+            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)' }}>
+              <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+              Yuklanmoqda...
+            </div>
+          )}
+          {error && (
+            <div style={{ textAlign: 'center', padding: '0.75rem', marginBottom: '1rem', background: 'rgba(124,58,237,.06)', borderRadius: 10, fontSize: 13, color: 'var(--muted)', border: '1px solid var(--border)' }}>
+              Serverga ulanib bo'lmadi — saqlangan ma'lumotlar ko'rsatilmoqda
+            </div>
+          )}
+          {!loading && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
+              {teachers.map((t, i) => (
+                <div key={t._id || t.id} className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
+                  <div style={{ width: 64, height: 64, borderRadius: '50%', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff', fontSize: 18, fontWeight: 700 }}>
+                    {t.avatar || t.name?.slice(0,2).toUpperCase()}
+                  </div>
+                  <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)', lineHeight: 1.4 }}>{t.name}</h3>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20, display: 'inline-block', marginBottom: 6 }}>{t.role}</div>
+                  <p style={{ fontSize: 11, color: 'var(--muted)' }}>{t.dept}</p>
+                  {t.email && <p style={{ fontSize: 11, color: '#7c3aed', marginTop: 4 }}>{t.email}</p>}
                 </div>
-                <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)', lineHeight: 1.4 }}>{t.name}</h3>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20, display: 'inline-block', marginBottom: 6 }}>{t.role}</div>
-                <p style={{ fontSize: 11, color: 'var(--muted)' }}>{t.dept}</p>
-                {t.email && <p style={{ fontSize: 11, color: '#7c3aed', marginTop: 4 }}>{t.email}</p>}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>
