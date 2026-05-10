@@ -1,5 +1,46 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+
+const SEO = {
+  '/':             { title: "Bosh sahifa",            desc: "Qarshi Xalqaro Universiteti — xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish. Qarshi shahri, Qashqadaryo viloyati." },
+  '/about':        { title: "Biz haqimizda",           desc: "KIU tarixi, missiyasi, qadriyatlari va rahbariyati haqida to'liq ma'lumot." },
+  '/faculty':      { title: "Yo'nalishlar",            desc: "KIU da mavjud bakalavriat yo'nalishlari: iqtisodiyot, muhandislik, filologiya va boshqalar." },
+  '/admission':    { title: "Qabul — 2026",            desc: "KIU ga qabul shartlari, hujjatlar ro'yxati va ariza topshirish tartibi. Muddati: 1 iyul — 20 avgust 2026." },
+  '/news':         { title: "Yangiliklar",             desc: "KIU hayotidan so'nggi xabarlar, tadbirlar va e'lonlar." },
+  '/events':       { title: "Tadbirlar taqvimi",       desc: "KIU dagi yaqinlashib kelayotgan tadbirlar, konferensiyalar va bayramlar." },
+  '/teachers':     { title: "Professor-o'qituvchilar", desc: "KIU ning malakali professor-o'qituvchilar jamoasi bilan tanishing." },
+  '/gallery':      { title: "Galereya",                desc: "KIU kampusi, tadbirlari va kundalik hayotidan foto lavhalar." },
+  '/contact':      { title: "Bog'lanish",              desc: "KIU manzili, telefon raqamlari, elektron pochta va ish vaqti." },
+  '/faq':          { title: "Ko'p so'raladigan savollar", desc: "KIU ga qabul, ta'lim jarayoni va boshqa mavzulardagi tez-tez beriladigan savollarga javoblar." },
+  '/documents':    { title: "Normativ hujjatlar",      desc: "KIU ning rasmiy nizomlar, buyruqlar va normativ hujjatlari." },
+  '/vacancies':    { title: "Bo'sh ish o'rinlari",     desc: "KIU da ochiq lavozimlar va ish o'rinlari. Jamoamizga qo'shiling!" },
+  '/international':{ title: "Xalqaro hamkorlik",       desc: "KIU ning xorijiy universitetlar va xalqaro tashkilotlar bilan hamkorlik dasturlari." },
+  '/hemis':        { title: "Elektron universitet",    desc: "KIU HEMIS tizimiga kirish — talabalar va o'qituvchilar uchun." },
+  '/achievements': { title: "Yutuqlar",                desc: "KIU va uning talabalari, o'qituvchilarining yutuqlari va mukofotlari." },
+  '/testimonials': { title: "Fikr-mulohazalar",        desc: "KIU talabalari va bitiruvchilarining universitetimiz haqidagi fikrlari." },
+  '/map':          { title: "Kampus xaritasi",         desc: "KIU kampusining interaktiv xaritasi va yo'nalish ko'rsatmalari." },
+  '/chatbot':      { title: "AI Yordamchi",            desc: "KIU haqida savollaringizga AI yordamchi javob beradi." },
+  '/sorting-hat':  { title: "Yo'nalishni aniqlash",    desc: "KIU Sehrli Shlyapasi — bir necha savol orqali siz uchun eng mos yo'nalishni aniqlang." },
+  '/qrcode':       { title: "QR Kod",                  desc: "KIU rasmiy QR kodlari va tezkor havolalar." },
+}
+
+const BASE = "Qarshi Xalqaro Universiteti | KIU"
+
+function useSeo() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const meta = SEO[pathname] || {}
+    document.title = meta.title ? `${meta.title} — ${BASE}` : BASE
+    const desc = document.querySelector('meta[name="description"]')
+    if (desc && meta.desc) desc.setAttribute('content', meta.desc)
+    const ogTitle = document.querySelector('meta[property="og:title"]')
+    if (ogTitle && meta.title) ogTitle.setAttribute('content', `${meta.title} — ${BASE}`)
+    const ogDesc = document.querySelector('meta[property="og:description"]')
+    if (ogDesc && meta.desc) ogDesc.setAttribute('content', meta.desc)
+    const canonical = document.querySelector('link[rel="canonical"]')
+    if (canonical) canonical.setAttribute('href', `https://kiu-university.vercel.app${pathname}`)
+  }, [pathname])
+}
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ApplyModal from './components/ApplyModal'
@@ -56,6 +97,7 @@ function PublicLayout({ children, dark, setDark, onApply }) {
 }
 
 export default function App() {
+  useSeo()
   const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark')
   const [applyOpen, setApplyOpen] = useState(false)
 
