@@ -168,9 +168,25 @@ app.post('/api/applications', async (req, res) => {
   try {
     const body = { ...req.body }
     if (!body.type) body.type = 'admission'
-    res.json(await Application.create(body))
+    const application = await Application.create(body)
+    const isVacancy = application.type === 'vacancy'
+    let msg = ""
+    if (isVacancy) {
+      msg = "\uD83D\uDCCB Vakansiya arizasi\n\n\uD83D\uDC64 " + application.name + "\n\uD83D\uDCDE " + application.phone
+      if (application.email) msg += "\n\uD83D\uDCE7 " + application.email
+      if (application.position) msg += "\n\uD83D\uDCBC " + application.position
+      if (application.message) msg += "\n\uD83D\uDCAC " + application.message.slice(0, 200)
+    } else {
+      msg = "\uD83C\uDF93 Qabul arizasi\n\n\uD83D\uDC64 " + application.name + "\n\uD83D\uDCDE " + application.phone
+      if (application.email) msg += "\n\uD83D\uDCE7 " + application.email
+      if (application.faculty) msg += "\n\uD83D\uDCDA " + application.faculty
+      if (application.message) msg += "\n\uD83D\uDCAC " + application.message.slice(0, 200)
+    }
+    sendTelegram(msg)
+    res.json(application)
   } catch (e) { res.status(400).json({ error: e.message }) }
 })
+
 app.put('/api/applications/:id', auth, async (req, res) => {
   try { res.json(await Application.findByIdAndUpdate(req.params.id, req.body, { new: true })) }
   catch (e) { res.status(400).json({ error: e.message }) }
@@ -195,7 +211,19 @@ app.get('/api/stats', auth, async (req, res) => {
     res.json({ newsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps })
   } catch (e) { res.status(500).json({ error: e.message }) }
 })
-
+// ── TELEGRAM NOTIFY ──
+async function sendTelegram(text) {
+  try {
+    const token = process.env.BOT_TOKEN
+    const chatId = process.env.TELEGRAM_CHAT_ID
+    if (!token || !chatId) return
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text })
+    })
+  } catch (e) { console.log('Telegram xatosi:', e.message) }
+}
 // ── TELEGRAM ──
 app.get('/api/telegram/posts', async (req, res) => {
   try {
