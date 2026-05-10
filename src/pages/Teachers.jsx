@@ -38,6 +38,9 @@ const colors = ['#7c3aed','#4f46e5','#0088cc','#059669','#d97706','#db2777']
 function KafedraSidebar({ teachers, activeKafedra, onSelect }) {
   const [open, setOpen] = useState(true)
 
+  // Dinamik kafedra ro'yxati — teachers dan olinadi
+  const kafedralar = [...new Set(teachers.map(t => t.dept).filter(Boolean))].sort()
+
   return (
     <div className="card" style={{ padding: '1rem', position: 'sticky', top: '5rem' }}>
       <button
@@ -53,9 +56,8 @@ function KafedraSidebar({ teachers, activeKafedra, onSelect }) {
       {open && (
         <div>
           <KafedraBtn label="Barcha o'qituvchilar" count={teachers.length} active={!activeKafedra} onClick={() => onSelect(null)} />
-          {KAFEDRALAR.map(k => {
+          {kafedralar.map(k => {
             const count = teachers.filter(t => t.dept === k).length
-            if (count === 0) return null
             return <KafedraBtn key={k} label={k} count={count} active={activeKafedra === k} onClick={() => onSelect(k)} />
           })}
         </div>
