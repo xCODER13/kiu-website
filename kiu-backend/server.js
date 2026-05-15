@@ -224,10 +224,25 @@ async function sendTelegram(text) {
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text })
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
     })
   } catch (e) { console.log('Telegram xatosi:', e.message) }
 }
+
+// ── SORTING HAT LEAD ──
+app.post('/api/sorting-hat-lead', async (req, res) => {
+  try {
+    const { name, phone, faculties } = req.body
+    if (!name || !phone) return res.status(400).json({ error: 'Ism va telefon kerak' })
+
+    const msg = `🎓 <b>Yo'nalishni aniqlash — yangi natija</b>\n\n👤 <b>Ism:</b> ${name}\n📞 <b>Telefon:</b> ${phone}\n\n🏆 <b>Tavsiya etilgan yo'nalishlar:</b>\n${faculties.map((f, i) => `${i + 1}. ${f}`).join('\n')}\n\n⏰ ${new Date().toLocaleString('uz-UZ')}`
+
+    await sendTelegram(msg)
+    res.json({ success: true })
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+})
 // ── TELEGRAM ──
 app.get('/api/telegram/posts', async (req, res) => {
   try {

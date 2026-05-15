@@ -368,28 +368,44 @@ const RANKS  = ['Birinchi tavsiya', 'Ikkinchi tavsiya', 'Uchinchi tavsiya']
  
 // ── COMPONENT ───────────────────────────────────────────────
 export default function SortingHat() {
-  const [stage, setStage]     = useState('intro')
-  const [current, setCurrent] = useState(0)
-  const [scores, setScores]   = useState({})
-  const [result, setResult]   = useState(null)
+  const [stage, setStage]       = useState('intro')
+  const [current, setCurrent]   = useState(0)
+  const [scores, setScores]     = useState({})
+  const [result, setResult]     = useState(null)
   const [selected, setSelected] = useState(null)
-  const [busy, setBusy]       = useState(false)
- 
-  function startQuiz() {
+  const [busy, setBusy]         = useState(false)
+  const [userInfo, setUserInfo] = useState({ name: '', phone: '' })
+
+  function startQuiz() { setStage('register') }
+
+  async function submitInfo() {
+    if (!userInfo.name.trim() || !userInfo.phone.trim()) return
     setStage('quiz'); setCurrent(0)
     setScores({}); setResult(null); setSelected(null)
   }
- 
-  function pick(opt) {
+
+  async function pick(opt) {
     if (busy) return
     setSelected(opt); setBusy(true)
-    setTimeout(() => {
+    setTimeout(async () => {
       const ns = { ...scores }
       Object.entries(opt.s).forEach(([k, v]) => { ns[k] = (ns[k] || 0) + v })
       setScores(ns)
       if (current + 1 >= QUESTIONS.length) {
         const top3 = Object.entries(ns).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k)
         setResult(top3); setStage('result')
+        // Telegram ga yuborish
+        try {
+          await fetch(`${import.meta.env.VITE_API_URL}/api/sorting-hat-lead`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: userInfo.name,
+              phone: userInfo.phone,
+              faculties: top3.map(k => FACULTIES[k]?.name || k)
+            })
+          })
+        } catch (e) { console.log('Telegram xatosi:', e.message) }
       } else {
         setCurrent(current + 1); setSelected(null)
       }
@@ -490,6 +506,69 @@ export default function SortingHat() {
             </div>
           )}
  
+          {/* ══ REGISTER ══ */}
+          {stage === 'register' && (
+            <div>
+              <div className="card" style={{ marginBottom: '1.25rem', textAlign: 'center', padding: '1.75rem', borderColor: 'rgba(124,58,237,.2)' }}>
+                <div style={{ fontSize: 36, marginBottom: 8 }}>👤</div>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', marginBottom: 6, fontFamily: 'var(--font-body)' }}>
+                  Bir qadam qoldi!
+                </h2>
+                <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>
+                  Natijangiz tayyor bo'lgach, mutaxassislarimiz siz bilan bog'lanishi uchun ma'lumotlaringizni kiriting
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: '1.5rem' }}>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>
+                    Ism Familiya *
+                  </label>
+                  <input
+                    type="text"
+                    value={userInfo.name}
+                    onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
+                    placeholder="Masalan: Alisher Karimov"
+                    style={{ width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' }}
+                    onFocus={e => e.target.style.borderColor = '#7c3aed'}
+                    onBlur={e => e.target.style.borderColor = 'var(--border)'}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>
+                    Telefon raqam *
+                  </label>
+                  <input
+                    type="tel"
+                    value={userInfo.phone}
+                    onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
+                    placeholder="+998 90 123 45 67"
+                    style={{ width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' }}
+                    onFocus={e => e.target.style.borderColor = '#7c3aed'}
+                    onBlur={e => e.target.style.borderColor = 'var(--border)'}
+                    onKeyDown={e => { if (e.key === 'Enter') submitInfo() }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button onClick={() => setStage('intro')}
+                  style={{ padding: '12px 20px', background: 'var(--bg-2)', color: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+                  ← Orqaga
+                </button>
+                <button onClick={submitInfo}
+                  disabled={!userInfo.name.trim() || !userInfo.phone.trim()}
+                  style={{ flex: 1, padding: '12px 20px', background: !userInfo.name.trim() || !userInfo.phone.trim() ? 'var(--border)' : 'linear-gradient(135deg,#7c3aed,#4f46e5)', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: !userInfo.name.trim() || !userInfo.phone.trim() ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', transition: 'all .2s' }}>
+                  Testni boshlash →
+                </button>
+              </div>
+
+              <p style={{ fontSize: 11, color: 'var(--muted)', textAlign: 'center', marginTop: 12, lineHeight: 1.6 }}>
+                🔒 Ma'lumotlaringiz faqat KIU mutaxassislari bilan bog'lanish uchun ishlatiladi
+              </p>
+            </div>
+          )}
+
           {/* ══ QUIZ ══ */}
           {stage === 'quiz' && (
             <div>
