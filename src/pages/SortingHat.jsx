@@ -194,7 +194,7 @@ const QUESTIONS = [
     q: "Bo'sh vaqtingizda nima qilishni yaxshi ko'rasiz?",
     icon: <IcQuestion />,
     opts: [
-      { t: "Kompyuterda kod yozaman yoki texnik loyihalar qilaman", s: { it: 3, moliya: 1 } },
+      { t: "Dasturlash yoki texnik loyihalar ustida ishlashni yaxshi ko'raman", s: { it: 3, moliya: 1 } },
       { t: "Bolalar bilan o'ynab, ularga nimadir o'rgataman",       s: { maktab: 3, boshlang: 3 } },
       { t: "Kitob o'qiyman, chet til o'rganaman",                   s: { filolog: 3, psixo: 1 } },
       { t: "Hisob-kitob qilaman, moliyaviy rejalar tuzaman",        s: { moliya: 3, buxgal: 3 } },
@@ -275,6 +275,72 @@ const QUESTIONS = [
       { t: "Ish uchun kerak — ingliz tilini bilsam yetarli",       s: { it: 1, moliya: 1, neft: 1 } },
       { t: "O'rganaman, lekin asosiy ixtisosim muhimroq",          s: { psixo: 1, huquq: 1, buxgal: 1 } },
       { t: "Qiziqarli, lekin aniq fanlar menga yaqinroq",          s: { it: 1, neft: 2 } },
+    ]
+  },
+  {
+    id: 9,
+    q: "Maktabda qaysi fan olimpiadasida qatnashgan bo'lardingiz?",
+    icon: <IcSparkle />,
+    opts: [
+      { t: "Matematika yoki fizika — aniq fanlar meni qiziqtiradi",     s: { it: 2, buxgal: 2, moliya: 1 } },
+      { t: "Biologiya yoki kimyo — tabiat va moddalar sirlarini sevaman", s: { neft: 3, boshlang: 1 } },
+      { t: "Ona tili yoki adabiyot — so'z va ifoda kuchida",             s: { filolog: 3, maktab: 1 } },
+      { t: "Tarix yoki huquqshunoslik — jamiyat va qonunlar qiziq",      s: { huquq: 3, psixo: 1 } },
+    ]
+  },
+  {
+    id: 10,
+    q: "Do'stlaringiz muammoga duchor bo'lsa, sizdan nima so'rashadi?",
+    icon: <IcQuestion />,
+    opts: [
+      { t: "Texnik yordam — kompyuter, dastur yoki internet masalalarida", s: { it: 3 } },
+      { t: "Moliyaviy maslahat — pul, qarz yoki investitsiya haqida",     s: { moliya: 3, buxgal: 2 } },
+      { t: "Gaplashish va ruhiy qo'llab-quvvatlash",                      s: { psixo: 3, filolog: 1 } },
+      { t: "Qonuniy maslahat — huquq va hujjatlar bo'yicha",              s: { huquq: 3 } },
+    ]
+  },
+  {
+    id: 11,
+    q: "Qaysi lavozim sizga eng jozibali?",
+    icon: <IcTarget />,
+    opts: [
+      { t: "Dasturchi yoki IT menejeri — texnologiya kompaniyasida",  s: { it: 3 } },
+      { t: "Bog'cha yoki boshlang'ich maktab o'qituvchisi",           s: { maktab: 3, boshlang: 3 } },
+      { t: "Moliyaviy tahlilchi yoki auditor — bank yoki kompaniyada", s: { moliya: 3, buxgal: 3 } },
+      { t: "Advokat yoki yurist — huquq va adolat himoyachisi",        s: { huquq: 3 } },
+    ]
+  },
+  {
+    id: 12,
+    q: "Erkin vaqtingizda qaysi video yoki kontent ko'rishni yaxshi ko'rasiz?",
+    icon: <IcBolt />,
+    opts: [
+      { t: "Texnologiya, dasturlash va sun'iy intellekt haqida",   s: { it: 3 } },
+      { t: "Bolalar bilan qiziqarli tajribalar va ta'lim videolari", s: { maktab: 3, boshlang: 2 } },
+      { t: "Inson psixologiyasi, munosabatlar va motivatsiya",      s: { psixo: 3, filolog: 1 } },
+      { t: "Neft, geologiya, sanoat va energetika haqida",          s: { neft: 3 } },
+    ]
+  },
+  {
+    id: 13,
+    q: "Qaysi ko'nikma sizda eng kuchli deb o'ylaysiz?",
+    icon: <IcSparkle />,
+    opts: [
+      { t: "Mantiqiy fikrlash va muammolarni tizimli yechish",      s: { it: 3, buxgal: 1 } },
+      { t: "Til va muloqot — odamlar bilan oson til topaman",       s: { filolog: 3, psixo: 2, maktab: 1 } },
+      { t: "Raqamlar va hisoblar — moliyaviy hisob-kitob oson",     s: { buxgal: 3, moliya: 3 } },
+      { t: "Empatiya — odamlarni tushunish va yordam berish",       s: { psixo: 3, maktab: 2, boshlang: 2 } },
+    ]
+  },
+  {
+    id: 14,
+    q: "Qaysi jumla sizning hayot falsafangizga eng mos keladi?",
+    icon: <IcTarget />,
+    opts: [
+      { t: "\"Har bir bola — kelajak, ularni to'g'ri tarbiyalash zarur\"", s: { maktab: 3, boshlang: 3 } },
+      { t: "\"Texnologiya dunyoni o'zgartiradi — men ham shu jarayonda\"",  s: { it: 3, moliya: 1 } },
+      { t: "\"Qonun hammaga teng — adolat uchun kurashish kerak\"",         s: { huquq: 3 } },
+      { t: "\"Pul — vosita, uni to'g'ri boshqarish san'at\"",               s: { moliya: 3, buxgal: 2 } },
     ]
   },
 ]
@@ -394,7 +460,6 @@ export default function SortingHat() {
       if (current + 1 >= QUESTIONS.length) {
         const top3 = Object.entries(ns).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k)
         setResult(top3); setStage('result')
-        // Telegram ga yuborish
         try {
           await fetch(`${import.meta.env.VITE_API_URL}/api/sorting-hat-lead`, {
             method: 'POST',
@@ -517,59 +582,39 @@ export default function SortingHat() {
                     </svg>
                   </div>
                 </div>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', marginBottom: 6, fontFamily: 'var(--font-body)' }}>
-                  Bir qadam qoldi!
-                </h2>
-                <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>
-                  Natijangiz tayyor bo'lgach, mutaxassislarimiz siz bilan bog'lanishi uchun ma'lumotlaringizni kiriting
-                </p>
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', marginBottom: 6, fontFamily: 'var(--font-body)' }}>Bir qadam qoldi!</h2>
+                <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>Natijangiz tayyor bo'lgach, mutaxassislarimiz siz bilan bog'lanishi uchun ma'lumotlaringizni kiriting</p>
               </div>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: '1.5rem' }}>
                 <div>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>
-                    Ism Familiya *
-                  </label>
-                  <input
-                    type="text"
-                    value={userInfo.name}
-                    onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
+                  <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Ism Familiya *</label>
+                  <input type="text" value={userInfo.name} onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
                     placeholder="Masalan: Alisher Karimov"
                     style={{ width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' }}
                     onFocus={e => e.target.style.borderColor = '#7c3aed'}
-                    onBlur={e => e.target.style.borderColor = 'var(--border)'}
-                  />
+                    onBlur={e => e.target.style.borderColor = 'var(--border)'} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>
-                    Telefon raqam *
-                  </label>
-                  <input
-                    type="tel"
-                    value={userInfo.phone}
-                    onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
+                  <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Telefon raqam *</label>
+                  <input type="tel" value={userInfo.phone} onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
                     placeholder="+998 90 123 45 67"
                     style={{ width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' }}
                     onFocus={e => e.target.style.borderColor = '#7c3aed'}
                     onBlur={e => e.target.style.borderColor = 'var(--border)'}
-                    onKeyDown={e => { if (e.key === 'Enter') submitInfo() }}
-                  />
+                    onKeyDown={e => { if (e.key === 'Enter') submitInfo() }} />
                 </div>
               </div>
-
               <div style={{ display: 'flex', gap: 10 }}>
                 <button onClick={() => setStage('intro')}
                   style={{ padding: '12px 20px', background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', color: '#fff', border: 'none', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                   Orqaga
                 </button>
-                <button onClick={submitInfo}
-                  disabled={!userInfo.name.trim() || !userInfo.phone.trim()}
+                <button onClick={submitInfo} disabled={!userInfo.name.trim() || !userInfo.phone.trim()}
                   style={{ flex: 1, padding: '12px 20px', background: !userInfo.name.trim() || !userInfo.phone.trim() ? 'var(--border)' : 'linear-gradient(135deg,#7c3aed,#4f46e5)', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: !userInfo.name.trim() || !userInfo.phone.trim() ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', transition: 'all .2s' }}>
                   Testni boshlash →
                 </button>
               </div>
-
               <p style={{ fontSize: 11, color: 'var(--muted)', textAlign: 'center', marginTop: 12, lineHeight: 1.6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 Ma'lumotlaringiz faqat KIU mutaxassislari bilan bog'lanish uchun ishlatiladi
