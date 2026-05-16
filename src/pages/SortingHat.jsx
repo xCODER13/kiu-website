@@ -589,7 +589,7 @@ export default function SortingHat() {
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Ism Familiya *</label>
                   <input type="text" value={userInfo.name} onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
-                    placeholder="Masalan: Alisher Karimov"
+                    placeholder="Masalan: Xurshid Xamrayev"
                     style={{ width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' }}
                     onFocus={e => e.target.style.borderColor = '#7c3aed'}
                     onBlur={e => e.target.style.borderColor = 'var(--border)'} />
@@ -763,7 +763,7 @@ export default function SortingHat() {
               <div className="card" style={{ background: 'linear-gradient(135deg,rgba(124,58,237,.06),rgba(79,70,229,.06))', borderColor: 'rgba(124,58,237,.2)', textAlign: 'center', padding: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}><IcBulb s={26} /></div>
                 <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.7, marginBottom: '1rem' }}>
-                  Shlyapa <strong style={{ color: '#7c3aed' }}>maslahat berdi</strong> — ammo yakuniy qaror siz bilan! Qo'shimcha ma'lumot uchun fakultetlar sahifasini ko'ring yoki ariza topshiring.
+                  Shlyapa <strong style={{ color: '#7c3aed' }}>maslahat berdi</strong> — ammo yakuniy qaror siz bilan! Qo'shimcha ma'lumot uchun yo'nalishlar sahifasini ko'ring yoki ariza topshiring.
                 </p>
                 <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
                   <NavLink to="/faculty" style={{ textDecoration: 'none' }}>
