@@ -239,8 +239,6 @@ export default function News() {
       .catch(() => {})
   }, [])
 
-  useEffect(() => { setVisible(6) }, [activeCat, search, activeTab])
-
   // Featured = first news OR first with featured:true
   const featured = news.find(n => n.featured) || news[0]
 
@@ -266,7 +264,7 @@ export default function News() {
           {/* Tabs */}
           <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid var(--border)', marginBottom: '1.5rem' }}>
             {[{ key: 'news', label: 'Yangiliklar' }, { key: 'video', label: 'Video' }].map(tab => (
-              <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+              <button key={tab.key} onClick={() => { setActiveTab(tab.key); setVisible(6) }}
                 style={{ padding: '10px 20px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: activeTab === tab.key ? '#7c3aed' : 'var(--muted)', borderBottom: activeTab === tab.key ? '2px solid #7c3aed' : '2px solid transparent', marginBottom: -1, fontFamily: 'var(--font-body)', transition: 'all .2s' }}>
                 {tab.label}
               </button>
@@ -294,7 +292,7 @@ export default function News() {
               <div style={{ display: 'flex', gap: 10, marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', flex: 1 }}>
                   {Object.entries(CATEGORIES).map(([key, val]) => (
-                    <button key={key} onClick={() => setActiveCat(key)}
+                    <button key={key} onClick={() => { setActiveCat(key); setVisible(6) }}
                       style={{ fontSize: 12, padding: '5px 12px', borderRadius: 20, border: `1px solid ${activeCat === key ? val.color : 'var(--border)'}`, background: activeCat === key ? val.bg : 'none', color: activeCat === key ? val.color : 'var(--muted)', cursor: 'pointer', fontFamily: 'var(--font-body)', fontWeight: activeCat === key ? 600 : 400, transition: 'all .15s' }}>
                       {val.uz}
                     </button>
@@ -304,7 +302,7 @@ export default function News() {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)' }}>
                     <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                   </svg>
-                  <input value={search} onChange={e => setSearch(e.target.value)}
+                  <input value={search} onChange={e => { setSearch(e.target.value); setVisible(6) }}
                     placeholder="Qidirish..."
                     style={{ paddingLeft: 30, paddingRight: 10, height: 34, border: '1px solid var(--border)', borderRadius: 20, fontSize: 12, background: 'var(--bg)', color: 'var(--text)', outline: 'none', width: 160, fontFamily: 'var(--font-body)' }} />
                 </div>
