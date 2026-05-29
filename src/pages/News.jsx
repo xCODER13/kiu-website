@@ -5,7 +5,7 @@ import useApi from '../hooks/useApi'
 const API = import.meta.env.VITE_API_URL
 
 const CAT_COLORS = {
-  umumiy:    '#e1e504',
+  umumiy:    '#d7bb04',
   talim:     '#0ea5e9',
   sport:     '#16a34a',
   madaniyat: '#dc2626',
@@ -54,6 +54,8 @@ function FeaturedCarousel({ items }) {
         height: 480,
         overflow: 'hidden',
         background: '#0f0f1a',
+        borderRadius: 20,
+        margin: '1.5rem 0',
       }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -322,11 +324,23 @@ export default function News() {
           </div>
         ) : (
           <>
-            {/* FEATURED CAROUSEL — full width */}
-            {featured.length > 0 && <FeaturedCarousel items={featured} />}
+            {/* FEATURED CAROUSEL — rounded corners, inside container */}
+            {featured.length > 0 && (
+              <div className="container">
+                <FeaturedCarousel items={featured} />
+              </div>
+            )}
 
-            {/* TELEGRAM BANNER — full width, below carousel */}
-            <TelegramPanel />
+            {/* TELEGRAM BANNER — rounded, below carousel */}
+            <div className="container" style={{ marginBottom: '0.5rem' }}>
+              <div style={{ borderRadius: 20, overflow: 'hidden' }}>
+                <TelegramPanel />
+              </div>
+              <a href="https://t.me/kiu_uz" target="_blank" rel="noreferrer"
+                style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginTop: '0.75rem', display: 'inline-block' }}>
+                Barcha yangiliklar (@kiu_uz) →
+              </a>
+            </div>
 
             {/* NEWS GRID SECTION */}
             <section className="section">
@@ -410,10 +424,6 @@ export default function News() {
                   </>
                 )}
 
-                <a href="https://t.me/kiu_uz" target="_blank" rel="noreferrer"
-                  style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', paddingTop: '1rem', display: 'inline-block' }}>
-                  Barcha yangiliklar (@kiu_uz) →
-                </a>
               </div>
             </section>
           </>
