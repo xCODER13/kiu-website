@@ -135,7 +135,7 @@ export default function News() {
   const articles = news.filter(n => !n.videoId)
   const shorts   = news.filter(n => n.videoId)
 
-  const featured = articles.filter(n => n.image).slice(0, 5)
+  const featured = articles.slice(0, 5)
   const categories = ['all', ...new Set(articles.map(n => n.category).filter(Boolean))]
 
   const filtered = articles.filter(n => {
