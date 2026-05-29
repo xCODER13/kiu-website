@@ -92,6 +92,13 @@ app.post('/api/admin/change-password', auth, async (req, res) => {
 })
 
 // ── NEWS ──
+app.get('/api/news/:id', async (req, res) => {
+  try {
+    const news = await News.findById(req.params.id)
+    if (!news) return res.status(404).json({ error: 'Topilmadi' })
+    res.json(news)
+  } catch (e) { res.status(500).json({ error: e.message }) }
+})
 app.get('/api/news', async (req, res) => {
   try { res.json(await News.find().sort({ createdAt: -1 })) }
   catch (e) { res.status(500).json({ error: e.message }) }
