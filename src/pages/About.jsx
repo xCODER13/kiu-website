@@ -91,7 +91,7 @@ export default function About() {
               { name: "Panjiyev Ulug'bek Rustamovich", role: 'Rektor', info: 'Kimyo fanlari PhD, dotsent', avatar: 'PU', color: '#7c3aed' },
               { name: "Norinov Faxriyor Kurbonovich", role: 'Prorektor',  avatar: 'NF', color: '#08b310' },
               { name: "Raxmanov Uchqun Toshpo'latovich", role: 'Moliyaviy direktor', info: 'Universtitet asoschisi', avatar: 'RU', color: '#0088cc' },
-              { name: "Yakubov Axtam Nusratilloyevich", role: 'Qarshi Xalqaro Universtiteti 1-rektori', info: 'Toshkent davlat yuridik universitetining Xalqaro munosabatlar va uzluksiz ta’lim bo‘yicha prorektori.', avatar: 'YA', color: '#059669' },
+              { name: "Yakubov Axtam Nusratilloyevich", role: 'Qarshi Xalqaro Universtiteti boshqaruv kengashi raisi', info: 'Toshkent davlat yuridik universitetining Xalqaro munosabatlar va uzluksiz ta’lim bo‘yicha prorektori.', avatar: 'YA', color: '#059669' },
             ].map((p, i) => (
               <div key={i} className={`card reveal reveal-delay-${i + 1}`} style={{ textAlign: 'center', padding: '1.5rem' }}>
                 <div style={{ width: 60, height: 60, borderRadius: '50%', background: p.color, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff', fontSize: 18, fontWeight: 700 }}>{p.avatar}</div>

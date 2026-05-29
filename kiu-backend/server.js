@@ -110,6 +110,12 @@ app.put('/api/news/:id', auth, async (req, res) => {
     res.json(await News.findByIdAndUpdate(req.params.id, { title, content, category, image, shortsUrl, videoId: videoId || '' }, { new: true }))
   } catch (e) { res.status(400).json({ error: e.message }) }
 })
+app.put('/api/news/:id/view', async (req, res) => {
+  try {
+    await News.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } })
+    res.json({ success: true })
+  } catch (e) { res.status(500).json({ error: e.message }) }
+})
 app.delete('/api/news/:id', auth, async (req, res) => {
   try { await News.findByIdAndDelete(req.params.id); res.json({ success: true }) }
   catch (e) { res.status(500).json({ error: e.message }) }
