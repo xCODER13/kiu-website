@@ -1,5 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const SEO = {
   '/':             { title: "Bosh sahifa",            desc: "Qarshi Xalqaro Universiteti — xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish. Qarshi shahri, Qashqadaryo viloyati." },
@@ -108,6 +109,7 @@ export default function App() {
 
   return (
     <>
+      <SpeedInsights />
       <ScrollReveal />
       <Routes>
         <Route path="/admin/login" element={<Login />} />
