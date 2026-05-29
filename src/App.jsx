@@ -48,6 +48,7 @@ import Home from './pages/Home'
 import Faculty from './pages/Faculty'
 import Admission from './pages/Admission'
 import News from './pages/News'
+import NewsDetail from './pages/NewsDetail'
 import Contact from './pages/Contact'
 import FAQ from './pages/FAQ'
 import Events from './pages/Events'
@@ -119,6 +120,7 @@ export default function App() {
               <Route path="/faculty"      element={<Faculty />} />
               <Route path="/admission"    element={<Admission onApply={() => setApplyOpen(true)} />} />
               <Route path="/news"         element={<News />} />
+              <Route path="/news/:id"     element={<NewsDetail />} />
               <Route path="/contact"      element={<Contact />} />
               <Route path="/about"        element={<About />} />
               <Route path="/hemis"        element={<Hemis />} />

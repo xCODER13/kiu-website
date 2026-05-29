@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import TelegramPanel from '../components/TelegramPanel'
 import useApi from '../hooks/useApi'
 
@@ -32,6 +33,7 @@ function FeaturedCarousel({ items }) {
   const [idx, setIdx] = useState(0)
   const [paused, setPaused] = useState(false)
   const timer = useRef(null)
+  const navigate = useNavigate()
 
   const next = useCallback(() => setIdx(i => (i + 1) % items.length), [items.length])
   const prev = () => setIdx(i => (i - 1 + items.length) % items.length)
@@ -137,12 +139,27 @@ function FeaturedCarousel({ items }) {
 
         {/* Bottom row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 4 }}>
-          {item.views > 0 && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'rgba(255,255,255,.5)' }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              {item.views}
-            </span>
-          )}
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'rgba(255,255,255,.5)' }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            {item.views}
+          </span>
+          <button
+            onClick={() => navigate(`/news/${item._id}`)}
+            style={{
+              padding: '7px 18px',
+              background: 'rgba(255,255,255,.15)',
+              border: '1px solid rgba(255,255,255,.3)',
+              borderRadius: 8, color: '#fff', cursor: 'pointer',
+              fontSize: 12, fontWeight: 600,
+              backdropFilter: 'blur(8px)',
+              fontFamily: 'var(--font-body)',
+              transition: 'background .2s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,.25)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,.15)'}
+          >
+            Batafsil →
+          </button>
         </div>
       </div>
 
@@ -202,15 +219,15 @@ function TelegramBanner() {
 }
 
 // ── NEWS CARD ──
-function NewsCard({ item, onView }) {
+function NewsCard({ item }) {
+  const navigate = useNavigate()
   const catColor = CAT_COLORS[item.category] || '#7c3aed'
   return (
     <div
       className="card"
-      style={{ padding: 0, overflow: 'hidden', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
+      style={{ padding: 0, overflow: 'hidden', transition: 'transform .2s, box-shadow .2s' }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,.12)' }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '' }}
-      onClick={() => onView(item._id)}
     >
       {item.image
         ? <img src={item.image} alt={item.title} style={{ width: '100%', height: 160, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />
@@ -245,12 +262,26 @@ function NewsCard({ item, onView }) {
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}>{item.content}</p>
         )}
-        {item.views > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 8, fontSize: 11, color: 'var(--muted)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--muted)' }}>
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             {item.views}
-          </div>
-        )}
+          </span>
+          <button
+            onClick={() => navigate(`/news/${item._id}`)}
+            style={{
+              padding: '5px 14px',
+              background: 'linear-gradient(135deg,#7c3aed,#4f46e5)',
+              color: '#fff', border: 'none', borderRadius: 7,
+              fontSize: 11, fontWeight: 600, cursor: 'pointer',
+              fontFamily: 'var(--font-body)', transition: 'opacity .2s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '.85'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+          >
+            Batafsil →
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -275,10 +306,6 @@ export default function News() {
     const matchSearch = !search || n.title.toLowerCase().includes(search.toLowerCase()) || n.content?.toLowerCase().includes(search.toLowerCase())
     return matchCat && matchSearch
   })
-
-  async function handleView(id) {
-    try { await fetch(`${API}/api/news/${id}/view`, { method: 'PUT' }) } catch (e) { console.log('View error:', e.message) }
-  }
 
   return (
     <div className="fade-up">
@@ -405,7 +432,7 @@ export default function News() {
                   <>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14, marginBottom: '1.5rem' }}>
                       {filtered.slice(0, visibleCount).map(n => (
-                        <NewsCard key={n._id} item={n} onView={handleView} />
+                        <NewsCard key={n._id} item={n} />
                       ))}
                     </div>
                     {visibleCount < filtered.length && (
