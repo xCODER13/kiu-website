@@ -55,7 +55,7 @@ function FeaturedCarousel({ items }) {
         width: '100%',
         height: 480,
         overflow: 'hidden',
-        background: '#0f0f1a',
+        background: '#13102b',
         borderRadius: 20,
         margin: '1.5rem 0',
       }}
@@ -69,7 +69,7 @@ function FeaturedCarousel({ items }) {
           position: 'absolute', inset: 0,
           backgroundImage: item.image
             ? `url(${item.image})`
-            : `linear-gradient(135deg, ${catColor}cc, ${catColor}44, #0f0f1a)`,
+            : `linear-gradient(135deg, #1e1545 0%, #13102b 60%, #0d0b1e 100%)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           animation: 'carouselFadeIn .6s ease',
@@ -79,7 +79,7 @@ function FeaturedCarousel({ items }) {
 
       {/* Overlay gradients */}
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.4) 50%, rgba(0,0,0,.15) 100%)' }} />
-      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, ${catColor}22, transparent 60%)` }} />
+      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, ${catColor}40, transparent 65%)` }} />
 
       {/* Slide counter top-right */}
       <div style={{
