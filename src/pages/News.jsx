@@ -5,7 +5,7 @@ import useApi from '../hooks/useApi'
 const API = import.meta.env.VITE_API_URL
 
 const CAT_COLORS = {
-  umumiy:    '#7c3aed',
+  umumiy:    '#e1e504',
   talim:     '#0ea5e9',
   sport:     '#16a34a',
   madaniyat: '#dc2626',
