@@ -4,6 +4,15 @@ import useApi from '../hooks/useApi'
 
 const API = import.meta.env.VITE_API_URL
 
+const CAT_COLORS = {
+  umumiy: '#7c3aed',
+  talim: '#16a34a',
+  sport: '#dc2626',
+  madaniyat: '#d97706',
+  xalqaro: '#2563eb',
+  fan: '#059669',
+}
+
 const CAT_LABELS = {
 umumiy: 'Umumiy',
 talim: 'Ta\'lim',
@@ -41,7 +50,7 @@ function FeaturedCarousel({ items }) {
   const item = items[idx]
 
   return (
-    <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', marginBottom: '2rem', background: '#1a1a2e', aspectRatio: '16/7', minHeight: 220 }}
+    <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', marginBottom: '2rem', background: '#1a1a2e', height: 380, minHeight: 280 }}
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
 
       {/* Background image */}
@@ -51,7 +60,7 @@ function FeaturedCarousel({ items }) {
       {/* Content */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1.5rem' }}>
         {item.category && (
-          <span style={{ fontSize: 10, fontWeight: 700, color: '#fff', background: '#7c3aed', padding: '3px 10px', borderRadius: 20, textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8, display: 'inline-block' }}>
+          <span style={{ fontSize: 10, fontWeight: 700, color: '#fff', background: CAT_COLORS[item.category], padding: '3px 10px', borderRadius: 20, textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8, display: 'inline-block' }}>
             {CAT_LABELS[item.category] || item.category}
           </span>
         )}
