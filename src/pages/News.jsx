@@ -5,8 +5,12 @@ import useApi from '../hooks/useApi'
 const API = import.meta.env.VITE_API_URL
 
 const CAT_LABELS = {
-  umumiy: 'Umumiy', talim: "Ta'lim", tadbirlar: 'Tadbirlar',
-  sport: 'Sport', elon: "E'lonlar", xalqaro: 'Xalqaro', fan: 'Fan',
+umumiy: 'Umumiy',
+talim: 'Ta\'lim',
+sport: 'Sport',
+madaniyat: 'Madaniyat',
+xalqaro: 'Xalqaro',
+fan: 'Fan',
 }
 
 const FALLBACK_SHORTS = [
