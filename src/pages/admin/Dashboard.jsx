@@ -159,42 +159,21 @@ function NewsAdmin() {
 
   setUploading(true)
   try {
+    const formData = new FormData()
+    formData.append('title', form.title)
+    formData.append('content', form.content)
+    formData.append('category', form.category)
+    formData.append('shortsUrl', form.shortsUrl.trim())
+    formData.append('videoId', videoId)
+    formData.append('image', form.image || '')
+    if (imageFile) formData.append('imageFile', imageFile)
+
     const token = localStorage.getItem('kiu_token')
-    let imageUrl = form.image || ''
-
-    if (imageFile) {
-      // 1-qadam: backenddan imzolangan URL olish
-      const signRes = await fetch(`${API}/upload/news-image`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-        body: JSON.stringify({ fileName: imageFile.name }),
-      })
-      const signData = await signRes.json()
-      if (!signRes.ok) return alert(signData.error || 'Rasm URLini olishda xato')
-
-      // 2-qadam: rasmni to'g'ridan-to'g'ri Supabase'ga yuklash
-      const uploadRes = await fetch(signData.signedUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': imageFile.type },
-        body: imageFile,
-      })
-      if (!uploadRes.ok) return alert('Rasm yuklanmadi. Status: ' + uploadRes.status)
-      imageUrl = signData.publicUrl
-    }
-
-    // 3-qadam: yangilikni JSON sifatida saqlash
     const url = editing ? API + '/news/' + editing : API + '/news'
     const res = await fetch(url, {
       method: editing ? 'PUT' : 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify({
-        title: form.title,
-        content: form.content,
-        category: form.category,
-        shortsUrl: form.shortsUrl.trim(),
-        videoId,
-        image: imageUrl,
-      }),
+      headers: { Authorization: 'Bearer ' + token },
+      body: formData,
     })
     const data = await res.json()
     if (!res.ok) return alert(data.error || 'Yangilik saqlanmadi.')

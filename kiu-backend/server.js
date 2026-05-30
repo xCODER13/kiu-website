@@ -15,8 +15,11 @@ const supabase = createClient(
 
 const app = express()
 app.use(cors({ origin: process.env.FRONTEND_URL || 'https://kiu-university.vercel.app', credentials: true }))
-app.use(express.json())
+app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
+
+const multer = require('multer')
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } })
 
 const News        = require('./models/News')
 const Event       = require('./models/Event')
@@ -99,20 +102,6 @@ app.post('/api/admin/change-password', auth, async (req, res) => {
   }
 })
 
-// ── IMAGE UPLOAD (Signed URL) ──
-app.post('/api/upload/news-image', auth, async (req, res) => {
-  try {
-    const { fileName } = req.body
-    const uniqueName = uuidv4() + '-' + (fileName || 'image')
-    const { data, error } = await supabase.storage
-      .from('news-images')
-      .createSignedUploadUrl(uniqueName)
-    if (error) throw error
-    const { data: urlData } = supabase.storage.from('news-images').getPublicUrl(uniqueName)
-    res.json({ signedUrl: data.signedUrl, publicUrl: urlData.publicUrl })
-  } catch (e) { res.status(500).json({ error: e.message }) }
-})
-
 // ── NEWS ──
 app.get('/api/news/:id', async (req, res) => {
   try {
@@ -125,17 +114,39 @@ app.get('/api/news', async (req, res) => {
   try { res.json(await News.find().sort({ createdAt: -1 })) }
   catch (e) { res.status(500).json({ error: e.message }) }
 })
-app.post('/api/news', auth, async (req, res) => {
+app.post('/api/news', auth, upload.single('imageFile'), async (req, res) => {
   try {
-    const { title, content, category, videoId, shortsUrl, image } = req.body
-    res.json(await News.create({ title, content, category, image: image || '', shortsUrl: shortsUrl || '', videoId: videoId || '' }))
+    let imageUrl = req.body.image || ''
+    if (req.file) {
+      const fileName = uuidv4() + '-' + req.file.originalname
+      const { error } = await supabase.storage
+        .from('news-images')
+        .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
+      if (error) throw error
+      const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
+      imageUrl = data.publicUrl
+    }
+    const { title, content, category, videoId } = req.body
+    const shortsUrl = req.body.shortsUrl || ''
+    res.json(await News.create({ title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' }))
   } catch (e) { res.status(400).json({ error: e.message }) }
 })
-app.put('/api/news/:id', auth, async (req, res) => {
+app.put('/api/news/:id', auth, upload.single('imageFile'), async (req, res) => {
   try {
-    const { title, content, category, videoId, shortsUrl, image } = req.body
+    let imageUrl = req.body.image || ''
+    if (req.file) {
+      const fileName = uuidv4() + '-' + req.file.originalname
+      const { error } = await supabase.storage
+        .from('news-images')
+        .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
+      if (error) throw error
+      const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
+      imageUrl = data.publicUrl
+    }
+    const { title, content, category, videoId } = req.body
+    const shortsUrl = req.body.shortsUrl || ''
     res.json(await News.findByIdAndUpdate(req.params.id,
-      { title, content, category, image: image || '', shortsUrl: shortsUrl || '', videoId: videoId || '' },
+      { title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' },
       { new: true }
     ))
   } catch (e) { res.status(400).json({ error: e.message }) }
