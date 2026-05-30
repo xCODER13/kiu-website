@@ -153,41 +153,56 @@ function NewsAdmin() {
   }
 
   async function save() {
-    if (!form.title.trim()) return alert('Sarlavha kiritilishi shart!')
-    const videoId = form.shortsUrl.trim() ? extractYouTubeShortsId(form.shortsUrl.trim()) : ''
-    if (form.shortsUrl.trim() && !videoId) return alert('Iltimos, toʻgʻri YouTube Shorts URL kiriting!')
+  if (!form.title.trim()) return alert('Sarlavha kiritilishi shart!')
+  const videoId = form.shortsUrl.trim() ? extractYouTubeShortsId(form.shortsUrl.trim()) : ''
+  if (form.shortsUrl.trim() && !videoId) return alert('Iltimos, togri YouTube Shorts URL kiriting!')
 
-    setUploading(true)
-    const formData = new FormData()
-    formData.append('title', form.title)
-    formData.append('content', form.content)
-    formData.append('category', form.category)
-    formData.append('shortsUrl', form.shortsUrl.trim())
-    formData.append('videoId', videoId)
-    if (imageFile) formData.append('image', imageFile)
-    else formData.append('image', form.image || '')
+  setUploading(true)
+  try {
+    const body = {
+      title: form.title,
+      content: form.content,
+      category: form.category,
+      shortsUrl: form.shortsUrl.trim(),
+      videoId: videoId,
+      image: form.image || '',
+    }
+
+    if (imageFile) {
+      const reader = new FileReader()
+      const base64 = await new Promise(function(resolve, reject) {
+        reader.onload = function() { resolve(reader.result) }
+        reader.onerror = reject
+        reader.readAsDataURL(imageFile)
+      })
+      body.imageBase64 = base64
+      body.imageName = imageFile.name
+      body.imageType = imageFile.type
+    }
 
     const token = localStorage.getItem('kiu_token')
-    const url = editing ? `${API}/news/${editing}` : `${API}/news`
-    try {
-      const res = await fetch(url, {
-        method: editing ? 'PUT' : 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      })
-      const data = await res.json()
-      if (!res.ok) return alert(data.error || 'Yangilik saqlanmadi.')
-      if (editing) setNews(p => p.map(n => n._id === editing ? data : n))
-      else setNews(p => [data, ...p])
-      setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
-      setImageFile(null); setPreview(''); setEdit(null); setOpen(false)
-      if (fileRef.current) fileRef.current.value = ''
-    } catch (e) {
-      alert('Xato yuz berdi: ' + e.message)
-    } finally {
-      setUploading(false)
-    }
+    const url = editing ? API + '/news/' + editing : API + '/news'
+    const res = await fetch(url, {
+      method: editing ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify(body),
+    })
+    const data = await res.json()
+    if (!res.ok) return alert(data.error || 'Yangilik saqlanmadi.')
+    if (editing) setNews(function(p) { return p.map(function(n) { return n._id === editing ? data : n }) })
+    else setNews(function(p) { return [data, ...p] })
+    setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
+    setImageFile(null)
+    setPreview('')
+    setEdit(null)
+    setOpen(false)
+    if (fileRef.current) fileRef.current.value = ''
+  } catch (e) {
+    alert('Xato: ' + e.message)
+  } finally {
+    setUploading(false)
   }
+}
 
   async function del(id) {
     if (!window.confirm("O'chirishni tasdiqlaysizmi?")) return
