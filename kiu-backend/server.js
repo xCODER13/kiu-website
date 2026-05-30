@@ -15,8 +15,8 @@ const supabase = createClient(
 
 const app = express()
 app.use(cors({ origin: process.env.FRONTEND_URL || 'https://kiu-university.vercel.app', credentials: true }))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 const News        = require('./models/News')
 const Event       = require('./models/Event')
