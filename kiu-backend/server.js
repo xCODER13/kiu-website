@@ -118,10 +118,10 @@ app.post('/api/news', auth, upload.single('image'), async (req, res) => {
     if (req.file) {
       const fileName = `${uuidv4()}-${req.file.originalname}`
       const { error } = await supabase.storage
-        .from('kiu-images')
+        .from('news-images')
         .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
       if (error) throw error
-      const { data } = supabase.storage.from('kiu-images').getPublicUrl(fileName)
+      const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
       imageUrl = data.publicUrl
     } else {
       imageUrl = req.body.image || ''
@@ -138,10 +138,10 @@ app.put('/api/news/:id', auth, upload.single('image'), async (req, res) => {
     if (req.file) {
       const fileName = `${uuidv4()}-${req.file.originalname}`
       const { error } = await supabase.storage
-        .from('kiu-images')
+        .from('news-images')
         .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
       if (error) throw error
-      const { data } = supabase.storage.from('kiu-images').getPublicUrl(fileName)
+      const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
       imageUrl = data.publicUrl
     }
 
