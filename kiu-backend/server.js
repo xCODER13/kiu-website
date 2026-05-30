@@ -4,6 +4,15 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 require('dotenv').config()
+const multer = require('multer')
+const { createClient } = require('@supabase/supabase-js')
+const { v4: uuidv4 } = require('uuid')
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+)
+const upload = multer({ storage: multer.memoryStorage() })
 
 const app = express()
 app.use(cors({ origin: process.env.FRONTEND_URL || 'https://kiu-university.vercel.app', credentials: true }))
@@ -103,18 +112,45 @@ app.get('/api/news', async (req, res) => {
   try { res.json(await News.find().sort({ createdAt: -1 })) }
   catch (e) { res.status(500).json({ error: e.message }) }
 })
-app.post('/api/news', auth, async (req, res) => {
+app.post('/api/news', auth, upload.single('image'), async (req, res) => {
   try {
-    const { title, content, category, image, videoId } = req.body
+    let imageUrl = ''
+    if (req.file) {
+      const fileName = `${uuidv4()}-${req.file.originalname}`
+      const { error } = await supabase.storage
+        .from('kiu-images')
+        .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
+      if (error) throw error
+      const { data } = supabase.storage.from('kiu-images').getPublicUrl(fileName)
+      imageUrl = data.publicUrl
+    } else {
+      imageUrl = req.body.image || ''
+    }
+
     const shortsUrl = req.body.shortsUrl || req.body.shortsURL || ''
-    res.json(await News.create({ title, content, category, image, shortsUrl, videoId: videoId || '' }))
+    const { title, content, category, videoId } = req.body
+    res.json(await News.create({ title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' }))
   } catch (e) { res.status(400).json({ error: e.message }) }
 })
-app.put('/api/news/:id', auth, async (req, res) => {
+app.put('/api/news/:id', auth, upload.single('image'), async (req, res) => {
   try {
-    const { title, content, category, image, videoId } = req.body
+    let imageUrl = req.body.image || ''
+    if (req.file) {
+      const fileName = `${uuidv4()}-${req.file.originalname}`
+      const { error } = await supabase.storage
+        .from('kiu-images')
+        .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
+      if (error) throw error
+      const { data } = supabase.storage.from('kiu-images').getPublicUrl(fileName)
+      imageUrl = data.publicUrl
+    }
+
     const shortsUrl = req.body.shortsUrl || req.body.shortsURL || ''
-    res.json(await News.findByIdAndUpdate(req.params.id, { title, content, category, image, shortsUrl, videoId: videoId || '' }, { new: true }))
+    const { title, content, category, videoId } = req.body
+    res.json(await News.findByIdAndUpdate(req.params.id,
+      { title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' },
+      { new: true }
+    ))
   } catch (e) { res.status(400).json({ error: e.message }) }
 })
 app.put('/api/news/:id/view', async (req, res) => {

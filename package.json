@@ -10,10 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.2",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.3.3",
+    "multer": "^2.1.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.1"

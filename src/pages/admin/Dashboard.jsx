@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, NavLink, Routes, Route } from 'react-router-dom'
-
 
 const API = import.meta.env.VITE_API_URL + '/api'
 const H = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('kiu_token')}` })
@@ -66,7 +65,7 @@ function Stats() {
     { label: 'Yangiliklar',        value: stats.newsCount,     color: '#7c3aed', icon: Ic.news,    to: '/admin/news'         },
     { label: 'Tadbirlar',          value: stats.eventsCount,   color: '#e546e5', icon: Ic.events,  to: '/admin/events'       },
     { label: "O'qituvchilar",      value: stats.teachersCount, color: '#0088cc', icon: Ic.teach,   to: '/admin/teachers'     },
-    { label: 'Yangi arizalar',       value: stats.newApps,     color: '#ff0015', icon: Ic.apps,    to: '/admin/applications' },
+    { label: 'Yangi arizalar',     value: stats.newApps,       color: '#ff0015', icon: Ic.apps,    to: '/admin/applications' },
     { label: 'Qabul arizalari',    value: stats.appsCount,     color: '#059669', icon: Ic.apps,    to: '/admin/applications' },
     { label: 'Vakansiya arizalari',value: stats.vacancyApps,   color: '#d97706', icon: Ic.vacancy, to: '/admin/vacancies'    },
   ]
@@ -127,35 +126,67 @@ function extractYouTubeShortsId(url) {
 
 // ── NEWS ──
 function NewsAdmin() {
-  const [news, setNews]     = useState([])
-  const [form, setForm]     = useState({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
-  const [editing, setEdit]  = useState(null)
-  const [open, setOpen]     = useState(false)
+  const [news, setNews]           = useState([])
+  const [form, setForm]           = useState({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
+  const [editing, setEdit]        = useState(null)
+  const [open, setOpen]           = useState(false)
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setPreview]= useState('')
+  const [uploading, setUploading] = useState(false)
+  const fileRef                   = useRef(null)
 
   useEffect(() => { fetch(`${API}/news`).then(r => r.json()).then(setNews).catch(() => {}) }, [])
+
+  function handleFileSelect(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) return alert('Faqat rasm fayllari qabul qilinadi!')
+    if (file.size > 5 * 1024 * 1024) return alert('Fayl hajmi 5 MB dan oshmasligi kerak!')
+    setImageFile(file)
+    setPreview(URL.createObjectURL(file))
+  }
+
+  function clearImage() {
+    setImageFile(null); setPreview('')
+    setForm(f => ({ ...f, image: '' }))
+    if (fileRef.current) fileRef.current.value = ''
+  }
 
   async function save() {
     if (!form.title.trim()) return alert('Sarlavha kiritilishi shart!')
     const videoId = form.shortsUrl.trim() ? extractYouTubeShortsId(form.shortsUrl.trim()) : ''
     if (form.shortsUrl.trim() && !videoId) return alert('Iltimos, toʻgʻri YouTube Shorts URL kiriting!')
 
-    const body = {
-      title: form.title,
-      content: form.content,
-      category: form.category,
-      image: form.image,
-      shortsUrl: form.shortsUrl.trim(),
-      videoId,
-    }
+    setUploading(true)
+    const formData = new FormData()
+    formData.append('title', form.title)
+    formData.append('content', form.content)
+    formData.append('category', form.category)
+    formData.append('shortsUrl', form.shortsUrl.trim())
+    formData.append('videoId', videoId)
+    if (imageFile) formData.append('image', imageFile)
+    else formData.append('image', form.image || '')
 
+    const token = localStorage.getItem('kiu_token')
     const url = editing ? `${API}/news/${editing}` : `${API}/news`
-    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(body) })
-    const data = await res.json()
-    if (!res.ok) return alert(data.error || 'Yangilik saqlanmadi. Iltimos, qayta urinib ko‘ring.')
-    if (editing) setNews(p => p.map(n => n._id === editing ? data : n))
-    else setNews(p => [data, ...p])
-    setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
-    setEdit(null); setOpen(false)
+    try {
+      const res = await fetch(url, {
+        method: editing ? 'PUT' : 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      })
+      const data = await res.json()
+      if (!res.ok) return alert(data.error || 'Yangilik saqlanmadi.')
+      if (editing) setNews(p => p.map(n => n._id === editing ? data : n))
+      else setNews(p => [data, ...p])
+      setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
+      setImageFile(null); setPreview(''); setEdit(null); setOpen(false)
+      if (fileRef.current) fileRef.current.value = ''
+    } catch (e) {
+      alert('Xato yuz berdi: ' + e.message)
+    } finally {
+      setUploading(false)
+    }
   }
 
   async function del(id) {
@@ -166,21 +197,19 @@ function NewsAdmin() {
 
   function startEdit(n) {
     setEdit(n._id)
-    setForm({
-      title: n.title,
-      content: n.content || '',
-      category: n.category || 'umumiy',
-      image: n.image || '',
-      shortsUrl: n.shortsUrl || (n.videoId ? `https://youtube.com/shorts/${n.videoId}` : ''),
-    })
+    setImageFile(null)
+    setPreview(n.image || '')
+    setForm({ title: n.title, content: n.content || '', category: n.category || 'umumiy', image: n.image || '', shortsUrl: n.shortsUrl || (n.videoId ? `https://youtube.com/shorts/${n.videoId}` : '') })
     setOpen(true)
   }
+
+  const preview = imagePreview || form.image
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>Yangiliklar ({news.length})</h2>
-        <button style={bP} onClick={() => { setOpen(!open); setEdit(null); setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' }) }}>{Ic.add} Yangi</button>
+        <button style={bP} onClick={() => { setOpen(!open); setEdit(null); setImageFile(null); setPreview(''); setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' }); if (fileRef.current) fileRef.current.value = '' }}>{Ic.add} Yangi</button>
       </div>
       {open && (
         <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#7c3aed' }}>
@@ -194,74 +223,94 @@ function NewsAdmin() {
                   {["umumiy","ta'lim","sport","madaniyat","xalqaro","fan"].map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
-              <div><label style={lbl}>Rasm URL</label><input value={form.image} onChange={e => setForm({ ...form, image: e.target.value })} placeholder="https://..." style={inp} /></div>
+              <div>
+                <label style={lbl}>Rasm</label>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'inherit', border: '1px dashed #7c3aed', color: '#7c3aed', background: 'rgba(124,58,237,.05)', whiteSpace: 'nowrap' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    {imageFile ? imageFile.name.slice(0, 18) + (imageFile.name.length > 18 ? '…' : '') : 'Fayl tanlash'}
+                    <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleFileSelect} style={{ display: 'none' }} />
+                  </label>
+                  {preview && <button onClick={clearImage} title="Rasmni olib tashlash" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: 18, lineHeight: 1, padding: '2px 6px' }}>×</button>}
+                </div>
+                <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB</div>
+              </div>
             </div>
             <div><label style={lbl}>YouTube Shorts URL</label><input value={form.shortsUrl} onChange={e => setForm({ ...form, shortsUrl: e.target.value })} placeholder="https://youtube.com/shorts/VIDEO_ID" style={inp} /></div>
             <div><label style={lbl}>Matn</label><textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={4} style={{ ...inp, resize: 'vertical' }} /></div>
-            {form.image && <img src={form.image} alt="preview" style={{ height: 100, objectFit: 'cover', borderRadius: 8 }} onError={e => e.target.style.display='none'} />}
+            {preview && (
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <img src={preview} alt="preview" style={{ height: 110, width: 'auto', maxWidth: '100%', objectFit: 'cover', borderRadius: 8, border: '1px solid var(--border)' }} onError={e => e.target.style.display='none'} />
+                {imageFile && <span style={{ position: 'absolute', top: 6, left: 6, fontSize: 10, fontWeight: 600, background: '#7c3aed', color: '#fff', padding: '2px 7px', borderRadius: 20 }}>Yangi rasm</span>}
+              </div>
+            )}
+            {uploading && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#7c3aed' }}>
+                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                Rasm yuklanmoqda...
+              </div>
+            )}
             <div style={{ display: 'flex', gap: 8 }}>
-              <button style={bP} onClick={save}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
+              <button style={{ ...bP, opacity: uploading ? .6 : 1 }} onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
               <button style={bG} onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Yangiliklar */}
-{news.filter(n => !n.videoId).length > 0 && (
-  <>
-    <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
-      Yangiliklar ({news.filter(n => !n.videoId).length})
-    </h3>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '1.5rem' }}>
-      {news.filter(n => !n.videoId).map(n => (
-        <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 10, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20 }}>{n.category || 'umumiy'}</span>
-              <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
-            </div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
-            {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
+      {news.filter(n => !n.videoId).length > 0 && (
+        <>
+          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+            Yangiliklar ({news.filter(n => !n.videoId).length})
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '1.5rem' }}>
+            {news.filter(n => !n.videoId).map(n => (
+              <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 10, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20 }}>{n.category || 'umumiy'}</span>
+                    <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
+                  {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                  <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
+                  <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
+                </div>
+              </div>
+            ))}
           </div>
-          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-            <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
-            <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
-          </div>
-        </div>
-      ))}
-    </div>
-  </>
-)}
+        </>
+      )}
 
-{/* Shorts */}
-{news.filter(n => n.videoId).length > 0 && (
-  <>
-    <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
-      YouTube Shorts ({news.filter(n => n.videoId).length})
-    </h3>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {news.filter(n => n.videoId).map(n => (
-        <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 10, color: '#ff0000', background: 'rgba(255,0,0,.1)', padding: '2px 8px', borderRadius: 20 }}>Shorts</span>
-              <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
-            </div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
-            {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
+      {news.filter(n => n.videoId).length > 0 && (
+        <>
+          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+            YouTube Shorts ({news.filter(n => n.videoId).length})
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {news.filter(n => n.videoId).map(n => (
+              <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 10, color: '#ff0000', background: 'rgba(255,0,0,.1)', padding: '2px 8px', borderRadius: 20 }}>Shorts</span>
+                    <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
+                  {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                  <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
+                  <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
+                </div>
+              </div>
+            ))}
           </div>
-          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-            <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
-            <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
-          </div>
-        </div>
-      ))}
-    </div>
-  </>
-)}
+        </>
+      )}
 
-{news.length === 0 && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>Hali yangilik yo'q</p>}
+      {news.length === 0 && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>Hali yangilik yo'q</p>}
     </div>
   )
 }
@@ -480,7 +529,7 @@ function GalleryAdmin() {
       </div>
 
       <div style={{ padding: '0.75rem', background: 'rgba(124,58,237,.05)', borderRadius: 8, border: '1px solid rgba(124,58,237,.15)', marginBottom: '1.5rem', fontSize: 12, color: 'var(--muted)' }}>
-         Rasmlarni <code style={{ color: '#7c3aed' }}>public/gallery/</code> papkasiga joylab, <code style={{ color: '#7c3aed' }}>/gallery/fayl.jpg</code> yo'lini yozing
+        Rasmlarni <code style={{ color: '#7c3aed' }}>public/gallery/</code> papkasiga joylab, <code style={{ color: '#7c3aed' }}>/gallery/fayl.jpg</code> yo'lini yozing
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
@@ -504,8 +553,8 @@ function GalleryAdmin() {
 
 // ── APPLICATIONS ──
 function ApplicationsAdmin({ type = 'admission' }) {
-  const [apps, setApps]   = useState([])
-  const [filter, setFilt] = useState('all')
+  const [apps, setApps]    = useState([])
+  const [filter, setFilt]  = useState('all')
   const [loading, setLoad] = useState(true)
 
   useEffect(() => {
@@ -540,10 +589,10 @@ function ApplicationsAdmin({ type = 'admission' }) {
           {type === 'vacancy' ? 'Vakansiya arizalari' : 'Qabul arizalari'} ({apps.length})
         </h2>
         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {[['all','Barchasi'],['new','Yangi'],['reviewed',"Ko'rildi"],['accepted','Qabul'],['rejected','Rad']].map(([val, lbl]) => (
+          {[['all','Barchasi'],['new','Yangi'],['reviewed',"Ko'rildi"],['accepted','Qabul'],['rejected','Rad']].map(([val, lb]) => (
             <button key={val} onClick={() => setFilt(val)}
               style={{ padding: '5px 10px', borderRadius: 6, border: `1px solid ${filter === val ? '#7c3aed' : 'var(--border)'}`, background: filter === val ? '#7c3aed' : 'var(--bg)', color: filter === val ? '#fff' : 'var(--muted)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>
-              {lbl} ({val === 'all' ? apps.length : apps.filter(a => a.status === val).length})
+              {lb} ({val === 'all' ? apps.length : apps.filter(a => a.status === val).length})
             </button>
           ))}
         </div>
@@ -682,7 +731,6 @@ export default function Dashboard() {
       {/* ── SIDEBAR ── */}
       <div style={{ width: collapsed ? 60 : 230, background: 'linear-gradient(180deg,#1a1a2e 0%,#16213e 100%)', display: 'flex', flexDirection: 'column', flexShrink: 0, transition: 'width .25s', overflow: 'hidden' }}>
 
-        {/* Logo */}
         <div style={{ padding: collapsed ? '1rem 0' : '1.1rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'space-between', gap: 8 }}>
           {!collapsed && (
             <div>
@@ -696,7 +744,6 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Search */}
         {!collapsed && (
           <div style={{ padding: '0.7rem 1rem', borderBottom: '1px solid rgba(255,255,255,.05)' }}>
             <div style={{ position: 'relative' }}>
@@ -707,7 +754,6 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Nav links */}
         <nav style={{ flex: 1, padding: '0.4rem 0', overflowY: 'auto' }}>
           {filteredNav.map(item => (
             <NavLink key={item.to} to={item.to} end={item.to === '/admin'}
@@ -730,7 +776,6 @@ export default function Dashboard() {
           )}
         </nav>
 
-        {/* Bottom */}
         <div style={{ padding: collapsed ? '0.5rem 0' : '0.75rem 1.25rem', borderTop: '1px solid rgba(255,255,255,.07)', display: 'flex', flexDirection: 'column', gap: 2 }}>
           <button onClick={() => setDark(!dark)}
             style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'rgba(255,255,255,.45)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0', justifyContent: collapsed ? 'center' : 'flex-start', fontFamily: 'inherit', width: '100%' }}>
@@ -750,23 +795,16 @@ export default function Dashboard() {
       {/* ── MAIN ── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
 
-        {/* Topbar */}
         <div style={{ padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', background: 'var(--bg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <div style={{ fontSize: 12, color: 'var(--muted)' }}>
             KIU Boshqaruv tizimi · <span style={{ color: '#7c3aed', fontWeight: 600 }}>admin</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {/* Search */}
             <div style={{ position: 'relative' }}>
               <span style={{ position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', display: 'flex' }}>{Ic.search}</span>
-              <input
-  value={search}
-  onChange={e => setSearch(e.target.value)}
-  placeholder="Bo'lim qidirish..."
-  style={{ padding: '7px 12px 7px 30px', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, background: 'var(--bg)', color: 'var(--text)', outline: 'none', width: 180, fontFamily: 'inherit' }}
-/>
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Bo'lim qidirish..."
+                style={{ padding: '7px 12px 7px 30px', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, background: 'var(--bg)', color: 'var(--text)', outline: 'none', width: 180, fontFamily: 'inherit' }} />
             </div>
-            {/* Dark mode */}
             <button onClick={() => setDark(!dark)}
               style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 9px', cursor: 'pointer', color: 'var(--muted)', display: 'flex', alignItems: 'center' }}>
               {dark ? Ic.sun : Ic.moon}
@@ -774,7 +812,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Content */}
         <main style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
           <Routes>
             <Route index element={<Stats />} />
