@@ -159,33 +159,21 @@ function NewsAdmin() {
 
   setUploading(true)
   try {
-    const body = {
-      title: form.title,
-      content: form.content,
-      category: form.category,
-      shortsUrl: form.shortsUrl.trim(),
-      videoId: videoId,
-      image: form.image || '',
-    }
-
-    if (imageFile) {
-      const reader = new FileReader()
-      const base64 = await new Promise(function(resolve, reject) {
-        reader.onload = function() { resolve(reader.result) }
-        reader.onerror = reject
-        reader.readAsDataURL(imageFile)
-      })
-      body.imageBase64 = base64
-      body.imageName = imageFile.name
-      body.imageType = imageFile.type
-    }
+    const formData = new FormData()
+    formData.append('title', form.title)
+    formData.append('content', form.content)
+    formData.append('category', form.category)
+    formData.append('shortsUrl', form.shortsUrl.trim())
+    formData.append('videoId', videoId)
+    formData.append('image', form.image || '')
+    if (imageFile) formData.append('imageFile', imageFile)
 
     const token = localStorage.getItem('kiu_token')
     const url = editing ? API + '/news/' + editing : API + '/news'
     const res = await fetch(url, {
       method: editing ? 'PUT' : 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify(body),
+      headers: { Authorization: 'Bearer ' + token },
+      body: formData,
     })
     const data = await res.json()
     if (!res.ok) return alert(data.error || 'Yangilik saqlanmadi.')

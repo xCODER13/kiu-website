@@ -15,8 +15,11 @@ const supabase = createClient(
 
 const app = express()
 app.use(cors({ origin: process.env.FRONTEND_URL || 'https://kiu-university.vercel.app', credentials: true }))
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+app.use(express.json({ limit: '1mb' }))
+app.use(express.urlencoded({ extended: true }))
+
+const multer = require('multer')
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } })
 
 const News        = require('./models/News')
 const Event       = require('./models/Event')
@@ -111,16 +114,14 @@ app.get('/api/news', async (req, res) => {
   try { res.json(await News.find().sort({ createdAt: -1 })) }
   catch (e) { res.status(500).json({ error: e.message }) }
 })
-app.post('/api/news', auth, async (req, res) => {
+app.post('/api/news', auth, upload.single('imageFile'), async (req, res) => {
   try {
     let imageUrl = req.body.image || ''
-    if (req.body.imageBase64 && req.body.imageName) {
-      const base64Data = req.body.imageBase64.replace(/^data:image\/\w+;base64,/, '')
-      const buffer = Buffer.from(base64Data, 'base64')
-      const fileName = uuidv4() + '-' + req.body.imageName
+    if (req.file) {
+      const fileName = uuidv4() + '-' + req.file.originalname
       const { error } = await supabase.storage
         .from('news-images')
-        .upload(fileName, buffer, { contentType: req.body.imageType || 'image/jpeg' })
+        .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
       if (error) throw error
       const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
       imageUrl = data.publicUrl
@@ -130,16 +131,14 @@ app.post('/api/news', auth, async (req, res) => {
     res.json(await News.create({ title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' }))
   } catch (e) { res.status(400).json({ error: e.message }) }
 })
-app.put('/api/news/:id', auth, async (req, res) => {
+app.put('/api/news/:id', auth, upload.single('imageFile'), async (req, res) => {
   try {
     let imageUrl = req.body.image || ''
-    if (req.body.imageBase64 && req.body.imageName) {
-      const base64Data = req.body.imageBase64.replace(/^data:image\/\w+;base64,/, '')
-      const buffer = Buffer.from(base64Data, 'base64')
-      const fileName = uuidv4() + '-' + req.body.imageName
+    if (req.file) {
+      const fileName = uuidv4() + '-' + req.file.originalname
       const { error } = await supabase.storage
         .from('news-images')
-        .upload(fileName, buffer, { contentType: req.body.imageType || 'image/jpeg' })
+        .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
       if (error) throw error
       const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
       imageUrl = data.publicUrl
