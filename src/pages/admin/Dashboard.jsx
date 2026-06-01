@@ -1,5 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, NavLink, Routes, Route } from 'react-router-dom'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  'https://qfhiormmfkwyuljptkxf.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmaGlvcm1tZmt3eXVsanB0a3hmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNjU4NDQsImV4cCI6MjA5NTY0MTg0NH0.0kcHOnZhysxp9VPCOcdKDVur_pc6ASpX8Ili-FU9mp0'
+)
+
 
 const API = import.meta.env.VITE_API_URL + '/api'
 const H = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('kiu_token')}` })
@@ -65,7 +72,7 @@ function Stats() {
     { label: 'Yangiliklar',        value: stats.newsCount,     color: '#7c3aed', icon: Ic.news,    to: '/admin/news'         },
     { label: 'Tadbirlar',          value: stats.eventsCount,   color: '#e546e5', icon: Ic.events,  to: '/admin/events'       },
     { label: "O'qituvchilar",      value: stats.teachersCount, color: '#0088cc', icon: Ic.teach,   to: '/admin/teachers'     },
-    { label: 'Yangi arizalar',     value: stats.newApps,       color: '#ff0015', icon: Ic.apps,    to: '/admin/applications' },
+    { label: 'Yangi arizalar',       value: stats.newApps,     color: '#ff0015', icon: Ic.apps,    to: '/admin/applications' },
     { label: 'Qabul arizalari',    value: stats.appsCount,     color: '#059669', icon: Ic.apps,    to: '/admin/applications' },
     { label: 'Vakansiya arizalari',value: stats.vacancyApps,   color: '#d97706', icon: Ic.vacancy, to: '/admin/vacancies'    },
   ]
@@ -152,45 +159,39 @@ function NewsAdmin() {
     if (fileRef.current) fileRef.current.value = ''
   }
 
-  async function save() {
-  if (!form.title.trim()) return alert('Sarlavha kiritilishi shart!')
-  const videoId = form.shortsUrl.trim() ? extractYouTubeShortsId(form.shortsUrl.trim()) : ''
-  if (form.shortsUrl.trim() && !videoId) return alert('Iltimos, togri YouTube Shorts URL kiriting!')
-
-  setUploading(true)
-  try {
-    const formData = new FormData()
-    formData.append('title', form.title)
-    formData.append('content', form.content)
-    formData.append('category', form.category)
-    formData.append('shortsUrl', form.shortsUrl.trim())
-    formData.append('videoId', videoId)
-    formData.append('image', form.image || '')
-    if (imageFile) formData.append('imageFile', imageFile)
-
-    const token = localStorage.getItem('kiu_token')
-    const url = editing ? API + '/news/' + editing : API + '/news'
-    const res = await fetch(url, {
-      method: editing ? 'PUT' : 'POST',
-      headers: { Authorization: 'Bearer ' + token },
-      body: formData,
-    })
-    const data = await res.json()
-    if (!res.ok) return alert(data.error || 'Yangilik saqlanmadi.')
-    if (editing) setNews(function(p) { return p.map(function(n) { return n._id === editing ? data : n }) })
-    else setNews(function(p) { return [data, ...p] })
-    setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
-    setImageFile(null)
-    setPreview('')
-    setEdit(null)
-    setOpen(false)
-    if (fileRef.current) fileRef.current.value = ''
-  } catch (e) {
-    alert('Xato: ' + e.message)
-  } finally {
-    setUploading(false)
+  async function uploadImage(file) {
+    const ext = file.name.split('.').pop()
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    const { error } = await supabase.storage.from('news-images').upload(`news/${fileName}`, file, { cacheControl: '3600', upsert: false })
+    if (error) throw new Error(error.message)
+    const { data } = supabase.storage.from('news-images').getPublicUrl(`news/${fileName}`)
+    return data.publicUrl
   }
-}
+
+  async function save() {
+    if (!form.title.trim()) return alert('Sarlavha kiritilishi shart!')
+    const videoId = form.shortsUrl.trim() ? extractYouTubeShortsId(form.shortsUrl.trim()) : ''
+    if (form.shortsUrl.trim() && !videoId) return alert('Iltimos, to\u02BBg\u02BBri YouTube Shorts URL kiriting!')
+
+    let imageUrl = form.image
+    if (imageFile) {
+      setUploading(true)
+      try { imageUrl = await uploadImage(imageFile) }
+      catch (err) { setUploading(false); return alert('Rasm yuklanmadi: ' + err.message) }
+      setUploading(false)
+    }
+
+    const body = { title: form.title, content: form.content, category: form.category, image: imageUrl, shortsUrl: form.shortsUrl.trim(), videoId }
+    const url = editing ? `${API}/news/${editing}` : `${API}/news`
+    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(body) })
+    const data = await res.json()
+    if (!res.ok) return alert(data.error || "Yangilik saqlanmadi. Iltimos, qayta urinib ko'ring.")
+    if (editing) setNews(p => p.map(n => n._id === editing ? data : n))
+    else setNews(p => [data, ...p])
+    setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
+    setImageFile(null); setPreview(''); setEdit(null); setOpen(false)
+    if (fileRef.current) fileRef.current.value = ''
+  }
 
   async function del(id) {
     if (!window.confirm("O'chirishni tasdiqlaysizmi?")) return
@@ -261,59 +262,61 @@ function NewsAdmin() {
         </div>
       )}
 
-      {news.filter(n => !n.videoId).length > 0 && (
-        <>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
-            Yangiliklar ({news.filter(n => !n.videoId).length})
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '1.5rem' }}>
-            {news.filter(n => !n.videoId).map(n => (
-              <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 10, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20 }}>{n.category || 'umumiy'}</span>
-                    <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
-                  </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
-                  {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
-                </div>
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                  <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
-                  <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
-                </div>
-              </div>
-            ))}
+      {/* Yangiliklar */}
+{news.filter(n => !n.videoId).length > 0 && (
+  <>
+    <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+      Yangiliklar ({news.filter(n => !n.videoId).length})
+    </h3>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '1.5rem' }}>
+      {news.filter(n => !n.videoId).map(n => (
+        <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 10, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20 }}>{n.category || 'umumiy'}</span>
+              <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
+            {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
           </div>
-        </>
-      )}
-
-      {news.filter(n => n.videoId).length > 0 && (
-        <>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
-            YouTube Shorts ({news.filter(n => n.videoId).length})
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {news.filter(n => n.videoId).map(n => (
-              <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 10, color: '#ff0000', background: 'rgba(255,0,0,.1)', padding: '2px 8px', borderRadius: 20 }}>Shorts</span>
-                    <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
-                  </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
-                  {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
-                </div>
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                  <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
-                  <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
-                </div>
-              </div>
-            ))}
+          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+            <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
+            <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
           </div>
-        </>
-      )}
+        </div>
+      ))}
+    </div>
+  </>
+)}
 
-      {news.length === 0 && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>Hali yangilik yo'q</p>}
+{/* Shorts */}
+{news.filter(n => n.videoId).length > 0 && (
+  <>
+    <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+      YouTube Shorts ({news.filter(n => n.videoId).length})
+    </h3>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {news.filter(n => n.videoId).map(n => (
+        <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 10, color: '#ff0000', background: 'rgba(255,0,0,.1)', padding: '2px 8px', borderRadius: 20 }}>Shorts</span>
+              <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
+            {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
+          </div>
+          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+            <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
+            <button style={bD} onClick={() => del(n._id)}>{Ic.del}</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </>
+)}
+
+{news.length === 0 && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>Hali yangilik yo'q</p>}
     </div>
   )
 }
@@ -532,7 +535,7 @@ function GalleryAdmin() {
       </div>
 
       <div style={{ padding: '0.75rem', background: 'rgba(124,58,237,.05)', borderRadius: 8, border: '1px solid rgba(124,58,237,.15)', marginBottom: '1.5rem', fontSize: 12, color: 'var(--muted)' }}>
-        Rasmlarni <code style={{ color: '#7c3aed' }}>public/gallery/</code> papkasiga joylab, <code style={{ color: '#7c3aed' }}>/gallery/fayl.jpg</code> yo'lini yozing
+         Rasmlarni <code style={{ color: '#7c3aed' }}>public/gallery/</code> papkasiga joylab, <code style={{ color: '#7c3aed' }}>/gallery/fayl.jpg</code> yo'lini yozing
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
@@ -556,8 +559,8 @@ function GalleryAdmin() {
 
 // ── APPLICATIONS ──
 function ApplicationsAdmin({ type = 'admission' }) {
-  const [apps, setApps]    = useState([])
-  const [filter, setFilt]  = useState('all')
+  const [apps, setApps]   = useState([])
+  const [filter, setFilt] = useState('all')
   const [loading, setLoad] = useState(true)
 
   useEffect(() => {
@@ -592,10 +595,10 @@ function ApplicationsAdmin({ type = 'admission' }) {
           {type === 'vacancy' ? 'Vakansiya arizalari' : 'Qabul arizalari'} ({apps.length})
         </h2>
         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {[['all','Barchasi'],['new','Yangi'],['reviewed',"Ko'rildi"],['accepted','Qabul'],['rejected','Rad']].map(([val, lb]) => (
+          {[['all','Barchasi'],['new','Yangi'],['reviewed',"Ko'rildi"],['accepted','Qabul'],['rejected','Rad']].map(([val, lbl]) => (
             <button key={val} onClick={() => setFilt(val)}
               style={{ padding: '5px 10px', borderRadius: 6, border: `1px solid ${filter === val ? '#7c3aed' : 'var(--border)'}`, background: filter === val ? '#7c3aed' : 'var(--bg)', color: filter === val ? '#fff' : 'var(--muted)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>
-              {lb} ({val === 'all' ? apps.length : apps.filter(a => a.status === val).length})
+              {lbl} ({val === 'all' ? apps.length : apps.filter(a => a.status === val).length})
             </button>
           ))}
         </div>
@@ -734,6 +737,7 @@ export default function Dashboard() {
       {/* ── SIDEBAR ── */}
       <div style={{ width: collapsed ? 60 : 230, background: 'linear-gradient(180deg,#1a1a2e 0%,#16213e 100%)', display: 'flex', flexDirection: 'column', flexShrink: 0, transition: 'width .25s', overflow: 'hidden' }}>
 
+        {/* Logo */}
         <div style={{ padding: collapsed ? '1rem 0' : '1.1rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'space-between', gap: 8 }}>
           {!collapsed && (
             <div>
@@ -747,6 +751,7 @@ export default function Dashboard() {
           </button>
         </div>
 
+        {/* Search */}
         {!collapsed && (
           <div style={{ padding: '0.7rem 1rem', borderBottom: '1px solid rgba(255,255,255,.05)' }}>
             <div style={{ position: 'relative' }}>
@@ -757,6 +762,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Nav links */}
         <nav style={{ flex: 1, padding: '0.4rem 0', overflowY: 'auto' }}>
           {filteredNav.map(item => (
             <NavLink key={item.to} to={item.to} end={item.to === '/admin'}
@@ -779,6 +785,7 @@ export default function Dashboard() {
           )}
         </nav>
 
+        {/* Bottom */}
         <div style={{ padding: collapsed ? '0.5rem 0' : '0.75rem 1.25rem', borderTop: '1px solid rgba(255,255,255,.07)', display: 'flex', flexDirection: 'column', gap: 2 }}>
           <button onClick={() => setDark(!dark)}
             style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'rgba(255,255,255,.45)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0', justifyContent: collapsed ? 'center' : 'flex-start', fontFamily: 'inherit', width: '100%' }}>
@@ -798,16 +805,23 @@ export default function Dashboard() {
       {/* ── MAIN ── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
 
+        {/* Topbar */}
         <div style={{ padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', background: 'var(--bg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <div style={{ fontSize: 12, color: 'var(--muted)' }}>
             KIU Boshqaruv tizimi · <span style={{ color: '#7c3aed', fontWeight: 600 }}>admin</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {/* Search */}
             <div style={{ position: 'relative' }}>
               <span style={{ position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', display: 'flex' }}>{Ic.search}</span>
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Bo'lim qidirish..."
-                style={{ padding: '7px 12px 7px 30px', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, background: 'var(--bg)', color: 'var(--text)', outline: 'none', width: 180, fontFamily: 'inherit' }} />
+              <input
+  value={search}
+  onChange={e => setSearch(e.target.value)}
+  placeholder="Bo'lim qidirish..."
+  style={{ padding: '7px 12px 7px 30px', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, background: 'var(--bg)', color: 'var(--text)', outline: 'none', width: 180, fontFamily: 'inherit' }}
+/>
             </div>
+            {/* Dark mode */}
             <button onClick={() => setDark(!dark)}
               style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 9px', cursor: 'pointer', color: 'var(--muted)', display: 'flex', alignItems: 'center' }}>
               {dark ? Ic.sun : Ic.moon}
@@ -815,6 +829,7 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Content */}
         <main style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
           <Routes>
             <Route index element={<Stats />} />

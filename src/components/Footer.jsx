@@ -49,13 +49,14 @@ export default function Footer() {
           <h4 style={{ fontSize: 13, fontWeight: 600, color: '#f3f4f6', marginBottom: 10 }}>Talabalar</h4>
           {[
             ['/faculty', "Yo'nalishlar"],
+            ['/sorting-hat', 'Yonalishni aniqlash'],
             ['/admission', 'Qabul'],
             ['/events', 'Tadbirlar'],
             ['/achievements', 'Yutuqlar'],
             ['/testimonials', 'Sharhlar'],
             ['/faq', 'FAQ'],
             ['/chatbot', 'AI Yordamchi'],
-            ['/sorting-hat', 'Yonalishni aniqlash'],
+            
           ].map(([to, label]) => (
             <NavLink key={to} to={to}
               style={{ display: 'block', fontSize: 13, color: '#9ca3af', marginBottom: 6 }}
