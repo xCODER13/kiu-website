@@ -3,6 +3,17 @@ import { useNavigate } from 'react-router-dom'
 import TelegramPanel from '../components/TelegramPanel'
 import useApi from '../hooks/useApi'
 
+// Rasm maydonidan URL massivini olish (eski va yangi format)
+function parseImages(imageField) {
+  if (!imageField) return []
+  try {
+    const parsed = JSON.parse(imageField)
+    if (Array.isArray(parsed)) return parsed
+  } catch { return [imageField] }
+  return [imageField]
+}
+
+
 const API = import.meta.env.VITE_API_URL
 
 const CAT_COLORS = {
@@ -67,8 +78,8 @@ function FeaturedCarousel({ items }) {
         key={idx}
         style={{
           position: 'absolute', inset: 0,
-          backgroundImage: item.image
-            ? `url(${item.image})`
+          backgroundImage: parseImages(item.image)[0]
+            ? `url(${parseImages(item.image)[0]})`
             : `linear-gradient(135deg, #1e1545 0%, #13102b 60%, #0d0b1e 100%)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -230,7 +241,7 @@ function NewsCard({ item }) {
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '' }}
     >
       {item.image
-        ? <img src={item.image} alt={item.title} style={{ width: '100%', height: 160, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />
+        ? <img src={parseImages(item.image)[0]} alt={item.title} style={{ width: '100%', height: 160, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />
         : <div style={{
             width: '100%', height: 160,
             background: `linear-gradient(135deg, ${catColor}22, ${catColor}11)`,

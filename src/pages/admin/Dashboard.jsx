@@ -132,34 +132,59 @@ function extractYouTubeShortsId(url) {
 }
 
 // ── NEWS ──
+// Yordamchi: image maydonidan URL massivini olish
+function parseImages(imageField) {
+  if (!imageField) return []
+  try {
+    const parsed = JSON.parse(imageField)
+    if (Array.isArray(parsed)) return parsed
+  } catch { return [imageField] }
+  return [imageField]  // eski format — bitta URL string
+}
+
 function NewsAdmin() {
-  const [news, setNews]           = useState([])
-  const [form, setForm]           = useState({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
-  const [editing, setEdit]        = useState(null)
-  const [open, setOpen]           = useState(false)
-  const [imageFile, setImageFile] = useState(null)
-  const [imagePreview, setPreview]= useState('')
-  const [uploading, setUploading] = useState(false)
-  const fileRef                   = useRef(null)
+  const [news, setNews]             = useState([])
+  const [form, setForm]             = useState({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
+  const [editing, setEdit]          = useState(null)
+  const [open, setOpen]             = useState(false)
+  const [imageFiles, setImageFiles] = useState([])       // yangi fayllar
+  const [imagePreviews, setPreviews]= useState([])       // preview URL'lar (blob yoki supabase)
+  const [uploading, setUploading]   = useState(false)
+  const fileRef                     = useRef(null)
 
   useEffect(() => { fetch(`${API}/news`).then(r => r.json()).then(setNews).catch(() => {}) }, [])
 
   function handleFileSelect(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    if (!file.type.startsWith('image/')) return alert('Faqat rasm fayllari qabul qilinadi!')
-    if (file.size > 5 * 1024 * 1024) return alert('Fayl hajmi 5 MB dan oshmasligi kerak!')
-    setImageFile(file)
-    setPreview(URL.createObjectURL(file))
-  }
+    const files = Array.from(e.target.files || [])
+    if (!files.length) return
+    const invalid = files.find(f => !f.type.startsWith('image/'))
+    if (invalid) return alert('Faqat rasm fayllari qabul qilinadi!')
+    const oversized = files.find(f => f.size > 5 * 1024 * 1024)
+    if (oversized) return alert(`${oversized.name} — 5 MB dan katta!`)
 
-  function clearImage() {
-    setImageFile(null); setPreview('')
-    setForm(f => ({ ...f, image: '' }))
+    const newFiles = [...imageFiles, ...files]
+    const newPreviews = [...imagePreviews, ...files.map(f => ({ url: URL.createObjectURL(f), isNew: true }))]
+    setImageFiles(newFiles)
+    setPreviews(newPreviews)
     if (fileRef.current) fileRef.current.value = ''
   }
 
-  async function uploadImage(file) {
+  function removeImage(idx) {
+    const preview = imagePreviews[idx]
+    if (preview.isNew) {
+      // blob URL ni tozalash
+      URL.revokeObjectURL(preview.url)
+      const newFiles = imageFiles.filter((_, i) => {
+        // imageFiles faqat yangi fayllar — index hisoblash kerak
+        const newIdx = imagePreviews.slice(0, idx).filter(p => p.isNew).length
+        return i !== newIdx
+      })
+      setImageFiles(newFiles)
+    }
+    setPreviews(imagePreviews.filter((_, i) => i !== idx))
+  }
+
+  async function uploadOne(file) {
     const ext = file.name.split('.').pop()
     const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
     const { error } = await supabase.storage.from('news-images').upload(`news/${fileName}`, file, { cacheControl: '3600', upsert: false })
@@ -173,24 +198,37 @@ function NewsAdmin() {
     const videoId = form.shortsUrl.trim() ? extractYouTubeShortsId(form.shortsUrl.trim()) : ''
     if (form.shortsUrl.trim() && !videoId) return alert('Iltimos, to\u02BBg\u02BBri YouTube Shorts URL kiriting!')
 
-    let imageUrl = form.image
-    if (imageFile) {
+    // Mavjud (supabase) URL'lar + yangi fayllarni yuklash
+    const existingUrls = imagePreviews.filter(p => !p.isNew).map(p => p.url)
+    let newUrls = []
+
+    if (imageFiles.length) {
       setUploading(true)
-      try { imageUrl = await uploadImage(imageFile) }
-      catch (err) { setUploading(false); return alert('Rasm yuklanmadi: ' + err.message) }
+      try {
+        newUrls = await Promise.all(imageFiles.map(uploadOne))
+      } catch (err) {
+        setUploading(false)
+        return alert('Rasm yuklanmadi: ' + err.message)
+      }
       setUploading(false)
     }
 
-    const body = { title: form.title, content: form.content, category: form.category, image: imageUrl, shortsUrl: form.shortsUrl.trim(), videoId }
+    const allUrls = [...existingUrls, ...newUrls]
+    // Backend string kutadi — JSON array sifatida saqlaymiz
+    const imageValue = allUrls.length === 0 ? '' :
+                       allUrls.length === 1 ? allUrls[0] :
+                       JSON.stringify(allUrls)
+
+    const body = { title: form.title, content: form.content, category: form.category, image: imageValue, shortsUrl: form.shortsUrl.trim(), videoId }
     const url = editing ? `${API}/news/${editing}` : `${API}/news`
     const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(body) })
     const data = await res.json()
-    if (!res.ok) return alert(data.error || "Yangilik saqlanmadi. Iltimos, qayta urinib ko'ring.")
+    if (!res.ok) return alert(data.error || "Yangilik saqlanmadi.")
     if (editing) setNews(p => p.map(n => n._id === editing ? data : n))
     else setNews(p => [data, ...p])
+
     setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
-    setImageFile(null); setPreview(''); setEdit(null); setOpen(false)
-    if (fileRef.current) fileRef.current.value = ''
+    setImageFiles([]); setPreviews([]); setEdit(null); setOpen(false)
   }
 
   async function del(id) {
@@ -201,19 +239,19 @@ function NewsAdmin() {
 
   function startEdit(n) {
     setEdit(n._id)
-    setImageFile(null)
-    setPreview(n.image || '')
+    setImageFiles([])
+    // Mavjud rasmlarni preview sifatida ko'rsatish
+    const urls = parseImages(n.image)
+    setPreviews(urls.map(u => ({ url: u, isNew: false })))
     setForm({ title: n.title, content: n.content || '', category: n.category || 'umumiy', image: n.image || '', shortsUrl: n.shortsUrl || (n.videoId ? `https://youtube.com/shorts/${n.videoId}` : '') })
     setOpen(true)
   }
-
-  const preview = imagePreview || form.image
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>Yangiliklar ({news.length})</h2>
-        <button style={bP} onClick={() => { setOpen(!open); setEdit(null); setImageFile(null); setPreview(''); setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' }); if (fileRef.current) fileRef.current.value = '' }}>{Ic.add} Yangi</button>
+        <button style={bP} onClick={() => { setOpen(!open); setEdit(null); setImageFiles([]); setPreviews([]); setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' }) }}>{Ic.add} Yangi</button>
       </div>
       {open && (
         <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#7c3aed' }}>
@@ -228,30 +266,32 @@ function NewsAdmin() {
                 </select>
               </div>
               <div>
-                <label style={lbl}>Rasm</label>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'inherit', border: '1px dashed #7c3aed', color: '#7c3aed', background: 'rgba(124,58,237,.05)', whiteSpace: 'nowrap' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    {imageFile ? imageFile.name.slice(0, 18) + (imageFile.name.length > 18 ? '…' : '') : 'Fayl tanlash'}
-                    <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleFileSelect} style={{ display: 'none' }} />
-                  </label>
-                  {preview && <button onClick={clearImage} title="Rasmni olib tashlash" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontSize: 18, lineHeight: 1, padding: '2px 6px' }}>×</button>}
-                </div>
-                <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB</div>
+                <label style={lbl}>Rasmlar ({imagePreviews.length} ta)</label>
+                <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #7c3aed', color: '#7c3aed', background: 'rgba(124,58,237,.05)' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Rasm qo'shish
+                  <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleFileSelect} style={{ display: 'none' }} />
+                </label>
+                <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB · bir vaqtda bir nechta tanlash mumkin</div>
               </div>
             </div>
-            <div><label style={lbl}>YouTube Shorts URL</label><input value={form.shortsUrl} onChange={e => setForm({ ...form, shortsUrl: e.target.value })} placeholder="https://youtube.com/shorts/VIDEO_ID" style={inp} /></div>
-            <div><label style={lbl}>Matn</label><textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={4} style={{ ...inp, resize: 'vertical' }} /></div>
-            {preview && (
-              <div style={{ position: 'relative', display: 'inline-block' }}>
-                <img src={preview} alt="preview" style={{ height: 110, width: 'auto', maxWidth: '100%', objectFit: 'cover', borderRadius: 8, border: '1px solid var(--border)' }} onError={e => e.target.style.display='none'} />
-                {imageFile && <span style={{ position: 'absolute', top: 6, left: 6, fontSize: 10, fontWeight: 600, background: '#7c3aed', color: '#fff', padding: '2px 7px', borderRadius: 20 }}>Yangi rasm</span>}
+            {imagePreviews.length > 0 && (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
+                {imagePreviews.map((p, i) => (
+                  <div key={i} style={{ position: 'relative' }}>
+                    <img src={p.url} alt={`rasm-${i+1}`} style={{ width: 90, height: 70, objectFit: 'cover', borderRadius: 8, border: '2px solid ' + (p.isNew ? '#7c3aed' : '#e5e7eb'), display: 'block' }} onError={e => e.target.style.opacity='0.3'} />
+                    {p.isNew && <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 9, fontWeight: 700, background: '#7c3aed', color: '#fff', padding: '1px 5px', borderRadius: 10 }}>YANGI</span>}
+                    <button onClick={() => removeImage(i)} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', textAlign: 'center', padding: 0 }}>×</button>
+                  </div>
+                ))}
               </div>
             )}
+            <div><label style={lbl}>YouTube Shorts URL</label><input value={form.shortsUrl} onChange={e => setForm({ ...form, shortsUrl: e.target.value })} placeholder="https://youtube.com/shorts/VIDEO_ID" style={inp} /></div>
+            <div><label style={lbl}>Matn</label><textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={4} style={{ ...inp, resize: 'vertical' }} /></div>
             {uploading && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#7c3aed' }}>
                 <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-                Rasm yuklanmoqda...
+                Rasmlar yuklanmoqda...
               </div>
             )}
             <div style={{ display: 'flex', gap: 8 }}>

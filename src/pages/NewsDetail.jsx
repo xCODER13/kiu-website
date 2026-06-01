@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
+function parseImages(imageField) {
+  if (!imageField) return []
+  try {
+    const parsed = JSON.parse(imageField)
+    if (Array.isArray(parsed)) return parsed
+  } catch { return [imageField] }
+  return [imageField]
+}
+
+
 const API = import.meta.env.VITE_API_URL
 
 const CAT_COLORS = {
@@ -144,17 +154,33 @@ export default function NewsDetail() {
             {news.title}
           </h1>
 
-          {/* Image */}
-          {news.image && (
-            <div style={{ marginBottom: '2rem', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,.1)' }}>
-              <img
-                src={news.image}
-                alt={news.title}
-                style={{ width: '100%', maxHeight: 500, objectFit: 'cover', display: 'block' }}
-                onError={e => { e.target.parentElement.style.display = 'none' }}
-              />
-            </div>
-          )}
+          {/* Images */}
+          {news.image && (() => {
+            const imgs = parseImages(news.image)
+            if (!imgs.length) return null
+            if (imgs.length === 1) return (
+              <div style={{ marginBottom: '2rem', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,.1)' }}>
+                <img src={imgs[0]} alt={news.title} style={{ width: '100%', maxHeight: 500, objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
+              </div>
+            )
+            // Ko'p rasm: birinchisi katta, qolganlari grid
+            return (
+              <div style={{ marginBottom: '2rem' }}>
+                <div style={{ borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,.1)', marginBottom: 8 }}>
+                  <img src={imgs[0]} alt={news.title} style={{ width: '100%', maxHeight: 480, objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
+                </div>
+                {imgs.length > 1 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(imgs.length - 1, 4)}, 1fr)`, gap: 8 }}>
+                    {imgs.slice(1).map((src, i) => (
+                      <div key={i} style={{ borderRadius: 10, overflow: 'hidden', aspectRatio: '4/3' }}>
+                        <img src={src} alt={`${news.title} ${i + 2}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })()}
 
           {/* Body text */}
           {news.content ? (
