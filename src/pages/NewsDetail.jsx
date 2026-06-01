@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 function parseImages(imageField) {
@@ -9,6 +9,91 @@ function parseImages(imageField) {
   } catch { return [imageField] }
   return [imageField]
 }
+
+function ImageCarousel({ imgs, title }) {
+  const [cur, setCur]   = useState(0)
+  const [dir, setDir]   = useState(0)   // -1 chap, 1 o'ng
+  const [anim, setAnim] = useState(false)
+  const touchX          = useRef(null)
+
+  const go = useCallback((next) => {
+    if (anim) return
+    setDir(next > cur ? 1 : -1)
+    setAnim(true)
+    setTimeout(() => { setCur(next); setAnim(false) }, 280)
+  }, [cur, anim])
+
+  const prev = () => go(cur === 0 ? imgs.length - 1 : cur - 1)
+  const next = () => go(cur === imgs.length - 1 ? 0 : cur + 1)
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowLeft') prev()
+      if (e.key === 'ArrowRight') next()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
+  const onTouchStart = (e) => { touchX.current = e.touches[0].clientX }
+  const onTouchEnd   = (e) => {
+    if (touchX.current === null) return
+    const diff = touchX.current - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 40) diff > 0 ? next() : prev()
+    touchX.current = null
+  }
+
+  if (!imgs.length) return null
+  if (imgs.length === 1) return (
+    <div style={{ marginBottom: '2rem', borderRadius: 16, overflow: 'hidden' }}>
+      <img src={imgs[0]} alt={title} style={{ width: '100%', maxHeight: 500, objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
+    </div>
+  )
+
+  return (
+    <div style={{ marginBottom: '2rem', borderRadius: 16, overflow: 'hidden', position: 'relative', background: '#000', userSelect: 'none' }}
+         onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+
+      <div style={{ position: 'relative', width: '100%', height: 'auto', overflow: 'hidden' }}>
+        <img
+          key={cur}
+          src={imgs[cur]}
+          alt={`${title} ${cur + 1}`}
+          style={{
+            width: '100%', maxHeight: 520, objectFit: 'cover', display: 'block',
+            animation: anim ? `slide-${dir > 0 ? 'in-right' : 'in-left'} 0.28s ease` : 'none',
+          }}
+          onError={e => e.target.style.opacity = '0.3'}
+        />
+
+        <style>{`
+          @keyframes slide-in-right { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+          @keyframes slide-in-left  { from { transform: translateX(-60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        `}</style>
+
+        {/* Counter */}
+        <div style={{ position: 'absolute', top: 12, right: 14, background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 12, fontWeight: 500, padding: '3px 10px', borderRadius: 20, backdropFilter: 'blur(4px)' }}>
+          {cur + 1} / {imgs.length}
+        </div>
+
+        {/* Arrows */}
+        <button onClick={prev} aria-label="Oldingi rasm" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
+          onMouseEnter={e => e.target.style.background='rgba(0,0,0,.7)'} onMouseLeave={e => e.target.style.background='rgba(0,0,0,.45)'}>‹</button>
+        <button onClick={next} aria-label="Keyingi rasm" style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
+          onMouseEnter={e => e.target.style.background='rgba(0,0,0,.7)'} onMouseLeave={e => e.target.style.background='rgba(0,0,0,.45)'}>›</button>
+      </div>
+
+      {/* Dots */}
+      <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
+        {imgs.map((_, i) => (
+          <button key={i} onClick={() => go(i)} aria-label={`${i + 1}-rasm`}
+            style={{ width: i === cur ? 22 : 8, height: 8, borderRadius: 4, border: 'none', background: i === cur ? '#fff' : 'rgba(255,255,255,.45)', cursor: 'pointer', padding: 0, transition: 'all .25s' }} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 
 
 const API = import.meta.env.VITE_API_URL
@@ -155,32 +240,7 @@ export default function NewsDetail() {
           </h1>
 
           {/* Images */}
-          {news.image && (() => {
-            const imgs = parseImages(news.image)
-            if (!imgs.length) return null
-            if (imgs.length === 1) return (
-              <div style={{ marginBottom: '2rem', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,.1)' }}>
-                <img src={imgs[0]} alt={news.title} style={{ width: '100%', maxHeight: 500, objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
-              </div>
-            )
-            // Ko'p rasm: birinchisi katta, qolganlari grid
-            return (
-              <div style={{ marginBottom: '2rem' }}>
-                <div style={{ borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(0,0,0,.1)', marginBottom: 8 }}>
-                  <img src={imgs[0]} alt={news.title} style={{ width: '100%', maxHeight: 480, objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
-                </div>
-                {imgs.length > 1 && (
-                  <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(imgs.length - 1, 4)}, 1fr)`, gap: 8 }}>
-                    {imgs.slice(1).map((src, i) => (
-                      <div key={i} style={{ borderRadius: 10, overflow: 'hidden', aspectRatio: '4/3' }}>
-                        <img src={src} alt={`${news.title} ${i + 2}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )
-          })()}
+          <ImageCarousel imgs={parseImages(news.image)} title={news.title} />
 
           {/* Body text */}
           {news.content ? (
