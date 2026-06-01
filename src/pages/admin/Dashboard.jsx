@@ -262,7 +262,7 @@ function NewsAdmin() {
               <div>
                 <label style={lbl}>Kategoriya</label>
                 <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} style={inp}>
-                  {["umumiy","ta'lim","sport","madaniyat","xalqaro","fan"].map(c => <option key={c}>{c}</option>)}
+                  {["Umumiy","Ta'lim","Sport","Madaniyat","Xalqaro","Fan"].map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div>
