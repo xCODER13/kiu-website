@@ -26,7 +26,7 @@ const CAT_COLORS = {
 }
 
 const CAT_LABELS = {
-  umumiy: 'Umumiy', talim: 'Ta\'lim', sport: 'Sport',
+  umumiy: 'Umumiy', talim: "Ta'lim", "ta'lim": "Ta'lim", sport: 'Sport',
   madaniyat: 'Madaniyat', xalqaro: 'Xalqaro', fan: 'Fan',
 }
 
