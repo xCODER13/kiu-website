@@ -442,18 +442,19 @@ function FacultyModal({ f, degree, onClose }) {
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '1rem',
+        padding: '0.75rem 1rem',
+        overflowY: 'auto',
       }}
     >
       <div
         onClick={e => e.stopPropagation()}
         style={{
           background: 'var(--bg)',
-          borderRadius: 20,
-          padding: '2rem',
-          maxWidth: 660,
+          borderRadius: 18,
+          padding: '1.4rem 1.5rem',
+          maxWidth: 580,
           width: '100%',
-          maxHeight: '92vh',
+          maxHeight: 'calc(100vh - 1.5rem)',
           overflowY: 'auto',
           boxShadow: '0 30px 80px rgba(0,0,0,.35)',
           position: 'relative',
@@ -479,7 +480,7 @@ function FacultyModal({ f, degree, onClose }) {
         </button>
 
         {/* Degree badge */}
-        <div style={{ marginBottom: 14 }}>
+        <div style={{ marginBottom: 10 }}>
           <span style={{
             fontSize: 11, fontWeight: 600,
             padding: '4px 12px', borderRadius: 20,
@@ -494,16 +495,16 @@ function FacultyModal({ f, degree, onClose }) {
         </div>
 
         {/* Title row */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: '1rem' }}>
           <div style={{
-            width: 52, height: 52, borderRadius: 14,
+            width: 46, height: 46, borderRadius: 12,
             background: `${f.color}15`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: f.color, flexShrink: 0,
           }}>
-            {IC[f.icon](24)}
+            {IC[f.icon](22)}
           </div>
-          <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1.35, paddingTop: 6 }}>
+          <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1.35, paddingTop: 6 }}>
             {f.name}
           </h2>
         </div>
@@ -511,8 +512,8 @@ function FacultyModal({ f, degree, onClose }) {
         {/* Info strip */}
         <div style={{
           display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8,
-          padding: '1rem', background: 'var(--card)',
-          borderRadius: 14, marginBottom: '1.25rem',
+          padding: '0.75rem', background: 'var(--card)',
+          borderRadius: 12, marginBottom: '1rem',
           border: '1px solid var(--border)',
         }}>
           {infoItems.map(({ label, value, iconFn }) => (
@@ -531,27 +532,27 @@ function FacultyModal({ f, degree, onClose }) {
 
         {/* Price block */}
         <div style={{
-          display: 'flex', alignItems: 'center', gap: 14,
-          padding: '1rem 1.25rem',
+          display: 'flex', alignItems: 'center', gap: 12,
+          padding: '0.75rem 1rem',
           background: priceGrad,
-          borderRadius: 14, marginBottom: '1.25rem',
+          borderRadius: 12, marginBottom: '1rem',
           border: `1px solid ${priceBorder}`,
         }}>
           <div style={{ color: priceText, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-            {IC.tag(32)}
+            {IC.tag(28)}
           </div>
           <div>
-            <div style={{ fontSize: 11, color: priceSub, marginBottom: 3, fontWeight: 500 }}>
+            <div style={{ fontSize: 10.5, color: priceSub, marginBottom: 2, fontWeight: 500 }}>
               Kontrakt narxi (kunduzgi, yillik)
             </div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: priceText, letterSpacing: '-0.5px' }}>
+            <div style={{ fontSize: 19, fontWeight: 800, color: priceText, letterSpacing: '-0.5px' }}>
               {fmt(f.price)} so'm
             </div>
           </div>
         </div>
 
         {/* Description */}
-        <p style={{ fontSize: 13.5, color: 'var(--muted)', lineHeight: 1.75, marginBottom: '1.25rem' }}>
+        <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.65, marginBottom: '1rem' }}>
           {f.desc}
         </p>
 
@@ -562,8 +563,7 @@ function FacultyModal({ f, degree, onClose }) {
             background: `${f.color}08`,
             borderRadius: 10,
             fontSize: 12, color: f.color,
-            marginBottom: '1.25rem',
-            borderLeft: `3px solid ${f.color}`,
+            marginBottom: '1rem',
             fontWeight: 500,
             display: 'flex', alignItems: 'flex-start', gap: 7,
           }}>
@@ -575,7 +575,7 @@ function FacultyModal({ f, degree, onClose }) {
         )}
 
         {/* Subjects + Career */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.75rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
           <div>
             <h4 style={{
               fontSize: 12, fontWeight: 700, color: 'var(--text)',
@@ -625,28 +625,28 @@ function FacultyModal({ f, degree, onClose }) {
           <a
             href="/admission"
             style={{
-              flex: 1, minWidth: 180,
+              flex: 1, minWidth: 160,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              padding: '13px 24px', borderRadius: 12,
+              padding: '11px 20px', borderRadius: 10,
               background: 'linear-gradient(135deg,#7c3aed,#6d28d9)',
               color: '#fff', textDecoration: 'none',
-              fontWeight: 700, fontSize: 13,
+              fontWeight: 700, fontSize: 12.5,
               boxShadow: '0 4px 16px rgba(124,58,237,.4)',
             }}
           >
-            {IC.pen(15)}
+            {IC.pen(14)}
             Ariza topshirish
           </a>
           <a
             href="tel:+998555009944"
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-              padding: '13px 20px', borderRadius: 12,
+              padding: '11px 16px', borderRadius: 10,
               border: '1.5px solid var(--border)',
               background: 'var(--bg)',
               color: 'var(--text)',
               textDecoration: 'none',
-              fontWeight: 600, fontSize: 13,
+              fontWeight: 600, fontSize: 12.5,
               whiteSpace: 'nowrap',
             }}
           >
@@ -657,7 +657,7 @@ function FacultyModal({ f, degree, onClose }) {
 
         {/* Deadline note */}
         <div style={{
-          marginTop: '1rem', padding: '8px 14px',
+          marginTop: '0.75rem', padding: '7px 12px',
           background: 'rgba(255,183,0,.1)', borderRadius: 10,
           border: '1px solid rgba(255,183,0,.3)',
           fontSize: 11, color: '#92400e', fontWeight: 500,
