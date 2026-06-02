@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 /* ── Price formatter: 12850000 -> "12 850 000" ─────────────── */
 const fmt = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -329,16 +330,18 @@ function FacultyCard({ f, index, onClick }) {
 
   return (
     <div
-      className={`card reveal reveal-delay-${(index % 4) + 1}`}
+      className="card"
       onClick={onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
         cursor: 'pointer',
         padding: '1.25rem',
+        animation: 'cardFadeIn .35s ease both',
+        animationDelay: `${index * 0.05}s`,
         transition: 'transform .2s, box-shadow .2s, border-color .2s',
         transform: hover ? 'translateY(-3px)' : 'none',
-        boxShadow: hover ? '0 8px 24px rgba(0,0,0,.1)' : undefined,
+        boxShadow: hover ? '0 8px 24px rgba(0,0,0,.12)' : undefined,
         borderColor: hover ? f.color : undefined,
         display: 'flex', flexDirection: 'column',
       }}
@@ -404,11 +407,15 @@ function FacultyCard({ f, index, onClick }) {
 /* ── Modal ─────────────────────────────────────────────────── */
 function FacultyModal({ f, degree, onClose }) {
   useEffect(() => {
+    /* Prevent body scroll without layout shift */
+    const scrollW = window.innerWidth - document.documentElement.clientWidth
     document.body.style.overflow = 'hidden'
+    document.body.style.paddingRight = scrollW + 'px'
     const handleKey = e => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', handleKey)
     return () => {
       document.body.style.overflow = ''
+      document.body.style.paddingRight = ''
       document.removeEventListener('keydown', handleKey)
     }
   }, [onClose])
@@ -426,12 +433,12 @@ function FacultyModal({ f, degree, onClose }) {
     { label: "O'qish shakli", value: f.studyForm,   iconFn: () => IC.sun(20)        },
   ]
 
-  return (
+  const modalContent = (
     <div
       onClick={onClose}
       style={{
-        position: 'fixed', inset: 0, zIndex: 1000,
-        background: 'rgba(10,10,30,.7)',
+        position: 'fixed', inset: 0, zIndex: 9999,
+        background: 'rgba(10,10,30,.75)',
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -662,9 +669,25 @@ function FacultyModal({ f, degree, onClose }) {
       </div>
     </div>
   )
+
+  return createPortal(modalContent, document.body)
 }
 
 /* ── Main Page ─────────────────────────────────────────────── */
+
+/* Inject keyframe once (idempotent) */
+if (typeof document !== 'undefined' && !document.getElementById('faculty-styles')) {
+  const s = document.createElement('style')
+  s.id = 'faculty-styles'
+  s.textContent = `
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+  `
+  document.head.appendChild(s)
+}
+
 export default function Faculty() {
   const [tab, setTab] = useState('bakalavr')
   const [modal, setModal] = useState(null)
@@ -685,17 +708,18 @@ export default function Faculty() {
         borderBottom: '1px solid var(--border)',
         textAlign: 'center',
       }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Yo'nalishlar</h1>
+        <h1 style={{ fontSize: '2rem', color: 'var(--text)', marginBottom: '.5rem' }}>Yo'nalishlar</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: '1.75rem' }}>
           Xalqaro standartlarda yuqori sifatli ta'lim
         </p>
 
-        {/* Tab switcher */}
+        {/* Tab switcher — visible in both light & dark mode */}
         <div style={{
           display: 'inline-flex', gap: 6,
-          background: 'rgba(124,58,237,.08)',
+          background: 'var(--card)',
           padding: 5, borderRadius: 40,
-          border: '1px solid rgba(124,58,237,.15)',
+          border: '2px solid var(--border)',
+          boxShadow: '0 0 0 1px rgba(124,58,237,.25)',
         }}>
           {['bakalavr', 'magistratura'].map(t => {
             const active = tab === t
@@ -705,23 +729,24 @@ export default function Faculty() {
                 onClick={() => setTab(t)}
                 style={{
                   padding: '9px 22px', borderRadius: 35,
-                  border: 'none', cursor: 'pointer',
+                  border: active ? 'none' : '1px solid rgba(124,58,237,.35)',
+                  cursor: 'pointer',
                   fontWeight: 700, fontSize: 13,
                   display: 'flex', alignItems: 'center', gap: 7,
                   transition: 'all .2s',
                   background: active ? 'linear-gradient(135deg,#7c3aed,#6d28d9)' : 'transparent',
-                  color: active ? '#fff' : '#7c3aed',
+                  color: active ? '#fff' : 'var(--text)',
                   boxShadow: active ? '0 3px 10px rgba(124,58,237,.35)' : 'none',
                 }}
               >
-                <span style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ display: 'flex', alignItems: 'center', color: active ? '#fff' : '#7c3aed' }}>
                   {t === 'bakalavr' ? IC.graduation(15) : IC.building(15)}
                 </span>
                 {t === 'bakalavr' ? 'Bakalavr' : 'Magistratura'}
                 <span style={{
                   fontSize: 10, fontWeight: 700,
                   padding: '1px 7px', borderRadius: 20,
-                  background: active ? 'rgba(255,255,255,.2)' : 'rgba(124,58,237,.12)',
+                  background: active ? 'rgba(255,255,255,.2)' : 'rgba(124,58,237,.15)',
                   color: active ? '#fff' : '#7c3aed',
                 }}>
                   {tabMeta[t].count}
@@ -762,7 +787,7 @@ export default function Faculty() {
           <div className="grid-auto">
             {list.map((f, i) => (
               <FacultyCard
-                key={f.name}
+                key={tab + '-' + f.name}
                 f={f}
                 index={i}
                 onClick={() => setModal({ ...f, degree: tab })}
@@ -772,7 +797,7 @@ export default function Faculty() {
         </div>
       </section>
 
-      {/* Modal */}
+      {/* Modal rendered via portal — always viewport-centered */}
       {modal && (
         <FacultyModal
           f={modal}
