@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+ import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 
 /* ── Price formatter: 12850000 -> "12 850 000" ─────────────── */
@@ -166,7 +166,7 @@ const BAKALAVR = [
     studyForm: 'Kunduzgi',
     icon: 'users',
     color: '#212d9a',
-    desc: "Maktabgacha yoshdagi bolalar bilan ishlash bo'yicha yuqori malakali mutaxassislar tayyorlash. Bolalar psixologiyasi va pedagogikasi asosida professional kadrlar.",
+    desc: `Maktabgacha yoshdagi bolalar bilan ishlash bo'yicha yuqori malakali mutaxassislar tayyorlash. Bolalar psixologiyasi va pedagogikasi asosida professional kadrlar.`,
     subjects: ['Psixologiya', 'Pedagogika', 'Bolalar adabiyoti', 'Matematika asoslari', 'Musiqa', 'Jismoniy tarbiya'],
     career: ["Maktabgacha ta'lim muassasasi direktori", 'Tarbiyachi', 'Metodist', 'Psixolog', "Bolalar bog'chasi rahbari"],
   },
@@ -407,7 +407,6 @@ function FacultyCard({ f, index, onClick }) {
 /* ── Modal ─────────────────────────────────────────────────── */
 function FacultyModal({ f, degree, onClose }) {
   useEffect(() => {
-    /* Prevent body scroll without layout shift */
     const scrollW = window.innerWidth - document.documentElement.clientWidth
     document.body.style.overflow = 'hidden'
     document.body.style.paddingRight = scrollW + 'px'
@@ -420,17 +419,11 @@ function FacultyModal({ f, degree, onClose }) {
     }
   }, [onClose])
 
-  const isGreen = f.color === '#059669'
-  const priceGrad  = isGreen ? 'linear-gradient(135deg,#f0fdf4,#dcfce7)' : 'linear-gradient(135deg,#faf5ff,#ede9fe)'
-  const priceBorder = isGreen ? '#bbf7d0' : 'rgba(124,58,237,.2)'
-  const priceText  = isGreen ? '#15803d' : '#7c3aed'
-  const priceSub   = isGreen ? '#166534' : '#6d28d9'
-
   /* info strip items */
   const infoItems = [
-    { label: 'Davomiyligi',   value: f.duration,   iconFn: () => IC.clock(20)      },
-    { label: "O'qitish tili", value: f.lang,        iconFn: () => IC.globe(20)      },
-    { label: "O'qish shakli", value: f.studyForm,   iconFn: () => IC.sun(20)        },
+    { label: 'Davomiyligi',   value: f.duration,   iconFn: () => IC.clock(20)  },
+    { label: "O'qitish tili", value: f.lang,        iconFn: () => IC.globe(20)  },
+    { label: "O'qish shakli", value: f.studyForm,   iconFn: () => IC.sun(20)    },
   ]
 
   const modalContent = (
@@ -485,9 +478,9 @@ function FacultyModal({ f, degree, onClose }) {
             fontSize: 11, fontWeight: 600,
             padding: '4px 12px', borderRadius: 20,
             display: 'inline-flex', alignItems: 'center', gap: 5,
-            background: degree === 'bakalavr' ? 'rgba(124,58,237,.1)' : 'rgba(5,150,105,.1)',
-            color:      degree === 'bakalavr' ? '#7c3aed'             : '#059669',
-            border:    `1px solid ${degree === 'bakalavr' ? 'rgba(124,58,237,.25)' : 'rgba(5,150,105,.25)'}`,
+            background: `${f.color}18`,
+            color: f.color,
+            border: `1px solid ${f.color}40`,
           }}>
             {degree === 'bakalavr' ? IC.graduation(13) : IC.building(13)}
             {degree === 'bakalavr' ? 'Bakalavr' : 'Magistratura'}
@@ -514,13 +507,13 @@ function FacultyModal({ f, degree, onClose }) {
           display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8,
           padding: '0.75rem', background: 'var(--card)',
           borderRadius: 12, marginBottom: '1rem',
-          border: '1px solid var(--border)',
+          border: `1px solid ${f.color}25`,
         }}>
           {infoItems.map(({ label, value, iconFn }) => (
             <div key={label} style={{ textAlign: 'center' }}>
               <div style={{
                 display: 'flex', justifyContent: 'center', alignItems: 'center',
-                marginBottom: 6, color: '#7c3aed',
+                marginBottom: 6, color: f.color,
               }}>
                 {iconFn()}
               </div>
@@ -534,18 +527,18 @@ function FacultyModal({ f, degree, onClose }) {
         <div style={{
           display: 'flex', alignItems: 'center', gap: 12,
           padding: '0.75rem 1rem',
-          background: priceGrad,
+          background: `${f.color}0d`,
           borderRadius: 12, marginBottom: '1rem',
-          border: `1px solid ${priceBorder}`,
+          border: `1px solid ${f.color}30`,
         }}>
-          <div style={{ color: priceText, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+          <div style={{ color: f.color, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             {IC.tag(28)}
           </div>
           <div>
-            <div style={{ fontSize: 10.5, color: priceSub, marginBottom: 2, fontWeight: 500 }}>
+            <div style={{ fontSize: 10.5, color: f.color, marginBottom: 2, fontWeight: 500, opacity: 0.8 }}>
               Kontrakt narxi (kunduzgi, yillik)
             </div>
-            <div style={{ fontSize: 19, fontWeight: 800, color: priceText, letterSpacing: '-0.5px' }}>
+            <div style={{ fontSize: 19, fontWeight: 800, color: f.color, letterSpacing: '-0.5px' }}>
               {fmt(f.price)} so'm
             </div>
           </div>
@@ -575,14 +568,14 @@ function FacultyModal({ f, degree, onClose }) {
         )}
 
         {/* Subjects + Career */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+ <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
           <div>
             <h4 style={{
               fontSize: 12, fontWeight: 700, color: 'var(--text)',
               marginBottom: 12,
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
-              <span style={{ color: '#7c3aed', display: 'flex', alignItems: 'center' }}>{IC.bookOpen(14)}</span>
+              <span style={{ color: f.color, display: 'flex', alignItems: 'center' }}>{IC.bookOpen(14)}</span>
               O'qitiladigan fanlar
             </h4>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -603,7 +596,7 @@ function FacultyModal({ f, degree, onClose }) {
               marginBottom: 12,
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
-              <span style={{ color: '#7c3aed', display: 'flex', alignItems: 'center' }}>{IC.briefcase(14)}</span>
+              <span style={{ color: f.color, display: 'flex', alignItems: 'center' }}>{IC.briefcase(14)}</span>
               Karyera imkoniyatlari
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
@@ -628,10 +621,10 @@ function FacultyModal({ f, degree, onClose }) {
               flex: 1, minWidth: 160,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               padding: '11px 20px', borderRadius: 10,
-              background: 'linear-gradient(135deg,#7c3aed,#6d28d9)',
+              background: `linear-gradient(135deg, ${f.color}, ${f.color}cc)`,
               color: '#fff', textDecoration: 'none',
               fontWeight: 700, fontSize: 12.5,
-              boxShadow: '0 4px 16px rgba(124,58,237,.4)',
+              boxShadow: `0 4px 16px ${f.color}55`,
             }}
           >
             {IC.pen(14)}
@@ -642,9 +635,9 @@ function FacultyModal({ f, degree, onClose }) {
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
               padding: '11px 16px', borderRadius: 10,
-              border: '1.5px solid var(--border)',
-              background: 'var(--bg)',
-              color: 'var(--text)',
+              border: `1.5px solid ${f.color}40`,
+              background: `${f.color}08`,
+              color: f.color,
               textDecoration: 'none',
               fontWeight: 600, fontSize: 12.5,
               whiteSpace: 'nowrap',
@@ -675,7 +668,6 @@ function FacultyModal({ f, degree, onClose }) {
 
 /* ── Main Page ─────────────────────────────────────────────── */
 
-/* Inject keyframe once (idempotent) */
 if (typeof document !== 'undefined' && !document.getElementById('faculty-styles')) {
   const s = document.createElement('style')
   s.id = 'faculty-styles'
@@ -713,7 +705,7 @@ export default function Faculty() {
           Xalqaro standartlarda yuqori sifatli ta'lim
         </p>
 
-        {/* Tab switcher — visible in both light & dark mode */}
+        {/* Tab switcher */}
         <div style={{
           display: 'inline-flex', gap: 6,
           background: 'var(--card)',
@@ -797,7 +789,7 @@ export default function Faculty() {
         </div>
       </section>
 
-      {/* Modal rendered via portal — always viewport-centered */}
+      {/* Modal */}
       {modal && (
         <FacultyModal
           f={modal}
