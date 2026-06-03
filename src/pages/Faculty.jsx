@@ -1,4 +1,4 @@
- import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 
 /* ── Price formatter: 12850000 -> "12 850 000" ─────────────── */
@@ -6,7 +6,6 @@ const fmt = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 
 /* ── SVG Icon functions: IC[name](size) ────────────────────── */
 const IC = {
-  /* --- faculty card icons --- */
   users: (s = 22) => (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -71,7 +70,6 @@ const IC = {
       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
     </svg>
   ),
-  /* --- ui icons --- */
   sun: (s = 16) => (
     <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="5"/>
@@ -165,6 +163,7 @@ const BAKALAVR = [
     lang: "O'zbek / Rus",
     studyForm: 'Kunduzgi',
     icon: 'users',
+    // ✅ TO'G'RI: 6-belgili hex rang
     color: '#1c2cb9',
     desc: `Maktabgacha yoshdagi bolalar bilan ishlash bo'yicha yuqori malakali mutaxassislar tayyorlash. Bolalar psixologiyasi va pedagogikasi asosida professional kadrlar.`,
     subjects: ['Psixologiya', 'Pedagogika', 'Bolalar adabiyoti', 'Matematika asoslari', 'Musiqa', 'Jismoniy tarbiya'],
@@ -177,7 +176,10 @@ const BAKALAVR = [
     lang: "O'zbek",
     studyForm: 'Kunduzgi',
     icon: 'book',
-    color: '#3abd31fa',
+    // ✅ FIX 1: '#3abd31fa' → '#3abd31'
+    // Muammo: 8-belgili hex (#RRGGBBAA) ishlatilgan edi.
+    // ${f.color}25 => '#3abd31fa25' — bu noto'g'ri CSS, border ko'rinmagan.
+    color: '#3abd31',
     desc: "Boshlang'ich sinf o'quvchilariga ta'lim beruvchi malakali o'qituvchilar tayyorlash. Zamonaviy pedagogik usullar va innovatsion ta'lim texnologiyalari.",
     subjects: ['Ona tili', 'Matematika', 'Tabiat', "Tasviriy san'at", 'Musiqa', 'Pedagogika asoslari'],
     career: ["Boshlang'ich sinf o'qituvchisi", 'Metodist', 'Maktab direktori', "Ta'lim menejeri"],
@@ -346,7 +348,6 @@ function FacultyCard({ f, index, onClick }) {
         display: 'flex', flexDirection: 'column',
       }}
     >
-      {/* Faculty icon */}
       <div style={{
         width: 46, height: 46, borderRadius: 12,
         background: `${f.color}18`,
@@ -356,7 +357,6 @@ function FacultyCard({ f, index, onClick }) {
         {IC[f.icon](22)}
       </div>
 
-      {/* Name */}
       <h3 style={{
         fontSize: 13, fontWeight: 600,
         color: 'var(--text)', marginBottom: 6, lineHeight: 1.4,
@@ -365,7 +365,6 @@ function FacultyCard({ f, index, onClick }) {
         {f.name}
       </h3>
 
-      {/* Study form + duration */}
       <div style={{
         fontSize: 11, color: 'var(--muted)', marginBottom: 8,
         display: 'flex', alignItems: 'center', gap: 5,
@@ -378,7 +377,6 @@ function FacultyCard({ f, index, onClick }) {
         </span>
       </div>
 
-      {/* Price badge */}
       <div style={{
         display: 'inline-flex', alignItems: 'center', gap: 5,
         padding: '4px 10px', borderRadius: 20, marginBottom: 12,
@@ -392,7 +390,6 @@ function FacultyCard({ f, index, onClick }) {
         </span>
       </div>
 
-      {/* Batafsil button */}
       <div style={{
         fontSize: 12, fontWeight: 600, color: f.color,
         display: 'flex', alignItems: 'center', gap: 5,
@@ -419,7 +416,6 @@ function FacultyModal({ f, degree, onClose }) {
     }
   }, [onClose])
 
-  /* info strip items */
   const infoItems = [
     { label: 'Davomiyligi',   value: f.duration,   iconFn: () => IC.clock(20)  },
     { label: "O'qitish tili", value: f.lang,        iconFn: () => IC.globe(20)  },
@@ -568,7 +564,7 @@ function FacultyModal({ f, degree, onClose }) {
         )}
 
         {/* Subjects + Career */}
- <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
           <div>
             <h4 style={{
               fontSize: 12, fontWeight: 700, color: 'var(--text)',
@@ -666,8 +662,7 @@ function FacultyModal({ f, degree, onClose }) {
   return createPortal(modalContent, document.body)
 }
 
-/* ── Main Page ─────────────────────────────────────────────── */
-
+/* ── Styles injection ──────────────────────────────────────── */
 if (typeof document !== 'undefined' && !document.getElementById('faculty-styles')) {
   const s = document.createElement('style')
   s.id = 'faculty-styles'
@@ -676,10 +671,55 @@ if (typeof document !== 'undefined' && !document.getElementById('faculty-styles'
       from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0);    }
     }
+
+    /* ✅ FIX 2: Mobile tab responsive styles */
+    .kiu-tab-wrap {
+      display: inline-flex;
+      gap: 6px;
+      background: var(--card);
+      padding: 5px;
+      border-radius: 40px;
+      border: 2px solid var(--border);
+      box-shadow: 0 0 0 1px rgba(124,58,237,.25);
+      max-width: 100%;
+    }
+    .kiu-tab-btn {
+      padding: 9px 22px;
+      border-radius: 35px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all .2s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .kiu-tab-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 20px;
+    }
+
+    /* Mobil uchun: kichik ekranda padding va font kamaytirish */
+    @media (max-width: 480px) {
+      .kiu-tab-btn {
+        padding: 8px 13px !important;
+        font-size: 11.5px !important;
+        gap: 5px !important;
+      }
+      .kiu-tab-badge {
+        padding: 1px 5px !important;
+        font-size: 9px !important;
+      }
+    }
   `
   document.head.appendChild(s)
 }
 
+/* ── Main Page ─────────────────────────────────────────────── */
 export default function Faculty() {
   const [tab, setTab] = useState('bakalavr')
   const [modal, setModal] = useState(null)
@@ -705,47 +745,40 @@ export default function Faculty() {
           Xalqaro standartlarda yuqori sifatli ta'lim
         </p>
 
-        {/* Tab switcher */}
-        <div style={{
-          display: 'inline-flex', gap: 6,
-          background: 'var(--card)',
-          padding: 5, borderRadius: 40,
-          border: '2px solid var(--border)',
-          boxShadow: '0 0 0 1px rgba(124,58,237,.25)',
-        }}>
-          {['bakalavr', 'magistratura'].map(t => {
-            const active = tab === t
-            return (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                style={{
-                  padding: '9px 22px', borderRadius: 35,
-                  border: active ? 'none' : '1px solid rgba(124,58,237,.35)',
-                  cursor: 'pointer',
-                  fontWeight: 700, fontSize: 13,
-                  display: 'flex', alignItems: 'center', gap: 7,
-                  transition: 'all .2s',
-                  background: active ? 'linear-gradient(135deg,#7c3aed,#6d28d9)' : 'transparent',
-                  color: active ? '#fff' : 'var(--text)',
-                  boxShadow: active ? '0 3px 10px rgba(124,58,237,.35)' : 'none',
-                }}
-              >
-                <span style={{ display: 'flex', alignItems: 'center', color: active ? '#fff' : '#7c3aed' }}>
-                  {t === 'bakalavr' ? IC.graduation(15) : IC.building(15)}
-                </span>
-                {t === 'bakalavr' ? 'Bakalavr' : 'Magistratura'}
-                <span style={{
-                  fontSize: 10, fontWeight: 700,
-                  padding: '1px 7px', borderRadius: 20,
-                  background: active ? 'rgba(255,255,255,.2)' : 'rgba(124,58,237,.15)',
-                  color: active ? '#fff' : '#7c3aed',
-                }}>
-                  {tabMeta[t].count}
-                </span>
-              </button>
-            )
-          })}
+        {/* ✅ FIX 2: Tab switcher — markazlash wrapper + className-lar */}
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <div className="kiu-tab-wrap">
+            {['bakalavr', 'magistratura'].map(t => {
+              const active = tab === t
+              return (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className="kiu-tab-btn"
+                  style={{
+                    border: active ? 'none' : '1px solid rgba(124,58,237,.35)',
+                    background: active ? 'linear-gradient(135deg,#7c3aed,#6d28d9)' : 'transparent',
+                    color: active ? '#fff' : 'var(--text)',
+                    boxShadow: active ? '0 3px 10px rgba(124,58,237,.35)' : 'none',
+                  }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', color: active ? '#fff' : '#7c3aed' }}>
+                    {t === 'bakalavr' ? IC.graduation(15) : IC.building(15)}
+                  </span>
+                  {t === 'bakalavr' ? 'Bakalavr' : 'Magistratura'}
+                  <span
+                    className="kiu-tab-badge"
+                    style={{
+                      background: active ? 'rgba(255,255,255,.2)' : 'rgba(124,58,237,.15)',
+                      color: active ? '#fff' : '#7c3aed',
+                    }}
+                  >
+                    {tabMeta[t].count}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
         </div>
       </section>
 
