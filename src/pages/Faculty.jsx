@@ -203,7 +203,7 @@ const BAKALAVR = [
     lang: "O'zbek / Ingliz",
     studyForm: 'Kunduzgi',
     icon: 'map',
-    color: '#c8cf3a',
+    color: '#e3dd2c',
     desc: "Neft-gaz sanoati uchun yuqori malakali muhandis va texnologlar tayyorlash. Faoliyat turlari bo'yicha ixtisoslashish imkoniyati mavjud.",
     subjects: ['Neft kimyosi', 'Qazib olish texnologiyasi', 'Ekologiya', 'Iqtisodiyot', 'Muhandislik', 'Geologiya'],
     career: ['Neft-gaz muhandisi', 'Texnolog', 'Laborant', 'Loyiha menejeri', 'Ekolog-mutaxassis'],
