@@ -66,7 +66,7 @@ function FeaturedCarousel({ items }) {
         width: '100%',
         height: 480,
         overflow: 'hidden',
-        background: '#13102b',
+        background: 'var(--bg)',
         borderRadius: 20,
         margin: '1.5rem 0',
       }}
@@ -80,7 +80,7 @@ function FeaturedCarousel({ items }) {
           position: 'absolute', inset: 0,
           backgroundImage: parseImages(item.image)[0]
             ? `url(${parseImages(item.image)[0]})`
-            : `linear-gradient(135deg, #1e1545 0%, #13102b 60%, #0d0b1e 100%)`,
+            : `linear-gradient(135deg, var(--bg) 0%, var(--bg) 60%, var(--bg) 100%)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           animation: 'carouselFadeIn .6s ease',
