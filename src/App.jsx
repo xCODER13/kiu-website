@@ -1,6 +1,12 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
+function PrivateRoute({ children }) {
+  const token = localStorage.getItem('kiu_token')
+  if (!token) return <Navigate to="/admin/login" replace />
+  return children
+}
+
 const SEO = {
   '/':             { title: "Bosh sahifa",            desc: "Qarshi Xalqaro Universiteti — xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish. Qarshi shahri, Qashqadaryo viloyati." },
   '/about':        { title: "Biz haqimizda",           desc: "KIU tarixi, missiyasi, qadriyatlari va rahbariyati haqida to'liq ma'lumot." },
@@ -112,7 +118,11 @@ export default function App() {
       <ScrollReveal />
       <Routes>
         <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/*" element={<Dashboard />} />
+        <Route path="/admin/*" element={
+        <PrivateRoute>
+        <Dashboard />
+       </PrivateRoute>
+      } />
         <Route path="/*" element={
           <PublicLayout dark={dark} setDark={setDark} onApply={() => setApplyOpen(true)}>
             <Routes>
