@@ -362,22 +362,23 @@ export default function News() {
           </div>
         ) : (
           <>
-            {/* FEATURED CAROUSEL — rounded corners, inside container */}
-            {featured.length > 0 && (
-              <div className="container">
-                <FeaturedCarousel items={featured} />
-              </div>
-            )}
+            {/* ── CAROUSEL + TELEGRAM: bir xil fon ── */}
+            <div style={{ background: 'var(--bg)' }}>
+              {featured.length > 0 && (
+                <div className="container">
+                  <FeaturedCarousel items={featured} />
+                </div>
+              )}
 
-            {/* TELEGRAM BANNER — rounded, below carousel */}
-            <div className="container" style={{ marginBottom: '0.5rem' }}>
-              <div style={{ borderRadius: 20, overflow: 'hidden' }}>
-                <TelegramPanel />
+              <div className="container" style={{ marginBottom: '0.5rem' }}>
+                <div style={{ borderRadius: 20, overflow: 'hidden' }}>
+                  <TelegramPanel />
+                </div>
+                <a href="https://t.me/kiu_uz" target="_blank" rel="noreferrer"
+                  style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginTop: '0.75rem', display: 'inline-block' }}>
+                  Barcha yangiliklar (@kiu_uz) →
+                </a>
               </div>
-              <a href="https://t.me/kiu_uz" target="_blank" rel="noreferrer"
-                style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginTop: '0.75rem', display: 'inline-block' }}>
-                Barcha yangiliklar (@kiu_uz) →
-              </a>
             </div>
 
             {/* NEWS GRID SECTION */}
