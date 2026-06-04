@@ -6,6 +6,8 @@ const bcrypt = require('bcryptjs')
 require('dotenv').config()
 const { createClient } = require('@supabase/supabase-js')
 const { v4: uuidv4 } = require('uuid')
+const helmet = require('helmet')
+const rateLimit = require('express-rate-limit')
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -14,9 +16,32 @@ const supabase = createClient(
 
 
 const app = express()
+
+// Render / Vercel proxy orqasida ishlaydi — real IP ni olish uchun
+app.set('trust proxy', 1)
+
+// ── HELMET — HTTP xavfsizlik headerlari ──
+app.use(helmet())
+
 app.use(cors({ origin: process.env.FRONTEND_URL || 'https://kiu-university.vercel.app', credentials: true }))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
+
+// ── LOGIN RATE LIMITER — 5 ta urinish / 15 daqiqa ──
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  skipSuccessfulRequests: true,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Juda ko'p muvaffaqiyatsiz urinish. 15 daqiqadan so'ng qayta urinib ko'ring."
+  },
+  handler: (req, res, next, options) => {
+    console.warn('[RATE LIMIT] Login bloklandi — IP: ' + req.ip + ' | ' + new Date().toISOString())
+    res.status(429).json(options.message)
+  }
+})
 
 const multer = require('multer')
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } })
@@ -50,7 +75,7 @@ function auth(req, res, next) {
 }
 
 // ── AUTH ROUTES ──
-app.post('/api/admin/login', async (req, res) => {
+app.post('/api/admin/login', loginLimiter, async (req, res) => {
   const { username, password } = req.body
   if (!username || !password) return res.status(400).json({ error: 'Login va parol kerak' })
 
