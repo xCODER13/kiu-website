@@ -66,7 +66,7 @@ function FeaturedCarousel({ items }) {
         width: '100%',
         height: 480,
         overflow: 'hidden',
-        background: 'var(--bg)',
+        background: '#13102b',
         borderRadius: 20,
         margin: '1.5rem 0',
       }}
@@ -80,7 +80,7 @@ function FeaturedCarousel({ items }) {
           position: 'absolute', inset: 0,
           backgroundImage: parseImages(item.image)[0]
             ? `url(${parseImages(item.image)[0]})`
-            : `linear-gradient(135deg, var(--bg) 0%, var(--bg) 60%, var(--bg) 100%)`,
+            : `linear-gradient(135deg, #1e1545 0%, #13102b 60%, #0d0b1e 100%)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           animation: 'carouselFadeIn .6s ease',
@@ -362,23 +362,22 @@ export default function News() {
           </div>
         ) : (
           <>
-            {/* ── CAROUSEL + TELEGRAM: bir xil fon ── */}
-            <div style={{ background: 'var(--bg)' }}>
-              {featured.length > 0 && (
-                <div className="container">
-                  <FeaturedCarousel items={featured} />
-                </div>
-              )}
-
-              <div className="container" style={{ marginBottom: '0.5rem' }}>
-                <div style={{ borderRadius: 20, overflow: 'hidden' }}>
-                  <TelegramPanel />
-                </div>
-                <a href="https://t.me/kiu_uz" target="_blank" rel="noreferrer"
-                  style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginTop: '0.75rem', display: 'inline-block' }}>
-                  Barcha yangiliklar (@kiu_uz) →
-                </a>
+            {/* FEATURED CAROUSEL — rounded corners, inside container */}
+            {featured.length > 0 && (
+              <div className="container">
+                <FeaturedCarousel items={featured} />
               </div>
+            )}
+
+            {/* TELEGRAM BANNER — rounded, below carousel */}
+            <div className="container" style={{ marginBottom: '0.5rem' }}>
+              <div style={{ borderRadius: 20, overflow: 'hidden' }}>
+                <TelegramPanel />
+              </div>
+              <a href="https://t.me/kiu_uz" target="_blank" rel="noreferrer"
+                style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginTop: '0.75rem', display: 'inline-block' }}>
+                Barcha yangiliklar (@kiu_uz) →
+              </a>
             </div>
 
             {/* NEWS GRID SECTION */}
