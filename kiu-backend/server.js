@@ -93,17 +93,11 @@ app.post('/api/admin/login', loginLimiter, async (req, res) => {
   if (username !== process.env.ADMIN_USERNAME)
     return res.status(401).json({ error: "Login yoki parol noto'g'ri" })
 
-  let passwordOk = false
-  if (process.env.ADMIN_PASSWORD_HASH) {
-    passwordOk = await bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH)
-  } else {
-    // XAVFSIZLIK OGOHLANTIRISHI: bu yerga tushilishi admin_password_hash MongoDB'da
-    // hali o'rnatilmaganini bildiradi (plaintext taqqoslash ishlatilmoqda).
-    // Parolni bir marta /api/admin/change-password orqali o'zgartiring, shunda bu
-    // yo'l butunlay o'chadi va keyin ushbu else blokini kod'dan olib tashlash mumkin.
-    console.warn('[SECURITY] Plaintext ADMIN_PASSWORD fallback ishlatildi — parolni tezroq o\'zgartiring (change-password) va bu blokni kod\'dan olib tashlang.')
-    passwordOk = password === process.env.ADMIN_PASSWORD
+  if (!process.env.ADMIN_PASSWORD_HASH) {
+    console.error('[SECURITY] ADMIN_PASSWORD_HASH topilmadi — settings collection tekshirilsin.')
+    return res.status(500).json({ error: 'Admin paroli sozlanmagan. Server administratoriga murojaat qiling.' })
   }
+  const passwordOk = await bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH)
 
   if (!passwordOk) return res.status(401).json({ error: "Login yoki parol noto'g'ri" })
 
@@ -116,12 +110,10 @@ app.post('/api/admin/change-password', auth, async (req, res) => {
   if (!newPassword || newPassword.length < 8)
     return res.status(400).json({ error: "Yangi parol kamida 8 ta belgidan iborat bo'lishi kerak" })
 
-  let currentOk = false
-  if (process.env.ADMIN_PASSWORD_HASH) {
-    currentOk = await bcrypt.compare(currentPassword, process.env.ADMIN_PASSWORD_HASH)
-  } else {
-    currentOk = currentPassword === process.env.ADMIN_PASSWORD
+  if (!process.env.ADMIN_PASSWORD_HASH) {
+    return res.status(500).json({ error: 'Admin paroli sozlanmagan. Server administratoriga murojaat qiling.' })
   }
+  const currentOk = await bcrypt.compare(currentPassword, process.env.ADMIN_PASSWORD_HASH)
 
   if (!currentOk) return res.status(401).json({ error: "Joriy parol noto'g'ri" })
 
@@ -135,7 +127,6 @@ app.post('/api/admin/change-password', auth, async (req, res) => {
     )
 
     process.env.ADMIN_PASSWORD_HASH = hash
-    delete process.env.ADMIN_PASSWORD
 
     res.json({ success: true })
   } catch (e) {
