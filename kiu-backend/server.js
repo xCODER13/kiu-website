@@ -43,6 +43,34 @@ const loginLimiter = rateLimit({
   }
 })
 
+// ── FORM RATE LIMITER — arizalar / sorting-hat uchun, spam'dan himoya ──
+// 10 ta so'rov / 15 daqiqa / IP — oddiy foydalanuvchi uchun yetarli, spam-bot uchun cheklovchi
+const formLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Juda ko'p so'rov yuborildi. Birozdan so'ng qayta urinib ko'ring."
+  },
+  handler: (req, res, next, options) => {
+    console.warn(`[RATE LIMIT] ${req.originalUrl} bloklandi — IP: ${req.ip} | ${new Date().toISOString()}`)
+    res.status(429).json(options.message)
+  }
+})
+
+// ── VIEW/READ RATE LIMITER — ko'rishlar soni va Telegram postlari uchun ──
+// Bular ko'p marta chaqirilishi mumkin bo'lgan yengil endpointlar, shuning uchun limit yuqoriroq
+const viewLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Juda ko'p so'rov. Birozdan so'ng qayta urinib ko'ring."
+  }
+})
+
 const multer = require('multer')
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } })
 
@@ -183,7 +211,7 @@ app.put('/api/news/:id', auth, upload.single('imageFile'), async (req, res) => {
     ))
   } catch (e) { fail(req, res, 400, e) }
 })
-app.put('/api/news/:id/view', async (req, res) => {
+app.put('/api/news/:id/view', viewLimiter, async (req, res) => {
   try {
     await News.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } })
     res.json({ success: true })
@@ -243,10 +271,19 @@ app.get('/api/applications', auth, async (req, res) => {
     res.json(await Application.find(filter).sort({ createdAt: -1 }))
   } catch (e) { fail(req, res, 500, e) }
 })
-app.post('/api/applications', async (req, res) => {
+app.post('/api/applications', formLimiter, async (req, res) => {
   try {
-    const body = { ...req.body }
-    if (!body.type) body.type = 'admission'
+    // Mass assignment himoyasi: faqat kerakli maydonlar qabul qilinadi.
+    // "status" hech qachon client'dan olinmaydi — har doim serverda 'new' qilib belgilanadi,
+    // aks holda so'rov yuboruvchi o'z arizasini to'g'ridan-to'g'ri "accepted" qilib yuborishi mumkin edi.
+    const allowedFields = ['name', 'phone', 'faculty', 'message', 'email', 'position', 'education', 'experience', 'type']
+    const body = {}
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) body[field] = req.body[field]
+    }
+    if (!body.type || !['admission', 'vacancy'].includes(body.type)) body.type = 'admission'
+    body.status = 'new'
+
     const application = await Application.create(body)
     const isVacancy = application.type === 'vacancy'
     let msg = ""
@@ -309,7 +346,7 @@ async function sendTelegram(text) {
 }
 
 // ── SORTING HAT LEAD ──
-app.post('/api/sorting-hat-lead', async (req, res) => {
+app.post('/api/sorting-hat-lead', formLimiter, async (req, res) => {
   try {
     const { name, phone, faculties } = req.body
     if (!name || !phone) return res.status(400).json({ error: 'Ism va telefon kerak' })
@@ -323,7 +360,7 @@ app.post('/api/sorting-hat-lead', async (req, res) => {
   }
 })
 // ── TELEGRAM ──
-app.get('/api/telegram/posts', async (req, res) => {
+app.get('/api/telegram/posts', viewLimiter, async (req, res) => {
   try {
     const token = process.env.BOT_TOKEN
     const channel = process.env.CHANNEL_USERNAME
