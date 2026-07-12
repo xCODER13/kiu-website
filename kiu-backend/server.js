@@ -74,6 +74,17 @@ function auth(req, res, next) {
   }
 }
 
+// ── XATOLARNI XAVFSIZ QAYTARISH ──
+// To'liq xato server logiga yoziladi, clientga esa umumiy xabar qaytariladi
+// (Mongoose/ichki xato tafsilotlari sizib chiqmasligi uchun).
+function fail(req, res, status, e) {
+  console.error(`[ERROR] ${req.method} ${req.originalUrl}:`, e.message)
+  const publicMsg = status === 400
+    ? "So'rovda xatolik bor. Ma'lumotlarni tekshirib qayta yuboring."
+    : 'Server xatosi yuz berdi. Birozdan so\'ng qayta urinib ko\'ring.'
+  res.status(status).json({ error: publicMsg })
+}
+
 // ── AUTH ROUTES ──
 app.post('/api/admin/login', loginLimiter, async (req, res) => {
   const { username, password } = req.body
@@ -86,6 +97,11 @@ app.post('/api/admin/login', loginLimiter, async (req, res) => {
   if (process.env.ADMIN_PASSWORD_HASH) {
     passwordOk = await bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH)
   } else {
+    // XAVFSIZLIK OGOHLANTIRISHI: bu yerga tushilishi admin_password_hash MongoDB'da
+    // hali o'rnatilmaganini bildiradi (plaintext taqqoslash ishlatilmoqda).
+    // Parolni bir marta /api/admin/change-password orqali o'zgartiring, shunda bu
+    // yo'l butunlay o'chadi va keyin ushbu else blokini kod'dan olib tashlash mumkin.
+    console.warn('[SECURITY] Plaintext ADMIN_PASSWORD fallback ishlatildi — parolni tezroq o\'zgartiring (change-password) va bu blokni kod\'dan olib tashlang.')
     passwordOk = password === process.env.ADMIN_PASSWORD
   }
 
@@ -123,7 +139,7 @@ app.post('/api/admin/change-password', auth, async (req, res) => {
 
     res.json({ success: true })
   } catch (e) {
-    res.status(500).json({ error: "Parol o'zgartirib bo'lmadi: " + e.message })
+    fail(req, res, 500, e)
   }
 })
 
@@ -133,11 +149,11 @@ app.get('/api/news/:id', async (req, res) => {
     const news = await News.findById(req.params.id)
     if (!news) return res.status(404).json({ error: 'Topilmadi' })
     res.json(news)
-  } catch (e) { res.status(500).json({ error: e.message }) }
+  } catch (e) { fail(req, res, 500, e) }
 })
 app.get('/api/news', async (req, res) => {
   try { res.json(await News.find().sort({ createdAt: -1 })) }
-  catch (e) { res.status(500).json({ error: e.message }) }
+  catch (e) { fail(req, res, 500, e) }
 })
 app.post('/api/news', auth, upload.single('imageFile'), async (req, res) => {
   try {
@@ -154,7 +170,7 @@ app.post('/api/news', auth, upload.single('imageFile'), async (req, res) => {
     const { title, content, category, videoId } = req.body
     const shortsUrl = req.body.shortsUrl || ''
     res.json(await News.create({ title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' }))
-  } catch (e) { res.status(400).json({ error: e.message }) }
+  } catch (e) { fail(req, res, 400, e) }
 })
 app.put('/api/news/:id', auth, upload.single('imageFile'), async (req, res) => {
   try {
@@ -174,53 +190,53 @@ app.put('/api/news/:id', auth, upload.single('imageFile'), async (req, res) => {
       { title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' },
       { new: true }
     ))
-  } catch (e) { res.status(400).json({ error: e.message }) }
+  } catch (e) { fail(req, res, 400, e) }
 })
 app.put('/api/news/:id/view', async (req, res) => {
   try {
     await News.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } })
     res.json({ success: true })
-  } catch (e) { res.status(500).json({ error: e.message }) }
+  } catch (e) { fail(req, res, 500, e) }
 })
 app.delete('/api/news/:id', auth, async (req, res) => {
   try { await News.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { res.status(500).json({ error: e.message }) }
+  catch (e) { fail(req, res, 500, e) }
 })
 
 // ── EVENTS ──
 app.get('/api/events', async (req, res) => {
   try { res.json(await Event.find().sort({ createdAt: -1 })) }
-  catch (e) { res.status(500).json({ error: e.message }) }
+  catch (e) { fail(req, res, 500, e) }
 })
 app.post('/api/events', auth, async (req, res) => {
   try { res.json(await Event.create(req.body)) }
-  catch (e) { res.status(400).json({ error: e.message }) }
+  catch (e) { fail(req, res, 400, e) }
 })
 app.put('/api/events/:id', auth, async (req, res) => {
   try { res.json(await Event.findByIdAndUpdate(req.params.id, req.body, { new: true })) }
-  catch (e) { res.status(400).json({ error: e.message }) }
+  catch (e) { fail(req, res, 400, e) }
 })
 app.delete('/api/events/:id', auth, async (req, res) => {
   try { await Event.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { res.status(500).json({ error: e.message }) }
+  catch (e) { fail(req, res, 500, e) }
 })
 
 // ── TEACHERS ──
 app.get('/api/teachers', async (req, res) => {
   try { res.json(await Teacher.find().sort({ createdAt: -1 })) }
-  catch (e) { res.status(500).json({ error: e.message }) }
+  catch (e) { fail(req, res, 500, e) }
 })
 app.post('/api/teachers', auth, async (req, res) => {
   try { res.json(await Teacher.create(req.body)) }
-  catch (e) { res.status(400).json({ error: e.message }) }
+  catch (e) { fail(req, res, 400, e) }
 })
 app.put('/api/teachers/:id', auth, async (req, res) => {
   try { res.json(await Teacher.findByIdAndUpdate(req.params.id, req.body, { new: true })) }
-  catch (e) { res.status(400).json({ error: e.message }) }
+  catch (e) { fail(req, res, 400, e) }
 })
 app.delete('/api/teachers/:id', auth, async (req, res) => {
   try { await Teacher.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { res.status(500).json({ error: e.message }) }
+  catch (e) { fail(req, res, 500, e) }
 })
 
 // ── APPLICATIONS ──
@@ -234,7 +250,7 @@ app.get('/api/applications', auth, async (req, res) => {
       filter = { $or: [{ type: 'admission' }, { type: { $exists: false } }, { type: null }, { type: '' }] }
     }
     res.json(await Application.find(filter).sort({ createdAt: -1 }))
-  } catch (e) { res.status(500).json({ error: e.message }) }
+  } catch (e) { fail(req, res, 500, e) }
 })
 app.post('/api/applications', async (req, res) => {
   try {
@@ -260,16 +276,16 @@ app.post('/api/applications', async (req, res) => {
     }
     sendTelegram(msg)
     res.json(application)
-  } catch (e) { res.status(400).json({ error: e.message }) }
+  } catch (e) { fail(req, res, 400, e) }
 })
 
 app.put('/api/applications/:id', auth, async (req, res) => {
   try { res.json(await Application.findByIdAndUpdate(req.params.id, req.body, { new: true })) }
-  catch (e) { res.status(400).json({ error: e.message }) }
+  catch (e) { fail(req, res, 400, e) }
 })
 app.delete('/api/applications/:id', auth, async (req, res) => {
   try { await Application.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { res.status(500).json({ error: e.message }) }
+  catch (e) { fail(req, res, 500, e) }
 })
 
 // ── STATS ──
@@ -285,7 +301,7 @@ app.get('/api/stats', auth, async (req, res) => {
       Application.countDocuments({ type: 'vacancy' }),
     ])
     res.json({ newsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps })
-  } catch (e) { res.status(500).json({ error: e.message }) }
+  } catch (e) { fail(req, res, 500, e) }
 })
 // ── TELEGRAM NOTIFY ──
 async function sendTelegram(text) {
@@ -312,7 +328,7 @@ app.post('/api/sorting-hat-lead', async (req, res) => {
     await sendTelegram(msg)
     res.json({ success: true })
   } catch (e) {
-    res.status(500).json({ error: e.message })
+    fail(req, res, 500, e)
   }
 })
 // ── TELEGRAM ──
@@ -341,7 +357,7 @@ app.get('/api/telegram/posts', async (req, res) => {
 
     res.json({ posts })
   } catch (e) {
-    res.status(500).json({ error: "Telegram bilan bog'lanib bo'lmadi: " + e.message })
+    fail(req, res, 500, e)
   }
 })
 

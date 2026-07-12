@@ -37,19 +37,6 @@ const config = {
     url: 'https://t.me/kiu_uz',
   },
 
-  faculties: [
-    { icon: '🎓', name: "Maktabgacha ta'lim",                         count: 1 },
-    { icon: '📚', name: "Boshlang'ich ta'lim",                        count: 1 },
-    { icon: '🏛️', name: "Milliy g'oya, ma'naviyat asoslari va huquqta'limi", count: 1 },
-    { icon: '⛽', name: "Neft va gaz ishi",                           count: 1 },
-    { icon: '💼', name: "Iqtisodiyot",                                count: 1 },
-    { icon: '💻', name: "Dasturiy injiniring",                        count: 1 },
-    { icon: '💰', name: "Moliya va moliyaviy texnologiyalar",          count: 1 },
-    { icon: '📊', name: "Buxgalteriya hisobi",                        count: 1 },
-    { icon: '🧠', name: "Psixologiya",                                count: 1 },
-    { icon: '🌍', name: "Filologiya va tillarni o'qitish",            count: 1 },
-  ],
-
   admission: {
     year: '2026',
     deadline: "1 iyul — 20 avgust 2026 gacha",
