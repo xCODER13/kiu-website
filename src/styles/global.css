@@ -44,6 +44,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 
 .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
 .section { padding: 4rem 0; }
+.anchor-section { scroll-margin-top: 84px; }
 .section-header { margin-bottom: 2rem; }
 .section-header p { font-size: 0.875rem; color: var(--muted); margin-top: 0.3rem; }
 
