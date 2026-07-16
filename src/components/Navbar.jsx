@@ -1,4 +1,4 @@
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useState } from 'react'
 import config from '../config'
 import Search from './Search'
@@ -18,36 +18,8 @@ const links = [
   { to: '/chatbot',   label: 'AI Yordamchi' },
 ]
 
-// Home sahifasidagi bo'lim id'lari — shu route'lar bosilganda
-// alohida sahifaga o'tish o'rniga Home'dagi tegishli bo'limga scroll qilinadi
-const SECTION_MAP = {
-  '/faculty':       'faculty-section',
-  '/admission':     'admission-section',
-  '/contact':       'contact-section',
-  '/documents':     'documents-section',
-  '/international': 'international-section',
-  '/news':          'news-section',
-  '/achievements':  'achievements-section',
-}
-
 export default function Navbar({ dark, setDark, onApply }) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
-  const navigate = useNavigate()
-
-  function handleNavClick(e, to) {
-    const sectionId = SECTION_MAP[to]
-    if (!sectionId) return // oddiy route — standart NavLink navigatsiyasi ishlaydi
-
-    e.preventDefault()
-    setMenuOpen(false)
-
-    if (location.pathname === '/') {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' })
-    } else {
-      navigate('/', { state: { scrollTo: sectionId } })
-    }
-  }
 
   return (
     <>
@@ -65,7 +37,7 @@ export default function Navbar({ dark, setDark, onApply }) {
         {/* Desktop links */}
         <div style={{ display: 'flex', gap: 12 }} className="desktop-nav">
           {links.map(l => (
-            <NavLink key={l.to} to={l.to} end={l.to === '/'} onClick={(e) => handleNavClick(e, l.to)}
+            <NavLink key={l.to} to={l.to} end={l.to === '/'}
               style={({ isActive }) => ({
                 fontSize: 11,
                 color: isActive ? '#7c3aed' : (dark ? '#ffffff' : '#1a1a2e'),
@@ -102,7 +74,7 @@ export default function Navbar({ dark, setDark, onApply }) {
       {menuOpen && (
         <div className="mobile-nav" style={{ position: 'fixed', top: 62, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 8, borderTop: '1px solid var(--border)', overflowY: 'auto' }}>
           {links.map(l => (
-            <NavLink key={l.to} to={l.to} end={l.to === '/'} onClick={(e) => handleNavClick(e, l.to)}
+            <NavLink key={l.to} to={l.to} end={l.to === '/'} onClick={() => setMenuOpen(false)}
               style={({ isActive }) => ({
                 fontSize: 18, fontWeight: 600,
                 color: isActive ? '#7c3aed' : 'var(--text)',

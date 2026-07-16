@@ -1,46 +1,16 @@
-import { NavLink, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { NavLink } from 'react-router-dom'
+import { useEffect} from 'react'
 import TelegramPanel from '../components/TelegramPanel'
 import config from '../config'
 import useReveal from '../hooks/useReveal'
-import useApi from '../hooks/useApi'
-import { BAKALAVR, IC } from '../data/facultyData'
-import { AWARDS } from '../data/achievementsData'
-import { PARTNERS } from '../data/internationalData'
-import { DOCS } from '../data/documentsData'
 
-const API = import.meta.env.VITE_API_URL
 
-// Yangiliklar rasm maydonini o'qish (News.jsx dagi parseImages bilan bir xil mantiq)
-function parseNewsImage(imageField) {
-  if (!imageField) return null
-  try {
-    const parsed = JSON.parse(imageField)
-    return Array.isArray(parsed) ? parsed[0] : imageField
-  } catch {
-    return imageField
-  }
-}
-
-export default function Home({ onApply }) {
+export default function Home() {
 
   useReveal()
-  const location = useLocation()
 
-  const { data: newsData } = useApi(`${API}/api/news`, [])
-  const latestNews = newsData.filter(n => !n.videoId).slice(0, 3)
-
-  // Navbardan boshqa sahifadan Home'ga o'tib, bo'limga scroll qilish uchun
-  useEffect(() => {
-    if (location.state?.scrollTo) {
-      const el = document.getElementById(location.state.scrollTo)
-      if (el) {
-        // Sahifa render bo'lishini biroz kutamiz (rasmlar/kartalar joylashishi uchun)
-        requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth' }))
-      }
-      window.history.replaceState({}, '')
-    }
-  }, [location.state])
+  
+    
 
   useEffect(() => {
     const targets = config.stats.map((s, i) => ({
@@ -109,7 +79,7 @@ export default function Home({ onApply }) {
       </section>
 
      {/* ── Biz haqimizda ── */}
-<section id="about-section" className="section anchor-section">
+<section className="section">
   <div className="container">
     <div className="grid-2" style={{ alignItems: 'center', gap: '3rem' }}>
       {/* Chap — matn */}
@@ -155,199 +125,6 @@ export default function Home({ onApply }) {
     </div>
   </div>
 </section>
-
-      {/* ── Yo'nalishlar (Faculty preview) ── */}
-      <section id="faculty-section" className="section anchor-section" style={{ background: 'var(--bg-2)' }}>
-        <div className="container">
-          <div className="reveal section-header" style={{ textAlign: 'center' }}>
-            <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
-              {config.stats.find(s => s.l === "Yo'nalish")?.n || BAKALAVR.length}+ yo'nalish
-            </div>
-            <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Bakalavriat yo'nalishlari</h2>
-            <p style={{ fontSize: 14, color: 'var(--muted)' }}>Zamonaviy va bozor talabiga mos ta'lim yo'nalishlari</p>
-          </div>
-          <div className="grid-auto" style={{ marginTop: '2rem' }}>
-            {BAKALAVR.slice(0, 4).map((f, i) => (
-              <div key={f.name} className={`card reveal reveal-delay-${i + 1}`}>
-                <div style={{ width: 42, height: 42, borderRadius: 10, background: `${f.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10, color: f.color }}>
-                  {IC[f.icon]?.(20)}
-                </div>
-                <h3 style={{ fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)', marginBottom: 4 }}>{f.name}</h3>
-                <p style={{ fontSize: 11, color: 'var(--muted)' }}>{f.duration} · {f.studyForm}</p>
-              </div>
-            ))}
-          </div>
-          <div className="reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <NavLink to="/faculty"><button className="btn btn-primary">Barcha yo'nalishlar</button></NavLink>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Qabul (Admission preview) ── */}
-      <section id="admission-section" className="section anchor-section">
-        <div className="container">
-          <div className="reveal" style={{ background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, padding: '2.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', flexWrap: 'wrap' }}>
-            <div>
-              <div style={{ fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#c4b5fd', marginBottom: 8 }}>
-                Qabul — {config.admission.year}
-              </div>
-              <h2 style={{ color: '#fff', fontSize: '1.4rem', marginBottom: '.35rem' }}>Hujjatlar qabul qilinmoqda</h2>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,.6)' }}>Muddati: {config.admission.deadline}</p>
-            </div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-              <button onClick={onApply} className="btn btn-primary">Ariza topshirish</button>
-              <NavLink to="/admission">
-                <button className="btn btn-primary" style={{ background: 'rgba(255,255,255,.12)', boxShadow: 'none' }}>Batafsil</button>
-              </NavLink>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Yangiliklar (News preview) ── */}
-      <section id="news-section" className="section anchor-section" style={{ background: 'var(--bg-2)' }}>
-        <div className="container">
-          <div className="reveal section-header" style={{ textAlign: 'center' }}>
-            <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
-              Yangiliklar
-            </div>
-            <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>KIU hayotidan so'nggi xabarlar</h2>
-          </div>
-          {latestNews.length > 0 ? (
-            <div className="grid-auto" style={{ marginTop: '2rem' }}>
-              {latestNews.map((n, i) => (
-                <NavLink key={n._id} to={`/news/${n._id}`} className={`card reveal reveal-delay-${i + 1}`} style={{ padding: 0, overflow: 'hidden', display: 'block' }}>
-                  {parseNewsImage(n.image)
-                    ? <img src={parseNewsImage(n.image)} alt={n.title} style={{ width: '100%', height: 130, objectFit: 'cover' }} onError={e => { e.target.style.display = 'none' }} />
-                    : <div style={{ width: '100%', height: 130, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)' }} />
-                  }
-                  <div style={{ padding: '1rem' }}>
-                    <span style={{ fontSize: 11, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
-                    <h3 style={{ fontSize: 13, fontWeight: 600, marginTop: 4, lineHeight: 1.5, fontFamily: 'var(--font-body)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{n.title}</h3>
-                  </div>
-                </NavLink>
-              ))}
-            </div>
-          ) : (
-            <p className="reveal" style={{ textAlign: 'center', color: 'var(--muted)', fontSize: 13, marginTop: '1.5rem' }}>Yangiliklar tez orada e'lon qilinadi.</p>
-          )}
-          <div className="reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <NavLink to="/news"><button className="btn btn-primary">Barcha yangiliklar</button></NavLink>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Yutuqlar (Achievements preview) ── */}
-      <section id="achievements-section" className="section anchor-section">
-        <div className="container">
-          <div className="reveal section-header" style={{ textAlign: 'center' }}>
-            <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
-              Yutuqlar
-            </div>
-            <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Yutuqlar va mukofotlar</h2>
-          </div>
-          <div className="grid-auto" style={{ marginTop: '2rem' }}>
-            {AWARDS.slice(0, 4).map((a, i) => (
-              <div key={a.id} className={`card reveal reveal-delay-${i + 1}`} style={{ textAlign: 'center' }}>
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: '#7c3aed' }}>
-                  {a.icon}
-                </div>
-                <span style={{ fontSize: 10, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 9px', borderRadius: 20, display: 'inline-block', marginBottom: 6 }}>{a.year}</span>
-                <h3 style={{ fontSize: 12, fontWeight: 600, marginBottom: 3, fontFamily: 'var(--font-body)' }}>{a.title}</h3>
-              </div>
-            ))}
-          </div>
-          <div className="reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <NavLink to="/achievements"><button className="btn btn-primary">Barcha yutuqlar</button></NavLink>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Xalqaro hamkorlik (International preview) ── */}
-      <section id="international-section" className="section anchor-section" style={{ background: 'var(--bg-2)' }}>
-        <div className="container">
-          <div className="reveal section-header" style={{ textAlign: 'center' }}>
-            <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
-              {PARTNERS.length}+ xalqaro hamkor
-            </div>
-            <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Xalqaro hamkorlik</h2>
-            <p style={{ fontSize: 14, color: 'var(--muted)' }}>Xorijiy universitetlar bilan akademik almashinuv dasturlari</p>
-          </div>
-          <div className="grid-auto" style={{ marginTop: '2rem' }}>
-            {PARTNERS.slice(0, 4).map((p, i) => (
-              <div key={p.name} className={`card reveal reveal-delay-${i + 1}`}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', marginBottom: 6 }}>{p.country}</div>
-                <h3 style={{ fontSize: 13, fontWeight: 600, marginBottom: 4, fontFamily: 'var(--font-body)' }}>{p.name}</h3>
-                <p style={{ fontSize: 11, color: 'var(--muted)' }}>{p.type}</p>
-              </div>
-            ))}
-          </div>
-          <div className="reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <NavLink to="/international"><button className="btn btn-primary">Barcha hamkorlar</button></NavLink>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Normativ hujjatlar (Documents preview) ── */}
-      <section id="documents-section" className="section anchor-section">
-        <div className="container">
-          <div className="reveal section-header" style={{ textAlign: 'center' }}>
-            <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
-              Shaffoflik
-            </div>
-            <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Normativ hujjatlar</h2>
-            <p style={{ fontSize: 14, color: 'var(--muted)' }}>Litsenziya, akkreditatsiya va boshqa rasmiy hujjatlar</p>
-          </div>
-          <div className="grid-auto" style={{ marginTop: '2rem' }}>
-            {DOCS.slice(0, 3).map((d, i) => (
-              <a key={d.title} href={d.url} target="_blank" rel="noreferrer" className={`card reveal reveal-delay-${i + 1}`} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7c3aed', flexShrink: 0 }}>
-                  {d.icon}
-                </div>
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 600 }}>{d.title}</div>
-                  <div style={{ fontSize: 10, color: 'var(--muted)' }}>{d.desc}</div>
-                </div>
-              </a>
-            ))}
-          </div>
-          <div className="reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <NavLink to="/documents"><button className="btn btn-primary">Barcha hujjatlar</button></NavLink>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Bog'lanish (Contact preview) ── */}
-      <section id="contact-section" className="section anchor-section" style={{ background: 'var(--bg-2)' }}>
-        <div className="container">
-          <div className="reveal section-header" style={{ textAlign: 'center' }}>
-            <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
-              Bog'lanish
-            </div>
-            <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Biz bilan aloqada bo'ling</h2>
-          </div>
-          <div className="grid-2" style={{ marginTop: '2rem', alignItems: 'center' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {[
-                { title: '1-kampus manzili', text: config.contact.address1 },
-                { title: 'Telefon', text: config.contact.phone },
-                { title: 'Email', text: config.contact.email },
-              ].map((item, i) => (
-                <div key={item.title} className={`card reveal reveal-delay-${i + 1}`}>
-                  <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 2 }}>{item.title}</div>
-                  <div style={{ fontSize: 13, fontWeight: 500 }}>{item.text}</div>
-                </div>
-              ))}
-              <NavLink to="/contact" style={{ marginTop: 6, alignSelf: 'flex-start' }}>
-                <button className="btn btn-primary">To'liq ma'lumot</button>
-              </NavLink>
-            </div>
-            <div className="reveal reveal-delay-2">
-              <TelegramPanel />
-            </div>
-          </div>
-        </div>
-      </section>
 
       <style>{`
         @keyframes floatIcon {
