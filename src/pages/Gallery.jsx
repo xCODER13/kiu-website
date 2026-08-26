@@ -109,8 +109,8 @@ export default function Gallery() {
 
           <div onClick={e => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, maxWidth: '90vw', maxHeight: '90vh' }}>
             {lightbox.img
-              ? <img src={lightbox.img} alt={lightbox.title} style={{ maxWidth: '85vw', maxHeight: '75vh', objectFit: 'contain', borderRadius: 12, boxShadow: '0 8px 40px rgba(0,0,0,0.6)' }} />
-              : <div style={{ width: 360, height: 260, background: '#1a1a2e', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14 }}>Rasm mavjud emas</div>
+              ? <img src={lightbox.img} alt={lightbox.title} style={{ maxWidth: 'min(85vw, calc(100vw - 140px))', maxHeight: '75vh', objectFit: 'contain', borderRadius: 12, boxShadow: '0 8px 40px rgba(0,0,0,0.6)' }} />
+              : <div style={{ width: 'min(360px, 85vw)', height: 'min(260px, 55vh)', background: '#1a1a2e', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14 }}>Rasm mavjud emas</div>
             }
             <div style={{ color: '#fff', textAlign: 'center' }}>
               <div style={{ fontWeight: 600, fontSize: 15 }}>{lightbox.title}</div>

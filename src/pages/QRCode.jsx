@@ -47,9 +47,9 @@ export default function QRCode() {
 
       <section className="section">
         <div className="container">
-          <div style={{ display: 'flex', gap: 16, overflowX: 'auto', flexWrap: 'nowrap', paddingBottom: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, paddingBottom: 10 }}>
             {SOCIALS.map((s, i) => (
-              <div key={i} className="card reveal" style={{ minWidth: 220, flex: '0 0 220px', textAlign: 'center', padding: '1.5rem', overflow: 'hidden', position: 'relative' }}>
+              <div key={i} className="card reveal" style={{ textAlign: 'center', padding: '1.5rem', overflow: 'hidden', position: 'relative' }}>
                 {/* Top gradient strip */}
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: s.gradient }} />
 
@@ -62,7 +62,7 @@ export default function QRCode() {
                 <p style={{ fontSize: 12, color: 'var(--muted)', marginBottom: '1.25rem' }}>{s.desc}</p>
 
                 {/* QR Code */}
-                <div style={{ width: 160, height: 160, borderRadius: 12, overflow: 'hidden', margin: '0 auto 1.25rem', border: `2px solid ${s.color}30`, padding: 8, background: '#fff' }}>
+                <div style={{ width: '100%', maxWidth: 160, aspectRatio: '1 / 1', borderRadius: 12, overflow: 'hidden', margin: '0 auto 1.25rem', border: `2px solid ${s.color}30`, padding: 8, background: '#fff' }}>
                   <img
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(s.url)}&color=${s.color.replace('#','')}&bgcolor=ffffff&qzone=1`}
                     alt={`${s.name} QR`}

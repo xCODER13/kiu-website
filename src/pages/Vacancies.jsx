@@ -210,7 +210,7 @@ export default function Vacancies() {
                           <label style={labelStyle}>To'liq ism (FIO) *</label>
                           <input name="fullName" value={form.fullName} onChange={handleChange} required placeholder="Familiya Ism Otasining ismi" style={inputStyle} />
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                        <div className="grid-2" style={{ gap: 10 }}>
                           <div>
                             <label style={labelStyle}>Telefon *</label>
                             <input name="phone" value={form.phone} onChange={handleChange} required placeholder="+998 90 123 45 67" style={inputStyle} />
@@ -230,7 +230,7 @@ export default function Vacancies() {
                         Ish ma'lumotlari
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                        <div className="grid-2" style={{ gap: 10 }}>
                           <div>
                             <label style={labelStyle}>Lavozim *</label>
                             <select name="position" value={form.position} onChange={handleChange} required style={inputStyle}>
@@ -246,7 +246,7 @@ export default function Vacancies() {
                             </select>
                           </div>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                        <div className="grid-2" style={{ gap: 10 }}>
                           <div>
                             <label style={labelStyle}>Ta'lim darajasi *</label>
                             <select name="education" value={form.education} onChange={handleChange} required style={inputStyle}>

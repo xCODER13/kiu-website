@@ -61,10 +61,10 @@ function FeaturedCarousel({ items }) {
 
   return (
     <div
+      className="news-hero"
       style={{
         position: 'relative',
         width: '100%',
-        height: 480,
         overflow: 'hidden',
         background: '#13102b',
         borderRadius: 20,
@@ -102,9 +102,8 @@ function FeaturedCarousel({ items }) {
       </div>
 
       {/* Content */}
-      <div style={{
+      <div className="news-hero-content" style={{
         position: 'absolute', bottom: 0, left: 0, right: 0,
-        padding: '2.5rem 3rem',
         display: 'flex', flexDirection: 'column', gap: 12,
       }}>
         {/* Category badge */}
@@ -512,6 +511,16 @@ export default function News() {
       <style>{`
         @keyframes carouselFadeIn { from { opacity: 0; transform: scale(1.02) } to { opacity: 1; transform: scale(1) } }
         @keyframes spin { to { transform: rotate(360deg) } }
+        .news-hero { height: 480px; }
+        .news-hero-content { padding: 2.5rem 3rem; }
+        @media (max-width: 1024px) {
+          .news-hero { height: 400px; }
+          .news-hero-content { padding: 2rem; }
+        }
+        @media (max-width: 640px) {
+          .news-hero { height: 340px; border-radius: 14px; }
+          .news-hero-content { padding: 1.25rem 1.25rem 3.25rem; gap: 8px; }
+        }
       `}</style>
     </div>
   )

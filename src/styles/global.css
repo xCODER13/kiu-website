@@ -29,9 +29,12 @@ body {
   overflow-x: hidden;
   
 }
-img { max-width: 100%; display: block; }
+img, video, iframe, canvas, svg { max-width: 100%; }
+img { display: block; height: auto; }
 a { text-decoration: none; color: inherit; }
-button { font-family: var(--font-body); cursor: pointer; }
+button { font-family: var(--font-body); cursor: pointer; max-width: 100%; }
+input, select, textarea { max-width: 100%; }
+p, h1, h2, h3, h4, li, a { overflow-wrap: anywhere; }
 
 h1, h2, h3 {
   font-family: var(--font-body);
@@ -137,18 +140,33 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 
 
 /* Responsive */
-@media (max-width: 768px) {
+
+/* Tablet — the desktop nav (12 links) no longer fits below this width */
+@media (max-width: 1024px) {
   .desktop-nav { display: none !important; }
   .mobile-nav  { display: flex !important; }
+  .container { padding: 0 1.5rem; }
+  .section { padding: 3rem 0; }
+  .grid-auto { grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); }
+  .nav-bar { padding: 0.85rem 1.5rem !important; }
+}
+
+@media (max-width: 768px) {
   .grid-2 { grid-template-columns: 1fr; }
   .container { padding: 0 1.25rem; }
+  .nav-bar { padding: 0.75rem 1.25rem !important; }
+  .stats-grid { max-width: 100%; }
 }
 
 @media (max-width: 480px) {
+  .section { padding: 2.5rem 0; }
+  .container { padding: 0 1rem; }
+  .grid-auto { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
   .stat-item:nth-child(2) { border-right: none; }
   .stat-item:nth-child(1),
   .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
+  .btn { padding: 10px 16px; }
 }
 /* Dark mode */
 [data-theme="dark"] {
@@ -364,7 +382,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* Teachers page responsive */
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .teachers-layout {
     grid-template-columns: 1fr !important;
   }
