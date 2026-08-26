@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import config from '../config'
 import Search from './Search'
 
@@ -21,21 +21,34 @@ const links = [
 export default function Navbar({ dark, setDark, onApply }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
+  useEffect(() => {
+    if (!menuOpen) return
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const onResize = () => { if (window.innerWidth > 1024) setMenuOpen(false) }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [menuOpen])
+
   return (
     <>
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
+      <nav className="nav-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
 
         {/* Logo */}
-        <NavLink to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <img src="/logo.png" alt="KIU logo" className="nav-logo-img" style={{ width: 38, height: 38, objectFit: 'contain', }} />
-          <div>
+        <NavLink to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          <img src="/logo.png" alt="KIU logo" className="nav-logo-img" style={{ width: 38, height: 38, objectFit: 'contain', flexShrink: 0 }} />
+          <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: dark ? '#ffffff' : '#1a1a2e' }}>{config.university.name}</div>
             <div style={{ fontSize: 11, color: 'var(--muted)' }}>{config.university.website} — Rasmiy sayt</div>
           </div>
         </NavLink>
 
         {/* Desktop links */}
-        <div style={{ display: 'flex', gap: 12 }} className="desktop-nav">
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }} className="desktop-nav">
           {links.map(l => (
             <NavLink key={l.to} to={l.to} end={l.to === '/'}
               style={({ isActive }) => ({
@@ -52,7 +65,7 @@ export default function Navbar({ dark, setDark, onApply }) {
         </div>
 
         {/* Right */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           <Search />
           <button onClick={() => setDark(!dark)} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 9px', cursor: 'pointer', color: 'var(--muted)', display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
             {dark ? (
@@ -72,7 +85,7 @@ export default function Navbar({ dark, setDark, onApply }) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="mobile-nav" style={{ position: 'fixed', top: 62, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 8, borderTop: '1px solid var(--border)', overflowY: 'auto' }}>
+        <div className="mobile-nav" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '5rem 1.5rem 2rem', gap: 8, borderTop: '1px solid var(--border)', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
           {links.map(l => (
             <NavLink key={l.to} to={l.to} end={l.to === '/'} onClick={() => setMenuOpen(false)}
               style={({ isActive }) => ({

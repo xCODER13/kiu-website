@@ -54,7 +54,13 @@ export default function Search() {
   const navigate = useNavigate()
   const wrapRef  = useRef(null)
   const inputRef = useRef(null)
-  const isMobile = window.innerWidth <= 768
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   useEffect(() => {
     function handler(e) {
@@ -128,7 +134,7 @@ export default function Search() {
                top: isMobile ? '70px' : 'calc(100% + 10px)',
                left: isMobile ? '16px' : 'auto',
                right: isMobile ? '16px' : 0,
-               width: isMobile ? 'auto' : 420,
+               width: isMobile ? 'auto' : 'min(420px, calc(100vw - 3rem))',
                background: 'var(--bg)',
                border: '1px solid var(--border)',
                borderRadius: 14,

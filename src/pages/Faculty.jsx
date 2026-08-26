@@ -437,10 +437,10 @@ function FacultyModal({ f, degree, onClose }) {
     >
       <div
         onClick={e => e.stopPropagation()}
+        className="kiu-modal"
         style={{
           background: 'var(--bg)',
           borderRadius: 18,
-          padding: '1.4rem 1.5rem',
           maxWidth: 580,
           width: '100%',
           maxHeight: 'calc(100vh - 1.5rem)',
@@ -499,8 +499,8 @@ function FacultyModal({ f, degree, onClose }) {
         </div>
 
         {/* Info strip */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8,
+        <div className="kiu-info-strip" style={{
+          display: 'grid', gap: 8,
           padding: '0.75rem', background: 'var(--card)',
           borderRadius: 12, marginBottom: '1rem',
           border: `1px solid ${f.color}25`,
@@ -564,7 +564,7 @@ function FacultyModal({ f, degree, onClose }) {
         )}
 
         {/* Subjects + Career */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+        <div className="grid-2" style={{ gap: '1rem', marginBottom: '1.25rem' }}>
           <div>
             <h4 style={{
               fontSize: 12, fontWeight: 700, color: 'var(--text)',
@@ -703,6 +703,9 @@ if (typeof document !== 'undefined' && !document.getElementById('faculty-styles'
       border-radius: 20px;
     }
 
+    .kiu-modal { padding: 1.4rem 1.5rem; }
+    .kiu-info-strip { grid-template-columns: repeat(3, 1fr); }
+
     /* Mobil uchun: kichik ekranda padding va font kamaytirish */
     @media (max-width: 480px) {
       .kiu-tab-btn {
@@ -714,6 +717,8 @@ if (typeof document !== 'undefined' && !document.getElementById('faculty-styles'
         padding: 1px 5px !important;
         font-size: 9px !important;
       }
+      .kiu-modal { padding: 1.2rem 1rem; }
+      .kiu-info-strip { grid-template-columns: 1fr 1fr; }
     }
   `
   document.head.appendChild(s)

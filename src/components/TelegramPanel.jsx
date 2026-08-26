@@ -55,12 +55,12 @@ export default function TelegramPanel() {
     <div className="tg-box" style={{ border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden', background: 'var(--bg)' }}>
 
       {/* Head */}
-      <div className="tg-head" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '.9rem 1.1rem', background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', borderBottom: '1px solid var(--border)' }}>
+      <div className="tg-head" style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', padding: '.9rem 1.1rem', background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', borderBottom: '1px solid var(--border)' }}>
         <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #0088cc, #0055aa)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
           <TgIcon />
         </div>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e' }}>{config.telegram.username}</div>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e', overflowWrap: 'anywhere' }}>{config.telegram.username}</div>
           <div style={{ fontSize: 11, color: 'var(--muted)' }}>Rasmiy Telegram kanal</div>
         </div>
         <span style={{ marginLeft: 'auto', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: '#fff', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20 }}>LIVE</span>
@@ -73,8 +73,8 @@ export default function TelegramPanel() {
             <div className="tg-msg-icon" style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7c3aed', flexShrink: 0, border: '1px solid var(--border)' }}>
               <PostIcon type={p.type} />
             </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 12, lineHeight: 1.6, color: '#1a1a2e' }}>{p.text}</p>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: 12, lineHeight: 1.6, color: '#1a1a2e', overflowWrap: 'anywhere' }}>{p.text}</p>
               <time style={{ fontSize: 10, color: 'var(--muted)', display: 'block', textAlign: 'right', marginTop: 3 }}>{p.date}</time>
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function TelegramPanel() {
       {/* Footer */}
       <div className="tg-foot" style={{ padding: '.75rem 1.1rem', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'center' }}>
         <a href={config.telegram.url} target="_blank" rel="noreferrer"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'linear-gradient(135deg, #0088cc, #0055aa)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '8px 18px', borderRadius: 8, textDecoration: 'none' }}>
+          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: 'linear-gradient(135deg, #0088cc, #0055aa)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '8px 18px', borderRadius: 8, textDecoration: 'none', textAlign: 'center' }}>
           <TgIcon />
           Kanalga obuna bo'lish
         </a>
