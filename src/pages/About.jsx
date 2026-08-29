@@ -74,6 +74,10 @@ export default function About() {
                 icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
                 title: 'Soft Skills', desc: "Kasb ko'nikmalari to'garaklari"
               },
+              {
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="7" r="4"/><path d="M17 11a4 4 0 1 0-3.995-4.2"/><path d="M1 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/><path d="M17 13a4 4 0 0 1 4 4v4"/></svg>,
+                title: 'Creative jamoa', desc: "Ijodkor va faol talabalar hamjamiyati"
+              },
             ].map((item, i) => (
               <div key={i} className={`card reveal reveal-delay-${(i % 4) + 1}`} style={{ textAlign: 'center', padding: '1.5rem' }}>
                 <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: '#7c3aed' }}>
@@ -98,6 +102,39 @@ export default function About() {
                 <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)', lineHeight: 1.4 }}>{p.name}</h3>
                 <div style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20, display: 'inline-block', marginBottom: 6 }}>{p.role}</div>
                 <p style={{ fontSize: 11, color: 'var(--muted)' }}>{p.info}</p>
+              </div>
+            ))}
+          </div>
+
+          <h2 className="reveal" style={{ fontSize: '1.4rem', margin: '2.5rem 0 1.5rem', color: '#1a1a2e' }}>KIU Infratuzilmasi</h2>
+          <p className="reveal" style={{ fontSize: 13, color: 'var(--muted)', marginBottom: '1.25rem', maxWidth: 520 }}>
+            Raqamli va xavfsiz ta'lim muhiti — eng so'nggi texnologiyalar bilan jihozlangan innovatsion hudud.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
+            {[
+              {
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>,
+                title: 'Bepul Wi-Fi', desc: "Universitet hududi bo'ylab yuqori tezlikdagi internet"
+              },
+              {
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,
+                title: '50+ kompyuter', desc: 'Zamonaviy kompyuter markazida dasturlash va dizayn'
+              },
+              {
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
+                title: 'Elektron kutubxona', desc: "Kitoblar va ilmiy maqolalar bazasi — istalgan joydan kirish"
+              },
+              {
+                icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>,
+                title: '24/7 Videokuzatuv', desc: "Kampusning har bir nuqtasi xavfsizlik kameralari bilan qamrab olingan"
+              },
+            ].map((item, i) => (
+              <div key={i} className={`card reveal reveal-delay-${i + 1}`} style={{ textAlign: 'center', padding: '1.5rem' }}>
+                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: '#7c3aed' }}>
+                  {item.icon}
+                </div>
+                <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)' }}>{item.title}</h3>
+                <p style={{ fontSize: 11, color: 'var(--muted)' }}>{item.desc}</p>
               </div>
             ))}
           </div>
