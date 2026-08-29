@@ -809,7 +809,7 @@ export default function Faculty() {
       {/* Cards grid */}
       <section className="section">
         <div className="container">
-          <div className="grid-auto">
+          <div className={`grid-auto faculty-grid-${tab}`}>
             {list.map((f, i) => (
               <FacultyCard
                 key={tab + '-' + f.name}

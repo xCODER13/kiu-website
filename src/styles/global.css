@@ -91,6 +91,24 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 12px; }
 
+/* Faculty page: bakalavr — fixed 5-column grid (5x2), magistratura — centered flex */
+.faculty-grid-bakalavr { grid-template-columns: repeat(5, 1fr); }
+@media (max-width: 768px) {
+  .faculty-grid-bakalavr { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 480px) {
+  .faculty-grid-bakalavr { grid-template-columns: repeat(2, 1fr); }
+}
+
+.faculty-grid-magistratura {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.faculty-grid-magistratura > * {
+  flex: 0 1 220px;
+}
+
 /* Stats grid */
 .stats-grid {
   display: grid;
