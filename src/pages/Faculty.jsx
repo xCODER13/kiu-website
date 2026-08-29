@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { Link } from 'react-router-dom'
 
 /* ── Price formatter: 12850000 -> "12 850 000" ─────────────── */
 const fmt = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -611,8 +612,8 @@ function FacultyModal({ f, degree, onClose }) {
 
         {/* CTA buttons */}
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <a
-            href="/admission"
+          <Link
+            to="/admission"
             style={{
               flex: 1, minWidth: 160,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -625,7 +626,7 @@ function FacultyModal({ f, degree, onClose }) {
           >
             {IC.pen(14)}
             Ariza topshirish
-          </a>
+          </Link>
           <a
             href="tel:+998555009944"
             style={{
