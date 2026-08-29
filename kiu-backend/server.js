@@ -23,7 +23,21 @@ app.set('trust proxy', 1)
 // ── HELMET — HTTP xavfsizlik headerlari ──
 app.use(helmet())
 
-app.use(cors({ origin: process.env.FRONTEND_URL || 'https://kiu-university.vercel.app', credentials: true }))
+const PRODUCTION_ORIGIN = process.env.FRONTEND_URL || 'https://kiu-university.vercel.app'
+// Preview deploy domenlari: kiu-website-<hash>-xcoder13s-projects.vercel.app
+const PREVIEW_ORIGIN_RE = /^https:\/\/kiu-website-[a-z0-9]+-xcoder13s-projects\.vercel\.app$/
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true) // server-to-server / curl / Postman
+    if (origin === PRODUCTION_ORIGIN || PREVIEW_ORIGIN_RE.test(origin)) {
+      return callback(null, true)
+    }
+    console.warn('[CORS] Bloklandi — ruxsatsiz origin: ' + origin)
+    return callback(new Error('Not allowed by CORS'))
+  },
+  credentials: true,
+}))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
 
