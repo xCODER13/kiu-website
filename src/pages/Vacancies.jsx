@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { validateFullName, validatePhone, validateEmail, validateRequired, errorBorder } from '../utils/validation'
 
 const BENEFITS = [
   { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, title: "Raqobatbardosh ish haqi", desc: "Bozor narxidan yuqori maosh" },
@@ -36,6 +37,8 @@ export default function Vacancies() {
   const [form, setForm] = useState({ fullName: '', phone: '', email: '', position: '', faculty: '', education: '', experience: '', message: '', hasPortfolio: false })
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState({})
   const [activeTab, setActiveTab] = useState('info')
 
   function handleChange(e) {
@@ -43,20 +46,38 @@ export default function Vacancies() {
     setForm({ ...form, [e.target.name]: val })
   }
 
+  function validate() {
+    const errs = {
+      fullName: validateFullName(form.fullName),
+      phone: validatePhone(form.phone),
+      email: validateEmail(form.email),
+      position: validateRequired(form.position, 'Lavozim'),
+      faculty: validateRequired(form.faculty, "Bo'lim/Kafedra"),
+      education: validateRequired(form.education, "Ta'lim darajasi"),
+      experience: validateRequired(form.experience, 'Ish tajribasi'),
+    }
+    setFieldErrors(errs)
+    return Object.values(errs).every(v => !v)
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
+    setError(false)
+    if (!validate()) return
     setLoading(true)
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/api/applications`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/applications`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, name: form.fullName, type: 'vacancy' }),
       })
+      if (!res.ok) throw new Error('Request failed')
+      setSent(true)
     } catch (error) {
       console.error('Error submitting application:', error);
+      setError(true)
     }
     setLoading(false)
-    setSent(true)
   }
 
   return (
@@ -197,7 +218,7 @@ export default function Vacancies() {
                   <h2 style={{ fontSize: '1.3rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Ishga joylashish uchun so'rovnoma</h2>
                   <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: '1.5rem' }}>Barcha maydonlarni to'liq va aniq to'ldiring. Arizangiz 7 ish kuni ichida ko'rib chiqiladi.</p>
 
-                  <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
                     {/* Shaxsiy */}
                     <div style={sectionBoxStyle}>
@@ -208,16 +229,19 @@ export default function Vacancies() {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <div>
                           <label style={labelStyle}>To'liq ism (FIO) *</label>
-                          <input name="fullName" value={form.fullName} onChange={handleChange} required placeholder="Familiya Ism Otasining ismi" style={inputStyle} />
+                          <input name="fullName" value={form.fullName} onChange={handleChange} placeholder="Familiya Ism Otasining ismi" style={errorBorder(fieldErrors.fullName, inputStyle)} />
+                          {fieldErrors.fullName && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.fullName}</div>}
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                           <div>
                             <label style={labelStyle}>Telefon *</label>
-                            <input name="phone" value={form.phone} onChange={handleChange} required placeholder="+998 90 123 45 67" style={inputStyle} />
+                            <input name="phone" value={form.phone} onChange={handleChange} placeholder="+998 90 123 45 67" style={errorBorder(fieldErrors.phone, inputStyle)} />
+                            {fieldErrors.phone && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.phone}</div>}
                           </div>
                           <div>
                             <label style={labelStyle}>Email *</label>
-                            <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="email@example.com" style={inputStyle} />
+                            <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="email@example.com" style={errorBorder(fieldErrors.email, inputStyle)} />
+                            {fieldErrors.email && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.email}</div>}
                           </div>
                         </div>
                       </div>
@@ -233,33 +257,36 @@ export default function Vacancies() {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                           <div>
                             <label style={labelStyle}>Lavozim *</label>
-                            <select name="position" value={form.position} onChange={handleChange} required style={inputStyle}>
+                            <select name="position" value={form.position} onChange={handleChange} style={errorBorder(fieldErrors.position, inputStyle)}>
                               <option value="">Tanlang</option>
                               {POSITIONS.map(p => <option key={p}>{p}</option>)}
                             </select>
+                            {fieldErrors.position && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.position}</div>}
                           </div>
                           <div>
                             <label style={labelStyle}>Bo'lim / Kafedra *</label>
-                            <select name="faculty" value={form.faculty} onChange={handleChange} required style={inputStyle}>
+                            <select name="faculty" value={form.faculty} onChange={handleChange} style={errorBorder(fieldErrors.faculty, inputStyle)}>
                               <option value="">Tanlang</option>
                               {FACULTIES.map(f => <option key={f}>{f}</option>)}
                             </select>
+                            {fieldErrors.faculty && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.faculty}</div>}
                           </div>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                           <div>
                             <label style={labelStyle}>Ta'lim darajasi *</label>
-                            <select name="education" value={form.education} onChange={handleChange} required style={inputStyle}>
+                            <select name="education" value={form.education} onChange={handleChange} style={errorBorder(fieldErrors.education, inputStyle)}>
                               <option value="">Tanlang</option>
                               <option>Bakalavr</option>
                               <option>Magistr</option>
                               <option>PhD</option>
                               <option>Fan doktori</option>
                             </select>
+                            {fieldErrors.education && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.education}</div>}
                           </div>
                           <div>
                             <label style={labelStyle}>Ish tajribasi *</label>
-                            <select name="experience" value={form.experience} onChange={handleChange} required style={inputStyle}>
+                            <select name="experience" value={form.experience} onChange={handleChange} style={errorBorder(fieldErrors.experience, inputStyle)}>
                               <option value="">Tanlang</option>
                               <option>Tajribam yo'q</option>
                               <option>1 yilgacha</option>
@@ -268,6 +295,7 @@ export default function Vacancies() {
                               <option>5–10 yil</option>
                               <option>10 yildan ortiq</option>
                             </select>
+                            {fieldErrors.experience && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.experience}</div>}
                           </div>
                         </div>
                       </div>
@@ -309,6 +337,12 @@ export default function Vacancies() {
                       </div>
                     </div>
 
+                    {error && (
+                      <div style={{ fontSize: 12.5, color: '#dc2626', background: 'rgba(220,38,38,.08)', border: '1px solid rgba(220,38,38,.25)', borderRadius: 10, padding: '10px 14px' }}>
+                        Arizani yuborishda xatolik yuz berdi. Internet aloqasini tekshirib, qayta urinib ko'ring.
+                      </div>
+                    )}
+
                     <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '13px', fontSize: 14 }} disabled={loading}>
                       {loading ? (
                         <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -326,15 +360,15 @@ export default function Vacancies() {
                 </div>
               ) : (
                 <div className="card" style={{ padding: '3rem', textAlign: 'center' }}>
-                  <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg,#faf5ff,#ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#7c3aed' }}>
+                  <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg, var(--purple-pale), var(--purple-light))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#7c3aed' }}>
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
-                  <h2 style={{ fontSize: '1.4rem', color: '#1a1a2e', marginBottom: '.75rem' }}>Arizangiz qabul qilindi!</h2>
+                  <h2 style={{ fontSize: '1.4rem', color: 'var(--text)', marginBottom: '.75rem' }}>Arizangiz qabul qilindi!</h2>
                   <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.7, marginBottom: '1.5rem', maxWidth: 400, margin: '0 auto 1.5rem' }}>
                     Hurmatli <strong style={{ color: 'var(--text)' }}>{form.fullName}</strong>, arizangiz muvaffaqiyatli yuborildi. Mutaxassislarimiz <strong style={{ color: 'var(--text)' }}>7 ish kuni</strong> ichida siz bilan bog'lanadi.
                   </p>
                   <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <button onClick={() => { setSent(false); setForm({ fullName: '', phone: '', email: '', position: '', faculty: '', education: '', experience: '', message: '', hasPortfolio: false }) }} className="btn btn-secondary" style={{ fontSize: 13 }}>
+                    <button onClick={() => { setSent(false); setForm({ fullName: '', phone: '', email: '', position: '', faculty: '', education: '', experience: '', message: '', hasPortfolio: false }) }} className="btn btn-primary" style={{ fontSize: 13 }}>
                       Yangi ariza
                     </button>
                     <button onClick={() => setActiveTab('info')} className="btn btn-primary" style={{ fontSize: 13 }}>

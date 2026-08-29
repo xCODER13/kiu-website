@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { validateFullName, validatePhone, errorBorder } from '../utils/validation'
  
 // ── SVG ICONS ──────────────────────────────────────────────
 const IcHat = () => (
@@ -441,11 +442,14 @@ export default function SortingHat() {
   const [selected, setSelected] = useState(null)
   const [busy, setBusy]         = useState(false)
   const [userInfo, setUserInfo] = useState({ name: '', phone: '' })
+  const [fieldErrors, setFieldErrors] = useState({})
 
   function startQuiz() { setStage('register') }
 
   async function submitInfo() {
-    if (!userInfo.name.trim() || !userInfo.phone.trim()) return
+    const errs = { name: validateFullName(userInfo.name), phone: validatePhone(userInfo.phone) }
+    setFieldErrors(errs)
+    if (errs.name || errs.phone) return
     setStage('quiz'); setCurrent(0)
     setScores({}); setResult(null); setSelected(null)
   }
@@ -590,18 +594,20 @@ export default function SortingHat() {
                   <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Ism Familiya *</label>
                   <input type="text" value={userInfo.name} onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
                     placeholder="Masalan: Xurshid Xamrayev"
-                    style={{ width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' }}
+                    style={errorBorder(fieldErrors.name, { width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' })}
                     onFocus={e => e.target.style.borderColor = '#7c3aed'}
-                    onBlur={e => e.target.style.borderColor = 'var(--border)'} />
+                    onBlur={e => e.target.style.borderColor = fieldErrors.name ? '#dc2626' : 'var(--border)'} />
+                  {fieldErrors.name && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 5 }}>{fieldErrors.name}</div>}
                 </div>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>Telefon raqam *</label>
                   <input type="tel" value={userInfo.phone} onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
                     placeholder="+998 90 123 45 67"
-                    style={{ width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' }}
+                    style={errorBorder(fieldErrors.phone, { width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' })}
                     onFocus={e => e.target.style.borderColor = '#7c3aed'}
-                    onBlur={e => e.target.style.borderColor = 'var(--border)'}
+                    onBlur={e => e.target.style.borderColor = fieldErrors.phone ? '#dc2626' : 'var(--border)'}
                     onKeyDown={e => { if (e.key === 'Enter') submitInfo() }} />
+                  {fieldErrors.phone && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 5 }}>{fieldErrors.phone}</div>}
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
