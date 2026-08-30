@@ -743,7 +743,7 @@ function ProfileAdmin() {
           <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: 8 }}>{Ic.key} Parolni o'zgartirish</h3>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div><label style={lbl}>Joriy parol *</label><input type="password" value={form.currentPassword} onChange={e => setForm({ ...form, currentPassword: e.target.value })} required placeholder="••••••••" style={inp} /></div>
-            <div><label style={lbl}>Yangi parol *</label><input type="password" value={form.newPassword} onChange={e => setForm({ ...form, newPassword: e.target.value })} required placeholder="Kamida 6 ta belgi" style={inp} /></div>
+            <div><label style={lbl}>Yangi parol *</label><input type="password" value={form.newPassword} onChange={e => setForm({ ...form, newPassword: e.target.value })} required placeholder="Kamida 8 ta belgi" style={inp} /></div>
             <div><label style={lbl}>Tasdiqlang *</label><input type="password" value={form.confirmPassword} onChange={e => setForm({ ...form, confirmPassword: e.target.value })} required placeholder="••••••••" style={inp} /></div>
             {msg && (
               <div style={{ padding: '10px 12px', borderRadius: 8, background: msg.type === 'success' ? 'rgba(5,150,105,.1)' : 'rgba(220,38,38,.1)', border: `1px solid ${msg.type === 'success' ? '#059669' : '#dc2626'}`, fontSize: 12, color: msg.type === 'success' ? '#059669' : '#dc2626', display: 'flex', alignItems: 'center', gap: 6 }}>
