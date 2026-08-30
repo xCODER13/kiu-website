@@ -809,7 +809,7 @@ export default function Faculty() {
 
       {/* Cards grid */}
       <section className="section">
-        <div className="container">
+        <div className="container-wide">
           <div className={`grid-auto faculty-grid-${tab}`}>
             {list.map((f, i) => (
               <FacultyCard

@@ -392,3 +392,11 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 }
 details[open] .details-arrow { transform: rotate(180deg); }
 .details-arrow { transition: transform .2s; }
+.container-wide {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+@media (max-width: 768px) {
+  .container-wide { padding: 0 1.25rem; }
+}
