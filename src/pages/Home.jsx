@@ -148,7 +148,7 @@ export default function Home() {
   const { data: newsData, loading: newsLoading, error: newsError } = useApi(`${API}/api/news`, [])
   const articles = newsData.filter(n => !n.videoId)
   const featured = articles.slice(0, 5)
-  const latest4 = articles.slice(0, 4)
+  const latest3 = articles.slice(0, 3)
 
   useEffect(() => {
     const timers = []
@@ -323,7 +323,7 @@ export default function Home() {
                 <HomeNewsCarousel items={featured} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 14 }}>
-                {latest4.map((n, i) => <HomeNewsCard key={n._id} item={n} index={i} />)}
+                {latest3.map((n, i) => <HomeNewsCard key={n._id} item={n} index={i} />)}
               </div>
             </>
           ) : (
