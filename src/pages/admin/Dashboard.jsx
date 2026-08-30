@@ -716,7 +716,7 @@ function ProfileAdmin() {
   async function handleSubmit(e) {
     e.preventDefault()
     if (form.newPassword !== form.confirmPassword) return setMsg({ type: 'error', text: 'Yangi parollar mos kelmadi!' })
-    if (form.newPassword.length < 6) return setMsg({ type: 'error', text: 'Parol kamida 8 ta belgidan iborat bo\'lishi kerak!' })
+    if (form.newPassword.length < 8) return setMsg({ type: 'error', text: 'Parol kamida 8 ta belgidan iborat bo\'lishi kerak!' })
     try {
       const res = await fetch(`${API}/admin/change-password`, { method: 'POST', headers: H(), body: JSON.stringify({ currentPassword: form.currentPassword, newPassword: form.newPassword }) })
       const data = await res.json()
