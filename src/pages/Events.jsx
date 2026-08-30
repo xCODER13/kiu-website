@@ -50,14 +50,26 @@ export default function Events() {
                 const tc = typeColors[e.type] || typeColors.general
                 return (
                   <div key={e._id} className="card" style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-                    <div style={{ width: 56, height: 56, borderRadius: 12, background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
-                      <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>{e.date?.split(' ')[0]}</div>
-                      <div style={{ fontSize: 10, opacity: .8 }}>{e.month}</div>
-                    </div>
+                    {e.image ? (
+                      <img
+                        src={e.image}
+                        alt={e.title}
+                        style={{ width: 56, height: 56, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
+                        onError={ev => { ev.target.style.display = 'none' }}
+                      />
+                    ) : (
+                      <div style={{ width: 56, height: 56, borderRadius: 12, background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>{e.date?.split(' ')[0]}</div>
+                        <div style={{ fontSize: 10, opacity: .8 }}>{e.month}</div>
+                      </div>
+                    )}
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
                         <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', fontFamily: 'var(--font-body)' }}>{e.title}</h3>
                         <span style={{ fontSize: 11, fontWeight: 600, color: tc.color, background: tc.bg, padding: '2px 8px', borderRadius: 20 }}>{tc.label}</span>
+                        {e.image && (
+                          <span style={{ fontSize: 11, color: 'var(--muted)' }}>{e.date} {e.month}</span>
+                        )}
                       </div>
                       <p style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.6 }}>{e.desc}</p>
                     </div>

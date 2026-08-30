@@ -6,6 +6,7 @@ const TeacherSchema = new mongoose.Schema({
   dept: { type: String, required: true },
   avatar: { type: String, default: '' },
   email: { type: String, default: '' },
+  image: { type: String, default: '' },
 }, { timestamps: true })
 
 module.exports = mongoose.model('Teacher', TeacherSchema)

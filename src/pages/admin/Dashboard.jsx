@@ -11,6 +11,21 @@ const supabase = createClient(
 const API = import.meta.env.VITE_API_URL + '/api'
 const H = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('kiu_token')}` })
 
+// ── SHARED IMAGE UPLOAD HELPER ──
+// Barcha admin formalar (News, Events, Teachers) uchun umumiy Supabase Storage
+// yuklash funksiyasi. Hozircha bitta "news-images" bucket'idan foydalanadi,
+// papka nomi bo'yicha ajratiladi (news/, events/, teachers/).
+async function uploadImageToSupabase(file, folder) {
+  const ext = file.name.split('.').pop()
+  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+  const { error } = await supabase.storage
+    .from('news-images')
+    .upload(`${folder}/${fileName}`, file, { cacheControl: '3600', upsert: false })
+  if (error) throw new Error(error.message)
+  const { data } = supabase.storage.from('news-images').getPublicUrl(`${folder}/${fileName}`)
+  return data.publicUrl
+}
+
 // ── ICONS ──
 const Ic = {
   stats:   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
@@ -34,6 +49,7 @@ const Ic = {
   menu:    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
   close:   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
   check:   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+  photo:   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
 }
 
 // ── STYLES ──
@@ -185,12 +201,7 @@ function NewsAdmin() {
   }
 
   async function uploadOne(file) {
-    const ext = file.name.split('.').pop()
-    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-    const { error } = await supabase.storage.from('news-images').upload(`news/${fileName}`, file, { cacheControl: '3600', upsert: false })
-    if (error) throw new Error(error.message)
-    const { data } = supabase.storage.from('news-images').getPublicUrl(`news/${fileName}`)
-    return data.publicUrl
+    return uploadImageToSupabase(file, 'news')
   }
 
   async function save() {
@@ -268,7 +279,7 @@ function NewsAdmin() {
               <div>
                 <label style={lbl}>Rasmlar ({imagePreviews.length} ta)</label>
                 <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #7c3aed', color: '#7c3aed', background: 'rgba(124,58,237,.05)' }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  {Ic.photo}
                   Rasm qo'shish
                   <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleFileSelect} style={{ display: 'none' }} />
                 </label>
@@ -364,22 +375,58 @@ function NewsAdmin() {
 // ── EVENTS ──
 function EventsAdmin() {
   const [events, setEvents] = useState([])
-  const [form, setForm]     = useState({ title: '', desc: '', date: '', month: '', type: 'general' })
+  const [form, setForm]     = useState({ title: '', desc: '', date: '', month: '', type: 'general', image: '' })
   const [editing, setEdit]  = useState(null)
   const [open, setOpen]     = useState(false)
+  const [imageFile, setImageFile]       = useState(null)   // yangi tanlangan fayl
+  const [imagePreview, setImagePreview] = useState(null)   // preview URL (blob yoki mavjud supabase URL)
+  const [uploading, setUploading]       = useState(false)
 
   const types = [['general','Umumiy'],['open','Ochiq kun'],['culture','Madaniy'],['science','Ilmiy'],['sport','Sport'],['graduation','Bitiruvchilar'],['admission','Qabul']]
 
   useEffect(() => { fetch(`${API}/events`).then(r => r.json()).then(setEvents).catch(() => {}) }, [])
 
+  function handleImageSelect(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) return alert('Faqat rasm fayli qabul qilinadi!')
+    if (file.size > 5 * 1024 * 1024) return alert("Rasm 5 MB dan katta bo'lmasin!")
+    if (imagePreview?.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
+  }
+
+  function removeImage() {
+    if (imagePreview?.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
+    setImageFile(null)
+    setImagePreview(null)
+    setForm(f => ({ ...f, image: '' }))
+  }
+
   async function save() {
     if (!form.title.trim() || !form.date.trim()) return alert('Sarlavha va sana kiritilishi shart!')
+
+    let imageUrl = form.image || ''
+    if (imageFile) {
+      setUploading(true)
+      try {
+        imageUrl = await uploadImageToSupabase(imageFile, 'events')
+      } catch (err) {
+        setUploading(false)
+        return alert('Rasm yuklanmadi: ' + err.message)
+      }
+      setUploading(false)
+    }
+
+    const body = { ...form, image: imageUrl }
     const url = editing ? `${API}/events/${editing}` : `${API}/events`
-    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(form) })
+    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(body) })
     const data = await res.json()
     if (editing) setEvents(p => p.map(e => e._id === editing ? data : e))
     else setEvents(p => [data, ...p])
-    setForm({ title: '', desc: '', date: '', month: '', type: 'general' })
+
+    setForm({ title: '', desc: '', date: '', month: '', type: 'general', image: '' })
+    setImageFile(null); setImagePreview(null)
     setEdit(null); setOpen(false)
   }
 
@@ -393,7 +440,11 @@ function EventsAdmin() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>Tadbirlar ({events.length})</h2>
-        <button style={bP} onClick={() => { setOpen(!open); setEdit(null); setForm({ title: '', desc: '', date: '', month: '', type: 'general' }) }}>{Ic.add} Yangi</button>
+        <button style={bP} onClick={() => {
+          setOpen(!open); setEdit(null)
+          setForm({ title: '', desc: '', date: '', month: '', type: 'general', image: '' })
+          setImageFile(null); setImagePreview(null)
+        }}>{Ic.add} Yangi</button>
       </div>
 
       {open && (
@@ -411,9 +462,34 @@ function EventsAdmin() {
                 </select>
               </div>
             </div>
+
+            <div>
+              <label style={lbl}>Poster rasm</label>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #4f46e5', color: '#4f46e5', background: 'rgba(79,70,229,.05)' }}>
+                {Ic.photo}
+                {imagePreview ? 'Rasmni almashtirish' : "Rasm qo'shish"}
+                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageSelect} style={{ display: 'none' }} />
+              </label>
+              {imagePreview && (
+                <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
+                  <img src={imagePreview} alt="poster" style={{ width: 70, height: 50, objectFit: 'cover', borderRadius: 8, border: '2px solid #4f46e5', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
+                  <button onClick={removeImage} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
+                </div>
+              )}
+              <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB · ixtiyoriy — bo'lmasa sana-badge ko'rsatiladi</div>
+            </div>
+
             <div><label style={lbl}>Tavsif</label><textarea value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} rows={3} style={{ ...inp, resize: 'vertical' }} /></div>
+
+            {uploading && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#4f46e5' }}>
+                <div style={{ width: 14, height: 14, border: '2px solid #e0e7ff', borderTopColor: '#4f46e5', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                Rasm yuklanmoqda...
+              </div>
+            )}
+
             <div style={{ display: 'flex', gap: 8 }}>
-              <button style={bP} onClick={save}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
+              <button style={{ ...bP, opacity: uploading ? .6 : 1 }} onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
               <button style={bG} onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
             </div>
           </div>
@@ -423,18 +499,32 @@ function EventsAdmin() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {events.map(e => (
           <div key={e._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-            <div style={{ display: 'flex', gap: 12, flex: 1 }}>
-              <div style={{ width: 46, height: 46, borderRadius: 10, background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1 }}>{e.date?.split(' ')[0]}</div>
-                <div style={{ fontSize: 9, opacity: .75 }}>{e.month}</div>
-              </div>
+            <div style={{ display: 'flex', gap: 12, flex: 1, minWidth: 0 }}>
+              {e.image ? (
+                <img
+                  src={e.image} alt={e.title}
+                  style={{ width: 46, height: 46, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
+                  onError={ev => { ev.target.style.opacity = '0.2' }}
+                />
+              ) : (
+                <div style={{ width: 46, height: 46, borderRadius: 10, background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1 }}>{e.date?.split(' ')[0]}</div>
+                  <div style={{ fontSize: 9, opacity: .75 }}>{e.month}</div>
+                </div>
+              )}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>{e.title}</div>
                 <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.desc}</div>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-              <button style={bE} onClick={() => { setEdit(e._id); setForm({ title: e.title, desc: e.desc || '', date: e.date, month: e.month || '', type: e.type || 'general' }); setOpen(true) }}>{Ic.edit}</button>
+              <button style={bE} onClick={() => {
+                setEdit(e._id)
+                setForm({ title: e.title, desc: e.desc || '', date: e.date, month: e.month || '', type: e.type || 'general', image: e.image || '' })
+                setImageFile(null)
+                setImagePreview(e.image || null)
+                setOpen(true)
+              }}>{Ic.edit}</button>
               <button style={bD} onClick={() => del(e._id)}>{Ic.del}</button>
             </div>
           </div>
@@ -457,21 +547,57 @@ const KAFEDRALAR = [
 
 function TeachersAdmin() {
   const [teachers, setTeachers] = useState([])
-  const [form, setForm]         = useState({ name: '', role: '', dept: '', email: '', avatar: '' })
+  const [form, setForm]         = useState({ name: '', role: '', dept: '', email: '', avatar: '', image: '' })
   const [editing, setEdit]      = useState(null)
   const [open, setOpen]         = useState(false)
+  const [imageFile, setImageFile]       = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
+  const [uploading, setUploading]       = useState(false)
   const colors = ['#7c3aed','#4f46e5','#0088cc','#059669','#d97706','#db2777']
 
   useEffect(() => { fetch(`${API}/teachers`).then(r => r.json()).then(setTeachers).catch(() => {}) }, [])
 
+  function handleImageSelect(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) return alert('Faqat rasm fayli qabul qilinadi!')
+    if (file.size > 5 * 1024 * 1024) return alert("Rasm 5 MB dan katta bo'lmasin!")
+    if (imagePreview?.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
+  }
+
+  function removeImage() {
+    if (imagePreview?.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
+    setImageFile(null)
+    setImagePreview(null)
+    setForm(f => ({ ...f, image: '' }))
+  }
+
   async function save() {
     if (!form.name.trim() || !form.role.trim()) return alert('Ism va lavozim kiritilishi shart!')
+
+    let imageUrl = form.image || ''
+    if (imageFile) {
+      setUploading(true)
+      try {
+        imageUrl = await uploadImageToSupabase(imageFile, 'teachers')
+      } catch (err) {
+        setUploading(false)
+        return alert('Rasm yuklanmadi: ' + err.message)
+      }
+      setUploading(false)
+    }
+
+    const body = { ...form, image: imageUrl }
     const url = editing ? `${API}/teachers/${editing}` : `${API}/teachers`
-    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(form) })
+    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(body) })
     const data = await res.json()
     if (editing) setTeachers(p => p.map(t => t._id === editing ? data : t))
     else setTeachers(p => [data, ...p])
-    setForm({ name: '', role: '', dept: '', email: '', avatar: '' })
+
+    setForm({ name: '', role: '', dept: '', email: '', avatar: '', image: '' })
+    setImageFile(null); setImagePreview(null)
     setEdit(null); setOpen(false)
   }
 
@@ -485,7 +611,11 @@ function TeachersAdmin() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>O'qituvchilar ({teachers.length})</h2>
-        <button style={bP} onClick={() => { setOpen(!open); setEdit(null); setForm({ name: '', role: '', dept: '', email: '', avatar: '' }) }}>{Ic.add} Yangi</button>
+        <button style={bP} onClick={() => {
+          setOpen(!open); setEdit(null)
+          setForm({ name: '', role: '', dept: '', email: '', avatar: '', image: '' })
+          setImageFile(null); setImagePreview(null)
+        }}>{Ic.add} Yangi</button>
       </div>
 
       {open && (
@@ -497,6 +627,23 @@ function TeachersAdmin() {
               <div><label style={lbl}>Lavozim *</label><input value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} placeholder="O'qituvchi / Dotsent" style={inp} /></div>
               <div><label style={lbl}>Avatar (2 harf)</label><input value={form.avatar} onChange={e => setForm({ ...form, avatar: e.target.value })} placeholder="AB" maxLength={2} style={inp} /></div>
             </div>
+
+            <div>
+              <label style={lbl}>Foto (ixtiyoriy)</label>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #0088cc', color: '#0088cc', background: 'rgba(0,136,204,.05)' }}>
+                {Ic.photo}
+                {imagePreview ? 'Fotoni almashtirish' : "Foto qo'shish"}
+                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageSelect} style={{ display: 'none' }} />
+              </label>
+              {imagePreview && (
+                <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
+                  <img src={imagePreview} alt="foto" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '2px solid #0088cc', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
+                  <button onClick={removeImage} style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
+                </div>
+              )}
+              <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB · rasm bo'lmasa 2-harfli avatar ko'rsatiladi</div>
+            </div>
+
             <div><label style={lbl}>Kafedra *</label>
               <select value={form.dept} onChange={e => setForm({ ...form, dept: e.target.value })} style={inp}>
                 <option value="">— Kafedrni tanlang —</option>
@@ -504,8 +651,16 @@ function TeachersAdmin() {
               </select>
             </div>
             <div><label style={lbl}>Email</label><input value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="teacher@kiu.uz" style={inp} /></div>
+
+            {uploading && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#0088cc' }}>
+                <div style={{ width: 14, height: 14, border: '2px solid #cceeff', borderTopColor: '#0088cc', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                Foto yuklanmoqda...
+              </div>
+            )}
+
             <div style={{ display: 'flex', gap: 8 }}>
-              <button style={bP} onClick={save}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
+              <button style={{ ...bP, opacity: uploading ? .6 : 1 }} onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
               <button style={bG} onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
             </div>
           </div>
@@ -516,8 +671,10 @@ function TeachersAdmin() {
         {teachers.map((t, i) => (
           <div key={t._id} style={card}>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: '0.75rem' }}>
-              <div style={{ width: 42, height: 42, borderRadius: '50%', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
-                {t.avatar || t.name?.slice(0,2).toUpperCase()}
+              <div style={{ width: 42, height: 42, borderRadius: '50%', overflow: 'hidden', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+                {t.image
+                  ? <img src={t.image} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={ev => { ev.target.style.display = 'none' }} />
+                  : (t.avatar || t.name?.slice(0,2).toUpperCase())}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.name}</div>
@@ -527,7 +684,13 @@ function TeachersAdmin() {
             <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 4 }}>{t.dept}</div>
             {t.email && <div style={{ fontSize: 11, color: '#7c3aed', marginBottom: '0.75rem' }}>{t.email}</div>}
             <div style={{ display: 'flex', gap: 6 }}>
-              <button style={bE} onClick={() => { setEdit(t._id); setForm({ name: t.name, role: t.role, dept: t.dept, email: t.email || '', avatar: t.avatar || '' }); setOpen(true) }}>{Ic.edit} Tahrir</button>
+              <button style={bE} onClick={() => {
+                setEdit(t._id)
+                setForm({ name: t.name, role: t.role, dept: t.dept, email: t.email || '', avatar: t.avatar || '', image: t.image || '' })
+                setImageFile(null)
+                setImagePreview(t.image || null)
+                setOpen(true)
+              }}>{Ic.edit} Tahrir</button>
               <button style={bD} onClick={() => del(t._id)}>{Ic.del}</button>
             </div>
           </div>
@@ -716,7 +879,7 @@ function ProfileAdmin() {
   async function handleSubmit(e) {
     e.preventDefault()
     if (form.newPassword !== form.confirmPassword) return setMsg({ type: 'error', text: 'Yangi parollar mos kelmadi!' })
-    if (form.newPassword.length < 8) return setMsg({ type: 'error', text: 'Parol kamida 8 ta belgidan iborat bo\'lishi kerak!' })
+    if (form.newPassword.length < 6) return setMsg({ type: 'error', text: 'Parol kamida 8 ta belgidan iborat bo\'lishi kerak!' })
     try {
       const res = await fetch(`${API}/admin/change-password`, { method: 'POST', headers: H(), body: JSON.stringify({ currentPassword: form.currentPassword, newPassword: form.newPassword }) })
       const data = await res.json()
@@ -743,7 +906,7 @@ function ProfileAdmin() {
           <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: 8 }}>{Ic.key} Parolni o'zgartirish</h3>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div><label style={lbl}>Joriy parol *</label><input type="password" value={form.currentPassword} onChange={e => setForm({ ...form, currentPassword: e.target.value })} required placeholder="••••••••" style={inp} /></div>
-            <div><label style={lbl}>Yangi parol *</label><input type="password" value={form.newPassword} onChange={e => setForm({ ...form, newPassword: e.target.value })} required placeholder="Kamida 8 ta belgi" style={inp} /></div>
+            <div><label style={lbl}>Yangi parol *</label><input type="password" value={form.newPassword} onChange={e => setForm({ ...form, newPassword: e.target.value })} required placeholder="Kamida 6 ta belgi" style={inp} /></div>
             <div><label style={lbl}>Tasdiqlang *</label><input type="password" value={form.confirmPassword} onChange={e => setForm({ ...form, confirmPassword: e.target.value })} required placeholder="••••••••" style={inp} /></div>
             {msg && (
               <div style={{ padding: '10px 12px', borderRadius: 8, background: msg.type === 'success' ? 'rgba(5,150,105,.1)' : 'rgba(220,38,38,.1)', border: `1px solid ${msg.type === 'success' ? '#059669' : '#dc2626'}`, fontSize: 12, color: msg.type === 'success' ? '#059669' : '#dc2626', display: 'flex', alignItems: 'center', gap: 6 }}>

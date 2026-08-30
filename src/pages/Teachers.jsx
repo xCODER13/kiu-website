@@ -122,8 +122,10 @@ export default function Teachers() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 14 }}>
                   {filtered.map((t, i) => (
                     <div key={t._id || t.id} className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
-                      <div style={{ width: 64, height: 64, borderRadius: '50%', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff', fontSize: 18, fontWeight: 700 }}>
-                        {t.avatar || t.name?.slice(0,2).toUpperCase()}
+                      <div style={{ width: 64, height: 64, borderRadius: '50%', overflow: 'hidden', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff', fontSize: 18, fontWeight: 700 }}>
+                        {t.image
+                          ? <img src={t.image} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={ev => { ev.target.style.display = 'none' }} />
+                          : (t.avatar || t.name?.slice(0,2).toUpperCase())}
                       </div>
                       <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)', lineHeight: 1.4 }}>{t.name}</h3>
                       <div style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20, display: 'inline-block', marginBottom: 6 }}>{t.role}</div>
