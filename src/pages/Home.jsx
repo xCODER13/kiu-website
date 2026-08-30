@@ -12,7 +12,9 @@ function parseImages(imageField) {
   try {
     const parsed = JSON.parse(imageField)
     if (Array.isArray(parsed)) return parsed
-  } catch { return [imageField] }
+  } catch {
+    return [imageField]
+  }
   return [imageField]
 }
 
@@ -57,7 +59,11 @@ function HomeNewsCarousel({ items }) {
     <div
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      style={{ position: 'relative', width: '100%', height: 380, borderRadius: 20, overflow: 'hidden', background: '#13102b' }}
+      style={{
+        position: 'relative', width: '100%', height: 380, borderRadius: 20,
+        overflow: 'hidden', background: '#13102b',
+        animation: 'homeSectionFadeIn .4s ease both',
+      }}
     >
       <div key={idx} style={{
         position: 'absolute', inset: 0,
@@ -108,7 +114,10 @@ function HomeNewsCard({ item, index }) {
   const img = parseImages(item.image)[0]
   return (
     <NavLink to={`/news/${item._id}`} style={{ textDecoration: 'none' }}>
-      <div className={`card reveal reveal-delay-${(index % 4) + 1}`} style={{ padding: 0, overflow: 'hidden', height: '100%' }}>
+      <div
+        className="card"
+        style={{ padding: 0, overflow: 'hidden', height: '100%', animation: `homeSectionFadeIn .4s ease ${index * 0.06}s both` }}
+      >
         {img
           ? <img src={img} alt={item.title} loading="lazy" style={{ width: '100%', height: 140, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />
           : <div style={{ width: '100%', height: 140, background: `linear-gradient(135deg, ${catColor}22, ${catColor}11)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -136,7 +145,7 @@ function HomeNewsCard({ item, index }) {
 export default function Home() {
   useReveal()
 
-  const { data: newsData, error: newsError } = useApi(`${API}/api/news`, [])
+  const { data: newsData, loading: newsLoading, error: newsError } = useApi(`${API}/api/news`, [])
   const articles = newsData.filter(n => !n.videoId)
   const featured = articles.slice(0, 5)
   const latest4 = articles.slice(0, 4)
@@ -196,11 +205,16 @@ export default function Home() {
               </div>
             </div>
 
-            {/* O'ng — kampus rasmi */}
+            {/* O'ng — kampus rasmi (3:2 aspect-ratio — bino to'liq ko'rinadi, kesilmaydi) */}
             <div className="reveal reveal-delay-2 hero-photo-wrap" style={{ position: 'relative' }}>
               <div style={{ position: 'absolute', width: 200, height: 200, borderRadius: '50%', background: '#7c3aed', opacity: 0.12, top: -30, right: -30, filter: 'blur(20px)', pointerEvents: 'none' }} />
-              <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', boxShadow: '0 20px 50px rgba(124,58,237,.22)', border: '1px solid rgba(124,58,237,.15)' }}>
-                <img src="/gallery/Asosiy-kampus.png" alt="KIU bosh bino" loading="eager" style={{ width: '100%', height: 380, objectFit: 'cover', display: 'block' }} />
+              <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', boxShadow: '0 20px 50px rgba(124,58,237,.22)', border: '1px solid rgba(124,58,237,.15)', aspectRatio: '3 / 2' }}>
+                <img
+                  src="/gallery/Asosiy-kampus.png"
+                  alt="KIU bosh bino"
+                  loading="eager"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
                 <div style={{ position: 'absolute', bottom: 14, left: 14, background: 'rgba(26,26,46,.75)', backdropFilter: 'blur(6px)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                   1-kampus — bosh bino
@@ -237,9 +251,14 @@ export default function Home() {
               </div>
             </div>
 
-            {/* O'ng — 2-kampus rasmi */}
-            <div className="reveal reveal-delay-2" style={{ position: 'relative', borderRadius: 18, overflow: 'hidden', boxShadow: '0 14px 36px rgba(0,0,0,.1)' }}>
-              <img src="/gallery/2-kampus.png" alt="KIU 2-kampus" loading="lazy" style={{ width: '100%', height: 320, objectFit: 'cover', display: 'block' }} />
+            {/* O'ng — 2-kampus rasmi (xuddi shu aspect-ratio tuzatmasi bilan) */}
+            <div className="reveal reveal-delay-2" style={{ position: 'relative', borderRadius: 18, overflow: 'hidden', boxShadow: '0 14px 36px rgba(0,0,0,.1)', aspectRatio: '3 / 2' }}>
+              <img
+                src="/gallery/2-kampus.png"
+                alt="KIU 2-kampus"
+                loading="lazy"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
               <div style={{ position: 'absolute', bottom: 14, left: 14, background: 'rgba(26,26,46,.75)', backdropFilter: 'blur(6px)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                 2-kampus
@@ -268,41 +287,63 @@ export default function Home() {
       </section>
 
       {/* ── Yangiliklar ── */}
-      {articles.length > 0 ? (
-        <section className="section" style={{ background: 'var(--bg-2)' }}>
-          <div className="container">
-            <div className="reveal section-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
-                Yangiliklar
+      <section className="section" style={{ background: 'var(--bg-2)' }}>
+        <div className="container">
+          <div className="reveal section-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
+              Yangiliklar
+            </div>
+            <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>So'nggi yangiliklar</h2>
+            <p style={{ fontSize: 14, color: 'var(--muted)' }}>KIU hayotidan so'nggi xabarlar</p>
+          </div>
+
+          {newsLoading ? (
+            // ── Yuklanmoqda: skeleton — layout sakramasligi uchun ──
+            <>
+              <div style={{
+                width: '100%', height: 380, borderRadius: 20,
+                background: 'linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%)',
+                backgroundSize: '200% 100%', animation: 'homeSkelShimmer 1.4s ease-in-out infinite',
+                marginBottom: '1.75rem',
+              }} />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 14 }}>
+                {[0, 1, 2, 3].map(i => (
+                  <div key={i} style={{
+                    height: 220, borderRadius: 14,
+                    background: 'linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%)',
+                    backgroundSize: '200% 100%', animation: `homeSkelShimmer 1.4s ease-in-out infinite ${i * 0.1}s`,
+                  }} />
+                ))}
               </div>
-              <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>So'nggi yangiliklar</h2>
-              <p style={{ fontSize: 14, color: 'var(--muted)' }}>KIU hayotidan so'nggi xabarlar</p>
+            </>
+          ) : articles.length > 0 ? (
+            // ── Muvaffaqiyatli yuklandi ──
+            <>
+              <div style={{ marginBottom: '1.75rem' }}>
+                <HomeNewsCarousel items={featured} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 14 }}>
+                {latest4.map((n, i) => <HomeNewsCard key={n._id} item={n} index={i} />)}
+              </div>
+            </>
+          ) : (
+            // ── Xato yoki bo'sh natija ──
+            <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)', fontSize: 13, border: '1px dashed var(--border)', borderRadius: 14 }}>
+              {newsError ? "Yangiliklar serveriga ulanib bo'lmadi." : "Hozircha yangiliklar yo'q."}
             </div>
+          )}
 
-            <div className="reveal reveal-delay-1" style={{ marginBottom: '1.75rem' }}>
-              <HomeNewsCarousel items={featured} />
-            </div>
-
-            <div className="reveal reveal-delay-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 14 }}>
-              {latest4.map((n, i) => <HomeNewsCard key={n._id} item={n} index={i} />)}
-            </div>
-
-            <div className="reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
-              <NavLink to="/news"><button className="btn btn-primary">Barcha yangiliklar</button></NavLink>
-            </div>
+          <div className="reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
+            <NavLink to="/news"><button className="btn btn-primary">Barcha yangiliklar</button></NavLink>
           </div>
-        </section>
-      ) : newsError && (
-        <section className="section" style={{ background: 'var(--bg-2)' }}>
-          <div className="container" style={{ textAlign: 'center', color: 'var(--muted)', fontSize: 13 }}>
-            Yangiliklar serveriga ulanib bo'lmadi.
-          </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       <style>{`
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         @keyframes homeCarouselFade { from { opacity: 0; transform: scale(1.02); } to { opacity: 1; transform: scale(1); } }
+        @keyframes homeSkelShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        @keyframes homeSectionFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 1080px) {
           .hero-grid .stats-grid { grid-template-columns: repeat(2, 1fr) !important; max-width: 320px !important; }
         }
