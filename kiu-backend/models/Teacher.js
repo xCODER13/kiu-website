@@ -5,7 +5,11 @@ const TeacherSchema = new mongoose.Schema({
   role: { type: String, required: true },
   dept: { type: String, required: true },
   avatar: { type: String, default: '' },
-  email: { type: String, default: '' },
+  email: {
+    type: String,
+    default: '',
+    validate: { validator: v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), message: "Email manzil noto'g'ri formatda" },
+  },
   image: { type: String, default: '' },
 }, { timestamps: true })
 

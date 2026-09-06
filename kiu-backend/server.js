@@ -14,6 +14,17 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 )
 
+// ── SUPABASE RASM YUKLASH — POST va PUT /api/news ikkalasida ham ishlatiladi ──
+// (avval bu kod ikki marta aynan takrorlangan edi)
+async function uploadImageToSupabase(file) {
+  const fileName = uuidv4() + '-' + file.originalname
+  const { error } = await supabase.storage
+    .from('news-images')
+    .upload(fileName, file.buffer, { contentType: file.mimetype })
+  if (error) throw error
+  const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
+  return data.publicUrl
+}
 
 const app = express()
 
@@ -191,15 +202,7 @@ app.get('/api/news', async (req, res) => {
 app.post('/api/news', auth, upload.single('imageFile'), async (req, res) => {
   try {
     let imageUrl = req.body.image || ''
-    if (req.file) {
-      const fileName = uuidv4() + '-' + req.file.originalname
-      const { error } = await supabase.storage
-        .from('news-images')
-        .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
-      if (error) throw error
-      const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
-      imageUrl = data.publicUrl
-    }
+    if (req.file) imageUrl = await uploadImageToSupabase(req.file)
     const { title, content, category, videoId } = req.body
     const shortsUrl = req.body.shortsUrl || ''
     res.json(await News.create({ title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' }))
@@ -208,15 +211,7 @@ app.post('/api/news', auth, upload.single('imageFile'), async (req, res) => {
 app.put('/api/news/:id', auth, upload.single('imageFile'), async (req, res) => {
   try {
     let imageUrl = req.body.image || ''
-    if (req.file) {
-      const fileName = uuidv4() + '-' + req.file.originalname
-      const { error } = await supabase.storage
-        .from('news-images')
-        .upload(fileName, req.file.buffer, { contentType: req.file.mimetype })
-      if (error) throw error
-      const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
-      imageUrl = data.publicUrl
-    }
+    if (req.file) imageUrl = await uploadImageToSupabase(req.file)
     const { title, content, category, videoId } = req.body
     const shortsUrl = req.body.shortsUrl || ''
     res.json(await News.findByIdAndUpdate(req.params.id,
@@ -403,14 +398,26 @@ app.get('/api/telegram/posts', viewLimiter, async (req, res) => {
   }
 })
 
+// ── HEALTH CHECK — keep-alive va monitoring uchun, biznes-logikadan mustaqil ──
+app.get('/health', (req, res) => res.json({ status: 'ok', uptime: process.uptime() }))
+
 // ── SERVER ──
 const PORT = process.env.PORT || 5000
 const SELF_URL = process.env.BACKEND_URL
 if (SELF_URL) {
   setInterval(async () => {
-    try { await fetch(`${SELF_URL}/api/telegram/posts`); console.log('Keep-alive OK') }
+    try { await fetch(`${SELF_URL}/health`); console.log('Keep-alive OK') }
     catch { console.log('Keep-alive failed') }
   }, 14 * 60 * 1000)
 }
 
-app.listen(PORT, () => console.log(`Server ishlamoqda: http://localhost:${PORT}`))
+const server = app.listen(PORT, () => console.log(`Server ishlamoqda: http://localhost:${PORT}`))
+
+// ── GRACEFUL SHUTDOWN — Render qayta deploy/restart paytida ulanishlarni toza yopish ──
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM qabul qilindi — server yopilmoqda...')
+  server.close()
+  await mongoose.connection.close()
+  console.log('Mongo ulanishi yopildi. Chiqish.')
+  process.exit(0)
+})
