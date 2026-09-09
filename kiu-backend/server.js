@@ -1,30 +1,27 @@
+require('dotenv').config()
+
 const express = require('express')
 const cors = require('cors')
-const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
-require('dotenv').config()
-const { createClient } = require('@supabase/supabase-js')
-const { v4: uuidv4 } = require('uuid')
 const helmet = require('helmet')
-const rateLimit = require('express-rate-limit')
+const pinoHttp = require('pino-http')
+const mongoose = require('mongoose')
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-)
+const logger = require('./logger')
+const { validateEnv } = require('./config/env')
+const { connectDB } = require('./config/db')
+const { corsOptions } = require('./config/cors')
+const { notFound, globalErrorHandler } = require('./middleware/errorHandler')
 
-// ── SUPABASE RASM YUKLASH — POST va PUT /api/news ikkalasida ham ishlatiladi ──
-// (avval bu kod ikki marta aynan takrorlangan edi)
-async function uploadImageToSupabase(file) {
-  const fileName = uuidv4() + '-' + file.originalname
-  const { error } = await supabase.storage
-    .from('news-images')
-    .upload(fileName, file.buffer, { contentType: file.mimetype })
-  if (error) throw error
-  const { data } = supabase.storage.from('news-images').getPublicUrl(fileName)
-  return data.publicUrl
-}
+const adminRoutes = require('./routes/admin.routes')
+const newsRoutes = require('./routes/news.routes')
+const eventsRoutes = require('./routes/events.routes')
+const teachersRoutes = require('./routes/teachers.routes')
+const applicationsRoutes = require('./routes/applications.routes')
+const statsRoutes = require('./routes/stats.routes')
+const miscRoutes = require('./routes/misc.routes')
+
+// ── STARTUP VALIDATSIYA — kritik env yo'q bo'lsa, server ishga tushmaydi ──
+validateEnv(logger)
 
 const app = express()
 
@@ -34,390 +31,49 @@ app.set('trust proxy', 1)
 // ── HELMET — HTTP xavfsizlik headerlari ──
 app.use(helmet())
 
-const PRODUCTION_ORIGIN = process.env.FRONTEND_URL || 'https://kiu-university.vercel.app'
-// Preview deploy domenlari: kiu-website-<hash>-xcoder13s-projects.vercel.app
-const PREVIEW_ORIGIN_RE = /^https:\/\/kiu-website-[a-z0-9]+-xcoder13s-projects\.vercel\.app$/
+// ── SO'ROV LOGGING — har bir so'rov/javobni avtomatik JSON log qiladi ──
+app.use(pinoHttp({ logger }))
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true) // server-to-server / curl / Postman
-    if (origin === PRODUCTION_ORIGIN || PREVIEW_ORIGIN_RE.test(origin)) {
-      return callback(null, true)
-    }
-    console.warn('[CORS] Bloklandi — ruxsatsiz origin: ' + origin)
-    return callback(new Error('Not allowed by CORS'))
-  },
-  credentials: true,
-}))
+app.use(cors(corsOptions))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
 
-// ── LOGIN RATE LIMITER — 5 ta urinish / 15 daqiqa ──
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  skipSuccessfulRequests: true,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    error: "Juda ko'p muvaffaqiyatsiz urinish. 15 daqiqadan so'ng qayta urinib ko'ring."
-  },
-  handler: (req, res, next, options) => {
-    console.warn('[RATE LIMIT] Login bloklandi — IP: ' + req.ip + ' | ' + new Date().toISOString())
-    res.status(429).json(options.message)
-  }
-})
-
-// ── FORM RATE LIMITER — arizalar / sorting-hat uchun, spam'dan himoya ──
-// 10 ta so'rov / 15 daqiqa / IP — oddiy foydalanuvchi uchun yetarli, spam-bot uchun cheklovchi
-const formLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    error: "Juda ko'p so'rov yuborildi. Birozdan so'ng qayta urinib ko'ring."
-  },
-  handler: (req, res, next, options) => {
-    console.warn(`[RATE LIMIT] ${req.originalUrl} bloklandi — IP: ${req.ip} | ${new Date().toISOString()}`)
-    res.status(429).json(options.message)
-  }
-})
-
-// ── VIEW/READ RATE LIMITER — ko'rishlar soni va Telegram postlari uchun ──
-// Bular ko'p marta chaqirilishi mumkin bo'lgan yengil endpointlar, shuning uchun limit yuqoriroq
-const viewLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 60,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    error: "Juda ko'p so'rov. Birozdan so'ng qayta urinib ko'ring."
-  }
-})
-
-const multer = require('multer')
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } })
-
-const News        = require('./models/News')
-const Event       = require('./models/Event')
-const Teacher     = require('./models/Teacher')
-const Application = require('./models/Application')
-
-mongoose.connect(process.env.MONGODB_URI)
-  .then(async () => {
-    console.log('MongoDB ulandi')
-    const setting = await mongoose.connection.db.collection('settings').findOne({ key: 'admin_password_hash' })
-    if (setting?.value) {
-      process.env.ADMIN_PASSWORD_HASH = setting.value
-      console.log('Admin parol hash yuklandi')
-    }
-  })
-  .catch(err => console.log('MongoDB xatosi:', err))
-
-// ── AUTH MIDDLEWARE ──
-function auth(req, res, next) {
-  const token = req.headers.authorization?.split(' ')[1]
-  if (!token) return res.status(401).json({ error: 'Token kerak' })
-  try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET)
-    next()
-  } catch {
-    res.status(401).json({ error: "Token noto'g'ri" })
-  }
-}
-
-// ── XATOLARNI XAVFSIZ QAYTARISH ──
-// To'liq xato server logiga yoziladi, clientga esa umumiy xabar qaytariladi
-// (Mongoose/ichki xato tafsilotlari sizib chiqmasligi uchun).
-function fail(req, res, status, e) {
-  console.error(`[ERROR] ${req.method} ${req.originalUrl}:`, e.message)
-  const publicMsg = status === 400
-    ? "So'rovda xatolik bor. Ma'lumotlarni tekshirib qayta yuboring."
-    : 'Server xatosi yuz berdi. Birozdan so\'ng qayta urinib ko\'ring.'
-  res.status(status).json({ error: publicMsg })
-}
-
-// ── AUTH ROUTES ──
-app.post('/api/admin/login', loginLimiter, async (req, res) => {
-  const { username, password } = req.body
-  if (!username || !password) return res.status(400).json({ error: 'Login va parol kerak' })
-
-  if (username !== process.env.ADMIN_USERNAME)
-    return res.status(401).json({ error: "Login yoki parol noto'g'ri" })
-
-  if (!process.env.ADMIN_PASSWORD_HASH) {
-    console.error('[SECURITY] ADMIN_PASSWORD_HASH topilmadi — settings collection tekshirilsin.')
-    return res.status(500).json({ error: 'Admin paroli sozlanmagan. Server administratoriga murojaat qiling.' })
-  }
-  const passwordOk = await bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH)
-
-  if (!passwordOk) return res.status(401).json({ error: "Login yoki parol noto'g'ri" })
-
-  const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '7d' })
-  res.json({ token })
-})
-
-app.post('/api/admin/change-password', auth, async (req, res) => {
-  const { currentPassword, newPassword } = req.body
-  if (!newPassword || newPassword.length < 8)
-    return res.status(400).json({ error: "Yangi parol kamida 8 ta belgidan iborat bo'lishi kerak" })
-
-  if (!process.env.ADMIN_PASSWORD_HASH) {
-    return res.status(500).json({ error: 'Admin paroli sozlanmagan. Server administratoriga murojaat qiling.' })
-  }
-  const currentOk = await bcrypt.compare(currentPassword, process.env.ADMIN_PASSWORD_HASH)
-
-  if (!currentOk) return res.status(401).json({ error: "Joriy parol noto'g'ri" })
-
-  try {
-    const hash = await bcrypt.hash(newPassword, 12)
-    
-    await mongoose.connection.db.collection('settings').updateOne(
-      { key: 'admin_password_hash' },
-      { $set: { value: hash } },
-      { upsert: true }
-    )
-
-    process.env.ADMIN_PASSWORD_HASH = hash
-
-    res.json({ success: true })
-  } catch (e) {
-    fail(req, res, 500, e)
-  }
-})
-
-// ── NEWS ──
-app.get('/api/news/:id', async (req, res) => {
-  try {
-    const news = await News.findById(req.params.id)
-    if (!news) return res.status(404).json({ error: 'Topilmadi' })
-    res.json(news)
-  } catch (e) { fail(req, res, 500, e) }
-})
-app.get('/api/news', async (req, res) => {
-  try { res.json(await News.find().sort({ createdAt: -1 })) }
-  catch (e) { fail(req, res, 500, e) }
-})
-app.post('/api/news', auth, upload.single('imageFile'), async (req, res) => {
-  try {
-    let imageUrl = req.body.image || ''
-    if (req.file) imageUrl = await uploadImageToSupabase(req.file)
-    const { title, content, category, videoId } = req.body
-    const shortsUrl = req.body.shortsUrl || ''
-    res.json(await News.create({ title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' }))
-  } catch (e) { fail(req, res, 400, e) }
-})
-app.put('/api/news/:id', auth, upload.single('imageFile'), async (req, res) => {
-  try {
-    let imageUrl = req.body.image || ''
-    if (req.file) imageUrl = await uploadImageToSupabase(req.file)
-    const { title, content, category, videoId } = req.body
-    const shortsUrl = req.body.shortsUrl || ''
-    res.json(await News.findByIdAndUpdate(req.params.id,
-      { title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' },
-      { new: true }
-    ))
-  } catch (e) { fail(req, res, 400, e) }
-})
-app.put('/api/news/:id/view', viewLimiter, async (req, res) => {
-  try {
-    await News.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } })
-    res.json({ success: true })
-  } catch (e) { fail(req, res, 500, e) }
-})
-app.delete('/api/news/:id', auth, async (req, res) => {
-  try { await News.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { fail(req, res, 500, e) }
-})
-
-// ── EVENTS ──
-app.get('/api/events', async (req, res) => {
-  try { res.json(await Event.find().sort({ createdAt: -1 })) }
-  catch (e) { fail(req, res, 500, e) }
-})
-app.post('/api/events', auth, async (req, res) => {
-  try { res.json(await Event.create(req.body)) }
-  catch (e) { fail(req, res, 400, e) }
-})
-app.put('/api/events/:id', auth, async (req, res) => {
-  try { res.json(await Event.findByIdAndUpdate(req.params.id, req.body, { new: true })) }
-  catch (e) { fail(req, res, 400, e) }
-})
-app.delete('/api/events/:id', auth, async (req, res) => {
-  try { await Event.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { fail(req, res, 500, e) }
-})
-
-// ── TEACHERS ──
-app.get('/api/teachers', async (req, res) => {
-  try { res.json(await Teacher.find().sort({ createdAt: -1 })) }
-  catch (e) { fail(req, res, 500, e) }
-})
-app.post('/api/teachers', auth, async (req, res) => {
-  try { res.json(await Teacher.create(req.body)) }
-  catch (e) { fail(req, res, 400, e) }
-})
-app.put('/api/teachers/:id', auth, async (req, res) => {
-  try { res.json(await Teacher.findByIdAndUpdate(req.params.id, req.body, { new: true })) }
-  catch (e) { fail(req, res, 400, e) }
-})
-app.delete('/api/teachers/:id', auth, async (req, res) => {
-  try { await Teacher.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { fail(req, res, 500, e) }
-})
-
-// ── APPLICATIONS ──
-app.get('/api/applications', auth, async (req, res) => {
-  try {
-    const { type } = req.query
-    let filter = {}
-    if (type === 'vacancy') {
-      filter = { type: 'vacancy' }
-    } else if (type === 'admission') {
-      filter = { $or: [{ type: 'admission' }, { type: { $exists: false } }, { type: null }, { type: '' }] }
-    }
-    res.json(await Application.find(filter).sort({ createdAt: -1 }))
-  } catch (e) { fail(req, res, 500, e) }
-})
-app.post('/api/applications', formLimiter, async (req, res) => {
-  try {
-    // Mass assignment himoyasi: faqat kerakli maydonlar qabul qilinadi.
-    // "status" hech qachon client'dan olinmaydi — har doim serverda 'new' qilib belgilanadi,
-    // aks holda so'rov yuboruvchi o'z arizasini to'g'ridan-to'g'ri "accepted" qilib yuborishi mumkin edi.
-    const allowedFields = ['name', 'phone', 'faculty', 'message', 'email', 'position', 'education', 'experience', 'type']
-    const body = {}
-    for (const field of allowedFields) {
-      if (req.body[field] !== undefined) body[field] = req.body[field]
-    }
-    if (!body.type || !['admission', 'vacancy'].includes(body.type)) body.type = 'admission'
-    body.status = 'new'
-
-    const application = await Application.create(body)
-    const isVacancy = application.type === 'vacancy'
-    let msg = ""
-    if (isVacancy) {
-  msg = "\uD83D\uDCCB Vakansiya arizasi\n\n\uD83D\uDC64 " + application.name + "\n\uD83D\uDCDE " + application.phone
-  if (application.email) msg += "\n\uD83D\uDCE7 " + application.email
-  if (application.position) msg += "\n\uD83D\uDCBC " + application.position
-  if (application.faculty) msg += "\n\uD83C\uDFEB " + application.faculty
-  if (application.education) msg += "\n\uD83C\uDF93 " + application.education
-  if (application.experience) msg += "\n\uD83D\uDCC5 " + application.experience
-  if (application.message) msg += "\n\uD83D\uDCAC " + application.message.slice(0, 200)
-
-    } else {
-      msg = "\uD83C\uDF93 Qabul arizasi\n\n\uD83D\uDC64 " + application.name + "\n\uD83D\uDCDE " + application.phone
-      if (application.email) msg += "\n\uD83D\uDCE7 " + application.email
-      if (application.faculty) msg += "\n\uD83D\uDCDA " + application.faculty
-      if (application.message) msg += "\n\uD83D\uDCAC " + application.message.slice(0, 200)
-    }
-    sendTelegram(msg)
-    res.json(application)
-  } catch (e) { fail(req, res, 400, e) }
-})
-
-app.put('/api/applications/:id', auth, async (req, res) => {
-  try { res.json(await Application.findByIdAndUpdate(req.params.id, req.body, { new: true })) }
-  catch (e) { fail(req, res, 400, e) }
-})
-app.delete('/api/applications/:id', auth, async (req, res) => {
-  try { await Application.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { fail(req, res, 500, e) }
-})
-
-// ── STATS ──
-app.get('/api/stats', auth, async (req, res) => {
-  try {
-    const admFilter = { $or: [{ type: 'admission' }, { type: { $exists: false } }, { type: null }, { type: '' }] }
-    const [newsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps] = await Promise.all([
-      News.countDocuments(),
-      Event.countDocuments(),
-      Teacher.countDocuments(),
-      Application.countDocuments(admFilter),
-      Application.countDocuments({ status: 'new' }),
-      Application.countDocuments({ type: 'vacancy' }),
-    ])
-    res.json({ newsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps })
-  } catch (e) { fail(req, res, 500, e) }
-})
-// ── TELEGRAM NOTIFY ──
-async function sendTelegram(text) {
-  try {
-    const token = process.env.BOT_TOKEN
-    const chatId = process.env.TELEGRAM_CHAT_ID
-    if (!token || !chatId) return
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
-    })
-  } catch (e) { console.log('Telegram xatosi:', e.message) }
-}
-
-// ── SORTING HAT LEAD ──
-app.post('/api/sorting-hat-lead', formLimiter, async (req, res) => {
-  try {
-    const { name, phone, faculties } = req.body
-    if (!name || !phone) return res.status(400).json({ error: 'Ism va telefon kerak' })
-
-    const msg = `🎓 <b>Yo'nalishni aniqlash — yangi natija</b>\n\n👤 <b>Ism:</b> ${name}\n📞 <b>Telefon:</b> ${phone}\n\n🏆 <b>Tavsiya etilgan yo'nalishlar:</b>\n${faculties.map((f, i) => `${i + 1}. ${f}`).join('\n')}\n\n⏰ ${new Date().toLocaleString('uz-UZ')}`
-
-    await sendTelegram(msg)
-    res.json({ success: true })
-  } catch (e) {
-    fail(req, res, 500, e)
-  }
-})
-// ── TELEGRAM ──
-app.get('/api/telegram/posts', viewLimiter, async (req, res) => {
-  try {
-    const token = process.env.BOT_TOKEN
-    const channel = process.env.CHANNEL_USERNAME
-    if (!token || !channel) return res.status(500).json({ error: 'Telegram sozlamalari topilmadi' })
-
-    const response = await fetch(
-      `https://api.telegram.org/bot${token}/getUpdates?limit=20&allowed_updates=["channel_post"]`
-    )
-    const data = await response.json()
-    if (!data.ok) return res.status(500).json({ error: 'Telegram API xatosi' })
-
-    const posts = (data.result || [])
-      .filter(u => u.channel_post?.text)
-      .slice(-10)
-      .reverse()
-      .map(u => ({
-        id: u.channel_post.message_id,
-        text: u.channel_post.text,
-        date: new Date(u.channel_post.date * 1000).toLocaleDateString('uz-UZ'),
-        type: 'announce',
-      }))
-
-    res.json({ posts })
-  } catch (e) {
-    fail(req, res, 500, e)
-  }
-})
+// ── ROUTE'LAR ──
+app.use('/api/admin', adminRoutes)
+app.use('/api/news', newsRoutes)
+app.use('/api/events', eventsRoutes)
+app.use('/api/teachers', teachersRoutes)
+app.use('/api/applications', applicationsRoutes)
+app.use('/api/stats', statsRoutes)
+app.use('/api', miscRoutes) // /api/sorting-hat-lead, /api/telegram/posts
 
 // ── HEALTH CHECK — keep-alive va monitoring uchun, biznes-logikadan mustaqil ──
 app.get('/health', (req, res) => res.json({ status: 'ok', uptime: process.uptime() }))
+
+// ── 404 va GLOBAL ERROR HANDLER — har doim eng oxirida bo'lishi shart ──
+app.use(notFound)
+app.use(globalErrorHandler)
+
+// ── MONGODB ──
+connectDB().catch(err => logger.error({ err }, 'MongoDB ulanish xatosi'))
 
 // ── SERVER ──
 const PORT = process.env.PORT || 5000
 const SELF_URL = process.env.BACKEND_URL
 if (SELF_URL) {
   setInterval(async () => {
-    try { await fetch(`${SELF_URL}/health`); console.log('Keep-alive OK') }
-    catch { console.log('Keep-alive failed') }
+    try { await fetch(`${SELF_URL}/health`); logger.info('Keep-alive OK') }
+    catch { logger.warn('Keep-alive failed') }
   }, 14 * 60 * 1000)
 }
 
-const server = app.listen(PORT, () => console.log(`Server ishlamoqda: http://localhost:${PORT}`))
+const server = app.listen(PORT, () => logger.info(`Server ishlamoqda: http://localhost:${PORT}`))
 
 // ── GRACEFUL SHUTDOWN — Render qayta deploy/restart paytida ulanishlarni toza yopish ──
 process.on('SIGTERM', async () => {
-  console.log('SIGTERM qabul qilindi — server yopilmoqda...')
+  logger.info('SIGTERM qabul qilindi — server yopilmoqda...')
   server.close()
   await mongoose.connection.close()
-  console.log('Mongo ulanishi yopildi. Chiqish.')
+  logger.info('Mongo ulanishi yopildi. Chiqish.')
   process.exit(0)
 })
