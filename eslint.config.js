@@ -17,6 +17,15 @@ export default defineConfig([
     },
   },
   {
+    files: ['kiu-backend/tests/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+    },
+  },
+  {
     files: ['**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,

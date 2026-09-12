@@ -1,8 +1,16 @@
 // ── XATOLARNI XAVFSIZ QAYTARISH ──
 // To'liq xato server logiga yoziladi, clientga esa umumiy xabar qaytariladi
 // (Mongoose/ichki xato tafsilotlari sizib chiqmasligi uchun).
+const multer = require('multer')
+
+const MULTER_MESSAGES = {
+  LIMIT_FILE_SIZE: 'Fayl hajmi juda katta (maksimal 10 MB)',
+  LIMIT_UNEXPECTED_FILE: "Kutilmagan fayl maydoni — 'imageFile' nomi bilan yuboring",
+}
+
 function fail(req, res, status, e) {
   req.log.error({ err: e }, `[ERROR] ${req.method} ${req.originalUrl}`)
+
   const publicMsg = status === 400
     ? "So'rovda xatolik bor. Ma'lumotlarni tekshirib qayta yuboring."
     : 'Server xatosi yuz berdi. Birozdan so\'ng qayta urinib ko\'ring.'
@@ -22,6 +30,10 @@ function notFound(req, res) {
 function globalErrorHandler(err, req, res, next) {
   const log = req.log || require('../logger')
   log.error({ err }, '[UNHANDLED ERROR]')
+
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ error: MULTER_MESSAGES[err.code] || `Fayl yuklashda xatolik: ${err.code}` })
+  }
   if (err.type === 'entity.parse.failed') {
     return res.status(400).json({ error: "So'rov tanasi (JSON) noto'g'ri formatda" })
   }
