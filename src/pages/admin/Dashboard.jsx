@@ -1,30 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, NavLink, Routes, Route } from 'react-router-dom'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  'https://qfhiormmfkwyuljptkxf.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmaGlvcm1tZmt3eXVsanB0a3hmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNjU4NDQsImV4cCI6MjA5NTY0MTg0NH0.0kcHOnZhysxp9VPCOcdKDVur_pc6ASpX8Ili-FU9mp0'
-)
-
 
 const API = import.meta.env.VITE_API_URL + '/api'
 const H = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('kiu_token')}` })
-
-// ── SHARED IMAGE UPLOAD HELPER ──
-// Barcha admin formalar (News, Events, Teachers) uchun umumiy Supabase Storage
-// yuklash funksiyasi. Hozircha bitta "news-images" bucket'idan foydalanadi,
-// papka nomi bo'yicha ajratiladi (news/, events/, teachers/).
-async function uploadImageToSupabase(file, folder) {
-  const ext = file.name.split('.').pop()
-  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-  const { error } = await supabase.storage
-    .from('news-images')
-    .upload(`${folder}/${fileName}`, file, { cacheControl: '3600', upsert: false })
-  if (error) throw new Error(error.message)
-  const { data } = supabase.storage.from('news-images').getPublicUrl(`${folder}/${fileName}`)
-  return data.publicUrl
-}
+// FormData bilan yuboriladigan so'rovlar uchun — Content-Type qo'lda
+// qo'yilmaydi, brauzer o'zi to'g'ri multipart boundary bilan qo'yadi.
+// Buni H() bilan aralashtirib bo'lmaydi: 'Content-Type': 'application/json'
+// qo'yilsa, multipart body butunlay noto'g'ri parslanadi.
+const HF = () => ({ Authorization: `Bearer ${localStorage.getItem('kiu_token')}` })
 
 // ── ICONS ──
 const Ic = {
@@ -200,40 +183,31 @@ function NewsAdmin() {
     setPreviews(imagePreviews.filter((_, i) => i !== idx))
   }
 
-  async function uploadOne(file) {
-    return uploadImageToSupabase(file, 'news')
-  }
-
   async function save() {
     if (!form.title.trim()) return alert('Sarlavha kiritilishi shart!')
     const videoId = form.shortsUrl.trim() ? extractYouTubeShortsId(form.shortsUrl.trim()) : ''
     if (form.shortsUrl.trim() && !videoId) return alert('Iltimos, to\u02BBg\u02BBri YouTube Shorts URL kiriting!')
 
-    // Mavjud (supabase) URL'lar + yangi fayllarni yuklash
+    // Rasm yuklash endi backend orqali (Supabase service_role kaliti bilan,
+    // MIME/hajm tekshiruvi bilan) amalga oshadi — brauzer to'g'ridan-to'g'ri
+    // Supabase'ga yozmaydi. Mavjud (o'zgartirilmagan) URL'lar `existingImages`
+    // sifatida, yangi tanlangan fayllar esa haqiqiy fayl sifatida yuboriladi.
     const existingUrls = imagePreviews.filter(p => !p.isNew).map(p => p.url)
-    let newUrls = []
 
-    if (imageFiles.length) {
-      setUploading(true)
-      try {
-        newUrls = await Promise.all(imageFiles.map(uploadOne))
-      } catch (err) {
-        setUploading(false)
-        return alert('Rasm yuklanmadi: ' + err.message)
-      }
-      setUploading(false)
-    }
+    const fd = new FormData()
+    fd.append('title', form.title)
+    fd.append('content', form.content)
+    fd.append('category', form.category)
+    fd.append('shortsUrl', form.shortsUrl.trim())
+    fd.append('videoId', videoId)
+    fd.append('existingImages', JSON.stringify(existingUrls))
+    imageFiles.forEach(f => fd.append('imageFiles', f))
 
-    const allUrls = [...existingUrls, ...newUrls]
-    // Backend string kutadi — JSON array sifatida saqlaymiz
-    const imageValue = allUrls.length === 0 ? '' :
-                       allUrls.length === 1 ? allUrls[0] :
-                       JSON.stringify(allUrls)
-
-    const body = { title: form.title, content: form.content, category: form.category, image: imageValue, shortsUrl: form.shortsUrl.trim(), videoId }
+    setUploading(true)
     const url = editing ? `${API}/news/${editing}` : `${API}/news`
-    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(body) })
+    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
     const data = await res.json()
+    setUploading(false)
     if (!res.ok) return alert(data.error || "Yangilik saqlanmadi.")
     if (editing) setNews(p => p.map(n => n._id === editing ? data : n))
     else setNews(p => [data, ...p])
@@ -302,7 +276,7 @@ function NewsAdmin() {
             {uploading && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#7c3aed' }}>
                 <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-                Rasmlar yuklanmoqda...
+                Saqlanmoqda...
               </div>
             )}
             <div style={{ display: 'flex', gap: 8 }}>
@@ -406,22 +380,24 @@ function EventsAdmin() {
   async function save() {
     if (!form.title.trim() || !form.date.trim()) return alert('Sarlavha va sana kiritilishi shart!')
 
-    let imageUrl = form.image || ''
-    if (imageFile) {
-      setUploading(true)
-      try {
-        imageUrl = await uploadImageToSupabase(imageFile, 'events')
-      } catch (err) {
-        setUploading(false)
-        return alert('Rasm yuklanmadi: ' + err.message)
-      }
-      setUploading(false)
-    }
+    // Rasm — bor bo'lsa haqiqiy fayl sifatida, bo'lmasa mavjud/olib
+    // tashlangan holatini bildiruvchi `existingImage` sifatida yuboriladi.
+    // Yuklashning o'zi backendda (service_role kalit bilan) amalga oshadi.
+    const fd = new FormData()
+    fd.append('title', form.title)
+    fd.append('desc', form.desc)
+    fd.append('date', form.date)
+    fd.append('month', form.month)
+    fd.append('type', form.type)
+    fd.append('existingImage', form.image || '')
+    if (imageFile) fd.append('imageFile', imageFile)
 
-    const body = { ...form, image: imageUrl }
+    setUploading(true)
     const url = editing ? `${API}/events/${editing}` : `${API}/events`
-    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(body) })
+    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
     const data = await res.json()
+    setUploading(false)
+    if (!res.ok) return alert(data.error || 'Tadbir saqlanmadi.')
     if (editing) setEvents(p => p.map(e => e._id === editing ? data : e))
     else setEvents(p => [data, ...p])
 
@@ -484,7 +460,7 @@ function EventsAdmin() {
             {uploading && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#4f46e5' }}>
                 <div style={{ width: 14, height: 14, border: '2px solid #e0e7ff', borderTopColor: '#4f46e5', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-                Rasm yuklanmoqda...
+                Saqlanmoqda...
               </div>
             )}
 
@@ -577,22 +553,24 @@ function TeachersAdmin() {
   async function save() {
     if (!form.name.trim() || !form.role.trim()) return alert('Ism va lavozim kiritilishi shart!')
 
-    let imageUrl = form.image || ''
-    if (imageFile) {
-      setUploading(true)
-      try {
-        imageUrl = await uploadImageToSupabase(imageFile, 'teachers')
-      } catch (err) {
-        setUploading(false)
-        return alert('Rasm yuklanmadi: ' + err.message)
-      }
-      setUploading(false)
-    }
+    // Rasm — bor bo'lsa haqiqiy fayl sifatida, bo'lmasa mavjud/olib
+    // tashlangan holatini bildiruvchi `existingImage` sifatida yuboriladi.
+    // Yuklashning o'zi backendda (service_role kalit bilan) amalga oshadi.
+    const fd = new FormData()
+    fd.append('name', form.name)
+    fd.append('role', form.role)
+    fd.append('dept', form.dept)
+    fd.append('email', form.email)
+    fd.append('avatar', form.avatar)
+    fd.append('existingImage', form.image || '')
+    if (imageFile) fd.append('imageFile', imageFile)
 
-    const body = { ...form, image: imageUrl }
+    setUploading(true)
     const url = editing ? `${API}/teachers/${editing}` : `${API}/teachers`
-    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: H(), body: JSON.stringify(body) })
+    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
     const data = await res.json()
+    setUploading(false)
+    if (!res.ok) return alert(data.error || "O'qituvchi saqlanmadi.")
     if (editing) setTeachers(p => p.map(t => t._id === editing ? data : t))
     else setTeachers(p => [data, ...p])
 
@@ -655,7 +633,7 @@ function TeachersAdmin() {
             {uploading && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#0088cc' }}>
                 <div style={{ width: 14, height: 14, border: '2px solid #cceeff', borderTopColor: '#0088cc', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-                Foto yuklanmoqda...
+                Saqlanmoqda...
               </div>
             )}
 
