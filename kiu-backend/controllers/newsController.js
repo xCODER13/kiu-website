@@ -19,10 +19,37 @@ async function getAll(req, res) {
   } catch (e) { fail(req, res, 500, e) }
 }
 
+// ── RASM MAYDONINI QURISH ──
+// News bir nechta rasmni qo'llab-quvvatlaydi: mavjud (tahrirlashda saqlanib
+// qolgan) URL'lar + shu so'rovda yangi yuklangan fayllar birlashtiriladi.
+// Saqlash formati eski frontend konventsiyasi bilan bir xil: bo'sh bo'lsa '',
+// bitta URL bo'lsa string, bir nechta bo'lsa JSON-stringified massiv —
+// buni o'zgartirish frontend/NewsDetail'dagi parseImages() bilan mos kelishi shart.
+function buildImageValue(existingUrls, newUrls) {
+  const all = [...existingUrls, ...newUrls]
+  if (all.length === 0) return ''
+  if (all.length === 1) return all[0]
+  return JSON.stringify(all)
+}
+
+function parseExistingImages(raw) {
+  if (!raw) return []
+  try {
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed.filter(u => typeof u === 'string') : []
+  } catch {
+    // Eski format — bitta URL string sifatida yuborilgan bo'lishi mumkin
+    return typeof raw === 'string' ? [raw] : []
+  }
+}
+
 async function create(req, res) {
   try {
-    let imageUrl = req.body.image || ''
-    if (req.file) imageUrl = await uploadImageToSupabase(req.file)
+    const existingUrls = parseExistingImages(req.body.existingImages)
+    const files = req.files || []
+    const newUrls = await Promise.all(files.map(f => uploadImageToSupabase(f, 'news')))
+    const imageUrl = buildImageValue(existingUrls, newUrls)
+
     const { title, content, category, videoId } = req.body
     const shortsUrl = req.body.shortsUrl || ''
     res.json(await News.create({ title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' }))
@@ -31,8 +58,11 @@ async function create(req, res) {
 
 async function update(req, res) {
   try {
-    let imageUrl = req.body.image || ''
-    if (req.file) imageUrl = await uploadImageToSupabase(req.file)
+    const existingUrls = parseExistingImages(req.body.existingImages)
+    const files = req.files || []
+    const newUrls = await Promise.all(files.map(f => uploadImageToSupabase(f, 'news')))
+    const imageUrl = buildImageValue(existingUrls, newUrls)
+
     const { title, content, category, videoId } = req.body
     const shortsUrl = req.body.shortsUrl || ''
     res.json(await News.findByIdAndUpdate(req.params.id,

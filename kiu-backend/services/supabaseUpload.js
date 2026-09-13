@@ -23,9 +23,21 @@ function sanitizeFileName(originalName) {
 const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024
 
-async function uploadImageToSupabase(file) {
+// Admin panelda avval Dashboard.jsx brauzerdan to'g'ridan-to'g'ri Supabase'ga
+// yuklaganida ishlatilgan papka nomlari — ma'lumotlar bazasidagi mavjud rasm
+// URL'lari shu tuzilishga (news/, events/, teachers/) mos. Backend endi bu
+// yuklashni o'z zimmasiga olganda ham xuddi shu joylashuvni davom ettiradi,
+// aks holda eski va yangi rasm URL'lari turli joylarda tarqalib ketadi.
+// Whitelist — folder parametri controller kodidan keladi (foydalanuvchi
+// kiritmaydi), lekin himoya sifatida baribir cheklaymiz.
+const ALLOWED_FOLDERS = new Set(['news', 'events', 'teachers'])
+
+async function uploadImageToSupabase(file, folder) {
   if (!file || !file.buffer) {
     throw new Error("Yuklanadigan fayl topilmadi")
+  }
+  if (!ALLOWED_FOLDERS.has(folder)) {
+    throw new Error(`Noto'g'ri yuklash papkasi: ${folder}`)
   }
   if (!ALLOWED_MIME_TYPES.has(file.mimetype)) {
     throw new Error(`Ruxsat etilmagan fayl turi: ${file.mimetype}`)
@@ -36,17 +48,17 @@ async function uploadImageToSupabase(file) {
 
   const client = getSupabase()
   const safeName = sanitizeFileName(file.originalname)
-  const fileName = `${crypto.randomUUID()}-${safeName}`
+  const path = `${folder}/${crypto.randomUUID()}-${safeName}`
 
   const { error } = await client.storage
     .from('news-images')
-    .upload(fileName, file.buffer, { contentType: file.mimetype })
+    .upload(path, file.buffer, { contentType: file.mimetype })
 
   if (error) {
     throw new Error(`Supabase upload xatosi: ${error.message}`)
   }
 
-  const { data } = client.storage.from('news-images').getPublicUrl(fileName)
+  const { data } = client.storage.from('news-images').getPublicUrl(path)
   return data.publicUrl
 }
 

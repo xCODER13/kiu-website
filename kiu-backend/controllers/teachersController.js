@@ -1,6 +1,7 @@
 const Teacher = require('../models/Teacher')
 const { fail } = require('../middleware/errorHandler')
 const { applyPagination } = require('../utils/pagination')
+const { uploadImageToSupabase } = require('../services/supabaseUpload')
 
 async function getAll(req, res) {
   try {
@@ -10,14 +11,28 @@ async function getAll(req, res) {
   } catch (e) { fail(req, res, 500, e) }
 }
 
+// Events controllerdagi bilan bir xil mantiq: yangi fayl bo'lsa — yuklanadi,
+// bo'lmasa admin panel yuborgan `existingImage` (yoki rasm olib tashlangan
+// bo'lsa bo'sh string) saqlanadi.
+async function resolveImage(req) {
+  if (req.file) return uploadImageToSupabase(req.file, 'teachers')
+  return req.body.existingImage || ''
+}
+
 async function create(req, res) {
-  try { res.json(await Teacher.create(req.body)) }
-  catch (e) { fail(req, res, 400, e) }
+  try {
+    const image = await resolveImage(req)
+    const { name, role, dept, avatar, email } = req.body
+    res.json(await Teacher.create({ name, role, dept, avatar, email, image }))
+  } catch (e) { fail(req, res, 400, e) }
 }
 
 async function update(req, res) {
-  try { res.json(await Teacher.findByIdAndUpdate(req.params.id, req.body, { new: true })) }
-  catch (e) { fail(req, res, 400, e) }
+  try {
+    const image = await resolveImage(req)
+    const { name, role, dept, avatar, email } = req.body
+    res.json(await Teacher.findByIdAndUpdate(req.params.id, { name, role, dept, avatar, email, image }, { new: true }))
+  } catch (e) { fail(req, res, 400, e) }
 }
 
 async function remove(req, res) {
