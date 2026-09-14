@@ -141,20 +141,6 @@ function parseImages(imageField) {
   return [imageField]  // eski format — bitta URL string
 }
 
-// News kategoriyalari — qiymatlar (value) atayin kichik harf bilan, chunki
-// public sahifadagi src/pages/News.jsx va NewsDetail.jsx'dagi CAT_COLORS/
-// CAT_LABELS lug'atlari xuddi shu kalitlarni (umumiy, sport, xalqaro va h.k.)
-// kutadi. Bu ikkalasi mos kelmasa, yangi post filtr bo'yicha eski postlardan
-// alohida (masalan "Sport" va "sport" ikkita chip) ko'rinib qoladi.
-const NEWS_CATEGORIES = [
-  ['umumiy', 'Umumiy'],
-  ["ta'lim", "Ta'lim"],
-  ['sport', 'Sport'],
-  ['madaniyat', 'Madaniyat'],
-  ['xalqaro', 'Xalqaro'],
-  ['fan', 'Fan'],
-]
-
 function NewsAdmin() {
   const [news, setNews]             = useState([])
   const [form, setForm]             = useState({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
@@ -261,7 +247,7 @@ function NewsAdmin() {
               <div>
                 <label style={lbl}>Kategoriya</label>
                 <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} style={inp}>
-                  {NEWS_CATEGORIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  {["Umumiy","Ta'lim","Sport","Madaniyat","Xalqaro","Fan"].map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div>

@@ -17,17 +17,17 @@ function parseImages(imageField) {
 const API = import.meta.env.VITE_API_URL
 
 const CAT_COLORS = {
-  "umumiy":    '#d7bb04',
-  "ta'lim":     '#0ea5e9', 
-  "sport":     '#16a34a',
-  "madaniyat": '#dc2626',
-  "xalqaro":   '#d97706',
-  "fan":       '#0891b2',
+  "Umumiy":    '#d7bb04',
+  "Ta'lim":     '#0ea5e9', 
+  "Sport":     '#16a34a',
+  "Madaniyat": '#dc2626',
+  "Xalqaro":   '#d97706',
+  "Fan":       '#0891b2',
 }
 
 const CAT_LABELS = {
-  "umumiy": 'Umumiy', "ta'lim": 'Ta\'lim', "sport": 'Sport',
-  "madaniyat": 'Madaniyat', "xalqaro": 'Xalqaro', "fan": 'Fan',
+  "Umumiy": 'Umumiy', "Ta'lim": 'Ta\'lim', "Sport": 'Sport',
+  "Madaniyat": 'Madaniyat', "Xalqaro": 'Xalqaro', "Fan": 'Fan',
 }
 
 const FALLBACK_SHORTS = [
