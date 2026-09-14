@@ -143,7 +143,7 @@ function parseImages(imageField) {
 
 function NewsAdmin() {
   const [news, setNews]             = useState([])
-  const [form, setForm]             = useState({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
+  const [form, setForm]             = useState({ title: '', content: '', category: 'Umumiy', image: '', shortsUrl: '' })
   const [editing, setEdit]          = useState(null)
   const [open, setOpen]             = useState(false)
   const [imageFiles, setImageFiles] = useState([])       // yangi fayllar
@@ -212,7 +212,7 @@ function NewsAdmin() {
     if (editing) setNews(p => p.map(n => n._id === editing ? data : n))
     else setNews(p => [data, ...p])
 
-    setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' })
+    setForm({ title: '', content: '', category: 'Umumiy', image: '', shortsUrl: '' })
     setImageFiles([]); setPreviews([]); setEdit(null); setOpen(false)
   }
 
@@ -228,7 +228,7 @@ function NewsAdmin() {
     // Mavjud rasmlarni preview sifatida ko'rsatish
     const urls = parseImages(n.image)
     setPreviews(urls.map(u => ({ url: u, isNew: false })))
-    setForm({ title: n.title, content: n.content || '', category: n.category || 'umumiy', image: n.image || '', shortsUrl: n.shortsUrl || (n.videoId ? `https://youtube.com/shorts/${n.videoId}` : '') })
+    setForm({ title: n.title, content: n.content || '', category: n.category || 'Umumiy', image: n.image || '', shortsUrl: n.shortsUrl || (n.videoId ? `https://youtube.com/shorts/${n.videoId}` : '') })
     setOpen(true)
   }
 
@@ -236,7 +236,7 @@ function NewsAdmin() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>Yangiliklar ({news.length})</h2>
-        <button style={bP} onClick={() => { setOpen(!open); setEdit(null); setImageFiles([]); setPreviews([]); setForm({ title: '', content: '', category: 'umumiy', image: '', shortsUrl: '' }) }}>{Ic.add} Yangi</button>
+        <button style={bP} onClick={() => { setOpen(!open); setEdit(null); setImageFiles([]); setPreviews([]); setForm({ title: '', content: '', category: 'Umumiy', image: '', shortsUrl: '' }) }}>{Ic.add} Yangi</button>
       </div>
       {open && (
         <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#7c3aed' }}>
