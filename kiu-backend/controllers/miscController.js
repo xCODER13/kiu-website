@@ -1,12 +1,21 @@
 const { fail } = require('../middleware/errorHandler')
-const { sendTelegram } = require('../services/telegram')
+const { sendTelegram, escapeTelegramHtml } = require('../services/telegram')
 
 async function sortingHatLead(req, res) {
   try {
     const { name, phone, faculties } = req.body
     if (!name || !phone) return res.status(400).json({ error: 'Ism va telefon kerak' })
 
-    const msg = `🎓 <b>Yo'nalishni aniqlash — yangi natija</b>\n\n👤 <b>Ism:</b> ${name}\n📞 <b>Telefon:</b> ${phone}\n\n🏆 <b>Tavsiya etilgan yo'nalishlar:</b>\n${faculties.map((f, i) => `${i + 1}. ${f}`).join('\n')}\n\n⏰ ${new Date().toLocaleString('uz-UZ')}`
+    // faculties frontenddagi qat'iy ro'yxatdan kelishi kutiladi, lekin backend
+    // uni to'g'ridan-to'g'ri API orqali yuborilgan har qanday massiv sifatida
+    // ko'radi — shuning uchun bo'sh/noto'g'ri qiymatdan himoyalanamiz va har
+    // bir elementni ham (name/phone kabi) Telegram HTML uchun escape qilamiz.
+    const facultyList = Array.isArray(faculties) ? faculties : []
+    const safeName = escapeTelegramHtml(name)
+    const safePhone = escapeTelegramHtml(phone)
+    const safeFaculties = facultyList.map(f => escapeTelegramHtml(f))
+
+    const msg = `🎓 <b>Yo'nalishni aniqlash — yangi natija</b>\n\n👤 <b>Ism:</b> ${safeName}\n📞 <b>Telefon:</b> ${safePhone}\n\n🏆 <b>Tavsiya etilgan yo'nalishlar:</b>\n${safeFaculties.map((f, i) => `${i + 1}. ${f}`).join('\n')}\n\n⏰ ${new Date().toLocaleString('uz-UZ')}`
 
     await sendTelegram(msg)
     res.json({ success: true })
