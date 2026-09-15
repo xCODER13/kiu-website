@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const multer = require('multer')
 const auth = require('../middleware/auth')
-const { viewLimiter } = require('../middleware/rateLimiters')
+const { viewLimiter, mutationLimiter } = require('../middleware/rateLimiters')
 const newsController = require('../controllers/newsController')
 
 // Bitta so'rovda bir nechta rasm (News admin formasi ko'p rasmni qo'llab-quvvatlaydi).
@@ -13,9 +13,9 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 *
 
 router.get('/:id', viewLimiter, newsController.getOne)
 router.get('/', viewLimiter, newsController.getAll)
-router.post('/', auth, upload.array('imageFiles', 10), newsController.create)
-router.put('/:id', auth, upload.array('imageFiles', 10), newsController.update)
+router.post('/', auth, mutationLimiter, upload.array('imageFiles', 10), newsController.create)
+router.put('/:id', auth, mutationLimiter, upload.array('imageFiles', 10), newsController.update)
 router.put('/:id/view', viewLimiter, newsController.incrementView)
-router.delete('/:id', auth, newsController.remove)
+router.delete('/:id', auth, mutationLimiter, newsController.remove)
 
 module.exports = router
