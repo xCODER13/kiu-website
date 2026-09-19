@@ -67,7 +67,7 @@ async function update(req, res) {
     const shortsUrl = req.body.shortsUrl || ''
     res.json(await News.findByIdAndUpdate(req.params.id,
       { title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' },
-      { new: true }
+      { new: true, runValidators: true }
     ))
   } catch (e) { fail(req, res, 400, e) }
 }

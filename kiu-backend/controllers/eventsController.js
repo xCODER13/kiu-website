@@ -32,7 +32,7 @@ async function update(req, res) {
   try {
     const image = await resolveImage(req)
     const { title, desc, date, month, type } = req.body
-    res.json(await Event.findByIdAndUpdate(req.params.id, { title, desc, date, month, type, image }, { new: true }))
+    res.json(await Event.findByIdAndUpdate(req.params.id, { title, desc, date, month, type, image }, { new: true, runValidators: true }))
   } catch (e) { fail(req, res, 400, e) }
 }
 

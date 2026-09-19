@@ -31,7 +31,7 @@ async function update(req, res) {
   try {
     const image = await resolveImage(req)
     const { name, role, dept, avatar, email } = req.body
-    res.json(await Teacher.findByIdAndUpdate(req.params.id, { name, role, dept, avatar, email, image }, { new: true }))
+    res.json(await Teacher.findByIdAndUpdate(req.params.id, { name, role, dept, avatar, email, image }, { new: true, runValidators: true }))
   } catch (e) { fail(req, res, 400, e) }
 }
 

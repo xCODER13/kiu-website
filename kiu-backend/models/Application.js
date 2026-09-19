@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
 
 // Frontend'dagi src/utils/validation.js bilan bir xil mantiq — 998 bilan boshlanuvchi
-// 9 ta raqamli O'zbekiston telefon formati. Faqat POST /api/applications (yangi ariza,
-// autentifikatsiyasiz forma) yo'lida ishlaydi — PUT /api/applications/:id runValidators
-// ishlatmaydi, shuning uchun admin status yangilashiga ta'sir qilmaydi.
+// 9 ta raqamli O'zbekiston telefon formati. Ilgari PUT /api/applications/:id
+// `runValidators` ishlatmagani uchun bu validator faqat POST (yangi ariza) yo'lida
+// ishlar edi — endi (runValidators: true qo'shilgach) PUT orqali ham qo'llaniladi.
 function isValidUzPhone(value) {
   const digits = (value || '').replace(/\D/g, '')
   if (!digits) return false

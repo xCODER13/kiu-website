@@ -68,7 +68,7 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  try { res.json(await Application.findByIdAndUpdate(req.params.id, req.body, { new: true })) }
+  try { res.json(await Application.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })) }
   catch (e) { fail(req, res, 400, e) }
 }
 
