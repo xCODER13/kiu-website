@@ -1,0 +1,25 @@
+# ── TEST MONGODB (faqat testlar uchun) ──
+# Ishga tushirish:  npm run test:db:up
+# To'xtatish:       npm run test:db:down
+# Hammasi bir buyruqda (tozalash bilan): npm run test:docker
+#
+# - Ma'lumot faqat xotirada (tmpfs), volume yo'q → har `up` da toza baza.
+# - Port 27018 (27017 emas): lokal dev Mongo bilan to'qnashmasligi uchun.
+# - Faqat 127.0.0.1 ga bog'langan — tarmoqqa ochilmaydi.
+# - Image versiyasi production (Atlas) bilan bir xil major: 8.0.
+services:
+  mongo-test:
+    image: mongo:8.0
+    container_name: kiu-mongo-test
+    restart: "no"
+    ports:
+      - "127.0.0.1:27018:27017"
+    tmpfs:
+      - /data/db
+    healthcheck:
+      # Mongo tayyor bo'lmasdan Jest boshlanmasligi uchun (`up --wait` shuni kutadi)
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+      start_period: 5s

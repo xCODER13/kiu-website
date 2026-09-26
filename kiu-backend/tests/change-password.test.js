@@ -86,8 +86,9 @@ describe('POST /api/admin/change-password', () => {
 
   test('parol almashtirilgandan OLDIN chiqarilgan token endi rad etiladi', async () => {
     await setAdminPassword('eski_parol_123')
-    // Bu token parol o'zgarishidan oldin "chiqarilgan" — iat joriy vaqt
-    const oldToken = getAuthToken()
+    // Bu token parol o'zgarishidan oldin "chiqarilgan" — iat 10 soniya oldin.
+    // (iat butun soniya; aks holda o'sha soniya ichida o'zgarish bo'lsa test flaky bo'ladi)
+    const oldToken = getAuthToken('admin', { issuedSecondsAgo: 10 })
 
     await request(app)
       .post('/api/admin/change-password')

@@ -3,7 +3,9 @@ const { sendTelegram, escapeTelegramHtml } = require('../services/telegram')
 
 async function sortingHatLead(req, res) {
   try {
-    const { name, phone, faculties } = req.body
+    // Express 5'da body yuborilmagan (yoki JSON bo'lmagan Content-Type'li) so'rovda
+    // req.body === undefined bo'ladi — destructuring TypeError berib 500 qaytarardi.
+    const { name, phone, faculties } = req.body || {}
     if (!name || !phone) return res.status(400).json({ error: 'Ism va telefon kerak' })
 
     // faculties frontenddagi qat'iy ro'yxatdan kelishi kutiladi, lekin backend

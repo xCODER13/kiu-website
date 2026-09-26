@@ -1,5 +1,6 @@
 module.exports = {
   testEnvironment: 'node',
+  globalSetup: '<rootDir>/tests/globalSetup.js',
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
   testMatch: ['**/tests/**/*.test.js'],
   // Docker orqali local Mongo (127.0.0.1:27017) ishlatiladi — memory-server emas.

@@ -2,8 +2,13 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 
-function getAuthToken(username = 'admin') {
-  return jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' })
+// `issuedSecondsAgo` — tokenning `iat` (soniyada) claim'ini o'tmishga suradi. Parol
+// almashtirishdan "oldin chiqarilgan" tokenni ishonchli modellashtirish uchun kerak:
+// `iat` butun soniya bo'lgani uchun, o'sha soniya ichida chiqarilgan token va parol
+// o'zgarishi bir xil qiymatga tushib, test vaqtga qarab beqaror (flaky) bo'lib qolardi.
+function getAuthToken(username = 'admin', { issuedSecondsAgo = 0 } = {}) {
+  const iat = Math.floor(Date.now() / 1000) - issuedSecondsAgo
+  return jwt.sign({ username, iat }, process.env.JWT_SECRET, { expiresIn: '1h' })
 }
 
 async function setAdminPassword(plainPassword) {

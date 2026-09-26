@@ -14,7 +14,7 @@ export default function Stats() {
   if (!stats) return <p style={{ color: 'var(--muted)', fontSize: 13 }}>Yuklanmoqda...</p>
 
   const cards = [
-    { label: 'Yangiliklar',        value: stats.newsCount,     color: '#7c3aed', icon: Ic.news,    to: '/admin/news'         },
+    { label: 'Yangiliklar',        value: stats.newsCount,     color: '#f11717', icon: Ic.news,    to: '/admin/news'         },
     { label: 'Tadbirlar',          value: stats.eventsCount,   color: '#e546e5', icon: Ic.events,  to: '/admin/events'       },
     { label: "O'qituvchilar",      value: stats.teachersCount, color: '#0088cc', icon: Ic.teach,   to: '/admin/teachers'     },
     { label: 'Qabul arizalari',    value: stats.appsCount,     color: '#059669', icon: Ic.apps,    to: '/admin/applications' },
