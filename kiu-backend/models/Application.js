@@ -12,22 +12,24 @@ function isValidUzPhone(value) {
 }
 
 const ApplicationSchema = new mongoose.Schema({
-  name:       { type: String, required: true },
+  name:       { type: String, required: true, maxlength: 200 },
   phone: {
     type: String,
     required: true,
+    maxlength: 30,
     validate: { validator: isValidUzPhone, message: "Telefon raqam formati noto'g'ri (masalan: +998901234567)" },
   },
-  faculty:    { type: String, default: '' },
-  message:    { type: String, default: '' },
+  faculty:    { type: String, default: '', maxlength: 200 },
+  message:    { type: String, default: '', maxlength: 3000 },
   email: {
     type: String,
     default: '',
+    maxlength: 200,
     validate: { validator: v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), message: "Email manzil noto'g'ri formatda" },
   },
-  position:   { type: String, default: '' },
-  education:  { type: String, default: '' },
-  experience: { type: String, default: '' },
+  position:   { type: String, default: '', maxlength: 200 },
+  education:  { type: String, default: '', maxlength: 100 },
+  experience: { type: String, default: '', maxlength: 100 },
   type:       { type: String, default: 'admission', enum: ['admission', 'vacancy'] },
   status:     { type: String, default: 'new', enum: ['new', 'reviewed', 'accepted', 'rejected'] },
 }, { timestamps: true })

@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 
 const NewsSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  content: { type: String, default: '' },
-  category: { type: String, default: 'umumiy' },
-  image: { type: String, default: '' },
-  shortsUrl: { type: String, default: '' },
-  videoId: { type: String, default: '' },
+  title: { type: String, required: true, maxlength: 300 },
+  content: { type: String, default: '', maxlength: 50000 },
+  category: { type: String, default: 'umumiy', maxlength: 50 },
+  image: { type: String, default: '', maxlength: 5000 },
+  shortsUrl: { type: String, default: '', maxlength: 500 },
+  videoId: { type: String, default: '', maxlength: 50 },
   views: { type: Number, default: 0 },
 }, { timestamps: true })
 

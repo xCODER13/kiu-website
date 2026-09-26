@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 
 const EventSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  desc: { type: String, default: '' },
-  date: { type: String, required: true },
-  month: { type: String, required: true },
-  type: { type: String, default: 'general' },
-  image: { type: String, default: '' },
+  title: { type: String, required: true, maxlength: 300 },
+  desc: { type: String, default: '', maxlength: 3000 },
+  date: { type: String, required: true, maxlength: 50 },
+  month: { type: String, required: true, maxlength: 50 },
+  type: { type: String, default: 'general', maxlength: 50 },
+  image: { type: String, default: '', maxlength: 1000 },
 }, { timestamps: true })
 
 // GET /api/events har doim createdAt bo'yicha sort qiladi — indeks shu so'rovni tezlashtiradi

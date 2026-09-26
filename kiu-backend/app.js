@@ -35,8 +35,13 @@ app.use(helmet())
 app.use(pinoHttp({ logger, autoLogging: process.env.NODE_ENV !== 'test' }))
 
 app.use(cors(corsOptions))
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ extended: true }))
+// News/Events/Teachers rasm bilan yuklash endi multipart/form-data (multer)
+// orqali ishlaydi — bu limit ularga umuman tegmaydi. express.json() faqat
+// toza JSON-body endpointlarga (login, arizalar, sorting-hat) tegishli, ular
+// hech qachon bir necha KB'dan oshmaydi — shuning uchun 10mb o'rniga 100kb
+// yetarli va ortiqcha katta payload orqali xotira/tarmoq sarfini cheklaydi.
+app.use(express.json({ limit: '100kb' }))
+app.use(express.urlencoded({ extended: true, limit: '100kb' }))
 
 // ── ROUTE'LAR ──
 app.use('/api/admin', adminRoutes)

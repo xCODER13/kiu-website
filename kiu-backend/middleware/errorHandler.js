@@ -4,7 +4,7 @@
 const multer = require('multer')
 
 const MULTER_MESSAGES = {
-  LIMIT_FILE_SIZE: 'Fayl hajmi juda katta (maksimal 10 MB)',
+  LIMIT_FILE_SIZE: 'Fayl hajmi juda katta (maksimal 5 MB)',
   LIMIT_UNEXPECTED_FILE: "Kutilmagan fayl maydoni — 'imageFile' nomi bilan yuboring",
 }
 
@@ -36,6 +36,9 @@ function globalErrorHandler(err, req, res, next) {
   }
   if (err.type === 'entity.parse.failed') {
     return res.status(400).json({ error: "So'rov tanasi (JSON) noto'g'ri formatda" })
+  }
+  if (err.type === 'entity.too.large') {
+    return res.status(413).json({ error: "So'rov hajmi juda katta. Matnni qisqartirib qayta urinib ko'ring." })
   }
   if (err.message === 'Not allowed by CORS') {
     return res.status(403).json({ error: 'Ruxsat etilmagan manba (CORS)' })

@@ -13,7 +13,11 @@ async function setAdminPassword(plainPassword) {
     { $set: { value: hash } },
     { upsert: true }
   )
+  // Har bir test o'z holatini nol nuqtadan boshlashi uchun — aks holda oldingi
+  // testda o'rnatilgan ADMIN_PASSWORD_CHANGED_AT shu testga ta'sir qilishi mumkin.
+  await mongoose.connection.db.collection('settings').deleteOne({ key: 'admin_password_changed_at' })
   process.env.ADMIN_PASSWORD_HASH = hash
+  delete process.env.ADMIN_PASSWORD_CHANGED_AT
   return hash
 }
 
