@@ -135,9 +135,9 @@ describe("PUT /api/applications/:id — noto'g'ri id", () => {
   })
 
   // BILINGAN KAMCHILIK: mavjud bo'lmagan (lekin to'g'ri formatdagi) id uchun controller
-  // 200 va `null` qaytaradi — 404 bo'lishi kerak. `test.failing` shu xatti-harakat tuzatilgach
+  // 200 va `null` qaytaradi — 404 bo'lishi kerak. `test` shu xatti-harakat tuzatilgach
   // ("... expected to fail but passed" deb) o'zi xabar beradi: shunda `.failing` ni olib tashlang.
-  test.failing("mavjud bo'lmagan id uchun 404 qaytaradi", async () => {
+  test("mavjud bo'lmagan id uchun 404 qaytaradi", async () => {
     const res = await request(app)
       .put(`/api/applications/${new mongoose.Types.ObjectId()}`).set(auth)
       .send({ status: 'reviewed' })
