@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { API, H, HF, installUnauthorizedHandler } from './api'
+import { API, H, HF, installUnauthorizedHandler, errorMessage, asArray } from './api'
 
 describe('admin api helpers', () => {
   it('API — VITE_API_URL + /api', () => expect(API).toBe('http://api.test/api'))
@@ -83,4 +83,20 @@ describe('installUnauthorizedHandler', () => {
     cleanup()
     expect(window.fetch).toBe(original)
   })
+})
+
+describe('errorMessage', () => {
+  it('server xabarini qaytaradi', async () => {
+    expect(await errorMessage({ json: () => Promise.resolve({ error: 'Ruxsat yo\'q' }) }, 'fb')).toBe("Ruxsat yo'q")
+  })
+  it('xabar yo\'q yoki JSON emas — fallback', async () => {
+    expect(await errorMessage({ json: () => Promise.resolve({}) }, 'fb')).toBe('fb')
+    expect(await errorMessage({ json: () => Promise.resolve(null) }, 'fb')).toBe('fb')
+    expect(await errorMessage({ json: () => Promise.reject(new SyntaxError('x')) }, 'fb')).toBe('fb')
+  })
+})
+
+describe('asArray', () => {
+  it('massiv — o\'sha massiv', () => { const a = [1]; expect(asArray(a)).toBe(a) })
+  it.each([null, undefined, {}, { error: 'x' }, 'str', 5])('massiv emas %j — []', v => expect(asArray(v)).toEqual([]))
 })

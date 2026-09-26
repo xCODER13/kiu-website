@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { API, H, HF } from './shared/api'
+import { API, H, HF, errorMessage, asArray } from './shared/api'
 import { card, inp, lbl, bP, bD, bE, bG } from './shared/styles'
 import { Ic } from './shared/Icons.jsx'
 import { useSingleImageUpload } from './shared/useImageUpload'
@@ -15,7 +15,7 @@ export default function EventsAdmin() {
 
   const types = [['general','Umumiy'],['open','Ochiq kun'],['culture','Madaniy'],['science','Ilmiy'],['sport','Sport'],['graduation','Bitiruvchilar'],['admission','Qabul']]
 
-  useEffect(() => { fetch(`${API}/events`).then(r => r.json()).then(setEvents).catch(() => {}) }, [])
+  useEffect(() => { fetch(`${API}/events`).then(r => r.json()).then(d => setEvents(asArray(d))).catch(() => {}) }, [])
 
   function removeImage() {
     clearImage()
@@ -38,23 +38,33 @@ export default function EventsAdmin() {
     if (imageFile) fd.append('imageFile', imageFile)
 
     setUploading(true)
-    const url = editing ? `${API}/events/${editing}` : `${API}/events`
-    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
-    const data = await res.json()
-    setUploading(false)
-    if (!res.ok) return alert(data.error || 'Tadbir saqlanmadi.')
-    if (editing) setEvents(p => p.map(e => e._id === editing ? data : e))
-    else setEvents(p => [data, ...p])
+    try {
+      const url = editing ? `${API}/events/${editing}` : `${API}/events`
+      const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
+      if (!res.ok) return alert(await errorMessage(res, 'Tadbir saqlanmadi.'))
+      const data = await res.json()
+      if (editing) setEvents(p => p.map(e => e._id === editing ? data : e))
+      else setEvents(p => [data, ...p])
 
-    setForm({ title: '', desc: '', date: '', month: '', type: 'general', image: '' })
-    setImageFile(null); setImagePreview(null)
-    setEdit(null); setOpen(false)
+      setForm({ title: '', desc: '', date: '', month: '', type: 'general', image: '' })
+      setImageFile(null); setImagePreview(null)
+      setEdit(null); setOpen(false)
+    } catch {
+      alert("Server bilan bog'lanib bo'lmadi.")
+    } finally {
+      setUploading(false)
+    }
   }
 
   async function del(id) {
     if (!window.confirm("O'chirishni tasdiqlaysizmi?")) return
-    await fetch(`${API}/events/${id}`, { method: 'DELETE', headers: H() })
-    setEvents(p => p.filter(e => e._id !== id))
+    try {
+      const res = await fetch(`${API}/events/${id}`, { method: 'DELETE', headers: H() })
+      if (!res.ok) return alert(await errorMessage(res, "O'chirib bo'lmadi."))
+      setEvents(p => p.filter(e => e._id !== id))
+    } catch {
+      alert("Server bilan bog'lanib bo'lmadi.")
+    }
   }
 
   return (

@@ -1,5 +1,10 @@
 import { useRef, useState } from 'react'
 
+// Backend ham faqat shu turlarni qabul qiladi. `image/svg+xml` ataylab yo'q:
+// SVG ichida skript bo'lishi mumkin (saqlangan XSS xavfi).
+export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+const isAllowedImage = f => ALLOWED_IMAGE_TYPES.includes(f.type)
+
 // YAXSHILASH: bu ikkala hook NewsAdmin/EventsAdmin/TeachersAdmin'da deyarli
 // so'zma-so'z nusxalangan (rasm tanlash, preview, o'chirish) mantiqni bir
 // joyga jamlaydi. Xatti-harakat asl koddagi bilan bir xil — faqat joyi
@@ -13,7 +18,7 @@ export function useSingleImageUpload() {
   function handleImageSelect(e) {
     const file = e.target.files?.[0]
     if (!file) return
-    if (!file.type.startsWith('image/')) return alert('Faqat rasm fayli qabul qilinadi!')
+    if (!isAllowedImage(file)) return alert('Faqat rasm fayli qabul qilinadi (JPEG, PNG, WebP, GIF)!')
     if (file.size > 5 * 1024 * 1024) return alert("Rasm 5 MB dan katta bo'lmasin!")
     if (imagePreview?.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
     setImageFile(file)
@@ -39,8 +44,8 @@ export function useMultiImageUpload() {
   function handleFileSelect(e) {
     const files = Array.from(e.target.files || [])
     if (!files.length) return
-    const invalid = files.find(f => !f.type.startsWith('image/'))
-    if (invalid) return alert('Faqat rasm fayllari qabul qilinadi!')
+    const invalid = files.find(f => !isAllowedImage(f))
+    if (invalid) return alert('Faqat rasm fayllari qabul qilinadi (JPEG, PNG, WebP, GIF)!')
     const oversized = files.find(f => f.size > 5 * 1024 * 1024)
     if (oversized) return alert(`${oversized.name} — 5 MB dan katta!`)
 

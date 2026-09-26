@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { API, H } from './shared/api'
+import { API, H, errorMessage } from './shared/api'
 import { card, bD } from './shared/styles'
 import { STATUS_COLORS, STATUS_LABELS } from './shared/constants'
 import { Ic } from './shared/Icons.jsx'
@@ -21,15 +21,25 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
   }, [type])
 
   async function updateStatus(id, status) {
-    const res = await fetch(`${API}/applications/${id}`, { method: 'PUT', headers: H(), body: JSON.stringify({ status }) })
-    const data = await res.json()
-    setApps(p => p.map(a => a._id === id ? data : a))
+    try {
+      const res = await fetch(`${API}/applications/${id}`, { method: 'PUT', headers: H(), body: JSON.stringify({ status }) })
+      if (!res.ok) return alert(await errorMessage(res, "Statusni o'zgartirib bo'lmadi."))
+      const data = await res.json()
+      setApps(p => p.map(a => a._id === id ? data : a))
+    } catch {
+      alert("Server bilan bog'lanib bo'lmadi.")
+    }
   }
 
   async function del(id) {
     if (!window.confirm("O'chirishni tasdiqlaysizmi?")) return
-    await fetch(`${API}/applications/${id}`, { method: 'DELETE', headers: H() })
-    setApps(p => p.filter(a => a._id !== id))
+    try {
+      const res = await fetch(`${API}/applications/${id}`, { method: 'DELETE', headers: H() })
+      if (!res.ok) return alert(await errorMessage(res, "O'chirib bo'lmadi."))
+      setApps(p => p.filter(a => a._id !== id))
+    } catch {
+      alert("Server bilan bog'lanib bo'lmadi.")
+    }
   }
 
   const filtered = filter === 'all' ? apps : apps.filter(a => a.status === filter)

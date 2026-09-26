@@ -20,6 +20,19 @@ export const H = () => ({
 // qo'yilsa, multipart body butunlay noto'g'ri parslanadi.
 export const HF = () => authHeader()
 
+// Xato javobdan xabarni xavfsiz o'qiydi (javob JSON bo'lmasa ham qulamaydi)
+export async function errorMessage(res, fallback) {
+  try {
+    const data = await res.json()
+    return (data && data.error) || fallback
+  } catch {
+    return fallback
+  }
+}
+
+// Ro'yxat endpointlari uchun: javob massiv bo'lmasa (masalan {error}) — bo'sh massiv
+export const asArray = d => (Array.isArray(d) ? d : [])
+
 // Admin API 401 qaytarsa (token muddati o'tgan / bekor qilingan, masalan parol
 // o'zgargandan keyin) — tokenni o'chirib, onUnauthorized() ni chaqiradi.
 // Barcha admin komponentlari to'g'ridan-to'g'ri fetch ishlatgani uchun bitta joyda

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { API, H, HF } from './shared/api.js'
+import { API, H, HF, errorMessage, asArray } from './shared/api.js'
 import { card, inp, lbl, bP, bD, bE, bG } from './shared/styles.js'
 import { Ic } from './shared/Icons.jsx'
 import { useSingleImageUpload } from './shared/useImageUpload.js'
@@ -23,7 +23,7 @@ export default function TeachersAdmin() {
 
   const { imageFile, imagePreview, setImageFile, setImagePreview, handleImageSelect, clearImage } = useSingleImageUpload()
 
-  useEffect(() => { fetch(`${API}/teachers`).then(r => r.json()).then(setTeachers).catch(() => {}) }, [])
+  useEffect(() => { fetch(`${API}/teachers`).then(r => r.json()).then(d => setTeachers(asArray(d))).catch(() => {}) }, [])
 
   function removeImage() {
     clearImage()
@@ -46,23 +46,33 @@ export default function TeachersAdmin() {
     if (imageFile) fd.append('imageFile', imageFile)
 
     setUploading(true)
-    const url = editing ? `${API}/teachers/${editing}` : `${API}/teachers`
-    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
-    const data = await res.json()
-    setUploading(false)
-    if (!res.ok) return alert(data.error || "O'qituvchi saqlanmadi.")
-    if (editing) setTeachers(p => p.map(t => t._id === editing ? data : t))
-    else setTeachers(p => [data, ...p])
+    try {
+      const url = editing ? `${API}/teachers/${editing}` : `${API}/teachers`
+      const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
+      if (!res.ok) return alert(await errorMessage(res, "O'qituvchi saqlanmadi."))
+      const data = await res.json()
+      if (editing) setTeachers(p => p.map(t => t._id === editing ? data : t))
+      else setTeachers(p => [data, ...p])
 
-    setForm({ name: '', role: '', dept: '', email: '', avatar: '', image: '' })
-    setImageFile(null); setImagePreview(null)
-    setEdit(null); setOpen(false)
+      setForm({ name: '', role: '', dept: '', email: '', avatar: '', image: '' })
+      setImageFile(null); setImagePreview(null)
+      setEdit(null); setOpen(false)
+    } catch {
+      alert("Server bilan bog'lanib bo'lmadi.")
+    } finally {
+      setUploading(false)
+    }
   }
 
   async function del(id) {
     if (!window.confirm("O'chirishni tasdiqlaysizmi?")) return
-    await fetch(`${API}/teachers/${id}`, { method: 'DELETE', headers: H() })
-    setTeachers(p => p.filter(t => t._id !== id))
+    try {
+      const res = await fetch(`${API}/teachers/${id}`, { method: 'DELETE', headers: H() })
+      if (!res.ok) return alert(await errorMessage(res, "O'chirib bo'lmadi."))
+      setTeachers(p => p.filter(t => t._id !== id))
+    } catch {
+      alert("Server bilan bog'lanib bo'lmadi.")
+    }
   }
 
   return (

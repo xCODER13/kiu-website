@@ -4,6 +4,7 @@ import { useEffect, useState, lazy, Suspense } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ApplyModal from './components/ApplyModal'
+import { isTokenValid } from './utils/auth'
 
 // Sahifalar endi alohida chunk sifatida, faqat kerak bo'lganda yuklanadi
 const Home            = lazy(() => import('./pages/Home'))
@@ -32,7 +33,11 @@ const SortingHat      = lazy(() => import('./pages/SortingHat'))
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('kiu_token')
-  if (!token) return <Navigate to="/admin/login" replace />
+  if (!isTokenValid(token)) {
+    // Muddati o'tgan / yaroqsiz tokenni saqlab qo'yish ma'nosiz
+    if (token) localStorage.removeItem('kiu_token')
+    return <Navigate to="/admin/login" replace />
+  }
   return children
 }
 

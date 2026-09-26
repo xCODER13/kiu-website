@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { API, H, HF } from './shared/api'
+import { API, H, HF, errorMessage, asArray } from './shared/api'
 import { card, inp, lbl, bP, bD, bE, bG } from './shared/styles'
 import { Ic } from './shared/Icons.jsx'
 import { extractYouTubeShortsId, parseImages } from './shared/helpers'
@@ -14,7 +14,7 @@ export default function NewsAdmin() {
 
   const { imageFiles, imagePreviews, fileRef, handleFileSelect, removeImage, reset, clear } = useMultiImageUpload()
 
-  useEffect(() => { fetch(`${API}/news`).then(r => r.json()).then(setNews).catch(() => {}) }, [])
+  useEffect(() => { fetch(`${API}/news`).then(r => r.json()).then(d => setNews(asArray(d))).catch(() => {}) }, [])
 
   async function save() {
     if (!form.title.trim()) return alert('Sarlavha kiritilishi shart!')
@@ -37,22 +37,33 @@ export default function NewsAdmin() {
     imageFiles.forEach(f => fd.append('imageFiles', f))
 
     setUploading(true)
-    const url = editing ? `${API}/news/${editing}` : `${API}/news`
-    const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
-    const data = await res.json()
-    setUploading(false)
-    if (!res.ok) return alert(data.error || "Yangilik saqlanmadi.")
-    if (editing) setNews(p => p.map(n => n._id === editing ? data : n))
-    else setNews(p => [data, ...p])
+    try {
+      const url = editing ? `${API}/news/${editing}` : `${API}/news`
+      const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
+      if (!res.ok) return alert(await errorMessage(res, "Yangilik saqlanmadi."))
+      const data = await res.json()
+      if (editing) setNews(p => p.map(n => n._id === editing ? data : n))
+      else setNews(p => [data, ...p])
 
-    setForm({ title: '', content: '', category: 'Umumiy', image: '', shortsUrl: '' })
-    clear(); setEdit(null); setOpen(false)
+      setForm({ title: '', content: '', category: 'Umumiy', image: '', shortsUrl: '' })
+      clear(); setEdit(null); setOpen(false)
+    } catch {
+      alert("Server bilan bog'lanib bo'lmadi.")
+    } finally {
+      // Tarmoq xatosida ham tugma qayta faollashadi
+      setUploading(false)
+    }
   }
 
   async function del(id) {
     if (!window.confirm("O'chirishni tasdiqlaysizmi?")) return
-    await fetch(`${API}/news/${id}`, { method: 'DELETE', headers: H() })
-    setNews(p => p.filter(n => n._id !== id))
+    try {
+      const res = await fetch(`${API}/news/${id}`, { method: 'DELETE', headers: H() })
+      if (!res.ok) return alert(await errorMessage(res, "O'chirib bo'lmadi."))
+      setNews(p => p.filter(n => n._id !== id))
+    } catch {
+      alert("Server bilan bog'lanib bo'lmadi.")
+    }
   }
 
   function startEdit(n) {

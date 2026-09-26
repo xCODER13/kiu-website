@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { API, H } from './shared/api'
 import { card, inp, lbl, bP } from './shared/styles'
 import { Ic } from './shared/Icons.jsx'
@@ -6,6 +7,7 @@ import { Ic } from './shared/Icons.jsx'
 export default function ProfileAdmin() {
   const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
   const [msg, setMsg]   = useState(null)
+  const navigate = useNavigate()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -19,7 +21,14 @@ export default function ProfileAdmin() {
     try {
       const res = await fetch(`${API}/admin/change-password`, { method: 'POST', headers: H(), body: JSON.stringify({ currentPassword: form.currentPassword, newPassword: form.newPassword }) })
       const data = await res.json()
-      if (res.ok) { setMsg({ type: 'success', text: 'Parol muvaffaqiyatli o\'zgartirildi!' }); setForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) }
+      if (res.ok) {
+        setMsg({ type: 'success', text: 'Parol muvaffaqiyatli o\'zgartirildi!' })
+        setForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+        // Backend parol o'zgargach eski tokenlarni bekor qiladi (iat < passwordChangedAt),
+        // shuning uchun eski token endi foydasiz — tozalab, qayta kirishni so'raymiz.
+        localStorage.removeItem('kiu_token')
+        setTimeout(() => navigate('/admin/login'), 1500)
+      }
       else setMsg({ type: 'error', text: data.error || 'Xato yuz berdi' })
     } catch { setMsg({ type: 'error', text: 'Server bilan bog\'lanib bo\'lmadi' }) }
   }
