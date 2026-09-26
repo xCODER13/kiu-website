@@ -1,0 +1,79 @@
+# Backend testlari: har push (main) va har pull request'da haqiqiy mongo:8.0 bilan
+# `npm test` (Jest --runInBand) ishga tushadi. Production'ga (Render) deploy qilmaydi
+# va hech qanday secret ishlatmaydi — testlar faqat CI ichidagi vaqtinchalik Mongo'ga
+# ulanadi (tests/testDbGuard.js boshqa hostga ulanishga baribir ruxsat bermaydi).
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Minimal huquq: faqat kodni o'qish. Token orqali yozish/deploy qilib bo'lmaydi.
+permissions:
+  contents: read
+
+# Bir branch uchun yangi run kelsa, eskisini to'xtatadi (vaqt va limitni tejaydi).
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-tests:
+    name: backend-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: kiu-backend
+
+    services:
+      # docker-compose.test.yml bilan bir xil: mongo:8.0, ma'lumot xotirada (tmpfs),
+      # host porti 27018 (testlarning standart URI'si). Steps boshlanishidan oldin
+      # healthcheck o'tishi kutiladi.
+      mongo-test:
+        image: mongo:8.0
+        ports:
+          - 27018:27017
+        options: >-
+          --tmpfs /data/db
+          --health-cmd "mongosh --quiet --eval \"db.adminCommand('ping').ok\""
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 15
+          --health-start-period 5s
+
+    env:
+      TEST_MONGODB_URI: mongodb://127.0.0.1:27018/kiu-test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: kiu-backend/package-lock.json
+
+      # `npm ci` lockfile bilan mos kelmasa yiqiladi — kutilmagan versiya yangilanishlaridan himoya.
+      - run: npm ci
+
+      - run: npm test
+
+  # Ma'lumot uchun: production bog'liqliklaridagi ma'lum zaifliklar. Bloklamaydi
+  # (continue-on-error), chunki yangi CVE e'lon qilinishi bilan barcha PR'larni qizartirib qo'ymasligi kerak.
+  dependency-audit:
+    name: dependency-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: kiu-backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm audit --omit=dev --audit-level=high
