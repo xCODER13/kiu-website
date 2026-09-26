@@ -153,6 +153,28 @@ describe('POST /api/admin/change-password — noto\'g\'ri formatdagi so\'rovlar 
     const res = await cp().send({ currentPassword: PASSWORD, newPassword: { length: 99 } })
     expect(res.status).toBe(400)
   })
+
+  test("newPassword 72 baytdan uzun bo'lsa 400 (bcrypt qolganini jim kesib tashlardi)", async () => {
+    const res = await cp().send({ currentPassword: PASSWORD, newPassword: 'a'.repeat(73) })
+    expect(res.status).toBe(400)
+  })
+
+  test("uzunlik belgi bilan emas BAYT bilan o'lchanadi: 37 ta kirill belgi = 74 bayt → 400", async () => {
+    const pwd = 'ў'.repeat(37)
+    expect(pwd.length).toBeLessThan(72)
+    const res = await cp().send({ currentPassword: PASSWORD, newPassword: pwd })
+    expect(res.status).toBe(400)
+  })
+
+  test("rad etilgan urinishdan keyin eski parol o'zgarmaydi", async () => {
+    await cp().send({ currentPassword: PASSWORD, newPassword: 'a'.repeat(73) })
+    expect((await goodLogin(nextIp())).status).toBe(200)
+  })
+
+  test("aynan 72 bayt qabul qilinadi", async () => {
+    const res = await cp().send({ currentPassword: PASSWORD, newPassword: 'a'.repeat(72) })
+    expect(res.status).toBe(200)
+  })
 })
 
 // ───────────────────────── login rate limiter ─────────────────────────

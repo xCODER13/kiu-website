@@ -147,3 +147,22 @@ describe('pagination — noto\'g\'ri qiymatlar (news, events, teachers uchun bir
     expect(await titles('?limit=2&page=3')).toEqual(['n0'])
   })
 })
+
+// Tartib: avval autentifikatsiya, keyin id formati. Tokensiz odam id formati haqida
+// hech narsa bilmasligi kerak (401, 400 emas). Token bilan esa 400.
+describe.each(RESOURCES.map(r => [r.name, r.path]))('%s — himoyalangan route\'larda auth id validatsiyasidan oldin', (_name, path) => {
+  const ip = () => ({ 'X-Forwarded-For': nextIp() })
+
+  test.each(['put', 'delete'])("tokensiz %s noto'g'ri id bilan: 401 (400 emas)", async method => {
+    const res = await request(app)[method](`${path}/${BAD_ID}`).set(ip()).send({})
+    expect(res.status).toBe(401)
+  })
+
+  test("tokensiz + to'g'ri formatdagi id ham 401", async () => {
+    expect((await request(app).delete(`${path}/${ghostId()}`).set(ip())).status).toBe(401)
+  })
+
+  test("token bilan noto'g'ri id: 400", async () => {
+    expect((await request(app).delete(`${path}/${BAD_ID}`).set(auth())).status).toBe(400)
+  })
+})

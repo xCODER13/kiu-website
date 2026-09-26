@@ -72,6 +72,11 @@ async function changePassword(req, res) {
   if (typeof currentPassword !== 'string' || !currentPassword) return res.status(400).json({ error: 'Joriy parol kerak' })
   if (typeof newPassword !== 'string' || newPassword.length < 8)
     return res.status(400).json({ error: "Yangi parol kamida 8 ta belgidan iborat bo'lishi kerak" })
+  // bcrypt faqat birinchi 72 BAYTni hisobga oladi (bcryptjs jim kesib tashlaydi): undan
+  // uzun parolda qolgan qism himoya bermaydi va foydalanuvchi buni bilmaydi. Shuning
+  // uchun uzunlik BAYT bilan tekshiriladi (kirill/emoji bitta belgi = 2-4 bayt).
+  if (Buffer.byteLength(newPassword, 'utf8') > 72)
+    return res.status(400).json({ error: "Yangi parol 72 baytdan oshmasligi kerak (taxminan 72 ta lotin belgisi)" })
 
   await refreshAdminSettingsFromDb()
 

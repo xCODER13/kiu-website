@@ -26,6 +26,11 @@ async function sortingHatLead(req, res) {
   }
 }
 
+function sameChannel(chat, channel) {
+  const norm = v => String(v || '').replace(/^@/, '').toLowerCase()
+  return !!chat?.username && norm(chat.username) === norm(channel)
+}
+
 async function telegramPosts(req, res) {
   try {
     const token = process.env.BOT_TOKEN
@@ -39,7 +44,9 @@ async function telegramPosts(req, res) {
     if (!data.ok) return res.status(500).json({ error: 'Telegram API xatosi' })
 
     const posts = (data.result || [])
-      .filter(u => u.channel_post?.text)
+      // Faqat bizning kanal: bot boshqa kanal/guruhga qo'shilsa, ularning postlari saytga chiqmasin.
+      // Telegram username'ni '@'siz yuboradi, env'da esa '@kanal' yoki 'kanal' bo'lishi mumkin.
+      .filter(u => u.channel_post?.text && sameChannel(u.channel_post.chat, channel))
       .slice(-10)
       .reverse()
       .map(u => ({

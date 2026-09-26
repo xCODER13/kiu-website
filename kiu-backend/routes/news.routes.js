@@ -5,7 +5,6 @@ const auth = require('../middleware/auth')
 const { viewLimiter, mutationLimiter } = require('../middleware/rateLimiters')
 const newsController = require('../controllers/newsController')
 const validateObjectId = require('../middleware/validateObjectId')
-router.param('id', validateObjectId)
 
 // Bitta so'rovda bir nechta rasm (News admin formasi ko'p rasmni qo'llab-quvvatlaydi).
 // fileSize xizmat qatlamidagi (supabaseUpload.js) 5MB limit bilan bir xil qilib
@@ -13,11 +12,11 @@ router.param('id', validateObjectId)
 // servis uni rad etadi (keraksiz xotira sarfi).
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024, files: 10 } })
 
-router.get('/:id', viewLimiter, newsController.getOne)
+router.get('/:id', viewLimiter, validateObjectId, newsController.getOne)
 router.get('/', viewLimiter, newsController.getAll)
 router.post('/', auth, mutationLimiter, upload.array('imageFiles', 10), newsController.create)
-router.put('/:id', auth, mutationLimiter, upload.array('imageFiles', 10), newsController.update)
-router.put('/:id/view', viewLimiter, newsController.incrementView)
-router.delete('/:id', auth, mutationLimiter, newsController.remove)
+router.put('/:id', auth, mutationLimiter, validateObjectId, upload.array('imageFiles', 10), newsController.update)
+router.put('/:id/view', viewLimiter, validateObjectId, newsController.incrementView)
+router.delete('/:id', auth, mutationLimiter, validateObjectId, newsController.remove)
 
 module.exports = router

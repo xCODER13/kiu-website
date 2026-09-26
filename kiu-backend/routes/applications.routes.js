@@ -4,11 +4,10 @@ const auth = require('../middleware/auth')
 const { formLimiter, mutationLimiter } = require('../middleware/rateLimiters')
 const applicationsController = require('../controllers/applicationsController')
 const validateObjectId = require('../middleware/validateObjectId')
-router.param('id', validateObjectId)
 
 router.get('/', auth, applicationsController.getAll)
 router.post('/', formLimiter, applicationsController.create)
-router.put('/:id', auth, mutationLimiter, applicationsController.update)
-router.delete('/:id', auth, mutationLimiter, applicationsController.remove)
+router.put('/:id', auth, mutationLimiter, validateObjectId, applicationsController.update)
+router.delete('/:id', auth, mutationLimiter, validateObjectId, applicationsController.remove)
 
 module.exports = router
