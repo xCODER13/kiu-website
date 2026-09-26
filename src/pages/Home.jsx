@@ -307,7 +307,7 @@ export default function Home() {
                 marginBottom: '1.75rem',
               }} />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 14 }}>
-                {[0, 1, 2, 3].map(i => (
+                {[0, 1, 2].map(i => (
                   <div key={i} style={{
                     height: 220, borderRadius: 14,
                     background: 'linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%)',

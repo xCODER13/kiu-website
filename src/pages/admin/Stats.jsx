@@ -17,7 +17,6 @@ export default function Stats() {
     { label: 'Yangiliklar',        value: stats.newsCount,     color: '#7c3aed', icon: Ic.news,    to: '/admin/news'         },
     { label: 'Tadbirlar',          value: stats.eventsCount,   color: '#e546e5', icon: Ic.events,  to: '/admin/events'       },
     { label: "O'qituvchilar",      value: stats.teachersCount, color: '#0088cc', icon: Ic.teach,   to: '/admin/teachers'     },
-    { label: 'Yangi arizalar',       value: stats.newApps,     color: '#ff0015', icon: Ic.apps,    to: '/admin/applications' },
     { label: 'Qabul arizalari',    value: stats.appsCount,     color: '#059669', icon: Ic.apps,    to: '/admin/applications' },
     { label: 'Vakansiya arizalari',value: stats.vacancyApps,   color: '#d97706', icon: Ic.vacancy, to: '/admin/vacancies'    },
   ]
@@ -25,9 +24,13 @@ export default function Stats() {
   return (
     <div>
       <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', marginBottom: '1.5rem' }}>Statistika</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(155px, 1fr))', gap: 12, marginBottom: '2rem' }}>
+      {/* "Yangi arizalar" kartasi olib tashlandi (Qabul arizalari bilan dublikat edi).
+          grid o'rniga flex + justify-content:center ishlatildi — shunda oxirgi qatorda
+          kartalar soni ustunlar soniga to'liq bo'linmasa ham, ikki tomonga bir xil
+          bo'sh joy qoladi (grid'da bo'sh ustun faqat o'ngda qolib, assimetrik ko'rinar edi) */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 12, marginBottom: '2rem' }}>
         {cards.map(c => (
-          <NavLink key={c.label} to={c.to} style={{ textDecoration: 'none' }}>
+          <NavLink key={c.label} to={c.to} style={{ textDecoration: 'none', flex: '1 1 155px', maxWidth: 220 }}>
             <div style={{ ...card, borderLeft: `3px solid ${c.color}`, cursor: 'pointer', transition: 'transform .15s' }}
               onMouseEnter={e => e.currentTarget.style.transform='translateY(-2px)'}
               onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}>
