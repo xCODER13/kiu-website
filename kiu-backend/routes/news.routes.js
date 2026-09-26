@@ -4,6 +4,8 @@ const multer = require('multer')
 const auth = require('../middleware/auth')
 const { viewLimiter, mutationLimiter } = require('../middleware/rateLimiters')
 const newsController = require('../controllers/newsController')
+const validateObjectId = require('../middleware/validateObjectId')
+router.param('id', validateObjectId)
 
 // Bitta so'rovda bir nechta rasm (News admin formasi ko'p rasmni qo'llab-quvvatlaydi).
 // fileSize xizmat qatlamidagi (supabaseUpload.js) 5MB limit bilan bir xil qilib

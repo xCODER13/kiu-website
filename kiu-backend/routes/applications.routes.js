@@ -3,6 +3,8 @@ const router = express.Router()
 const auth = require('../middleware/auth')
 const { formLimiter, mutationLimiter } = require('../middleware/rateLimiters')
 const applicationsController = require('../controllers/applicationsController')
+const validateObjectId = require('../middleware/validateObjectId')
+router.param('id', validateObjectId)
 
 router.get('/', auth, applicationsController.getAll)
 router.post('/', formLimiter, applicationsController.create)

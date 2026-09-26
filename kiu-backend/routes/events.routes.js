@@ -4,6 +4,8 @@ const multer = require('multer')
 const auth = require('../middleware/auth')
 const { viewLimiter, mutationLimiter } = require('../middleware/rateLimiters')
 const eventsController = require('../controllers/eventsController')
+const validateObjectId = require('../middleware/validateObjectId')
+router.param('id', validateObjectId)
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } })
 

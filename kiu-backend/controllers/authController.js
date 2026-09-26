@@ -37,8 +37,12 @@ async function refreshAdminSettingsFromDb() {
 }
 
 async function login(req, res) {
-  const { username, password } = req.body
-  if (!username || !password) return res.status(400).json({ error: 'Login va parol kerak' })
+  // req.body undefined bo'lishi mumkin (body yo'q / boshqa Content-Type), qiymatlar esa
+  // string bo'lmasligi mumkin (bcrypt.compare "Illegal arguments" bilan 500 berardi).
+  const { username, password } = req.body || {}
+  if (typeof username !== 'string' || typeof password !== 'string' || !username || !password) {
+    return res.status(400).json({ error: 'Login va parol kerak' })
+  }
 
   await refreshAdminSettingsFromDb()
 
@@ -61,12 +65,12 @@ async function login(req, res) {
 }
 
 async function changePassword(req, res) {
-  const { currentPassword, newPassword } = req.body
+  const { currentPassword, newPassword } = req.body || {}
   // currentPassword bo'sh/undefined bo'lsa, bcrypt.compare o'ziga xos "Illegal
   // arguments" xatosi bilan yiqiladi (500 sifatida chiqadi) — shuning uchun
   // bcrypt'ga yetib borishdan oldin aniq 400 bilan rad etamiz.
-  if (!currentPassword) return res.status(400).json({ error: 'Joriy parol kerak' })
-  if (!newPassword || newPassword.length < 8)
+  if (typeof currentPassword !== 'string' || !currentPassword) return res.status(400).json({ error: 'Joriy parol kerak' })
+  if (typeof newPassword !== 'string' || newPassword.length < 8)
     return res.status(400).json({ error: "Yangi parol kamida 8 ta belgidan iborat bo'lishi kerak" })
 
   await refreshAdminSettingsFromDb()

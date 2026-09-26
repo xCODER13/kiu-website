@@ -68,8 +68,11 @@ async function create(req, res) {
 }
 
 async function update(req, res) {
-  try { res.json(await Application.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })) }
-  catch (e) { fail(req, res, 400, e) }
+  try {
+    const updated = await Application.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    if (!updated) return res.status(404).json({ error: 'Topilmadi' })
+    res.json(updated)
+  } catch (e) { fail(req, res, 400, e) }
 }
 
 async function remove(req, res) {
