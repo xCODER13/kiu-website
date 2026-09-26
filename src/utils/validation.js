@@ -2,7 +2,7 @@
 // umumiy validatsiya qoidalari. Faqat shu faylni o'zgartirish orqali
 // barcha formalardagi qoidalar bir vaqtda yangilanadi.
 
-const NAME_RE = /^[A-Za-zА-Яа-яЁёЎўҚқҒғҲҳ'’.\- ]+$/
+const NAME_RE = /^[A-Za-zА-Яа-яЁёЎўҚқҒғҲҳ'’ʻʼʹ‘`.\- ]+$/
 
 // Ism-familiya: faqat harflar, kamida 2 so'z (Ism + Familiya), har bir so'z >= 2 harf
 export function validateFullName(value) {
@@ -40,7 +40,7 @@ export function validateEmail(value) {
 
 // Select/tanlov maydonlari uchun oddiy "bo'sh emasligi" tekshiruvi
 export function validateRequired(value, label = "Bu maydon") {
-  if (!value || !String(value).trim()) return `${label} majburiy`
+  if (value == null || !String(value).trim()) return `${label} majburiy`
   return null
 }
 

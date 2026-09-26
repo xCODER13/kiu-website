@@ -19,10 +19,15 @@ export default function Login() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       })
-      const data = await res.json()
-      if (data.token) {
+      // JSON bo'lmagan javob (429/502 HTML va h.k.) ham to'g'ri xabar berishi uchun
+      const data = await res.json().catch(() => null)
+      if (data?.token) {
         localStorage.setItem('kiu_token', data.token)
         navigate('/admin')
+      } else if (res.status === 429) {
+        setError(data?.error || "Juda ko'p urinish. Birozdan keyin qayta urinib ko'ring")
+      } else if (data === null) {
+        setError('Server bilan bog\'lanib bo\'lmadi')
       } else {
         setError(data.error || 'Xato yuz berdi')
       }
