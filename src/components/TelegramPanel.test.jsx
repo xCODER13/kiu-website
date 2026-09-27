@@ -18,11 +18,14 @@ describe('TelegramPanel', () => {
     expect(screen.getByText(/Yangi laboratoriya jihozlari/)).toBeInTheDocument()
   })
 
-  it('"Kanalga obuna bo\'lish" havolasi to\'g\'ri manzilga va yangi oynada ochiladi', () => {
+  it('"Kanalga obuna bo\'lish" havolasi to\'g\'ri manzilga, yangi oynada va xavfsiz (tabnabbing\'dan himoyalangan) ochiladi', () => {
     render(<TelegramPanel />)
     const link = screen.getByRole('link', { name: /Kanalga obuna bo'lish/ })
     expect(link).toHaveAttribute('href', config.telegram.url)
     expect(link).toHaveAttribute('target', '_blank')
-    expect(link).toHaveAttribute('rel', 'noreferrer')
+    // regressiya: rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab
+    // bloklamaydi — noopener ham bo'lishi shart
+    expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'))
+    expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'))
   })
 })

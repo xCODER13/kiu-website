@@ -83,7 +83,9 @@ export default function TelegramPanel() {
 
       {/* Footer */}
       <div className="tg-foot" style={{ padding: '.75rem 1.1rem', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'center' }}>
-        <a href={config.telegram.url} target="_blank" rel="noreferrer"
+        {/* rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab bloklamaydi —
+            noopener ham qo'shildi (tabnabbing'dan himoya, Documents.jsx'dagi bilan bir xil tuzatish) */}
+        <a href={config.telegram.url} target="_blank" rel="noopener noreferrer"
           style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'linear-gradient(135deg, #0088cc, #0055aa)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '8px 18px', borderRadius: 8, textDecoration: 'none' }}>
           <TgIcon />
           Kanalga obuna bo'lish

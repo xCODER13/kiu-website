@@ -146,7 +146,9 @@ export default function Home() {
   useReveal()
 
   const { data: newsData, loading: newsLoading, error: newsError } = useApi(`${API}/api/news`, [])
-  const articles = newsData.filter(n => !n.videoId)
+  // useApi noto'g'ri shakldagi (array bo'lmagan) javob bersa ham
+  // ".filter is not a function" bilan qulamasin
+  const articles = (Array.isArray(newsData) ? newsData : []).filter(n => !n.videoId)
   const featured = articles.slice(0, 5)
   const latest3 = articles.slice(0, 3)
 

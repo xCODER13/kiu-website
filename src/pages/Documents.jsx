@@ -49,10 +49,10 @@ export default function Documents() {
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
             {DOCS.map((doc, i) => (
-              <a key={i} 
+              <a key={i}
   href={doc.url}
   target="_blank"
-  rel="noreferrer"
+  rel="noopener noreferrer"
   style={{ textDecoration: 'none' }}>
                 <div className={`card reveal reveal-delay-${(i % 4) + 1}`} style={{ display: 'flex', gap: 12, alignItems: 'center', cursor: 'pointer' }}>
                   <div className="doc-icon" style={{ width: 44, height: 44, borderRadius: 10, background: 'rgba(124,58,237,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7c3aed', flexShrink: 0 }}>
@@ -72,4 +72,3 @@ export default function Documents() {
     </div>
   )
 }
-  

@@ -46,7 +46,9 @@ export default function Events() {
           )}
           {!loading && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {events.map((e) => {
+              {/* useApi noto'g'ri shakldagi (array bo'lmagan) javob bersa ham
+                  ".map is not a function" bilan qulamasin */}
+              {(Array.isArray(events) ? events : []).map((e) => {
                 const tc = typeColors[e.type] || typeColors.general
                 return (
                   <div key={e._id} className="card" style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
