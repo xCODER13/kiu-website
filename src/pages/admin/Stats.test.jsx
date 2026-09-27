@@ -52,22 +52,18 @@ describe('Stats', () => {
     mockApi({ 'GET /stats': { newsCount: 1 } })
     setup()
     await screen.findByText('1')
-    // "Vakansiya arizalari" faqat kartada bor (tezkor havolalarda "Vakansiyalar" deyiladi) — noyob
     expect(screen.getByText('Vakansiya arizalari').closest('a')).toHaveAttribute('href', '/admin/vacancies')
-    // "Qabul arizalari" ham kartada, ham tezkor havolada bor — ikkisi ham /admin/applications ga olib borishi kerak
-    const applicationsLinks = screen.getAllByText('Qabul arizalari').map(el => el.closest('a'))
-    applicationsLinks.forEach(a => expect(a).toHaveAttribute('href', '/admin/applications'))
+    expect(screen.getByText('Qabul arizalari').closest('a')).toHaveAttribute('href', '/admin/applications')
+    expect(screen.getByText('Galereya').closest('a')).toHaveAttribute('href', '/admin/gallery')
   })
 
-  it('"Tezkor havolalar" ro\'yxatida o\'zining Statistika havolasi yo\'q, lekin boshqa bo\'limlar bor', async () => {
+  it('"Tezkor havolalar" bo\'limi endi ko\'rsatilmaydi', async () => {
     mockApi({ 'GET /stats': { newsCount: 1 } })
     setup()
     await screen.findByText('1')
-    expect(screen.queryByRole('link', { name: /^Statistika$/ })).not.toBeInTheDocument()
-    // "Galereya" endi ham statistika kartasida, ham tezkor havolada bor — ikkisi ham /admin/gallery ga olib borishi kerak
-    const galleryLinks = screen.getAllByText('Galereya').map(el => el.closest('a'))
-    expect(galleryLinks).toHaveLength(2)
-    galleryLinks.forEach(a => expect(a).toHaveAttribute('href', '/admin/gallery'))
-    expect(screen.getByText('Profil')).toBeInTheDocument()
+    expect(screen.queryByText('Tezkor havolalar')).not.toBeInTheDocument()
+    // Har bir karta nomi endi faqat bir marta chiqadi (tezkor havolalar bilan dublikat yo'q)
+    expect(screen.getAllByText('Galereya')).toHaveLength(1)
+    expect(screen.getAllByText('Qabul arizalari')).toHaveLength(1)
   })
 })

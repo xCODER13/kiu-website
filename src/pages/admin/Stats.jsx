@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { API, H } from './shared/api'
 import { card } from './shared/styles'
-import { NAV } from './shared/constants'
 import { Ic } from './shared/Icons.jsx'
 
 export default function Stats() {
@@ -21,8 +20,8 @@ export default function Stats() {
     { label: 'Tadbirlar',          value: stats.eventsCount,   color: '#e546e5', icon: Ic.events,  to: '/admin/events'       },
     { label: "O'qituvchilar",      value: stats.teachersCount, color: '#0088cc', icon: Ic.teach,   to: '/admin/teachers'     },
     { label: 'Qabul arizalari',    value: stats.appsCount,     color: '#059669', icon: Ic.apps,    to: '/admin/applications' },
-    { label: 'Vakansiya arizalari',value: stats.vacancyApps,   color: '#d97706', icon: Ic.vacancy, to: '/admin/vacancies'    },
-    { label: 'Galereya',           value: stats.galleryCount,  color: '#7c3aed', icon: Ic.gallery, to: '/admin/gallery'      },
+    { label: 'Vakansiya arizalari',value: stats.vacancyApps,   color: '#4f46e5', icon: Ic.vacancy, to: '/admin/vacancies'    },
+    { label: 'Galereya',           value: stats.galleryCount,  color: '#0d9488', icon: Ic.gallery, to: '/admin/gallery'      },
   ]
 
   return (
@@ -43,18 +42,6 @@ export default function Stats() {
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: `${c.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.color }}>{c.icon}</div>
               </div>
               <div style={{ fontSize: 11, color: 'var(--muted)' }}>{c.label}</div>
-            </div>
-          </NavLink>
-        ))}
-      </div>
-
-      <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text)', marginBottom: '1rem' }}>Tezkor havolalar</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 10 }}>
-        {NAV.slice(1).map(l => (
-          <NavLink key={l.to} to={l.to} style={{ textDecoration: 'none' }}>
-            <div style={{ ...card, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
-              <div style={{ color: '#7c3aed' }}>{l.icon}</div>
-              <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text)' }}>{l.label}</span>
             </div>
           </NavLink>
         ))}

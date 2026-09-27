@@ -5,12 +5,11 @@ import { Ic } from './shared/Icons.jsx'
 import { useSingleImageUpload } from './shared/useImageUpload.js'
 
 const KAFEDRALAR = [
+  "Iqtisodiyot va muhandislik kafedrasi",
   "Aniq fanlar kafedrasi",
   "Filologiya va tillarni o'qitish kafedrasi",
-  "Ijtimoiy fanlar kafedrasi",
   "Ijtimoiy-gumanitar fanlar kafedrasi",
-  "Iqtisodiyot va muhandislik kafedrasi",
-  "Maktabgacha va boshlang'ich ta'lim kafedrasi",
+  "Ijtimoiy fanlar kafedrasi",
 ]
 
 export default function TeachersAdmin() {
@@ -118,8 +117,6 @@ export default function TeachersAdmin() {
                 {KAFEDRALAR.map(k => <option key={k} value={k}>{k}</option>)}
               </select>
             </div>
-            <div><label style={lbl}>Email</label><input value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="teacher@kiu.uz" style={inp} /></div>
-
             {uploading && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#0088cc' }}>
                 <div style={{ width: 14, height: 14, border: '2px solid #cceeff', borderTopColor: '#0088cc', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
