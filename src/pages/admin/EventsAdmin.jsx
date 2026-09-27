@@ -106,8 +106,8 @@ export default function EventsAdmin() {
       </div>
 
       {open && (
-        <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#4f46e5' }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: '#4f46e5', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : 'Yangi tadbir'}</h3>
+        <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#7c3aed' }}>
+          <h3 style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : 'Yangi tadbir'}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div><label style={lbl}>Sarlavha *</label><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Tadbir nomi" style={inp} /></div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -130,14 +130,14 @@ export default function EventsAdmin() {
 
             <div>
               <label style={lbl}>Poster rasm</label>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #4f46e5', color: '#4f46e5', background: 'rgba(79,70,229,.05)' }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #7c3aed', color: '#7c3aed', background: 'rgba(124,58,237,.05)' }}>
                 {Ic.photo}
                 {imagePreview ? 'Rasmni almashtirish' : "Rasm qo'shish"}
                 <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageSelect} style={{ display: 'none' }} />
               </label>
               {imagePreview && (
                 <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
-                  <img src={imagePreview} alt="poster" style={{ width: 70, height: 50, objectFit: 'cover', borderRadius: 8, border: '2px solid #4f46e5', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
+                  <img src={imagePreview} alt="poster" style={{ width: 70, height: 50, objectFit: 'cover', borderRadius: 8, border: '2px solid #7c3aed', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
                   <button onClick={removeImage} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
                 </div>
               )}
@@ -147,8 +147,8 @@ export default function EventsAdmin() {
             <div><label style={lbl}>Tavsif</label><textarea value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} rows={3} style={{ ...inp, resize: 'vertical' }} /></div>
 
             {uploading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#4f46e5' }}>
-                <div style={{ width: 14, height: 14, border: '2px solid #e0e7ff', borderTopColor: '#4f46e5', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#7c3aed' }}>
+                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
                 Saqlanmoqda...
               </div>
             )}

@@ -86,8 +86,8 @@ export default function TeachersAdmin() {
       </div>
 
       {open && (
-        <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#0088cc' }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: '#0088cc', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : "Yangi o'qituvchi"}</h3>
+        <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#7c3aed' }}>
+          <h3 style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : "Yangi o'qituvchi"}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div><label style={lbl}>To'liq ism *</label><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Familiya Ism Sharif" style={inp} /></div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -97,14 +97,14 @@ export default function TeachersAdmin() {
 
             <div>
               <label style={lbl}>Foto (ixtiyoriy)</label>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #0088cc', color: '#0088cc', background: 'rgba(0,136,204,.05)' }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #7c3aed', color: '#7c3aed', background: 'rgba(124,58,237,.05)' }}>
                 {Ic.photo}
                 {imagePreview ? 'Fotoni almashtirish' : "Foto qo'shish"}
                 <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageSelect} style={{ display: 'none' }} />
               </label>
               {imagePreview && (
                 <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
-                  <img src={imagePreview} alt="foto" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '2px solid #0088cc', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
+                  <img src={imagePreview} alt="foto" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '2px solid #7c3aed', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
                   <button onClick={removeImage} style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
                 </div>
               )}
@@ -118,8 +118,8 @@ export default function TeachersAdmin() {
               </select>
             </div>
             {uploading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#0088cc' }}>
-                <div style={{ width: 14, height: 14, border: '2px solid #cceeff', borderTopColor: '#0088cc', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#7c3aed' }}>
+                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
                 Saqlanmoqda...
               </div>
             )}
