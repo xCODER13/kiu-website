@@ -43,7 +43,7 @@ describe('uploadImageToSupabase — muvaffaqiyatli yuklash', () => {
     await expect(uploadImageToSupabase(fakeFile({ mimetype }), 'events')).resolves.toMatch(/^https:\/\/cdn\.test\/events\//)
   })
 
-  test.each(['news', 'events', 'teachers'])("'%s' papkasiga yuklaydi", async folder => {
+  test.each(['news', 'events', 'teachers', 'gallery'])("'%s' papkasiga yuklaydi", async folder => {
     await uploadImageToSupabase(fakeFile(), folder)
     expect(mockUpload.mock.calls[0][0].startsWith(`${folder}/`)).toBe(true)
   })

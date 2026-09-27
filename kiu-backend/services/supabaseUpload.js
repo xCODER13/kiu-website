@@ -30,7 +30,7 @@ const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024
 // aks holda eski va yangi rasm URL'lari turli joylarda tarqalib ketadi.
 // Whitelist — folder parametri controller kodidan keladi (foydalanuvchi
 // kiritmaydi), lekin himoya sifatida baribir cheklaymiz.
-const ALLOWED_FOLDERS = new Set(['news', 'events', 'teachers'])
+const ALLOWED_FOLDERS = new Set(['news', 'events', 'teachers', 'gallery'])
 
 async function uploadImageToSupabase(file, folder) {
   if (!file || !file.buffer) {
