@@ -102,13 +102,34 @@ function ScrollReveal() {
       { threshold: 0.15 }
     )
 
+    const observeEl = (el) => observer.observe(el)
+
     const timeoutId = setTimeout(() => {
-      document.querySelectorAll('.reveal').forEach((el) => observer.observe(el))
+      document.querySelectorAll('.reveal').forEach(observeEl)
     }, 100)
+
+    // Sahifa ochilgandan keyin API'dan kelgan ma'lumot asosida render bo'ladigan
+    // .reveal elementlarni (masalan Gallery/News kartochkalari) ham ushlab olish
+    // uchun MutationObserver. Yuqoridagi bir martalik querySelectorAll faqat
+    // 100ms ichida DOM'da mavjud elementlarni ko'radi — agar fetch (masalan
+    // Render sovuq ishga tushishi sabab) undan uzoqroq davom etsa, keyinroq
+    // qo'shiladigan kartochkalar hech qachon kuzatilmay opacity:0'da qolib
+    // ketardi (Gallery sahifasidagi bug shu edi).
+    const mutationObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType !== Node.ELEMENT_NODE) return
+          if (node.classList?.contains('reveal')) observeEl(node)
+          node.querySelectorAll?.('.reveal').forEach(observeEl)
+        })
+      }
+    })
+    mutationObserver.observe(document.body, { childList: true, subtree: true })
 
     return () => {
       clearTimeout(timeoutId)
       observer.disconnect()
+      mutationObserver.disconnect()
     }
   }, [location])
 
