@@ -10,13 +10,13 @@ const FALLBACK_EVENTS = [
 ]
 
 const typeColors = {
-  open:       { bg: 'rgba(124,58,237,0.1)', color: '#7c3aed', label: 'Ochiq kun' },
+  open:       { bg: 'rgba(220,38,38,0.1)', color: '#dc2626', label: 'Ochiq kun' },
   culture:    { bg: 'rgba(251,191,36,0.1)', color: '#d97706', label: 'Madaniy' },
   science:    { bg: 'rgba(59,130,246,0.1)', color: '#2563eb', label: 'Ilmiy' },
   sport:      { bg: 'rgba(16,185,129,0.1)', color: '#059669', label: 'Sport' },
   graduation: { bg: 'rgba(236,72,153,0.1)', color: '#db2777', label: 'Bitiruvchilar' },
-  admission:  { bg: 'rgba(124,58,237,0.1)', color: '#7c3aed', label: 'Qabul' },
-  general:    { bg: 'rgba(107,114,128,0.1)', color: '#6b7280', label: 'Umumiy' },
+  admission:  { bg: 'rgba(161,98,7,0.1)', color: '#a16207', label: 'Qabul' },
+  general:    { bg: 'rgba(15,118,110,0.1)', color: '#0f766e', label: 'Umumiy' },
 }
 
 export default function Events() {
