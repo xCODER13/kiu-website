@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import config from '../config'
 import useReveal from '../hooks/useReveal'
 import useApi from '../hooks/useApi'
+import { getCategoryColor, getCategoryLabel } from '../utils/newsCategories'
 
 const API = import.meta.env.VITE_API_URL
 
@@ -16,15 +17,6 @@ function parseImages(imageField) {
     return [imageField]
   }
   return [imageField]
-}
-
-const CAT_COLORS = {
-  umumiy: '#d7bb04', "ta'lim": '#0ea5e9', sport: '#16a34a',
-  madaniyat: '#dc2626', xalqaro: '#d97706', fan: '#0891b2',
-}
-const CAT_LABELS = {
-  umumiy: 'Umumiy', "ta'lim": "Ta'lim", sport: 'Sport',
-  madaniyat: 'Madaniyat', xalqaro: 'Xalqaro', fan: 'Fan',
 }
 
 const navBtnStyle = (side) => ({
@@ -52,7 +44,7 @@ function HomeNewsCarousel({ items }) {
 
   if (!items.length) return null
   const item = items[idx]
-  const catColor = CAT_COLORS[item.category] || '#7c3aed'
+  const catColor = getCategoryColor(item.category)
   const img = parseImages(item.image)[0]
 
   return (
@@ -76,7 +68,7 @@ function HomeNewsCarousel({ items }) {
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1.75rem 2rem', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {item.category && (
           <span style={{ alignSelf: 'flex-start', fontSize: 10, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: '#fff', background: catColor, padding: '3px 11px', borderRadius: 20 }}>
-            {CAT_LABELS[item.category] || item.category}
+            {getCategoryLabel(item.category)}
           </span>
         )}
         <h3 style={{ fontSize: 'clamp(1.1rem, 2.6vw, 1.5rem)', fontWeight: 700, color: '#fff', lineHeight: 1.3, maxWidth: 560 }}>
@@ -110,7 +102,7 @@ function HomeNewsCarousel({ items }) {
 
 // ── Home uchun ixcham yangilik kartasi ──
 function HomeNewsCard({ item, index }) {
-  const catColor = CAT_COLORS[item.category] || '#7c3aed'
+  const catColor = getCategoryColor(item.category)
   const img = parseImages(item.image)[0]
   return (
     <NavLink to={`/news/${item._id}`} style={{ textDecoration: 'none' }}>
@@ -127,7 +119,7 @@ function HomeNewsCard({ item, index }) {
         <div style={{ padding: '0.85rem 1rem' }}>
           {item.category && (
             <span style={{ fontSize: 10, fontWeight: 600, color: catColor, background: `${catColor}18`, padding: '2px 8px', borderRadius: 20 }}>
-              {CAT_LABELS[item.category] || item.category}
+              {getCategoryLabel(item.category)}
             </span>
           )}
           <h4 style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text)', lineHeight: 1.5, marginTop: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>

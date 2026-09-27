@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { getCategoryColor, getCategoryLabel } from '../utils/newsCategories'
 
 function parseImages(imageField) {
   if (!imageField) return []
@@ -98,20 +99,6 @@ function ImageCarousel({ imgs, title }) {
 
 const API = import.meta.env.VITE_API_URL
 
-const CAT_COLORS = {
-  umumiy:    '#d7bb04',
-  talim:     '#0ea5e9',
-  sport:     '#16a34a',
-  madaniyat: '#dc2626',
-  xalqaro:   '#d97706',
-  fan:       '#0891b2',
-}
-
-const CAT_LABELS = {
-  umumiy: 'Umumiy', talim: "Ta'lim", sport: 'Sport',
-  madaniyat: 'Madaniyat', xalqaro: 'Xalqaro', fan: 'Fan',
-}
-
 export default function NewsDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -169,7 +156,7 @@ export default function NewsDetail() {
     </div>
   )
 
-  const catColor = CAT_COLORS[news.category] || '#7c3aed'
+  const catColor = getCategoryColor(news.category)
 
   return (
     <div className="fade-up">
@@ -212,7 +199,7 @@ export default function NewsDetail() {
                 color: catColor, background: `${catColor}18`,
                 padding: '4px 12px', borderRadius: 20, textTransform: 'uppercase',
               }}>
-                {CAT_LABELS[news.category] || news.category}
+                {getCategoryLabel(news.category)}
               </span>
             )}
             <span style={{ fontSize: 12, color: 'var(--muted)' }}>

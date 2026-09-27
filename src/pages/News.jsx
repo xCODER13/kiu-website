@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import TelegramPanel from '../components/TelegramPanel'
 import useApi from '../hooks/useApi'
+import { getCategoryColor, getCategoryLabel, categoryMatches, collectCategoryKeys } from '../utils/newsCategories'
 
 // Rasm maydonidan URL massivini olish (eski va yangi format)
 function parseImages(imageField) {
@@ -15,20 +16,6 @@ function parseImages(imageField) {
 
 
 const API = import.meta.env.VITE_API_URL
-
-const CAT_COLORS = {
-  "Umumiy":    '#d7bb04',
-  "Ta'lim":     '#0ea5e9', 
-  "Sport":     '#16a34a',
-  "Madaniyat": '#dc2626',
-  "Xalqaro":   '#d97706',
-  "Fan":       '#0891b2',
-}
-
-const CAT_LABELS = {
-  "Umumiy": 'Umumiy', "Ta'lim": 'Ta\'lim', "Sport": 'Sport',
-  "Madaniyat": 'Madaniyat', "Xalqaro": 'Xalqaro', "Fan": 'Fan',
-}
 
 const FALLBACK_SHORTS = [
   { id: 1, videoId: '_yP1fg90bbI', title: "Yashil makon — kelajak uchun qadam!" },
@@ -57,7 +44,7 @@ function FeaturedCarousel({ items }) {
 
   if (!items.length) return null
   const item = items[idx]
-  const catColor = CAT_COLORS[item.category] || '#7c3aed'
+  const catColor = getCategoryColor(item.category)
 
   return (
     <div
@@ -118,7 +105,7 @@ function FeaturedCarousel({ items }) {
               padding: '4px 12px', borderRadius: 20,
             }}>
               <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'rgba(255,255,255,.7)', display: 'inline-block' }} />
-              {CAT_LABELS[item.category] || item.category}
+              {getCategoryLabel(item.category)}
             </span>
             <span style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', fontFamily: 'var(--font-body)' }}>
               {new Date(item.createdAt).toLocaleDateString('uz-UZ')}
@@ -232,7 +219,7 @@ function TelegramBanner() {
 // ── NEWS CARD ──
 function NewsCard({ item }) {
   const navigate = useNavigate()
-  const catColor = CAT_COLORS[item.category] || '#7c3aed'
+  const catColor = getCategoryColor(item.category)
   return (
     <div
       className="card"
@@ -257,7 +244,7 @@ function NewsCard({ item }) {
               fontSize: 10, fontWeight: 600, color: catColor,
               background: `${catColor}18`, padding: '2px 8px', borderRadius: 20,
             }}>
-              {CAT_LABELS[item.category] || item.category}
+              {getCategoryLabel(item.category)}
             </span>
           )}
           <span style={{ fontSize: 11, color: 'var(--muted)' }}>{new Date(item.createdAt).toLocaleDateString('uz-UZ')}</span>
@@ -310,10 +297,10 @@ export default function News() {
   const shorts   = news.filter(n => n.videoId)
 
   const featured   = articles.slice(0, 5)
-  const categories = ['all', ...new Set(articles.map(n => n.category).filter(Boolean))]
+  const categories = ['all', ...collectCategoryKeys(articles)]
 
   const filtered = articles.filter(n => {
-    const matchCat    = activeCategory === 'all' || n.category === activeCategory
+    const matchCat    = activeCategory === 'all' || categoryMatches(n.category, activeCategory)
     const matchSearch = !search || n.title.toLowerCase().includes(search.toLowerCase()) || n.content?.toLowerCase().includes(search.toLowerCase())
     return matchCat && matchSearch
   })
@@ -414,7 +401,7 @@ export default function News() {
                 {categories.length > 1 && (
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: '1.5rem' }}>
                     {categories.map(cat => {
-                      const color = CAT_COLORS[cat] || '#7c3aed'
+                      const color = cat === 'all' ? '#7c3aed' : getCategoryColor(cat)
                       const isActive = activeCategory === cat
                       return (
                         <button key={cat} onClick={() => { setActiveCategory(cat); setVisibleCount(6) }} style={{
@@ -424,9 +411,9 @@ export default function News() {
                           background: isActive ? `${color}18` : 'transparent',
                           color: isActive ? color : 'var(--muted)',
                         }}>
-                          {cat === 'all' ? 'Barchasi' : CAT_LABELS[cat] || cat}
+                          {cat === 'all' ? 'Barchasi' : getCategoryLabel(cat)}
                           <span style={{ marginLeft: 5, fontSize: 10 }}>
-                            {cat === 'all' ? articles.length : articles.filter(n => n.category === cat).length}
+                            {cat === 'all' ? articles.length : articles.filter(n => categoryMatches(n.category, cat)).length}
                           </span>
                         </button>
                       )
