@@ -30,10 +30,11 @@ export function validatePhone(value) {
   return null
 }
 
-// Email
-export function validateEmail(value) {
+// Email — ba'zi formalarda (mas. Bo'sh ish o'rinlari) ixtiyoriy, shuning uchun
+// `required` parametri bilan boshqariladi (standart holatda majburiy).
+export function validateEmail(value, required = true) {
   const v = (value || '').trim()
-  if (!v) return "Bu maydon majburiy"
+  if (!v) return required ? "Bu maydon majburiy" : null
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "Email manzil noto'g'ri formatda"
   return null
 }

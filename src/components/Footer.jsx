@@ -100,11 +100,6 @@ export default function Footer() {
         flexWrap: 'wrap', gap: 8
       }}>
         <span>© 2026 {config.university.name}. Barcha huquqlar himoyalangan.</span>
-        <div style={{ display: 'flex', gap: 16 }}>
-          <NavLink to="/about"     style={{ color: '#9ca3af', fontSize: 12 }}>Biz haqimizda</NavLink>
-          <NavLink to="/documents" style={{ color: '#9ca3af', fontSize: 12 }}>Hujjatlar</NavLink>
-          <NavLink to="/vacancies" style={{ color: '#9ca3af', fontSize: 12 }}>Vakansiyalar</NavLink>
-        </div>
       </div>
     </footer>
   )

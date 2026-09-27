@@ -48,7 +48,7 @@ describe('Vacancies', () => {
     render(<Vacancies />)
     await goToForm(user)
     await user.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
-    expect(screen.getAllByText('Bu maydon majburiy')).toHaveLength(3) // fullName, phone, email
+    expect(screen.getAllByText('Bu maydon majburiy')).toHaveLength(2) // fullName, phone (email endi ixtiyoriy)
     expect(screen.getByText('Lavozim majburiy')).toBeInTheDocument()
     expect(screen.getByText("Bo'lim/Kafedra majburiy")).toBeInTheDocument()
     expect(screen.getByText("Ta'lim darajasi majburiy")).toBeInTheDocument()
@@ -82,6 +82,23 @@ describe('Vacancies', () => {
       hasPortfolio: false,
       type: 'vacancy',
     })
+  })
+
+  it('email bo\'sh qoldirilsa ham forma yuboriladi (ixtiyoriy maydon)', async () => {
+    okFetch()
+    const user = userEvent.setup()
+    render(<Vacancies />)
+    await goToForm(user)
+    await user.type(screen.getByPlaceholderText('Familiya Ism Otasining ismi'), 'Ali Valiyev')
+    await user.type(screen.getByPlaceholderText('+998 90 123 45 67'), '+998 90 123 45 67')
+    const selects = screen.getAllByRole('combobox')
+    await user.selectOptions(selects[0], "O'qituvchi")
+    await user.selectOptions(selects[1], 'Aniq fanlar kafedrasi')
+    await user.selectOptions(selects[2], 'Magistr')
+    await user.selectOptions(selects[3], '1–3 yil')
+    await user.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
+    expect(await screen.findByText('Arizangiz qabul qilindi!')).toBeInTheDocument()
+    expect(JSON.parse(fetch.mock.calls[0][1].body).email).toBe('')
   })
 
   it('"Portfelim mavjud" belgilansa hasPortfolio:true yuboriladi', async () => {

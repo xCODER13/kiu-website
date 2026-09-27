@@ -39,6 +39,12 @@ describe('validateEmail', () => {
   it.each(['a@b.co', 'ali.valiyev@kiu.uz', '  a@b.co  '])('to\'g\'ri: %j', v => expect(validateEmail(v)).toBeNull())
   it.each([null, '', '   '])('bo\'sh: %j', v => expect(validateEmail(v)).toBe('Bu maydon majburiy'))
   it.each(['abc', 'a@b', '@b.co', 'a b@c.co', 'a@@b.co'])('noto\'g\'ri: %j', v => expect(validateEmail(v)).toMatch(/noto'g'ri/))
+
+  describe('required=false (ixtiyoriy)', () => {
+    it.each([null, '', '   '])('bo\'sh qiymat xato bermaydi: %j', v => expect(validateEmail(v, false)).toBeNull())
+    it('noto\'g\'ri formatdagi qiymat baribir xato beradi', () => expect(validateEmail('abc', false)).toMatch(/noto'g'ri/))
+    it('to\'g\'ri qiymat baribir qabul qilinadi', () => expect(validateEmail('a@b.co', false)).toBeNull())
+  })
 })
 
 describe('validateRequired', () => {

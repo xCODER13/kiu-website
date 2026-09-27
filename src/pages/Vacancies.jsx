@@ -50,7 +50,7 @@ export default function Vacancies() {
     const errs = {
       fullName: validateFullName(form.fullName),
       phone: validatePhone(form.phone),
-      email: validateEmail(form.email),
+      email: validateEmail(form.email, false),
       position: validateRequired(form.position, 'Lavozim'),
       faculty: validateRequired(form.faculty, "Bo'lim/Kafedra"),
       education: validateRequired(form.education, "Ta'lim darajasi"),
@@ -239,7 +239,7 @@ export default function Vacancies() {
                             {fieldErrors.phone && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.phone}</div>}
                           </div>
                           <div>
-                            <label style={labelStyle}>Email *</label>
+                            <label style={labelStyle}>Email</label>
                             <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="email@example.com" style={errorBorder(fieldErrors.email, inputStyle)} />
                             {fieldErrors.email && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.email}</div>}
                           </div>
