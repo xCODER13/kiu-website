@@ -7,6 +7,7 @@ const News = require('../models/News')
 const Event = require('../models/Event')
 const Teacher = require('../models/Teacher')
 const Application = require('../models/Application')
+const Gallery = require('../models/Gallery')
 const { getAuthToken } = require('./helpers')
 
 const PHONE = '+998901234567'
@@ -18,13 +19,13 @@ describe('GET /api/stats', () => {
     expect((await request(app).get('/api/stats')).status).toBe(401)
   })
 
-  test("bo'sh bazada barcha sanoqlar 0, javob aynan 6 ta raqamli maydondan iborat", async () => {
+  test("bo'sh bazada barcha sanoqlar 0, javob aynan 7 ta raqamli maydondan iborat", async () => {
     const res = await getStats()
     expect(res.status).toBe(200)
-    expect(res.body).toEqual({ newsCount: 0, eventsCount: 0, teachersCount: 0, appsCount: 0, newApps: 0, vacancyApps: 0 })
+    expect(res.body).toEqual({ newsCount: 0, eventsCount: 0, teachersCount: 0, appsCount: 0, newApps: 0, vacancyApps: 0, galleryCount: 0 })
   })
 
-  test("news, events va teachers sanoqlari to'g'ri", async () => {
+  test("news, events, teachers va gallery sanoqlari to'g'ri", async () => {
     await News.create([{ title: 'a' }, { title: 'b' }])
     await Event.create([
       { title: 'e1', date: '1', month: 'Yan' },
@@ -32,11 +33,16 @@ describe('GET /api/stats', () => {
       { title: 'e3', date: '3', month: 'Mar' },
     ])
     await Teacher.create({ name: 'T', role: 'R', dept: 'D' })
+    await Gallery.create([
+      { title: '1-kampus', images: ['https://x/1.jpg'] },
+      { title: '2-kampus', images: ['https://x/2.jpg'] },
+    ])
 
     const { body } = await getStats()
     expect(body.newsCount).toBe(2)
     expect(body.eventsCount).toBe(3)
     expect(body.teachersCount).toBe(1)
+    expect(body.galleryCount).toBe(2)
   })
 
   test("appsCount faqat qabul (admission) arizalarini sanaydi; vakansiyalar alohida", async () => {

@@ -7,10 +7,13 @@ import { Ic } from './shared/Icons.jsx'
 
 export default function Stats() {
   const [stats, setStats] = useState(null)
+  const [error, setError] = useState(false)
   useEffect(() => {
-    fetch(`${API}/stats`, { headers: H() }).then(r => r.json()).then(setStats).catch(() => {})
+    fetch(`${API}/stats`, { headers: H() }).then(r => r.json()).then(setStats)
+      .catch(err => { console.error('Stats yuklashda xatolik:', err); setError(true) })
   }, [])
 
+  if (error) return <p style={{ color: '#dc2626', fontSize: 13 }}>Statistikani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.</p>
   if (!stats) return <p style={{ color: 'var(--muted)', fontSize: 13 }}>Yuklanmoqda...</p>
 
   const cards = [
@@ -19,6 +22,7 @@ export default function Stats() {
     { label: "O'qituvchilar",      value: stats.teachersCount, color: '#0088cc', icon: Ic.teach,   to: '/admin/teachers'     },
     { label: 'Qabul arizalari',    value: stats.appsCount,     color: '#059669', icon: Ic.apps,    to: '/admin/applications' },
     { label: 'Vakansiya arizalari',value: stats.vacancyApps,   color: '#d97706', icon: Ic.vacancy, to: '/admin/vacancies'    },
+    { label: 'Galereya',           value: stats.galleryCount,  color: '#7c3aed', icon: Ic.gallery, to: '/admin/gallery'      },
   ]
 
   return (

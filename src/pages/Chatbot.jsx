@@ -32,10 +32,16 @@ export default function Chatbot() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef(null)
+  const timeoutRef = useRef(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  // Komponent bot javobi kelishidan oldin unmount bo'lsa (foydalanuvchi sahifadan
+  // chiqib ketsa), pending setTimeout hali ham setState chaqirib, React'ning
+  // "Cannot update state on an unmounted component" ogohlantirishiga sabab bo'lardi.
+  useEffect(() => () => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }, [])
 
   function send(text) {
     const msg = text || input.trim()
@@ -43,7 +49,7 @@ export default function Chatbot() {
     setMessages(prev => [...prev, { id: Date.now(), from: 'user', text: msg }])
     setInput('')
     setLoading(true)
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setMessages(prev => [...prev, { id: Date.now() + 1, from: 'bot', text: getResponse(msg) }])
       setLoading(false)
     }, 800)

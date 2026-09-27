@@ -73,8 +73,8 @@ export default function Vacancies() {
       })
       if (!res.ok) throw new Error('Request failed')
       setSent(true)
-    } catch (error) {
-      console.error('Error submitting application:', error);
+    } catch (err) {
+      console.error('Error submitting application:', err);
       setError(true)
     }
     setLoading(false)
