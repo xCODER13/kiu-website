@@ -64,14 +64,18 @@ export default function SortingHat() {
   ))}
 
   {/* Orqaga tugma */}
-  <NavLink to="/admission" style={{ textDecoration: 'none', position: 'absolute', top: '1rem', left: '1rem' }}>
-    <button className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'rgba(124,58,237,.25)', color: '#7c3aed', border: '1px solid rgba(124,58,237,.2)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12"/>
-        <polyline points="12 19 5 12 12 5"/>
-      </svg>
-      Qabul sahifasi
-    </button>
+  {/* Xatolik: <button> ilgari <a> (NavLink) ICHIDA joylashgan edi — HTML5
+      bo'yicha <a> ichida boshqa interaktiv element (button) bo'lishi
+      taqiqlangan (invalid nesting). Bu klaviatura/screen reader uchun
+      chalkash va E2E testlarda ham "button" sifatida topilib, aslida
+      havola ekanligi bilinmay qolishiga olib keladi. Endi NavLink o'zi
+      to'g'ridan-to'g'ri pill ko'rinishida (ichida qo'shimcha button yo'q). */}
+  <NavLink to="/admission" className="section-badge" style={{ textDecoration: 'none', position: 'absolute', top: '1rem', left: '1rem', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'rgba(124,58,237,.25)', color: '#7c3aed', border: '1px solid rgba(124,58,237,.2)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"/>
+      <polyline points="12 19 5 12 12 5"/>
+    </svg>
+    Qabul sahifasi
   </NavLink>
 
   <div style={{ position: 'relative', zIndex: 1 }}>

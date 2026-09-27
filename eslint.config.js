@@ -26,6 +26,14 @@ export default defineConfig([
     },
   },
   {
+    // Playwright E2E: Node muhitida ishlaydi (process.env, Buffer va h.k.),
+    // lekin ESM (import/export) — kiu-backend'dagi CommonJS'dan farqli.
+    files: ['e2e/**/*.js', 'playwright.config.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+  {
     files: ['**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,

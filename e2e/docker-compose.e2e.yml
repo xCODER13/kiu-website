@@ -1,0 +1,29 @@
+# ── E2E MONGODB (faqat Playwright E2E testlar uchun) ──
+# kiu-backend/docker-compose.test.yml bilan bir xil naqsh, lekin ALOHIDA
+# konteyner va port — backend'ning o'z Jest testlari (27018) bilan
+# aralashib qolmasin, ikkisini bir vaqtda ham ishlatish mumkin bo'lsin.
+#
+# Ishga tushirish (repo root'dan):
+#   docker compose -f e2e/docker-compose.e2e.yml up -d --wait
+# To'xtatish va tozalash:
+#   docker compose -f e2e/docker-compose.e2e.yml down -v --remove-orphans
+#
+# - Ma'lumot faqat xotirada (tmpfs), volume yo'q → har `up`da toza baza.
+# - Port 27019 (27017/27018 emas): boshqa Mongo'lar bilan to'qnashmasligi uchun.
+# - Faqat 127.0.0.1 ga bog'langan — tarmoqqa ochilmaydi.
+# - e2e/config.js dagi E2E_MONGODB_URI default qiymati aynan shu portga mos.
+services:
+  mongo-e2e:
+    image: mongo:8.0
+    container_name: kiu-mongo-e2e
+    restart: "no"
+    ports:
+      - "27019:27017" 
+    tmpfs:
+      - /data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+      start_period: 5s

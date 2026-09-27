@@ -30,3 +30,9 @@ kiu-backend/.env.*
 !kiu-backend/.env.example
 !kiu-backend/.env.test.example
 dist/
+
+# Playwright E2E
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
