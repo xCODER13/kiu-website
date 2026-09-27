@@ -26,7 +26,9 @@ export default function Navbar({ dark, setDark, onApply }) {
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
 
         {/* Logo */}
-        <NavLink to="/" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Xatolik: mobil menyu ochiq holda logotipga bosilsa, sahifa
+            almashsa ham menyu ochiq qolib qolar edi — onClick qo'shildi */}
+        <NavLink to="/" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <img src="/logo.png" alt="KIU logo" className="nav-logo-img" style={{ width: 38, height: 38, objectFit: 'contain', }} />
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: dark ? '#ffffff' : '#1a1a2e' }}>{config.university.name}</div>

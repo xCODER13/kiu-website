@@ -6,10 +6,21 @@ import { fmt } from './utils'
 export default function FacultyCard({ f, index, onClick }) {
   const [hover, setHover] = useState(false)
 
+  // Xatolik: karta faqat sichqoncha uchun ochiladigan div edi — klaviatura
+  // (Tab + Enter/Space) yoki screen reader orqali fokus qilib bo'lmas va
+  // modalni ochib bo'lmas edi. role/tabIndex/onKeyDown qo'shildi.
   return (
     <div
       className="card"
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick()
+        }
+      }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{

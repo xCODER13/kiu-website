@@ -15,7 +15,9 @@ export default function Hemis() {
               </div>
               <h2 style={{ fontSize: '1.2rem', color: 'var(--text)', marginBottom: '.5rem' }}>Talabalar uchun</h2>
               <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: '1.5rem', lineHeight: 1.7 }}>Dars jadvali, baholar, to'lov ma'lumotlari va boshqa xizmatlar</p>
-              <a href="https://student.kiu.uz/dashboard/login" target="_blank" rel="noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%', padding: '12px' }}>
+              {/* Xatolik: rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab
+                  bloklamaydi — tabnabbing'dan himoya uchun noopener qo'shildi */}
+              <a href="https://student.kiu.uz/dashboard/login" target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%', padding: '12px' }}>
                 HEMIS Student
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 6 }}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               </a>
@@ -27,7 +29,7 @@ export default function Hemis() {
               </div>
               <h2 style={{ fontSize: '1.2rem', color: 'var(--text)', marginBottom: '.5rem' }}>O'qituvchilar uchun</h2>
               <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: '1.5rem', lineHeight: 1.7 }}>Dars jadvali, baholar kiritish, hisobotlar va boshqa xizmatlar</p>
-              <a href="https://hemis.kiu.uz/dashboard/login" target="_blank" rel="noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%', padding: '12px' }}>
+              <a href="https://hemis.kiu.uz/dashboard/login" target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%', padding: '12px' }}>
                 HEMIS OTM
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 6 }}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               </a>
