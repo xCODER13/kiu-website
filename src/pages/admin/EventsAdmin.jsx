@@ -4,6 +4,33 @@ import { card, inp, lbl, bP, bD, bE, bG } from './shared/styles'
 import { Ic } from './shared/Icons.jsx'
 import { useSingleImageUpload } from './shared/useImageUpload'
 
+const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
+
+// Sana/Oy ma'lumotlari bazada avvalgidek ikkita alohida matn maydoni (`date`,
+// `month`) sifatida saqlanadi — backend va public sahifa o'zgarmaydi. Admin
+// formada esa endi bitta brauzer sana tanlagichi (<input type="date">)
+// ko'rsatiladi, ikkalasi shundan avtomatik hisoblanadi — qo'lda ikki marta
+// (masalan "28 mart" va yana alohida "mart") kiritish shart emas.
+// Yil ma'lumotlari bazasida saqlanmaydi/ko'rsatilmaydi (sxema buni bilmaydi),
+// shuning uchun faqat kun va oy olinadi, yil e'tiborga olinmaydi.
+function isoToDateFields(iso) {
+  if (!iso) return { date: '', month: '' }
+  const [, m, d] = iso.split('-').map(Number)
+  return { date: String(d), month: UZ_MONTHS[m - 1] || '' }
+}
+
+// Tahrirlashda saqlangan `date`/`month`dan sana tanlagich uchun taxminiy ISO
+// qiymat tiklaydi (joriy yil bilan — faqat vidjetda kun/oy to'g'ri
+// ko'rsatilishi uchun). Eski yozuvlarda `date` "28 mart" kabi qo'shilgan
+// bo'lsa ham parseInt boshidagi raqamni to'g'ri oladi.
+function dateFieldsToIso(dateStr, monthStr) {
+  const day = parseInt(dateStr, 10)
+  const monthIdx = UZ_MONTHS.indexOf((monthStr || '').trim().toLowerCase())
+  if (!day || monthIdx === -1) return ''
+  const year = new Date().getFullYear()
+  return `${year}-${String(monthIdx + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+}
+
 export default function EventsAdmin() {
   const [events, setEvents] = useState([])
   const [form, setForm]     = useState({ title: '', desc: '', date: '', month: '', type: 'general', image: '' })
@@ -83,9 +110,16 @@ export default function EventsAdmin() {
           <h3 style={{ fontSize: 13, fontWeight: 600, color: '#4f46e5', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : 'Yangi tadbir'}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div><label style={lbl}>Sarlavha *</label><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Tadbir nomi" style={inp} /></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-              <div><label style={lbl}>Sana *</label><input value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} placeholder="28 mart" style={inp} /></div>
-              <div><label style={lbl}>Oy</label><input value={form.month} onChange={e => setForm({ ...form, month: e.target.value })} placeholder="mart" style={inp} /></div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div>
+                <label style={lbl}>Sana *</label>
+                <input
+                  type="date"
+                  value={dateFieldsToIso(form.date, form.month)}
+                  onChange={e => setForm(f => ({ ...f, ...isoToDateFields(e.target.value) }))}
+                  style={inp}
+                />
+              </div>
               <div>
                 <label style={lbl}>Turi</label>
                 <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} style={inp}>
