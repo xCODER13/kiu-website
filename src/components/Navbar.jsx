@@ -3,9 +3,14 @@ import { useState } from 'react'
 import config from '../config'
 import Search from './Search'
 
-// Guruhga kirmaydigan, doim ko'rinadigan linklar
+// Guruhga kirmaydigan, doim ko'rinadigan linklar — eng boshida
 const topLinks = [
   { to: '/', label: 'Bosh sahifa' },
+]
+
+// Guruhga kirmaydigan, doim ko'rinadigan linklar — dropdown guruhlaridan
+// keyin, navbar'ning eng oxirida chiqadi
+const endLinks = [
   { to: '/vacancies', label: 'Bo\'sh ish o\'rinlari' },
 ]
 
@@ -143,6 +148,20 @@ export default function Navbar({ dark, setDark, onApply }) {
               </div>
             )
           })}
+
+          {endLinks.map(l => (
+            <NavLink key={l.to} to={l.to} end
+              style={({ isActive }) => ({
+                fontSize: 11,
+                color: isActive ? '#7c3aed' : (dark ? '#ffffff' : '#1a1a2e'),
+                borderBottom: isActive ? '2px solid #7c3aed' : '2px solid transparent',
+                paddingBottom: 3,
+                fontWeight: isActive ? 600 : 400,
+                transition: 'all 0.2s'
+              })}>
+              {l.label}
+            </NavLink>
+          ))}
         </div>
 
         {/* Right */}
@@ -200,6 +219,18 @@ export default function Navbar({ dark, setDark, onApply }) {
                 ))}
               </div>
             </details>
+          ))}
+
+          {endLinks.map(l => (
+            <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)}
+              style={({ isActive }) => ({
+                fontSize: 18, fontWeight: 600,
+                color: isActive ? '#7c3aed' : 'var(--text)',
+                padding: '0.75rem 0',
+                borderBottom: '1px solid var(--border)',
+              })}>
+              {l.label}
+            </NavLink>
           ))}
 
           <button onClick={() => { onApply(); setMenuOpen(false) }} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', marginTop: '1rem' }}>
