@@ -9,6 +9,10 @@ const EventSchema = new mongoose.Schema({
   eventDate: { type: Date, required: true },
   type: { type: String, default: 'general', maxlength: 50 },
   image: { type: String, default: '', maxlength: 1000 },
+  // News'dagi bilan bir xil naqsh — tadbir kartasi bosilib, to'liq tavsif
+  // modali ochilganda oshiriladi (Events.jsx). Admin statistikasida "eng ko'p
+  // ko'rilgan tadbirlar" grafigi uchun ishlatiladi.
+  views: { type: Number, default: 0 },
 }, { timestamps: true })
 
 // Tadbirlar taqvimi — eng yaqin tadbir birinchi chiqishi uchun eventDate bo'yicha sort qilinadi

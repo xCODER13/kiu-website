@@ -88,7 +88,7 @@ describe('EventsAdmin', () => {
     render(<EventsAdmin />)
     const row = rowOf(await screen.findByText('Ochiq eshiklar kuni'))
     await user.click(within(row).getAllByRole('button')[0])
-    await user.click(screen.getByRole('button', { name: '×' }))
+    await user.click(screen.getByRole('button', { name: 'Rasmni olib tashlash' }))
     await user.click(screen.getByRole('button', { name: /Saqlash/ }))
     await waitFor(() => expect(api.find('PUT', '/events/e1')).toHaveLength(1))
     expect(api.find('PUT', '/events/e1')[0].body.get('existingImage')).toBe('')

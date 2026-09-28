@@ -1,8 +1,10 @@
-import { useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import useApi from '../hooks/useApi'
 import useJsonLd from '../hooks/useJsonLd'
 import config from '../config'
 
+const API = import.meta.env.VITE_API_URL
 const SITE_URL = 'https://kiu-university.vercel.app'
 const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
 
@@ -39,11 +41,94 @@ const typeColors = {
   general:    { bg: 'rgba(15,118,110,0.1)', color: '#0f766e', label: 'Umumiy' },
 }
 
+// (admin statistika — "tadbirlar ko'rilishi"): Events sahifasida avval
+// alohida "detail" sahifa/modal yo'q edi, shuning uchun ko'rish sonini
+// kuzatib bo'lmasdi. Endi kartaga bosilganda shu kengaytirilgan ko'rinish
+// ochiladi va PUT /api/events/:id/view chaqiriladi (News'dagi PUT /:id/view
+// bilan bir xil naqsh). Modal FacultyModal.jsx'dagi eng so'nggi/eng
+// accessible naqshga (portal + inert + focus qaytarish + Esc) qurilgan.
+function EventModal({ event, typeInfo, dateInfo, onClose }) {
+  const closeBtnRef = useRef(null)
+
+  useEffect(() => {
+    const scrollW = window.innerWidth - document.documentElement.clientWidth
+    document.body.style.overflow = 'hidden'
+    document.body.style.paddingRight = scrollW + 'px'
+    const handleKey = e => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', handleKey)
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.paddingRight = ''
+      document.removeEventListener('keydown', handleKey)
+    }
+  }, [onClose])
+
+  useEffect(() => {
+    const root = document.getElementById('root')
+    const previouslyFocused = document.activeElement
+    if (root) root.inert = true
+    closeBtnRef.current?.focus()
+    return () => {
+      if (root) root.inert = false
+      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus()
+    }
+  }, [])
+
+  return createPortal(
+    <div
+      onClick={onClose}
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(10,10,30,.75)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.75rem 1rem', overflowY: 'auto' }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="event-modal-title"
+        style={{ background: 'var(--bg)', borderRadius: 18, padding: '1.5rem', maxWidth: 480, width: '100%', maxHeight: 'calc(100vh - 1.5rem)', overflowY: 'auto', boxShadow: '0 30px 80px rgba(0,0,0,.35)', position: 'relative' }}
+      >
+        <button
+          ref={closeBtnRef}
+          onClick={onClose}
+          title="Yopish (Esc)"
+          aria-label="Modalni yopish"
+          style={{ position: 'absolute', top: 14, right: 14, width: 34, height: 34, borderRadius: '50%', border: '1px solid var(--border)', background: 'var(--bg)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        {event.image && (
+          <img
+            src={event.image}
+            alt={event.title}
+            style={{ width: '100%', height: 180, objectFit: 'cover', borderRadius: 12, marginBottom: 16 }}
+            onError={ev => { ev.target.style.display = 'none' }}
+          />
+        )}
+        <span style={{ fontSize: 11, fontWeight: 600, color: typeInfo.color, background: typeInfo.bg, padding: '3px 10px', borderRadius: 20 }}>{typeInfo.label}</span>
+        <h3 id="event-modal-title" style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: '10px 0 4px', fontFamily: 'var(--font-body)' }}>{event.title}</h3>
+        {dateInfo.full && <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 12 }}>{dateInfo.full}</div>}
+        <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.7 }}>{event.desc}</p>
+      </div>
+    </div>,
+    document.body
+  )
+}
+
 export default function Events() {
   const { data: events, loading, error } = useApi(
-    `${import.meta.env.VITE_API_URL}/api/events`,
+    `${API}/api/events`,
     FALLBACK_EVENTS
   )
+  const [activeEvent, setActiveEvent] = useState(null)
+
+  // Modal ochilganda "ko'rish" sifatida hisoblanadi — News'dagi PUT /:id/view
+  // bilan bir xil naqsh, auth talab qilmaydi. So'rov muvaffaqiyatsiz bo'lsa
+  // ham (masalan fallback ma'lumot ishlatilayotganda, _id haqiqiy emas)
+  // modalning ochilishiga xalaqit bermaydi — shuning uchun natija kutilmaydi.
+  function openEvent(e) {
+    setActiveEvent(e)
+    fetch(`${API}/api/events/${e._id}/view`, { method: 'PUT' }).catch(() => {})
+  }
 
   // events fetch tugagandagina yangi referensga ega bo'ladi (useApi.js) —
   // shuning uchun bu har render'da emas, faqat ma'lumot chindan o'zgarganda
@@ -97,7 +182,15 @@ export default function Events() {
                 const tc = typeColors[e.type] || typeColors.general
                 const fd = formatEventDate(e.eventDate)
                 return (
-                  <div key={e._id} className="card" style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                  <div
+                    key={e._id}
+                    className="card"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => openEvent(e)}
+                    onKeyDown={ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openEvent(e) } }}
+                    style={{ display: 'flex', gap: 16, alignItems: 'flex-start', cursor: 'pointer' }}
+                  >
                     {e.image ? (
                       <img
                         src={e.image}
@@ -129,6 +222,15 @@ export default function Events() {
           )}
         </div>
       </section>
+
+      {activeEvent && (
+        <EventModal
+          event={activeEvent}
+          typeInfo={typeColors[activeEvent.type] || typeColors.general}
+          dateInfo={formatEventDate(activeEvent.eventDate)}
+          onClose={() => setActiveEvent(null)}
+        />
+      )}
     </div>
   )
 }

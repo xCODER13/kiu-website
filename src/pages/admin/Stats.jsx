@@ -1,8 +1,26 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { NavLink } from 'react-router-dom'
 import { API, H } from './shared/api'
-import { card } from './shared/styles'
+import { card, bP, bG } from './shared/styles'
 import { Ic } from './shared/Icons.jsx'
+import TrendLineChart from './charts/TrendLineChart'
+import RankedBarChart from './charts/RankedBarChart'
+
+const loadingText = { color: 'var(--muted)', fontSize: 13 }
+const errorText = { color: '#dc2626', fontSize: 13 }
+const sectionCardTitle = { fontSize: 13, fontWeight: 600, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }
+
+// Bucket sanasi (server UTC'da $dateTrunc bilan hisoblagan, masalan "2026-09-01")
+// har doim UTC getter'lar bilan o'qiladi — toLocaleDateString ishlatilmaydi, chunki
+// u LOKAL vaqt zonasidan foydalanadi va UTC yarim tunni oldingi kunga siljitib
+// yuborishi mumkin (masalan foydalanuvchi UTC'dan orqada bo'lgan zonada bo'lsa).
+function formatBucketDate(d, full, granularity) {
+  const day = String(d.getUTCDate()).padStart(2, '0')
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0')
+  if (!full) return `${day}.${month}`
+  const base = `${day}.${month}.${d.getUTCFullYear()}`
+  return granularity === 'week' ? `${base} haftasi` : base
+}
 
 export default function Stats() {
   const [stats, setStats] = useState(null)
@@ -12,8 +30,58 @@ export default function Stats() {
       .catch(err => { console.error('Stats yuklashda xatolik:', err); setError(true) })
   }, [])
 
-  if (error) return <p style={{ color: '#dc2626', fontSize: 13 }}>Statistikani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.</p>
-  if (!stats) return <p style={{ color: 'var(--muted)', fontSize: 13 }}>Yuklanmoqda...</p>
+  // ── Band 6: admin statistika dashboard'i — trend grafigi va reyting
+  // grafiklari uchun qo'shimcha holatlar. Har biri o'z fetch/loading/error
+  // holatiga ega — bittasi muvaffaqiyatsiz bo'lsa ham qolganlari ko'rsatiladi.
+  const [granularity, setGranularity] = useState('day')
+  const [trend, setTrend] = useState(null)
+  const [trendError, setTrendError] = useState(false)
+  useEffect(() => {
+    // effect tanasida to'g'ridan-to'g'ri setState (reset) chaqirmaslik uchun —
+    // "yuklanmoqda" holati pastda trend?.granularity joriy granularity bilan
+    // solishtirib HISOBLANADI (eskirgan javob hali ko'rsatilmayapti degani).
+    // `cancelled` — foydalanuvchi tez-tez tugmani bossa, eski so'rov javobi
+    // yangisini bosib ketmasligi uchun.
+    let cancelled = false
+    fetch(`${API}/stats/applications-trend?granularity=${granularity}`, { headers: H() })
+      .then(r => r.json())
+      .then(d => { if (!cancelled) { setTrend(d); setTrendError(false) } })
+      .catch(err => {
+        if (cancelled) return
+        console.error('Arizalar trendini yuklashda xatolik:', err)
+        setTrendError(true)
+      })
+    return () => { cancelled = true }
+  }, [granularity])
+
+  const [topNews, setTopNews] = useState(null)
+  const [topNewsError, setTopNewsError] = useState(false)
+  useEffect(() => {
+    fetch(`${API}/stats/top-news`, { headers: H() })
+      .then(r => r.json()).then(setTopNews)
+      .catch(err => { console.error("Top yangiliklarni yuklashda xatolik:", err); setTopNewsError(true) })
+  }, [])
+
+  const [topEvents, setTopEvents] = useState(null)
+  const [topEventsError, setTopEventsError] = useState(false)
+  useEffect(() => {
+    fetch(`${API}/stats/top-events`, { headers: H() })
+      .then(r => r.json()).then(setTopEvents)
+      .catch(err => { console.error('Top tadbirlarni yuklashda xatolik:', err); setTopEventsError(true) })
+  }, [])
+
+  const [sortingHat, setSortingHat] = useState(null)
+  const [sortingHatError, setSortingHatError] = useState(false)
+  useEffect(() => {
+    fetch(`${API}/stats/sortinghat-faculties`, { headers: H() })
+      .then(r => r.json()).then(setSortingHat)
+      .catch(err => { console.error('SortingHat statistikasini yuklashda xatolik:', err); setSortingHatError(true) })
+  }, [])
+
+  const dateLabel = useCallback((d, full = false) => formatBucketDate(d, full, granularity), [granularity])
+
+  if (error) return <p style={errorText}>Statistikani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.</p>
+  if (!stats) return <p style={loadingText}>Yuklanmoqda...</p>
 
   const cards = [
     { label: 'Yangiliklar',        value: stats.newsCount,     color: '#f11717', icon: Ic.news,    to: '/admin/news'         },
@@ -23,6 +91,15 @@ export default function Stats() {
     { label: 'Vakansiya arizalari',value: stats.vacancyApps,   color: '#4f46e5', icon: Ic.vacancy, to: '/admin/vacancies'    },
     { label: 'Galereya',           value: stats.galleryCount,  color: '#0d9488', icon: Ic.gallery, to: '/admin/gallery'      },
   ]
+
+  // trend hali joriy granularity uchun kelmagan bo'lsa (masalan foydalanuvchi
+  // "Hafta"ni bosdi-yu, so'rov hali javob bermadi) — eskirgan (oldingi
+  // granularity'ga tegishli) ma'lumot ko'rsatilmasin, "Yuklanmoqda..." chiqadi.
+  const trendLoading = !trendError && trend?.granularity !== granularity
+  const trendBuckets = (trend?.buckets ?? []).map(b => ({ date: new Date(b.date), admission: b.admission, vacancy: b.vacancy }))
+  const topNewsData = (Array.isArray(topNews) ? topNews : []).map(n => ({ label: n.title, value: n.views ?? 0 }))
+  const topEventsData = (Array.isArray(topEvents) ? topEvents : []).map(e => ({ label: e.title, value: e.views ?? 0 }))
+  const facultyData = (sortingHat?.faculties ?? []).map(f => ({ label: f.faculty, value: f.count }))
 
   return (
     <div>
@@ -45,6 +122,74 @@ export default function Stats() {
             </div>
           </NavLink>
         ))}
+      </div>
+
+      <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)', marginBottom: '1rem' }}>Batafsil statistika</h3>
+
+      {/* Arizalar trendi — kun/hafta almashtirish tugmasi bilan */}
+      <div style={{ ...card, marginBottom: 12 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 12 }}>
+          <div style={sectionCardTitle}>
+            <span style={{ color: '#7c3aed' }}>{Ic.stats}</span>
+            Arizalar trendi
+          </div>
+          <div style={{ display: 'flex', gap: 6 }} role="group" aria-label="Vaqt oralig'ini tanlash">
+            <button type="button" aria-label="Kunlik ko'rinish" aria-pressed={granularity === 'day'}
+              style={granularity === 'day' ? bP : bG} onClick={() => setGranularity('day')}>Kun</button>
+            <button type="button" aria-label="Haftalik ko'rinish" aria-pressed={granularity === 'week'}
+              style={granularity === 'week' ? bP : bG} onClick={() => setGranularity('week')}>Hafta</button>
+          </div>
+        </div>
+        {trendError ? (
+          <p style={errorText}>Trendni yuklashda xatolik yuz berdi.</p>
+        ) : trendLoading ? (
+          <p style={loadingText}>Yuklanmoqda...</p>
+        ) : trendBuckets.length === 0 ? (
+          <p style={{ ...loadingText, textAlign: 'center', padding: '1.5rem 0' }}>Ma'lumot yo'q</p>
+        ) : (
+          <>
+            <TrendLineChart
+              data={trendBuckets}
+              series={[
+                { key: 'admission', label: 'Qabul arizalari', color: '#059669' },
+                { key: 'vacancy', label: 'Vakansiya arizalari', color: '#4f46e5' },
+              ]}
+              dateLabel={dateLabel}
+            />
+            <div style={{ display: 'flex', gap: 16, marginTop: 8, fontSize: 11, color: 'var(--muted)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: '#059669', display: 'inline-block' }} />Qabul arizalari</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4f46e5', display: 'inline-block' }} />Vakansiya arizalari</span>
+            </div>
+          </>
+        )}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+        <div style={card}>
+          <div style={sectionCardTitle}><span style={{ color: '#f11717' }}>{Ic.news}</span>Eng ko'p ko'rilgan yangiliklar</div>
+          {topNewsError ? <p style={errorText}>Yuklashda xatolik yuz berdi.</p>
+            : !topNews ? <p style={loadingText}>Yuklanmoqda...</p>
+            : <RankedBarChart data={topNewsData} color="#f11717" />}
+        </div>
+
+        <div style={card}>
+          <div style={sectionCardTitle}><span style={{ color: '#e546e5' }}>{Ic.events}</span>Eng ko'p ko'rilgan tadbirlar</div>
+          {topEventsError ? <p style={errorText}>Yuklashda xatolik yuz berdi.</p>
+            : !topEvents ? <p style={loadingText}>Yuklanmoqda...</p>
+            : <RankedBarChart data={topEventsData} color="#e546e5" />}
+        </div>
+
+        <div style={card}>
+          <div style={sectionCardTitle}><span style={{ color: '#7c3aed' }}>{Ic.teach}</span>SortingHat fakultet tavsiyalari</div>
+          {sortingHatError ? <p style={errorText}>Yuklashda xatolik yuz berdi.</p>
+            : !sortingHat ? <p style={loadingText}>Yuklanmoqda...</p>
+            : (
+              <>
+                <RankedBarChart data={facultyData} color="#7c3aed" />
+                <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 8 }}>Jami: {sortingHat.total ?? 0} ta murojaat</div>
+              </>
+            )}
+        </div>
       </div>
     </div>
   )

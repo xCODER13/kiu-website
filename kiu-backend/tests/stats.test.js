@@ -8,6 +8,7 @@ const Event = require('../models/Event')
 const Teacher = require('../models/Teacher')
 const Application = require('../models/Application')
 const Gallery = require('../models/Gallery')
+const SortingHatLead = require('../models/SortingHatLead')
 const { getAuthToken } = require('./helpers')
 
 const PHONE = '+998901234567'
@@ -28,9 +29,9 @@ describe('GET /api/stats', () => {
   test("news, events, teachers va gallery sanoqlari to'g'ri", async () => {
     await News.create([{ title: 'a' }, { title: 'b' }])
     await Event.create([
-      { title: 'e1', date: '1', month: 'Yan' },
-      { title: 'e2', date: '2', month: 'Fev' },
-      { title: 'e3', date: '3', month: 'Mar' },
+      { title: 'e1', eventDate: '2026-01-01' },
+      { title: 'e2', eventDate: '2026-02-02' },
+      { title: 'e3', eventDate: '2026-03-03' },
     ])
     await Teacher.create({ name: 'T', role: 'R', dept: 'D' })
     await Gallery.create([
@@ -85,5 +86,118 @@ describe('GET /api/stats', () => {
     const { body } = await getStats()
     expect(body.appsCount).toBe(0)
     expect(body.newApps).toBe(1)
+  })
+})
+
+// GET /api/stats/applications-trend — arizalar trendi (band 6, admin dashboard grafigi)
+const authed = url => request(app).get(url).set('Authorization', `Bearer ${getAuthToken()}`)
+
+describe('GET /api/stats/applications-trend', () => {
+  test("auth'siz 401", async () => {
+    expect((await request(app).get('/api/stats/applications-trend')).status).toBe(401)
+  })
+
+  test("standart (day, 30 kun) — bo'sh bazada hammasi 0, oxirgi bucket bugungi kun", async () => {
+    const res = await authed('/api/stats/applications-trend')
+    expect(res.status).toBe(200)
+    expect(res.body.granularity).toBe('day')
+    expect(res.body.buckets).toHaveLength(30)
+    expect(res.body.buckets.every(b => b.admission === 0 && b.vacancy === 0)).toBe(true)
+    const today = new Date().toISOString().slice(0, 10)
+    expect(res.body.buckets.at(-1).date).toBe(today)
+  })
+
+  test("admission va vacancy alohida seriya sifatida, to'g'ri kunga sanaladi", async () => {
+    const now = new Date()
+    await Application.collection.insertMany([
+      { name: 'A', phone: PHONE, type: 'admission', status: 'new', createdAt: now, updatedAt: now },
+      { name: 'B', phone: PHONE, type: 'admission', status: 'new', createdAt: now, updatedAt: now },
+      { name: 'C', phone: PHONE, type: 'vacancy', status: 'new', createdAt: now, updatedAt: now },
+    ])
+    const res = await authed('/api/stats/applications-trend')
+    const todayStr = now.toISOString().slice(0, 10)
+    const todayBucket = res.body.buckets.find(b => b.date === todayStr)
+    expect(todayBucket.admission).toBe(2)
+    expect(todayBucket.vacancy).toBe(1)
+  })
+
+  test("granularity=week — har bir bucket dushanba sanasi bilan qaytadi", async () => {
+    const res = await authed('/api/stats/applications-trend?granularity=week')
+    expect(res.status).toBe(200)
+    expect(res.body.granularity).toBe('week')
+    expect(res.body.buckets).toHaveLength(12)
+    for (const b of res.body.buckets) {
+      expect(new Date(b.date + 'T00:00:00Z').getUTCDay()).toBe(1) // 1 = dushanba
+    }
+  })
+
+  test("range parametri bucket sonini belgilaydi, lekin maksimal chegaradan oshmaydi", async () => {
+    expect((await authed('/api/stats/applications-trend?range=7')).body.buckets).toHaveLength(7)
+    expect((await authed('/api/stats/applications-trend?range=9999')).body.buckets).toHaveLength(90)
+    expect((await authed('/api/stats/applications-trend?granularity=week&range=9999')).body.buckets).toHaveLength(52)
+  })
+})
+
+describe('GET /api/stats/top-news', () => {
+  test("auth'siz 401", async () => {
+    expect((await request(app).get('/api/stats/top-news')).status).toBe(401)
+  })
+
+  test("views bo'yicha kamayish tartibida qaytaradi", async () => {
+    await News.create([
+      { title: "Kam ko'rilgan", views: 2 },
+      { title: "Eng ko'p ko'rilgan", views: 50 },
+      { title: "O'rtacha", views: 10 },
+    ])
+    const res = await authed('/api/stats/top-news')
+    expect(res.status).toBe(200)
+    expect(res.body.map(n => n.title)).toEqual(["Eng ko'p ko'rilgan", "O'rtacha", "Kam ko'rilgan"])
+  })
+
+  test('limit parametri natijalar sonini cheklaydi', async () => {
+    await News.create([{ title: 'a', views: 1 }, { title: 'b', views: 2 }, { title: 'c', views: 3 }])
+    expect((await authed('/api/stats/top-news?limit=2')).body).toHaveLength(2)
+  })
+})
+
+describe('GET /api/stats/top-events', () => {
+  test("auth'siz 401", async () => {
+    expect((await request(app).get('/api/stats/top-events')).status).toBe(401)
+  })
+
+  test("views bo'yicha kamayish tartibida qaytaradi", async () => {
+    await Event.create([
+      { title: 'Kam', eventDate: '2026-01-01', views: 1 },
+      { title: "Ko'p", eventDate: '2026-01-02', views: 20 },
+    ])
+    const res = await authed('/api/stats/top-events')
+    expect(res.status).toBe(200)
+    expect(res.body[0].title).toBe("Ko'p")
+  })
+})
+
+describe('GET /api/stats/sortinghat-faculties', () => {
+  test("auth'siz 401", async () => {
+    expect((await request(app).get('/api/stats/sortinghat-faculties')).status).toBe(401)
+  })
+
+  test("bo'sh bazada total=0, faculties=[]", async () => {
+    const res = await authed('/api/stats/sortinghat-faculties')
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({ total: 0, faculties: [] })
+  })
+
+  test("fakultetlar bo'yicha to'g'ri agregatsiya qiladi, individual ism/telefon HECH QACHON qaytarmaydi", async () => {
+    await SortingHatLead.create([
+      { name: 'Ali', phone: PHONE, faculties: ['Informatika', 'Iqtisodiyot'] },
+      { name: 'Vali', phone: PHONE, faculties: ['Informatika'] },
+      { name: 'Guli', phone: PHONE, faculties: ['Psixologiya'] },
+    ])
+    const res = await authed('/api/stats/sortinghat-faculties')
+    expect(res.body.total).toBe(3)
+    expect(res.body.faculties[0]).toEqual({ faculty: 'Informatika', count: 2 })
+    // Xavfsizlik: bu — ommaviy statistika endpointi, individual PII (ism/telefon) sizib chiqmasin
+    expect(JSON.stringify(res.body)).not.toContain('Ali')
+    expect(JSON.stringify(res.body)).not.toContain(PHONE)
   })
 })

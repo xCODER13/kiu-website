@@ -1,5 +1,6 @@
 const { fail } = require('../middleware/errorHandler')
 const { sendTelegram, escapeTelegramHtml } = require('../services/telegram')
+const SortingHatLead = require('../models/SortingHatLead')
 
 async function sortingHatLead(req, res) {
   try {
@@ -18,6 +19,22 @@ async function sortingHatLead(req, res) {
     const safeFaculties = facultyList.map(f => escapeTelegramHtml(f))
 
     const msg = `🎓 <b>Yo'nalishni aniqlash — yangi natija</b>\n\n👤 <b>Ism:</b> ${safeName}\n📞 <b>Telefon:</b> ${safePhone}\n\n🏆 <b>Tavsiya etilgan yo'nalishlar:</b>\n${safeFaculties.map((f, i) => `${i + 1}. ${f}`).join('\n')}\n\n⏰ ${new Date().toLocaleString('uz-UZ')}`
+
+    // Admin statistikasi (band 6) uchun DB'ga ham yoziladi — bu ATAYLAB alohida
+    // try/catch ichida, asosiy oqimdan (Telegram xabari) mustaqil: bu endpoint
+    // tarixida "hal qilinmagan 500" xatosi bo'lgan (tests/sorting-hat.test.js'da
+    // qayd etilgan), shuning uchun statistikaga yozish muvaffaqiyatsiz bo'lsa
+    // ham (masalan name/phone kutilmagan tur bo'lsa) foydalanuvchi baribir
+    // muvaffaqiyatli javob olishi va Telegram xabari yuborilishi shart.
+    try {
+      await SortingHatLead.create({
+        name: String(name),
+        phone: String(phone),
+        faculties: facultyList.map(f => String(f)),
+      })
+    } catch (dbErr) {
+      req.log.error({ err: dbErr }, '[SortingHat] Statistika uchun DB yozishda xatolik')
+    }
 
     await sendTelegram(msg)
     res.json({ success: true })

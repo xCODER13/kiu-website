@@ -54,4 +54,21 @@ describe('Events CRUD', () => {
     expect(res.status).toBe(200)
     expect(await Event.findById(event._id)).toBeNull()
   })
+
+  // Band 6 (admin statistika — "eng ko'p ko'rilgan tadbirlar") uchun qo'shilgan.
+  // News'dagi PUT /:id/view bilan bir xil naqsh — auth talab qilmaydi (public
+  // tomondan, Events.jsx modal ochilganda chaqiriladi).
+  test("PUT /api/events/:id/view — auth'siz ham ko'rishlar sonini oshiradi", async () => {
+    const event = await Event.create({ title: 'Test', eventDate: '2026-01-01', views: 3 })
+    const res = await request(app).put(`/api/events/${event._id}/view`)
+    expect(res.status).toBe(200)
+    expect((await Event.findById(event._id)).views).toBe(4)
+  })
+
+  test("PUT /api/events/:id/view — yangi tadbirda views standart 0 dan boshlanadi", async () => {
+    const event = await Event.create({ title: 'Test2', eventDate: '2026-01-01' })
+    expect(event.views).toBe(0)
+    await request(app).put(`/api/events/${event._id}/view`)
+    expect((await Event.findById(event._id)).views).toBe(1)
+  })
 })

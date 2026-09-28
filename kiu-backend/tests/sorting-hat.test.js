@@ -5,9 +5,12 @@
 // Telegram'ga HAQIQIY so'rov ketmaydi: global fetch mock qilinadi.
 // Diqqat: formLimiter 10 so'rov/15 daqiqa/IP. Limiter Jest'da har test fayli uchun
 // alohida yuklanadi, lekin fayl ichida umumiy — shu sababli bu faylda 10 tadan ko'p
-// so'rov yuborilmasin.
+// so'rov yuborilmasin. HOZIRGI HOLAT: bu fayl aynan 10 ta so'rov yuboradi (byudjet
+// to'liq band) — yangi test qo'shishdan oldin avval mavjud testlardan birini shu
+// so'rov ichida (qo'shimcha assert bilan) qamrab olish mumkinmi, shuni tekshiring.
 const request = require('supertest')
 const app = require('../app')
+const SortingHatLead = require('../models/SortingHatLead')
 
 const URL = '/api/sorting-hat-lead'
 const VALID = { name: 'Ali Valiyev', phone: '+998901234567', faculties: ['Informatika', 'Iqtisodiyot'] }
@@ -55,6 +58,15 @@ describe('POST /api/sorting-hat-lead', () => {
     expect(payload.text).toContain('Ali Valiyev')
     expect(payload.text).toContain('1. Informatika')
     expect(payload.text).toContain('2. Iqtisodiyot')
+
+    // Band 6 (admin statistika dashboard'i) uchun qo'shilgan: natija endi
+    // Telegram'ga qo'shimcha ravishda DB'ga (SortingHatLead) ham yoziladi —
+    // shu SO'ROVNING o'zidan foydalanamiz (formLimiter byudjetini tejash uchun,
+    // pastdagi izohga qarang).
+    const saved = await SortingHatLead.findOne({ name: VALID.name })
+    expect(saved).not.toBeNull()
+    expect(saved.phone).toBe(VALID.phone)
+    expect(saved.faculties).toEqual(VALID.faculties)
   })
 
   test("body umuman yuborilmasa (Content-Type yo'q) 500 emas, 400 qaytaradi", async () => {
@@ -102,5 +114,20 @@ describe('POST /api/sorting-hat-lead', () => {
     const res = await request(app).post(URL).send(VALID)
     expect(res.status).toBe(200)
     expect(fetchSpy).not.toHaveBeenCalled()
+  })
+
+  // MUHIM regressiya testi: bu endpoint tarixida "hal qilinmagan 500" xatosi
+  // bo'lgan (fayl boshidagi izohga qarang). DB yozish ATAYLAB asosiy oqimdan
+  // mustaqil — statistika yozuvi validatsiyadan o'tmasa ham (masalan 10 tadan
+  // ortiq fakultet), foydalanuvchi baribir 200 va Telegram xabarini olishi shart.
+  test("DB yozish validatsiyadan o'tmasa ham (10 tadan ortiq fakultet) foydalanuvchi baribir 200 va Telegram xabarini oladi", async () => {
+    const tooMany = Array.from({ length: 11 }, (_, i) => `Fakultet${i}`)
+    const res = await request(app).post(URL).send({ ...VALID, faculties: tooMany })
+
+    expect(res.status).toBe(200)
+    expect(fetchSpy).toHaveBeenCalledTimes(1)
+
+    // DB'ga yozilmagan (validatsiya rad etdi), lekin bu asosiy javobga ta'sir qilmadi
+    expect(await SortingHatLead.findOne({ name: VALID.name })).toBeNull()
   })
 })

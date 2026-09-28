@@ -1,10 +1,33 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Stats from './Stats'
 import { mockApi } from '../../test/helpers'
 
 const setup = () => render(<MemoryRouter><Stats /></MemoryRouter>)
+
+// Band 6 testlarida ishlatiladigan bazaviy javoblar — mockApi'ga berilmagan
+// yo'llar {} bilan javob qaytaradi, shuning uchun har bir testda faqat shu
+// testga tegishli bo'lgan yo'llarni aniq belgilaymiz.
+const TREND_DAY = {
+  granularity: 'day',
+  buckets: [
+    { date: '2026-09-01', admission: 3, vacancy: 1 },
+    { date: '2026-09-02', admission: 5, vacancy: 2 },
+  ],
+}
+const TREND_WEEK = {
+  granularity: 'week',
+  buckets: [{ date: '2026-08-24', admission: 8, vacancy: 3 }],
+}
+const TOP_NEWS = [
+  { _id: '1', title: 'Ochiq eshiklar kuni haqida', views: 120, category: 'umumiy' },
+  { _id: '2', title: 'Yangi fakultet ochildi', views: 80, category: 'talim' },
+]
+const TOP_EVENTS = [
+  { _id: '1', title: 'Bitiruv marosimi', views: 50, eventDate: '2026-06-20' },
+]
+const SORTINGHAT = { total: 7, faculties: [{ faculty: 'Informatika', count: 4 }, { faculty: 'Iqtisodiyot', count: 3 }] }
 
 describe('Stats', () => {
   it('yuklanish paytida "Yuklanmoqda..." ko\'rsatadi', () => {
@@ -65,5 +88,124 @@ describe('Stats', () => {
     // Har bir karta nomi endi faqat bir marta chiqadi (tezkor havolalar bilan dublikat yo'q)
     expect(screen.getAllByText('Galereya')).toHaveLength(1)
     expect(screen.getAllByText('Qabul arizalari')).toHaveLength(1)
+  })
+})
+
+// Band 6: admin statistika dashboard'iga qo'shilgan 4 ta yangi bo'lim
+// (arizalar trendi, top-yangiliklar, top-tadbirlar, SortingHat fakultetlari).
+describe('Stats — batafsil statistika (band 6)', () => {
+  it('Arizalar trendi standart "kun" granularity bilan so\'raladi va grafik chiziladi', async () => {
+    const { calls } = mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news': TOP_NEWS,
+      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+    })
+    setup()
+    await screen.findByText('Arizalar trendi')
+    await waitFor(() => expect(document.querySelectorAll('svg').length).toBeGreaterThan(0))
+    expect(calls.some(c => c.path === '/stats/applications-trend?granularity=day')).toBe(true)
+    // "Qabul arizalari" matni ham statistika kartasida, ham trend legendasida
+    // chiqadi — shuning uchun getAllByText (>=2 ta kutiladi)
+    expect(screen.getAllByText('Qabul arizalari').length).toBeGreaterThanOrEqual(2)
+    expect(screen.getAllByText('Vakansiya arizalari').length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('"Hafta" tugmasi bosilganda granularity=week bilan qayta so\'raladi', async () => {
+    const { calls } = mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/applications-trend?granularity=week': TREND_WEEK,
+      'GET /stats/top-news': TOP_NEWS,
+      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+    })
+    setup()
+    await screen.findByText('Arizalar trendi')
+    await waitFor(() => expect(calls.some(c => c.path === '/stats/applications-trend?granularity=day')).toBe(true))
+
+    fireEvent.click(screen.getByRole('button', { name: "Haftalik ko'rinish" }))
+
+    await waitFor(() => expect(calls.some(c => c.path === '/stats/applications-trend?granularity=week')).toBe(true))
+    expect(screen.getByRole('button', { name: "Haftalik ko'rinish" })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: "Kunlik ko'rinish" })).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('Eng ko\'p ko\'rilgan yangiliklar sarlavhalari ko\'rsatiladi', async () => {
+    mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news': TOP_NEWS,
+      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+    })
+    setup()
+    expect(await screen.findByText('Ochiq eshiklar kuni haqida')).toBeInTheDocument()
+    expect(screen.getByText('Yangi fakultet ochildi')).toBeInTheDocument()
+    expect(screen.getByText('120')).toBeInTheDocument()
+  })
+
+  it('Eng ko\'p ko\'rilgan tadbirlar sarlavhalari ko\'rsatiladi', async () => {
+    mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news': TOP_NEWS,
+      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+    })
+    setup()
+    expect(await screen.findByText('Bitiruv marosimi')).toBeInTheDocument()
+    expect(screen.getByText('50')).toBeInTheDocument()
+  })
+
+  it('SortingHat fakultetlari reytingi va jami murojaatlar soni ko\'rsatiladi', async () => {
+    mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news': TOP_NEWS,
+      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+    })
+    setup()
+    expect(await screen.findByText('Informatika')).toBeInTheDocument()
+    expect(screen.getByText('Iqtisodiyot')).toBeInTheDocument()
+    expect(screen.getByText('Jami: 7 ta murojaat')).toBeInTheDocument()
+  })
+
+  it('bo\'lim ma\'lumoti bo\'sh bo\'lsa "Ma\'lumot yo\'q" ko\'rsatiladi', async () => {
+    mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': { granularity: 'day', buckets: [] },
+      'GET /stats/top-news': [],
+      'GET /stats/top-events': [],
+      'GET /stats/sortinghat-faculties': { total: 0, faculties: [] },
+    })
+    setup()
+    await screen.findByText('Arizalar trendi')
+    // findAllByText birinchi topilgan zahoti qaytadi (trend darhol, RankedBarChart'lar esa
+    // ParentSize'ning async ResizeObserver orqali kengligini olgach) — shu sababli barcha 4 ta
+    // paydo bo'lishini waitFor bilan kutamiz, birinchi moslikda emas.
+    await waitFor(() => expect(screen.getAllByText("Ma'lumot yo'q")).toHaveLength(4)) // trendi + 3 ranked karta
+  })
+
+  it('bitta bo\'lim (top-news) xato bersa ham, qolgan bo\'limlar baribir ko\'rsatiladi', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn((url) => {
+      const path = String(url).replace('http://api.test/api', '')
+      if (path === '/stats/top-news') return Promise.reject(new Error('net'))
+      const body =
+        path === '/stats' ? { newsCount: 1 } :
+        path === '/stats/applications-trend?granularity=day' ? TREND_DAY :
+        path === '/stats/top-events' ? TOP_EVENTS :
+        path === '/stats/sortinghat-faculties' ? SORTINGHAT : {}
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) })
+    }))
+    setup()
+    await screen.findByText('Bitiruv marosimi') // top-events muvaffaqiyatli
+    await screen.findByText('Informatika')       // sortingHat muvaffaqiyatli
+    expect(await screen.findByText('Yuklashda xatolik yuz berdi.')).toBeInTheDocument() // faqat top-news xato
+    expect(spy).toHaveBeenCalled()
+    spy.mockRestore()
   })
 })

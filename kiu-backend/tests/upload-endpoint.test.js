@@ -214,7 +214,7 @@ describe('PUT /api/news/:id — rasm bilan', () => {
 
 // ───────────────────────── EVENTS ─────────────────────────
 describe('Events — rasm bilan', () => {
-  const fields = { title: 'Tadbir', date: '15', month: 'Okt' }
+  const fields = { title: 'Tadbir', eventDate: '2026-10-15' }
 
   test("POST: fayl 'events/' papkasiga yuklanadi va URL saqlanadi", async () => {
     const res = await request(app)

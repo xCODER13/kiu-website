@@ -88,7 +88,7 @@ describe('Search (qidiruv)', () => {
     await openSearch(user)
     const input = screen.getByPlaceholderText(/Qidiring/)
     await user.type(input, 'Qabul')
-    await user.click(screen.getByRole('button', { name: '' })) // X tugmasi (aria-label yo'q)
+    await user.click(screen.getByRole('button', { name: 'Qidiruvni tozalash' })) // X tugmasi
     expect(input).toHaveValue('')
   })
 

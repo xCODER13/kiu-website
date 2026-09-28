@@ -57,9 +57,18 @@ async function update(req, res) {
   }
 }
 
+// News.incrementView bilan bir xil naqsh (newsController.js) — tadbir kartasi
+// bosilib, to'liq tavsif modali ochilganda chaqiriladi (Events.jsx).
+async function incrementView(req, res) {
+  try {
+    await Event.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } })
+    res.json({ success: true })
+  } catch (e) { fail(req, res, 500, e) }
+}
+
 async function remove(req, res) {
   try { await Event.findByIdAndDelete(req.params.id); res.json({ success: true }) }
   catch (e) { fail(req, res, 500, e) }
 }
 
-module.exports = { getAll, create, update, remove }
+module.exports = { getAll, create, update, incrementView, remove }

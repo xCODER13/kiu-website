@@ -91,7 +91,7 @@ describe('NewsAdmin', () => {
     const user = userEvent.setup()
     render(<NewsAdmin />)
     await user.click(await screen.findByRole('button', { name: /Tahrir/ }))
-    await user.click(screen.getAllByRole('button', { name: '×' })[0])
+    await user.click(screen.getAllByRole('button', { name: 'Rasmni olib tashlash' })[0])
     await user.click(screen.getByRole('button', { name: /Saqlash/ }))
     await waitFor(() => expect(api.find('PUT', '/news/n1')).toHaveLength(1))
     expect(JSON.parse(api.find('PUT', '/news/n1')[0].body.get('existingImages'))).toEqual(['https://s/2.jpg'])

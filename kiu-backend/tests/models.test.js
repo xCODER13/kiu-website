@@ -1,4 +1,5 @@
 const Application = require('../models/Application')
+const SortingHatLead = require('../models/SortingHatLead')
 
 // Bular DB'ga ulanishni talab qilmaydi — validateSync() offline ishlaydi.
 describe('Application modeli — validatorlar', () => {
@@ -55,5 +56,48 @@ describe('Application modeli — validatorlar', () => {
   test("standart status 'new' bo'ladi", () => {
     const doc = new Application({ name: 'Test', phone: '+998901234567' })
     expect(doc.status).toBe('new')
+  })
+})
+
+// Band 6 (admin statistika dashboard'i) uchun qo'shilgan model.
+describe('SortingHatLead modeli — validatorlar', () => {
+  test("name bo'lmasa xato beradi", () => {
+    const doc = new SortingHatLead({ phone: '+998901234567' })
+    const err = doc.validateSync()
+    expect(err?.errors?.name).toBeDefined()
+  })
+
+  test("phone bo'lmasa xato beradi", () => {
+    const doc = new SortingHatLead({ name: 'Test' })
+    const err = doc.validateSync()
+    expect(err?.errors?.phone).toBeDefined()
+  })
+
+  test("standart faculties bo'sh massiv", () => {
+    const doc = new SortingHatLead({ name: 'Test', phone: '+998901234567' })
+    expect(doc.faculties).toEqual([])
+  })
+
+  test("10 tagacha fakultet qabul qilinadi", () => {
+    const doc = new SortingHatLead({
+      name: 'Test', phone: '+998901234567',
+      faculties: Array.from({ length: 10 }, (_, i) => `F${i}`),
+    })
+    expect(doc.validateSync()).toBeUndefined()
+  })
+
+  test("10 tadan ortiq fakultet rad etiladi (suiiste'moldan himoya)", () => {
+    const doc = new SortingHatLead({
+      name: 'Test', phone: '+998901234567',
+      faculties: Array.from({ length: 11 }, (_, i) => `F${i}`),
+    })
+    const err = doc.validateSync()
+    expect(err?.errors?.faculties).toBeDefined()
+  })
+
+  test("200 belgidan uzun fakultet nomi rad etiladi", () => {
+    const doc = new SortingHatLead({ name: 'Test', phone: '+998901234567', faculties: ['x'.repeat(201)] })
+    const err = doc.validateSync()
+    expect(err?.errors?.faculties).toBeDefined()
   })
 })

@@ -13,8 +13,29 @@ class NoopIntersectionObserver {
   takeRecords() { return [] }
 }
 
+// jsdom'da haqiqiy layout mavjud emas (barcha elementlar o'lchami doim 0),
+// shuning uchun ResizeObserver'ga tayanadigan komponentlar (masalan visx'ning
+// ParentSize — admin/charts/*.jsx) hech qachon haqiqiy kenglik olmaydi.
+// Band 6 (admin statistika dashboard grafiklari) uchun qo'shilgan: observe()
+// chaqirilganda darhol (keyingi mikroteskda) sobit, nolga teng bo'lmagan
+// o'lcham bilan callback'ni chaqiradigan soxta implementatsiya.
+class StubResizeObserver {
+  constructor(callback) {
+    this.callback = callback
+  }
+  observe(target) {
+    const rect = { width: 600, height: 240, top: 0, left: 0, bottom: 240, right: 600, x: 0, y: 0 }
+    Promise.resolve().then(() => {
+      this.callback([{ target, contentRect: rect }])
+    })
+  }
+  unobserve() {}
+  disconnect() {}
+}
+
 beforeEach(() => {
   globalThis.IntersectionObserver = NoopIntersectionObserver
+  globalThis.ResizeObserver = StubResizeObserver
 })
 
 afterEach(() => {
