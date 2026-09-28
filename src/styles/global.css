@@ -392,6 +392,53 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 }
 details[open] .details-arrow { transform: rotate(180deg); }
 .details-arrow { transition: transform .2s; }
+
+/* Navbar dropdown guruhlari — hover bilan ochiladi/yopiladi */
+.nav-group {
+  position: relative;
+}
+.nav-group-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding-top: 14px; /* kursor panelga o'tguncha "bo'shliq"da yopilib qolmasligi uchun */
+  min-width: 210px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity .15s ease, transform .15s ease;
+  pointer-events: none;
+  z-index: 101;
+}
+.nav-group:hover .nav-group-panel,
+.nav-group:focus-within .nav-group-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.nav-group-panel-inner {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  padding: 6px;
+}
+.nav-group-item {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text);
+  transition: background .15s, color .15s;
+}
+.nav-group-item:hover,
+.nav-group-item.active {
+  background: var(--purple);
+  color: #fff;
+  font-weight: 600;
+}
 .container-wide {
   max-width: 1220px;
   margin: 0 auto;

@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import config from '../config'
 import Search from './Search'
 
@@ -69,22 +69,11 @@ function ChevronIcon() {
 
 export default function Navbar({ dark, setDark, onApply }) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [openGroup, setOpenGroup] = useState(null) // desktop'da qaysi dropdown ochiq
-  const navRef = useRef(null)
   const location = useLocation()
-
-  // Dropdown ochiq holda navbar tashqarisiga bosilsa — yopiladi
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (navRef.current && !navRef.current.contains(e.target)) setOpenGroup(null)
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
 
   return (
     <>
-      <nav ref={navRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
 
         {/* Logo */}
         {/* Xatolik: mobil menyu ochiq holda logotipga bosilsa, sahifa
@@ -115,11 +104,9 @@ export default function Navbar({ dark, setDark, onApply }) {
 
           {navGroups.map(group => {
             const isActive = group.items.some(i => location.pathname === i.to)
-            const isOpen = openGroup === group.id
             return (
-              <div key={group.id} style={{ position: 'relative' }}>
+              <div key={group.id} className="nav-group">
                 <button
-                  onClick={() => setOpenGroup(isOpen ? null : group.id)}
                   style={{
                     display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer',
                     fontFamily: 'inherit', fontSize: 11, padding: 0, paddingBottom: 3,
@@ -127,27 +114,22 @@ export default function Navbar({ dark, setDark, onApply }) {
                     fontWeight: isActive ? 600 : 400,
                     borderBottom: isActive ? '2px solid #7c3aed' : '2px solid transparent',
                   }}
-                  aria-expanded={isOpen}
+                  aria-haspopup="true"
                 >
                   {group.label}
                   <ChevronIcon />
                 </button>
 
-                {isOpen && (
-                  <div style={{ position: 'absolute', top: 'calc(100% + 14px)', left: 0, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, boxShadow: '0 10px 30px rgba(0,0,0,0.15)', padding: 6, minWidth: 210, zIndex: 101 }}>
+                <div className="nav-group-panel">
+                  <div className="nav-group-panel-inner">
                     {group.items.map(item => (
-                      <NavLink key={item.to} to={item.to} onClick={() => setOpenGroup(null)}
-                        style={({ isActive }) => ({
-                          display: 'block', padding: '9px 12px', borderRadius: 6, fontSize: 13,
-                          color: isActive ? '#7c3aed' : 'var(--text)',
-                          fontWeight: isActive ? 600 : 400,
-                          background: isActive ? 'var(--purple-light)' : 'transparent',
-                        })}>
+                      <NavLink key={item.to} to={item.to}
+                        className={({ isActive }) => `nav-group-item${isActive ? ' active' : ''}`}>
                         {item.label}
                       </NavLink>
                     ))}
                   </div>
-                )}
+                </div>
               </div>
             )
           })}
