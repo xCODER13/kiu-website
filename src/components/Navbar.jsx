@@ -1,29 +1,90 @@
-import { NavLink } from 'react-router-dom'
-import { useState } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react'
 import config from '../config'
 import Search from './Search'
 
-const links = [
-  { to: '/',          label: 'Bosh sahifa' },
-  { to: '/faculty',   label: 'Yo\'nalishlar' },
-  { to: '/admission', label: 'Qabul' },
-  { to: '/contact',   label: "Bog'lanish" },
-  { to: '/hemis',   label: 'Elektron universitet' },
-  { to: '/documents',   label: 'Normativ hujjatlar' },
-  { to: '/international',   label: 'Xalqaro hamkorlik' },
-  { to: '/news',      label: 'Yangiliklar' },
-  { to: '/achievements', label: 'Yutuqlar' },
-  { to: '/faq',       label: 'FAQ' },
-  { to: '/vacancies',   label: "Bo'sh ish o'rinlari" },
-  { to: '/chatbot',   label: 'AI Yordamchi' },
+// Guruhga kirmaydigan, doim ko'rinadigan linklar
+const topLinks = [
+  { to: '/', label: 'Bosh sahifa' },
 ]
+
+// Qolgan 18 ta sahifa 4 ta guruhga bo'lingan (dropdown/mega-menu).
+// Avval hammasi bitta qatorda edi va ko'p sahifa (About, Events, Gallery,
+// Map, Teachers, QRCode, SortingHat) navbar'da umuman ko'rinmas edi.
+const navGroups = [
+  {
+    id: 'talabalar',
+    label: 'Talabalar uchun',
+    items: [
+      { to: '/faculty', label: "Yo'nalishlar" },
+      { to: '/admission', label: 'Qabul' },
+      { to: '/faq', label: 'FAQ' },
+      { to: '/hemis', label: 'Elektron universitet' },
+      { to: '/sorting-hat', label: 'Sehrli Shlyapa' },
+    ],
+  },
+  {
+    id: 'universitet',
+    label: 'Universitet haqida',
+    items: [
+      { to: '/about', label: 'Biz haqimizda' },
+      { to: '/achievements', label: 'Yutuqlar' },
+      { to: '/international', label: 'Xalqaro hamkorlik' },
+      { to: '/documents', label: 'Normativ hujjatlar' },
+      { to: '/teachers', label: "Professor-o'qituvchilar" },
+    ],
+  },
+  {
+    id: 'media',
+    label: 'Media',
+    items: [
+      { to: '/news', label: 'Yangiliklar' },
+      { to: '/events', label: 'Tadbirlar' },
+      { to: '/gallery', label: 'Galereya' },
+      { to: '/testimonials', label: 'Fikr-mulohazalar' },
+    ],
+  },
+  {
+    id: 'boglanish',
+    label: "Bog'lanish",
+    items: [
+      { to: '/contact', label: "Bog'lanish" },
+      { to: '/map', label: 'Xarita' },
+      { to: '/vacancies', label: "Bo'sh ish o'rinlari" },
+      { to: '/qrcode', label: 'QR kod' },
+    ],
+  },
+]
+
+// AI Yordamchi alohida, guruhlardan tashqarida qoladi (asosiy funksiya)
+const chatbotLink = { to: '/chatbot', label: 'AI Yordamchi' }
+
+function ChevronIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4, flexShrink: 0 }}>
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  )
+}
 
 export default function Navbar({ dark, setDark, onApply }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [openGroup, setOpenGroup] = useState(null) // desktop'da qaysi dropdown ochiq
+  const navRef = useRef(null)
+  const location = useLocation()
+
+  // Dropdown ochiq holda navbar tashqarisiga bosilsa — yopiladi
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (navRef.current && !navRef.current.contains(e.target)) setOpenGroup(null)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   return (
     <>
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
+      <nav ref={navRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
 
         {/* Logo */}
         {/* Xatolik: mobil menyu ochiq holda logotipga bosilsa, sahifa
@@ -37,9 +98,9 @@ export default function Navbar({ dark, setDark, onApply }) {
         </NavLink>
 
         {/* Desktop links */}
-        <div style={{ display: 'flex', gap: 12 }} className="desktop-nav">
-          {links.map(l => (
-            <NavLink key={l.to} to={l.to} end={l.to === '/'}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }} className="desktop-nav">
+          {topLinks.map(l => (
+            <NavLink key={l.to} to={l.to} end
               style={({ isActive }) => ({
                 fontSize: 11,
                 color: isActive ? '#7c3aed' : (dark ? '#ffffff' : '#1a1a2e'),
@@ -51,6 +112,57 @@ export default function Navbar({ dark, setDark, onApply }) {
               {l.label}
             </NavLink>
           ))}
+
+          {navGroups.map(group => {
+            const isActive = group.items.some(i => location.pathname === i.to)
+            const isOpen = openGroup === group.id
+            return (
+              <div key={group.id} style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setOpenGroup(isOpen ? null : group.id)}
+                  style={{
+                    display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer',
+                    fontFamily: 'inherit', fontSize: 11, padding: 0, paddingBottom: 3,
+                    color: isActive ? '#7c3aed' : (dark ? '#ffffff' : '#1a1a2e'),
+                    fontWeight: isActive ? 600 : 400,
+                    borderBottom: isActive ? '2px solid #7c3aed' : '2px solid transparent',
+                  }}
+                  aria-expanded={isOpen}
+                >
+                  {group.label}
+                  <ChevronIcon />
+                </button>
+
+                {isOpen && (
+                  <div style={{ position: 'absolute', top: 'calc(100% + 14px)', left: 0, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, boxShadow: '0 10px 30px rgba(0,0,0,0.15)', padding: 6, minWidth: 210, zIndex: 101 }}>
+                    {group.items.map(item => (
+                      <NavLink key={item.to} to={item.to} onClick={() => setOpenGroup(null)}
+                        style={({ isActive }) => ({
+                          display: 'block', padding: '9px 12px', borderRadius: 6, fontSize: 13,
+                          color: isActive ? '#7c3aed' : 'var(--text)',
+                          fontWeight: isActive ? 600 : 400,
+                          background: isActive ? 'var(--purple-light)' : 'transparent',
+                        })}>
+                        {item.label}
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+
+          <NavLink to={chatbotLink.to}
+            style={({ isActive }) => ({
+              fontSize: 11,
+              color: isActive ? '#7c3aed' : (dark ? '#ffffff' : '#1a1a2e'),
+              borderBottom: isActive ? '2px solid #7c3aed' : '2px solid transparent',
+              paddingBottom: 3,
+              fontWeight: isActive ? 600 : 400,
+              transition: 'all 0.2s'
+            })}>
+            {chatbotLink.label}
+          </NavLink>
         </div>
 
         {/* Right */}
@@ -74,9 +186,9 @@ export default function Navbar({ dark, setDark, onApply }) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="mobile-nav" style={{ position: 'fixed', top: 62, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 8, borderTop: '1px solid var(--border)', overflowY: 'auto' }}>
-          {links.map(l => (
-            <NavLink key={l.to} to={l.to} end={l.to === '/'} onClick={() => setMenuOpen(false)}
+        <div className="mobile-nav" style={{ position: 'fixed', top: 62, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 4, borderTop: '1px solid var(--border)', overflowY: 'auto' }}>
+          {topLinks.map(l => (
+            <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)}
               style={({ isActive }) => ({
                 fontSize: 18, fontWeight: 600,
                 color: isActive ? '#7c3aed' : 'var(--text)',
@@ -86,6 +198,40 @@ export default function Navbar({ dark, setDark, onApply }) {
               {l.label}
             </NavLink>
           ))}
+
+          {/* Har bir guruh — <details> orqali ochiladi/yopiladi, qo'shimcha JS holat kerak emas */}
+          {navGroups.map(group => (
+            <details key={group.id} style={{ borderBottom: '1px solid var(--border)' }}>
+              <summary style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 18, fontWeight: 600, color: 'var(--text)', padding: '0.75rem 0', cursor: 'pointer', listStyle: 'none' }}>
+                {group.label}
+                <ChevronIcon />
+              </summary>
+              <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 8 }}>
+                {group.items.map(item => (
+                  <NavLink key={item.to} to={item.to} onClick={() => setMenuOpen(false)}
+                    style={({ isActive }) => ({
+                      fontSize: 15,
+                      color: isActive ? '#7c3aed' : 'var(--muted)',
+                      fontWeight: isActive ? 600 : 400,
+                      padding: '0.5rem 0 0.5rem 0.75rem',
+                    })}>
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
+            </details>
+          ))}
+
+          <NavLink to={chatbotLink.to} onClick={() => setMenuOpen(false)}
+            style={({ isActive }) => ({
+              fontSize: 18, fontWeight: 600,
+              color: isActive ? '#7c3aed' : 'var(--text)',
+              padding: '0.75rem 0',
+              borderBottom: '1px solid var(--border)',
+            })}>
+            {chatbotLink.label}
+          </NavLink>
+
           <button onClick={() => { onApply(); setMenuOpen(false) }} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', marginTop: '1rem' }}>
             Ariza topshirish
           </button>
