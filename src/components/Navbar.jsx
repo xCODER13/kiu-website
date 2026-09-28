@@ -107,6 +107,7 @@ export default function Navbar({ dark, setDark, onApply }) {
             return (
               <div key={group.id} className="nav-group">
                 <button
+                  onClick={(e) => e.currentTarget.blur()}
                   style={{
                     display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer',
                     fontFamily: 'inherit', fontSize: 11, padding: 0, paddingBottom: 3,
@@ -124,6 +125,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                   <div className="nav-group-panel-inner">
                     {group.items.map(item => (
                       <NavLink key={item.to} to={item.to}
+                        onClick={(e) => e.currentTarget.blur()}
                         className={({ isActive }) => `nav-group-item${isActive ? ' active' : ''}`}>
                         {item.label}
                       </NavLink>
