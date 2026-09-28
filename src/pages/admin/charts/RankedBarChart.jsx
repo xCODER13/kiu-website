@@ -1,59 +1,52 @@
 import { useMemo } from 'react'
 import { ParentSize } from '@visx/responsive'
 import { Group } from '@visx/group'
-import { scaleBand, scaleLinear } from '@visx/scale'
+import { scaleLinear } from '@visx/scale'
 import { Bar } from '@visx/shape'
 
-const MARGIN = { top: 4, right: 40, bottom: 4, left: 4 }
-const BAR_HEIGHT = 26
-const BAR_GAP = 10
+const MARGIN = { top: 2, right: 36, bottom: 2, left: 0 }
+const LABEL_HEIGHT = 18 // yorliq qatori (ustun tepasida)
+const BAR_HEIGHT = 14
+const ROW_GAP = 14
+const ROW_HEIGHT = LABEL_HEIGHT + BAR_HEIGHT
 
 // Gorizontal "reyting" ustunli grafik — top-yangiliklar, top-tadbirlar va
-// SortingHat fakultetlari statistikasi uchun qayta ishlatiladi. Yorliq har
-// doim ustun ustida (chapda) matn sifatida chiziladi — SVG ichida uzun
-// o'zbekcha sarlavhalarni kesish/qisqartirish shart bo'lmasin deb, HTML overlay
-// ishlatiladi (SVG <text> uzun matnni o'ralmaydi).
-function Chart({ width, data, color, emptyLabel }) {
-  const innerWidth = Math.max(width - MARGIN.left - MARGIN.right, 10)
-  const height = data.length * (BAR_HEIGHT + BAR_GAP) - BAR_GAP + MARGIN.top + MARGIN.bottom
+// SortingHat fakultetlari statistikasi uchun qayta ishlatiladi. Har bir qator
+// ikki qatlamdan iborat: tepada yorliq (HTML — uzun o'zbekcha sarlavhalar
+// SVG <text>'da o'ralmaydi, shuning uchun ellipsis bilan kesiladi), pastda esa
+// ustun. Yorliq ustunning USTIGA chizilmaydi — avval shunday edi va matn ustun
+// bilan (ayniqsa qizil fonda va "0" qiymat bilan) qoplanib, o'qib bo'lmasdi.
+const chartHeight = count => count * (ROW_HEIGHT + ROW_GAP) - ROW_GAP + MARGIN.top + MARGIN.bottom
 
-  const yScale = useMemo(() => scaleBand({
-    domain: data.map((_, i) => i),
-    range: [0, data.length * (BAR_HEIGHT + BAR_GAP) - BAR_GAP],
-    padding: 0.25,
-  }), [data])
+function Chart({ width, height, data, color }) {
+  const innerWidth = Math.max(width - MARGIN.left - MARGIN.right, 10)
 
   const maxValue = Math.max(1, ...data.map(d => d.value))
   const xScale = useMemo(() => scaleLinear({ domain: [0, maxValue], range: [0, innerWidth], nice: true }), [maxValue, innerWidth])
 
-  if (data.length === 0) {
-    return <p style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center', padding: '1.5rem 0' }}>{emptyLabel}</p>
-  }
-
   return (
     <div style={{ position: 'relative', width, height }}>
-      {/* Yorliqlar — SVG ustidagi HTML qatlam, har bir ustun bilan bir xil y pozitsiyada */}
+      {/* Yorliqlar — har bir ustunning tepasida, o'z qatorida */}
       {data.map((d, i) => (
-        <div key={i} style={{
-          position: 'absolute', left: 0, top: MARGIN.top + i * (BAR_HEIGHT + BAR_GAP),
-          height: BAR_HEIGHT, display: 'flex', alignItems: 'center',
-          fontSize: 11.5, color: 'var(--text)', fontWeight: 500,
-          maxWidth: width - 46, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          zIndex: 1, pointerEvents: 'none', textShadow: '0 0 4px var(--bg, #fff), 0 0 4px var(--bg, #fff)',
+        <div key={i} title={d.label} style={{
+          position: 'absolute', left: MARGIN.left, top: MARGIN.top + i * (ROW_HEIGHT + ROW_GAP),
+          height: LABEL_HEIGHT, width: innerWidth, display: 'flex', alignItems: 'center',
+          fontSize: 12, color: 'var(--text)', fontWeight: 500,
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {d.label}
         </div>
       ))}
-      <svg width={width} height={height}>
+      <svg width={width} height={height} style={{ display: 'block' }}>
         <Group left={MARGIN.left} top={MARGIN.top}>
           {data.map((d, i) => {
-            const barWidth = xScale(d.value)
-            const barY = yScale(i)
+            const barY = i * (ROW_HEIGHT + ROW_GAP) + LABEL_HEIGHT
+            const barWidth = Math.max(xScale(d.value), 3)
             return (
               <Group key={i}>
-                <rect x={0} y={barY} width={innerWidth} height={BAR_HEIGHT} rx={6} fill="var(--bg-2, #f3f4f6)" />
-                <Bar x={0} y={barY} width={Math.max(barWidth, 3)} height={BAR_HEIGHT} rx={6} fill={color} />
-                <text x={Math.max(barWidth, 3) + 8} y={barY + BAR_HEIGHT / 2} dy="0.35em" fontSize={11} fontWeight={700} fill="var(--text)">
+                <rect x={0} y={barY} width={innerWidth} height={BAR_HEIGHT} rx={5} fill="var(--bg-2, #f3f4f6)" />
+                <Bar x={0} y={barY} width={barWidth} height={BAR_HEIGHT} rx={5} fill={color} />
+                <text x={innerWidth + 8} y={barY + BAR_HEIGHT / 2} dy="0.35em" fontSize={11} fontWeight={700} fill="var(--text)">
                   {d.value}
                 </text>
               </Group>
@@ -66,9 +59,21 @@ function Chart({ width, data, color, emptyLabel }) {
 }
 
 export default function RankedBarChart({ data, color = '#7c3aed', emptyLabel = "Ma'lumot yo'q" }) {
+  if (data.length === 0) {
+    return <p style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center', padding: '1.5rem 0' }}>{emptyLabel}</p>
+  }
+
+  // MUHIM: `ParentSize` grafikni o'zining ichidagi ABSOLUTE konteynerda chizadi, shuning
+  // uchun uning o'zi oqimda 0 balandlikda qoladi — kartaning balandligi grafikni
+  // sig'dirmay, grafik kartadan pastga toshib chiqib kesilib ketadi (Stats'dagi pastki
+  // 3 ta karta shunday buzilgan edi). Tashqi konteynerga aniq `height` berish shart
+  // (TrendLineChart ham xuddi shunday qiladi). Balandlik faqat qatorlar soniga bog'liq.
+  const height = chartHeight(data.length)
   return (
-    <ParentSize>
-      {({ width }) => (width > 0 ? <Chart width={width} data={data} color={color} emptyLabel={emptyLabel} /> : null)}
-    </ParentSize>
+    <div style={{ width: '100%', height }}>
+      <ParentSize>
+        {({ width }) => (width > 0 ? <Chart width={width} height={height} data={data} color={color} /> : null)}
+      </ParentSize>
+    </div>
   )
 }
