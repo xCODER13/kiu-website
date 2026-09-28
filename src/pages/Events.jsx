@@ -102,6 +102,7 @@ export default function Events() {
                       <img
                         src={e.image}
                         alt={e.title}
+                        loading="lazy"
                         style={{ width: 56, height: 56, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
                         onError={ev => { ev.target.style.display = 'none' }}
                       />

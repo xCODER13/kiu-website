@@ -93,7 +93,7 @@ export default function Gallery() {
                     onClick={() => setLightbox({ ...p, index: i })}
                   >
                     <div style={{ height: 160, background: `linear-gradient(135deg, ${color}22, ${color}44)`, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <img src={p.img} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={e => { e.target.style.display = 'none' }} />
+                      <img src={p.img} alt={p.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={e => { e.target.style.display = 'none' }} />
                       <div style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(255,255,255,0.9)', borderRadius: 6, padding: '3px 8px', fontSize: 10, color, fontWeight: 600 }}>KIU</div>
                     </div>
                     <div style={{ padding: '1rem' }}>

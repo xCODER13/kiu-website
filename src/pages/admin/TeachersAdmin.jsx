@@ -104,7 +104,7 @@ export default function TeachersAdmin() {
               </label>
               {imagePreview && (
                 <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
-                  <img src={imagePreview} alt="foto" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '2px solid #7c3aed', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
+                  <img src={imagePreview} alt="foto" loading="lazy" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '2px solid #7c3aed', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
                   <button onClick={removeImage} style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
                 </div>
               )}
@@ -138,7 +138,7 @@ export default function TeachersAdmin() {
             <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: '0.75rem' }}>
               <div style={{ width: 42, height: 42, borderRadius: '50%', overflow: 'hidden', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
                 {t.image
-                  ? <img src={t.image} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={ev => { ev.target.style.display = 'none' }} />
+                  ? <img src={t.image} alt={t.name} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={ev => { ev.target.style.display = 'none' }} />
                   : (t.avatar || t.name?.slice(0,2).toUpperCase())}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>

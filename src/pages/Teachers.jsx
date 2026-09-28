@@ -128,7 +128,7 @@ export default function Teachers() {
                     <div key={t._id || t.id} className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
                       <div style={{ width: 64, height: 64, borderRadius: '50%', overflow: 'hidden', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff', fontSize: 18, fontWeight: 700 }}>
                         {t.image
-                          ? <img src={t.image} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={ev => { ev.target.style.display = 'none' }} />
+                          ? <img src={t.image} alt={t.name} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={ev => { ev.target.style.display = 'none' }} />
                           : (t.avatar || t.name?.slice(0,2).toUpperCase())}
                       </div>
                       <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)', lineHeight: 1.4 }}>{t.name}</h3>

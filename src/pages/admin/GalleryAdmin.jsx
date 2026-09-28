@@ -96,7 +96,7 @@ export default function GalleryAdmin() {
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {imagePreviews.map((p, i) => (
                   <div key={i} style={{ position: 'relative' }}>
-                    <img src={p.url} alt={`rasm-${i + 1}`} style={{ width: 90, height: 70, objectFit: 'cover', borderRadius: 8, border: '2px solid ' + (p.isNew ? '#7c3aed' : '#e5e7eb'), display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
+                    <img src={p.url} alt={`rasm-${i + 1}`} loading="lazy" style={{ width: 90, height: 70, objectFit: 'cover', borderRadius: 8, border: '2px solid ' + (p.isNew ? '#7c3aed' : '#e5e7eb'), display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
                     {p.isNew && <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 9, fontWeight: 700, background: '#7c3aed', color: '#fff', padding: '1px 5px', borderRadius: 10 }}>YANGI</span>}
                     <button onClick={() => removeImage(i)} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', textAlign: 'center', padding: 0 }}>×</button>
                   </div>
@@ -128,7 +128,7 @@ export default function GalleryAdmin() {
           <div key={item._id} style={{ ...card, padding: 0, overflow: 'hidden' }}>
             <div style={{ height: 130, background: '#f0eeff', overflow: 'hidden' }}>
               {item.images?.[0] && (
-                <img src={item.images[0]} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.style.opacity = '.2'} />
+                <img src={item.images[0]} alt={item.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.style.opacity = '.2'} />
               )}
             </div>
             <div style={{ padding: '0.75rem' }}>

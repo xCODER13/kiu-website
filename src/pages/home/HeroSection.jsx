@@ -44,6 +44,7 @@ export default function HeroSection() {
                 src="/gallery/Asosiy-kampus.png"
                 alt="KIU bosh bino"
                 loading="eager"
+                fetchpriority="high"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />
               <div style={{ position: 'absolute', bottom: 14, left: 14, background: 'rgba(26,26,46,.75)', backdropFilter: 'blur(6px)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '6px 14px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 6 }}>

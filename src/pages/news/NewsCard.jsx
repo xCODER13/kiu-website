@@ -14,7 +14,7 @@ export default function NewsCard({ item }) {
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '' }}
     >
       {item.image
-        ? <img src={parseImages(item.image)[0]} alt={item.title} style={{ width: '100%', height: 160, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />
+        ? <img src={parseImages(item.image)[0]} alt={item.title} loading="lazy" style={{ width: '100%', height: 160, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />
         : <div style={{
             width: '100%', height: 160,
             background: `linear-gradient(135deg, ${catColor}22, ${catColor}11)`,

@@ -66,6 +66,7 @@ export default function QRCode() {
                   <img
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(s.url)}&color=${s.color.replace('#','')}&bgcolor=ffffff&qzone=1`}
                     alt={`${s.name} QR`}
+                    loading="lazy"
                     style={{ width: '100%', height: '100%', borderRadius: 6 }}
                   />
                 </div>

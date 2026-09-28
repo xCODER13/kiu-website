@@ -121,7 +121,7 @@ export default function EventsAdmin() {
               </label>
               {imagePreview && (
                 <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
-                  <img src={imagePreview} alt="poster" style={{ width: 70, height: 50, objectFit: 'cover', borderRadius: 8, border: '2px solid #7c3aed', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
+                  <img src={imagePreview} alt="poster" loading="lazy" style={{ width: 70, height: 50, objectFit: 'cover', borderRadius: 8, border: '2px solid #7c3aed', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
                   <button onClick={removeImage} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
                 </div>
               )}
@@ -152,6 +152,7 @@ export default function EventsAdmin() {
               {e.image ? (
                 <img
                   src={e.image} alt={e.title}
+                  loading="lazy"
                   style={{ width: 46, height: 46, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
                   onError={ev => { ev.target.style.opacity = '0.2' }}
                 />

@@ -47,7 +47,7 @@ function ImageCarousel({ imgs, title }) {
   if (!imgs.length) return null
   if (imgs.length === 1) return (
     <div style={{ marginBottom: '2rem', borderRadius: 16, overflow: 'hidden' }}>
-      <img src={imgs[0]} alt={title} style={{ width: '100%', maxHeight: 500, objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
+      <img src={imgs[0]} alt={title} fetchpriority="high" style={{ width: '100%', maxHeight: 500, objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
     </div>
   )
 
@@ -60,6 +60,7 @@ function ImageCarousel({ imgs, title }) {
           key={cur}
           src={imgs[cur]}
           alt={`${title} ${cur + 1}`}
+          fetchpriority={cur === 0 ? 'high' : undefined}
           style={{
             width: '100%', maxHeight: 520, objectFit: 'cover', display: 'block',
             animation: anim ? `slide-${dir > 0 ? 'in-right' : 'in-left'} 0.28s ease` : 'none',
