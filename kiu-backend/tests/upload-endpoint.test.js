@@ -6,9 +6,10 @@
 // 30 tadan ko'p autentifikatsiyalangan so'rov yuborilmasin.
 const mockUpload = jest.fn()
 const mockGetPublicUrl = jest.fn()
+const mockRemove = jest.fn()
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({
-    storage: { from: jest.fn(() => ({ upload: mockUpload, getPublicUrl: mockGetPublicUrl })) },
+    storage: { from: jest.fn(() => ({ upload: mockUpload, getPublicUrl: mockGetPublicUrl, remove: mockRemove })) },
   })),
 }))
 
@@ -34,6 +35,7 @@ beforeAll(() => {
 beforeEach(() => {
   mockUpload.mockReset().mockResolvedValue({ error: null })
   mockGetPublicUrl.mockReset().mockImplementation(p => ({ data: { publicUrl: cdn(p) } }))
+  mockRemove.mockReset().mockResolvedValue({ error: null })
 })
 
 // ───────────────────────── NEWS ─────────────────────────
@@ -155,17 +157,22 @@ describe('POST /api/news — rasm bilan', () => {
     expect(await News.countDocuments()).toBe(0)
   })
 
-  test("title bo'lmasa (model validatsiyasi) 400", async () => {
+  test("title bo'lmasa (model validatsiyasi) 400 — muvaffaqiyatli yuklangan fayl Storage'dan tozalanadi", async () => {
     const res = await request(app)
       .post('/api/news').set(auth)
       .attach('imageFiles', PNG, { filename: 'a.png', contentType: 'image/png' })
     expect(res.status).toBe(400)
+    // Fayl Supabase'ga muvaffaqiyatli yuklangan edi (mockUpload xato qaytarmadi),
+    // lekin News.create() validatsiyada yiqilgani uchun endi orqaga qaytarilib
+    // (rollback) Storage'dan o'chiriladi — "yetim" qolmaydi.
+    expect(mockRemove).toHaveBeenCalledTimes(1)
+    expect(mockRemove.mock.calls[0][0][0]).toMatch(/^news\/[0-9a-f-]{36}-a\.png$/)
   })
 
-  // BILINGAN XAVF: 2 ta fayldan birinchisi yuklangach, ikkinchisi xato bersa, controller
-  // umumiy 400 qaytaradi, lekin birinchi fayl Storage'da yetim bo'lib qoladi (o'chirilmaydi).
-  // Tozalash mantiqi qo'shilganda `toHaveBeenCalledTimes(2)` bilan birga bu test yangilansin.
-  test("KNOWN RISK: qisman xatoda birinchi yuklangan fayl Storage'da yetim qoladi", async () => {
+  // Avval "BILINGAN XAVF" deb qayd etilgan edi: 2 ta fayldan birinchisi yuklangach,
+  // ikkinchisi xato bersa, birinchi fayl Storage'da yetim qolardi. Endi
+  // `uploadImagesToSupabase` buni avtomatik tozalaydi.
+  test("qisman xatoda muvaffaqiyatli yuklangan birinchi fayl endi Storage'dan tozalanadi", async () => {
     mockUpload
       .mockResolvedValueOnce({ error: null })
       .mockResolvedValueOnce({ error: { message: 'boom' } })
@@ -178,7 +185,9 @@ describe('POST /api/news — rasm bilan', () => {
 
     expect(res.status).toBe(400)
     expect(await News.countDocuments()).toBe(0)
-    expect(mockUpload).toHaveBeenCalledTimes(2) // birinchisi yuklangan, o'chirilmagan
+    expect(mockUpload).toHaveBeenCalledTimes(2) // ikkalasi ham urinildi
+    expect(mockRemove).toHaveBeenCalledTimes(1) // faqat muvaffaqiyatli bo'lgan (birinchi) tozalandi
+    expect(mockRemove.mock.calls[0][0]).toEqual([expect.stringMatching(/^news\/[0-9a-f-]{36}-1\.png$/)])
   })
 })
 

@@ -1,7 +1,7 @@
 const Event = require('../models/Event')
 const { fail } = require('../middleware/errorHandler')
 const { applyPagination } = require('../utils/pagination')
-const { uploadImageToSupabase } = require('../services/supabaseUpload')
+const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 
 async function getAll(req, res) {
   try {
@@ -14,28 +14,44 @@ async function getAll(req, res) {
 // ── RASM MAYDONINI ANIQLASH ──
 // Yangi fayl yuklangan bo'lsa — shu ustunlik qiladi. Bo'lmasa, admin panel
 // yuborgan `existingImage` (tahrirlashda o'zgartirilmagan yoki rasm butunlay
-// olib tashlangan holatda bo'sh string) ishlatiladi.
-async function resolveImage(req) {
-  if (req.file) return uploadImageToSupabase(req.file, 'events')
-  return req.body.existingImage || ''
+// olib tashlangan holatda bo'sh string) ishlatiladi. `uploadedPaths` — agar
+// fayl yuklangan bo'lsa, undan keyingi DB yozuvi muvaffaqiyatsiz bo'lganda
+// Storage'da "yetim" qolmasligi uchun chaqiruvchiga qaytariladi.
+async function resolveImage(req, folder) {
+  if (!req.file) return { image: req.body.existingImage || '', uploadedPaths: [] }
+  const { urls, paths } = await uploadImagesToSupabase([req.file], folder)
+  return { image: urls[0], uploadedPaths: paths }
 }
 
 async function create(req, res) {
+  let uploadedPaths = []
   try {
-    const image = await resolveImage(req)
+    const resolved = await resolveImage(req, 'events')
+    uploadedPaths = resolved.uploadedPaths
     const { title, desc, date, month, type } = req.body
-    res.json(await Event.create({ title, desc, date, month, type, image }))
-  } catch (e) { fail(req, res, 400, e) }
+    res.json(await Event.create({ title, desc, date, month, type, image: resolved.image }))
+  } catch (e) {
+    if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
+    fail(req, res, 400, e)
+  }
 }
 
 async function update(req, res) {
+  let uploadedPaths = []
   try {
-    const image = await resolveImage(req)
+    const resolved = await resolveImage(req, 'events')
+    uploadedPaths = resolved.uploadedPaths
     const { title, desc, date, month, type } = req.body
-    const updated = await Event.findByIdAndUpdate(req.params.id, { title, desc, date, month, type, image }, { new: true, runValidators: true })
-    if (!updated) return res.status(404).json({ error: 'Topilmadi' })
+    const updated = await Event.findByIdAndUpdate(req.params.id, { title, desc, date, month, type, image: resolved.image }, { new: true, runValidators: true })
+    if (!updated) {
+      if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
+      return res.status(404).json({ error: 'Topilmadi' })
+    }
     res.json(updated)
-  } catch (e) { fail(req, res, 400, e) }
+  } catch (e) {
+    if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
+    fail(req, res, 400, e)
+  }
 }
 
 async function remove(req, res) {

@@ -48,14 +48,18 @@ function buildTelegramMessage(application) {
   return msg
 }
 
+// Mass assignment himoyasi: create() va update() shu ro'yxatdan foydalanadi —
+// Application sxemasidagi foydalanuvchi/admin tahrirlashi mumkin bo'lgan barcha
+// maydonlar. "status" bundan ataylab tashqarida: create() uni hech qachon
+// client'dan olmaydi (har doim serverda 'new' qilib belgilanadi, aks holda
+// so'rov yuboruvchi o'z arizasini to'g'ridan-to'g'ri "accepted" qilib yuborishi
+// mumkin edi), update() esa uni alohida UPDATABLE_FIELDS orqali qo'shadi.
+const APPLICATION_FIELDS = ['name', 'phone', 'faculty', 'message', 'email', 'position', 'education', 'experience', 'type']
+
 async function create(req, res) {
   try {
-    // Mass assignment himoyasi: faqat kerakli maydonlar qabul qilinadi.
-    // "status" hech qachon client'dan olinmaydi — har doim serverda 'new' qilib belgilanadi,
-    // aks holda so'rov yuboruvchi o'z arizasini to'g'ridan-to'g'ri "accepted" qilib yuborishi mumkin edi.
-    const allowedFields = ['name', 'phone', 'faculty', 'message', 'email', 'position', 'education', 'experience', 'type']
     const body = {}
-    for (const field of allowedFields) {
+    for (const field of APPLICATION_FIELDS) {
       if (req.body[field] !== undefined) body[field] = req.body[field]
     }
     if (!body.type || !['admission', 'vacancy'].includes(body.type)) body.type = 'admission'
@@ -67,9 +71,23 @@ async function create(req, res) {
   } catch (e) { fail(req, res, 400, e) }
 }
 
+// Mass assignment himoyasi (create()dagi kabi ro'yxat, "status" qo'shilgan holda):
+// avval `req.body` filtrlashsiz to'g'ridan-to'g'ri findByIdAndUpdate'ga berilardi —
+// Mongoose'ning strict rejimi sxemada yo'q maydonlarni (masalan, `isAdmin`) allaqachon
+// yashirincha tashlab yuborardi, lekin bu holatga aniq, kod darajasidagi himoya yo'q edi
+// (implicit xatti-harakatga tayanish o'rniga). Ro'yxat create()dagi bilan bir xil bo'lgani
+// uchun mavjud PUT kontrakti (type/phone/email/message ham validatsiyadan o'tishi, testlar
+// bilan tasdiqlangan) o'zgarishsiz qoladi.
+const UPDATABLE_FIELDS = [...APPLICATION_FIELDS, 'status']
+
 async function update(req, res) {
   try {
-    const updated = await Application.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    const body = {}
+    for (const field of UPDATABLE_FIELDS) {
+      if (req.body[field] !== undefined) body[field] = req.body[field]
+    }
+
+    const updated = await Application.findByIdAndUpdate(req.params.id, body, { new: true, runValidators: true })
     if (!updated) return res.status(404).json({ error: 'Topilmadi' })
     res.json(updated)
   } catch (e) { fail(req, res, 400, e) }

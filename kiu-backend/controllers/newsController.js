@@ -1,6 +1,6 @@
 const News = require('../models/News')
 const { fail } = require('../middleware/errorHandler')
-const { uploadImageToSupabase } = require('../services/supabaseUpload')
+const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { applyPagination } = require('../utils/pagination')
 
 async function getOne(req, res) {
@@ -44,23 +44,36 @@ function parseExistingImages(raw) {
 }
 
 async function create(req, res) {
+  // Fayl(lar) muvaffaqiyatli Storage'ga yuklangan bo'lishi mumkin, lekin
+  // shundan keyingi DB yozuvi (validatsiya va h.k. sabab) muvaffaqiyatsiz
+  // bo'lishi mumkin — shu holatda ularni "yetim" qoldirmaslik uchun bu yerda
+  // ham tozalaymiz. (Qisman-yuklash holatini — bir nechta fayldan biri
+  // muvaffaqiyatsiz bo'lganda — `uploadImagesToSupabase`ning o'zi ichida
+  // hal qiladi.)
+  let uploadedPaths = []
   try {
     const existingUrls = parseExistingImages(req.body.existingImages)
     const files = req.files || []
-    const newUrls = await Promise.all(files.map(f => uploadImageToSupabase(f, 'news')))
+    const { urls: newUrls, paths } = await uploadImagesToSupabase(files, 'news')
+    uploadedPaths = paths
     const imageUrl = buildImageValue(existingUrls, newUrls)
 
     const { title, content, category, videoId } = req.body
     const shortsUrl = req.body.shortsUrl || ''
     res.json(await News.create({ title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' }))
-  } catch (e) { fail(req, res, 400, e) }
+  } catch (e) {
+    if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
+    fail(req, res, 400, e)
+  }
 }
 
 async function update(req, res) {
+  let uploadedPaths = []
   try {
     const existingUrls = parseExistingImages(req.body.existingImages)
     const files = req.files || []
-    const newUrls = await Promise.all(files.map(f => uploadImageToSupabase(f, 'news')))
+    const { urls: newUrls, paths } = await uploadImagesToSupabase(files, 'news')
+    uploadedPaths = paths
     const imageUrl = buildImageValue(existingUrls, newUrls)
 
     const { title, content, category, videoId } = req.body
@@ -69,9 +82,15 @@ async function update(req, res) {
       { title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' },
       { new: true, runValidators: true }
     )
-    if (!updated) return res.status(404).json({ error: 'Topilmadi' })
+    if (!updated) {
+      if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
+      return res.status(404).json({ error: 'Topilmadi' })
+    }
     res.json(updated)
-  } catch (e) { fail(req, res, 400, e) }
+  } catch (e) {
+    if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
+    fail(req, res, 400, e)
+  }
 }
 
 async function incrementView(req, res) {
