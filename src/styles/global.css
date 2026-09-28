@@ -435,17 +435,29 @@ details[open] .details-arrow { transform: rotate(180deg); }
 }
 .nav-group-item {
   display: block;
-  padding: 9px 12px;
+  padding: 9px 12px 9px 9px;
+  border-left: 3px solid transparent;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 400;
   color: var(--text);
-  transition: background .15s, color .15s;
+  transition: background .15s, color .15s, border-color .15s;
 }
-.nav-group-item:hover,
+/* Joriy sahifa (active) — kursor hover qilinmagan holatda ham "siz shu
+   yerdasiz" degan belgi, lekin hover bilan chalkashmasligi uchun sezilmas —
+   to'liq to'ldirilgan emas, faqat chap chiziqcha + och fon */
 .nav-group-item.active {
+  background: var(--purple-light);
+  color: var(--purple);
+  border-left-color: var(--purple);
+  font-weight: 600;
+}
+/* Hover — "shu yerga bosaman" degan aniq signal, har doim ustunlik qiladi:
+   joriy sahifa ustidan hover qilinsa ham to'liq purple ko'rinadi */
+.nav-group-item:hover {
   background: var(--purple);
   color: #fff;
+  border-left-color: var(--purple);
   font-weight: 600;
 }
 .container-wide {

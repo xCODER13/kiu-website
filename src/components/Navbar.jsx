@@ -6,12 +6,24 @@ import Search from './Search'
 // Guruhga kirmaydigan, doim ko'rinadigan linklar
 const topLinks = [
   { to: '/', label: 'Bosh sahifa' },
+  { to: '/vacancies', label: 'Bo\'sh ish o\'rinlari' },
 ]
 
 // Qolgan 18 ta sahifa 4 ta guruhga bo'lingan (dropdown/mega-menu).
 // Avval hammasi bitta qatorda edi va ko'p sahifa (About, Events, Gallery,
 // Map, Teachers, QRCode, SortingHat) navbar'da umuman ko'rinmas edi.
 const navGroups = [
+   {
+    id: 'universitet',
+    label: 'Universitet haqida',
+    items: [
+      { to: '/about', label: 'Biz haqimizda' },
+      { to: '/achievements', label: 'Yutuqlar' },
+      { to: '/international', label: 'Xalqaro hamkorlik' },
+      { to: '/documents', label: 'Normativ hujjatlar' },
+      { to: '/teachers', label: "Professor-o'qituvchilar" },
+    ],
+  },
   {
     id: 'talabalar',
     label: 'Talabalar uchun',
@@ -23,17 +35,7 @@ const navGroups = [
       { to: '/sorting-hat', label: 'Sehrli Shlyapa' },
     ],
   },
-  {
-    id: 'universitet',
-    label: 'Universitet haqida',
-    items: [
-      { to: '/about', label: 'Biz haqimizda' },
-      { to: '/achievements', label: 'Yutuqlar' },
-      { to: '/international', label: 'Xalqaro hamkorlik' },
-      { to: '/documents', label: 'Normativ hujjatlar' },
-      { to: '/teachers', label: "Professor-o'qituvchilar" },
-    ],
-  },
+ 
   {
     id: 'media',
     label: 'Media',
@@ -50,7 +52,6 @@ const navGroups = [
     items: [
       { to: '/contact', label: "Bog'lanish" },
       { to: '/map', label: 'Xarita' },
-      { to: '/vacancies', label: "Bo'sh ish o'rinlari" },
       { to: '/qrcode', label: 'QR kod' },
     ],
   },
