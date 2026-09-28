@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ApplyModal from './components/ApplyModal'
 import { isTokenValid } from './utils/auth'
+import useAnalytics from './hooks/useAnalytics'
 
 // Sahifalar endi alohida chunk sifatida, faqat kerak bo'lganda yuklanadi
 const Home            = lazy(() => import('./pages/Home'))
@@ -150,6 +151,7 @@ function PageLoader() {
 
 export default function App() {
   useSeo()
+  useAnalytics()
 
   const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark')
   const [applyOpen, setApplyOpen] = useState(false)
