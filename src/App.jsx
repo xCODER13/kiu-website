@@ -21,7 +21,6 @@ const QRCode          = lazy(() => import('./pages/QRCode'))
 const Teachers        = lazy(() => import('./pages/Teachers'))
 const Gallery         = lazy(() => import('./pages/Gallery'))
 const Map             = lazy(() => import('./pages/Map'))
-const Chatbot         = lazy(() => import('./pages/Chatbot'))
 const Login           = lazy(() => import('./pages/admin/Login'))
 const Dashboard       = lazy(() => import('./pages/admin/Dashboard'))
 const About           = lazy(() => import('./pages/About'))
@@ -59,7 +58,6 @@ const SEO = {
   '/achievements':  { title: "Yutuqlar",                desc: "KIU va uning talabalari, o'qituvchilarining yutuqlari va mukofotlari." },
   '/testimonials':  { title: "Fikr-mulohazalar",        desc: "KIU talabalari va bitiruvchilarining universitetimiz haqidagi fikrlari." },
   '/map':           { title: "Kampus xaritasi",         desc: "KIU kampusining interaktiv xaritasi va yo'nalish ko'rsatmalari." },
-  '/chatbot':       { title: "AI Yordamchi",            desc: "KIU haqida savollaringizga AI yordamchi javob beradi." },
   '/sorting-hat':   { title: "Yo'nalishni aniqlash",    desc: "KIU Sehrli Shlyapasi — bir necha savol orqali siz uchun eng mos yo'nalishni aniqlang." },
   '/qrcode':        { title: "QR Kod",                  desc: "KIU rasmiy QR kodlari va tezkor havolalar." },
 }
@@ -204,7 +202,6 @@ export default function App() {
                   <Route path="/teachers" element={<Teachers />} />
                   <Route path="/gallery" element={<Gallery />} />
                   <Route path="/map" element={<Map />} />
-                  <Route path="/chatbot" element={<Chatbot />} />
                   <Route path="/sorting-hat" element={<SortingHat />} />
                 </Routes>
                 {applyOpen && <ApplyModal onClose={closeApplyModal} />}

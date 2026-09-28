@@ -56,9 +56,6 @@ const navGroups = [
   },
 ]
 
-// AI Yordamchi alohida, guruhlardan tashqarida qoladi (asosiy funksiya)
-const chatbotLink = { to: '/chatbot', label: 'AI Yordamchi' }
-
 function ChevronIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4, flexShrink: 0 }}>
@@ -135,18 +132,6 @@ export default function Navbar({ dark, setDark, onApply }) {
               </div>
             )
           })}
-
-          <NavLink to={chatbotLink.to}
-            style={({ isActive }) => ({
-              fontSize: 11,
-              color: isActive ? '#7c3aed' : (dark ? '#ffffff' : '#1a1a2e'),
-              borderBottom: isActive ? '2px solid #7c3aed' : '2px solid transparent',
-              paddingBottom: 3,
-              fontWeight: isActive ? 600 : 400,
-              transition: 'all 0.2s'
-            })}>
-            {chatbotLink.label}
-          </NavLink>
         </div>
 
         {/* Right */}
@@ -205,16 +190,6 @@ export default function Navbar({ dark, setDark, onApply }) {
               </div>
             </details>
           ))}
-
-          <NavLink to={chatbotLink.to} onClick={() => setMenuOpen(false)}
-            style={({ isActive }) => ({
-              fontSize: 18, fontWeight: 600,
-              color: isActive ? '#7c3aed' : 'var(--text)',
-              padding: '0.75rem 0',
-              borderBottom: '1px solid var(--border)',
-            })}>
-            {chatbotLink.label}
-          </NavLink>
 
           <button onClick={() => { onApply(); setMenuOpen(false) }} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', marginTop: '1rem' }}>
             Ariza topshirish
