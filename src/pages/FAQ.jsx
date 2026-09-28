@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import useJsonLd from '../hooks/useJsonLd'
 
 const FAQS = [
   { q: "Qabul qachon boshlanadi?", a: "Qabul har yili 1-iyuldan 20-avgustgacha davom etadi. Hujjatlar qabul komissiyasiga shaxsan yoki online topshiriladi." },
@@ -11,7 +12,20 @@ const FAQS = [
   { q: "Bepul avtobus xizmati bormi?", a: "Ha, universitetimiz talabalar uchun bepul avtobus xizmatini yo'lga qo'ygan. Marshrut va jadval haqida ma'lumot olish uchun murojaat qiling." },
 ]
 
+// Modul darajasida — FAQS o'zgarmasa, har render'da qayta yaratilmaydi
+// (useJsonLd shu barqaror referensga tayanadi)
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+}
+
 export default function FAQ() {
+  useJsonLd('jsonld-faq', FAQ_SCHEMA)
   const [open, setOpen] = useState(null)
 
   return (

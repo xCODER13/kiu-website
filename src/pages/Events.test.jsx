@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react'
 import Events from './Events'
 import { mockApi } from '../test/helpers'
 
-const E1 = { _id: 'e1', date: '5 mart', month: 'mart', title: 'Ochiq eshiklar', desc: 'Tanishuv kuni', type: 'open' }
-const E2 = { _id: 'e2', date: '10 aprel', month: 'aprel', title: 'Sport kuni', desc: 'Musobaqalar', type: 'sport', image: 'https://s/1.jpg' }
+const E1 = { _id: 'e1', eventDate: '2026-03-05', title: 'Ochiq eshiklar', desc: 'Tanishuv kuni', type: 'open' }
+const E2 = { _id: 'e2', eventDate: '2026-04-10', title: 'Sport kuni', desc: 'Musobaqalar', type: 'sport', image: 'https://s/1.jpg' }
 
 describe('Events (public)', () => {
   it('yuklanish paytida "Yuklanmoqda..." ko\'rsatadi', () => {

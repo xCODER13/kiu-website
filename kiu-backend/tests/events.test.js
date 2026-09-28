@@ -15,7 +15,7 @@ describe('Events CRUD', () => {
     expect(res.status).toBe(401)
   })
 
-  test('POST /api/events — majburiy maydonlar (title, date, month) yo\'q bo\'lsa 400', async () => {
+  test('POST /api/events — majburiy maydonlar (title, eventDate) yo\'q bo\'lsa 400', async () => {
     const token = getAuthToken()
     const res = await request(app)
       .post('/api/events')
@@ -29,13 +29,13 @@ describe('Events CRUD', () => {
     const res = await request(app)
       .post('/api/events')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'Ochiq eshiklar kuni', date: '28 mart', month: 'mart' })
+      .send({ title: 'Ochiq eshiklar kuni', eventDate: '2026-03-28' })
     expect(res.status).toBe(200)
     expect(res.body.title).toBe('Ochiq eshiklar kuni')
   })
 
   test('PUT /api/events/:id — auth bilan yangilaydi', async () => {
-    const event = await Event.create({ title: 'Eski', date: '1 yanvar', month: 'yanvar' })
+    const event = await Event.create({ title: 'Eski', eventDate: '2026-01-01' })
     const token = getAuthToken()
     const res = await request(app)
       .put(`/api/events/${event._id}`)
@@ -46,7 +46,7 @@ describe('Events CRUD', () => {
   })
 
   test('DELETE /api/events/:id — auth bilan o\'chiradi', async () => {
-    const event = await Event.create({ title: 'Test', date: '1 yanvar', month: 'yanvar' })
+    const event = await Event.create({ title: 'Test', eventDate: '2026-01-01' })
     const token = getAuthToken()
     const res = await request(app)
       .delete(`/api/events/${event._id}`)

@@ -5,7 +5,10 @@ const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/su
 
 async function getAll(req, res) {
   try {
-    const q = Event.find().sort({ createdAt: -1 })
+    // Tadbirlar taqvimi — eng yaqin sanadagi tadbir birinchi chiqadi
+    // (avval createdAt bo'yicha edi, ya'ni qo'shilish tartibi — voqea
+    // qachon bo'lishiga aloqasi yo'q edi)
+    const q = Event.find().sort({ eventDate: 1 })
     applyPagination(q, req.query)
     res.json(await q)
   } catch (e) { fail(req, res, 500, e) }
@@ -28,8 +31,8 @@ async function create(req, res) {
   try {
     const resolved = await resolveImage(req, 'events')
     uploadedPaths = resolved.uploadedPaths
-    const { title, desc, date, month, type } = req.body
-    res.json(await Event.create({ title, desc, date, month, type, image: resolved.image }))
+    const { title, desc, eventDate, type } = req.body
+    res.json(await Event.create({ title, desc, eventDate, type, image: resolved.image }))
   } catch (e) {
     if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
     fail(req, res, 400, e)
@@ -41,8 +44,8 @@ async function update(req, res) {
   try {
     const resolved = await resolveImage(req, 'events')
     uploadedPaths = resolved.uploadedPaths
-    const { title, desc, date, month, type } = req.body
-    const updated = await Event.findByIdAndUpdate(req.params.id, { title, desc, date, month, type, image: resolved.image }, { new: true, runValidators: true })
+    const { title, desc, eventDate, type } = req.body
+    const updated = await Event.findByIdAndUpdate(req.params.id, { title, desc, eventDate, type, image: resolved.image }, { new: true, runValidators: true })
     if (!updated) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
       return res.status(404).json({ error: 'Topilmadi' })

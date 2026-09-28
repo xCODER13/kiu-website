@@ -1,13 +1,33 @@
+import { useMemo } from 'react'
 import useApi from '../hooks/useApi'
+import useJsonLd from '../hooks/useJsonLd'
+import config from '../config'
 
+const SITE_URL = 'https://kiu-university.vercel.app'
+const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
+
+// eventDate — to'liq ISO sana (yil bilan). Avval date/month alohida matn
+// sifatida (yilsiz) saqlanardi — bazaga ham, shu yerga ham eventDate qo'shildi.
 const FALLBACK_EVENTS = [
-  { _id: 1, date: '28 mart', month: 'mart', title: "Ochiq eshiklar kuni", desc: "Abituriyentlar va ota-onalar uchun universitet bilan tanishuv kuni. Soat 10:00.", type: 'open' },
-  { _id: 2, date: '1 aprel', month: 'aprel', title: "Navro'z sayli", desc: "Milliy bayram munosabati bilan o'tkaziladigan katta shodiyona tadbir.", type: 'culture' },
-  { _id: 3, date: '15 aprel', month: 'aprel', title: "Ilmiy konferensiya", desc: "Talabalar va o'qituvchilar ishtirokidagi ilmiy-amaliy konferensiya.", type: 'science' },
-  { _id: 4, date: '1 may', month: 'may', title: "Sport musobaqalari", desc: "Universitetlararo sport musobaqalari.", type: 'sport' },
-  { _id: 5, date: '20 may', month: 'may', title: "Bitiruvchilar kuni", desc: "2024-2025 o'quv yili bitiruvchilari tantanali marosimi.", type: 'graduation' },
-  { _id: 6, date: '1 iyul', month: 'iyul', title: "Qabul boshlanadi", desc: "2025-2026 o'quv yiliga hujjat qabul qilish boshlandi.", type: 'admission' },
+  { _id: 1, eventDate: '2026-03-28', title: "Ochiq eshiklar kuni", desc: "Abituriyentlar va ota-onalar uchun universitet bilan tanishuv kuni. Soat 10:00.", type: 'open' },
+  { _id: 2, eventDate: '2026-04-01', title: "Navro'z sayli", desc: "Milliy bayram munosabati bilan o'tkaziladigan katta shodiyona tadbir.", type: 'culture' },
+  { _id: 3, eventDate: '2026-04-15', title: "Ilmiy konferensiya", desc: "Talabalar va o'qituvchilar ishtirokidagi ilmiy-amaliy konferensiya.", type: 'science' },
+  { _id: 4, eventDate: '2026-05-01', title: "Sport musobaqalari", desc: "Universitetlararo sport musobaqalari.", type: 'sport' },
+  { _id: 5, eventDate: '2026-05-20', title: "Bitiruvchilar kuni", desc: "2025-2026 o'quv yili bitiruvchilari tantanali marosimi.", type: 'graduation' },
+  { _id: 6, eventDate: '2026-07-01', title: "Qabul boshlanadi", desc: "2026-2027 o'quv yiliga hujjat qabul qilish boshlandi.", type: 'admission' },
 ]
+
+// Kartochkadagi kun/oy nishonchasi va sana matni uchun — eventDate'dan (ISO)
+// kun, oy nomi va yilni ajratib oladi.
+function formatEventDate(iso) {
+  if (!iso) return { day: '', month: '', year: '', full: '' }
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return { day: '', month: '', year: '', full: '' }
+  const day = d.getUTCDate()
+  const month = UZ_MONTHS[d.getUTCMonth()] || ''
+  const year = d.getUTCFullYear()
+  return { day: String(day), month, year: String(year), full: `${day} ${month} ${year}` }
+}
 
 const typeColors = {
   open:       { bg: 'rgba(220,38,38,0.1)', color: '#dc2626', label: 'Ochiq kun' },
@@ -24,6 +44,31 @@ export default function Events() {
     `${import.meta.env.VITE_API_URL}/api/events`,
     FALLBACK_EVENTS
   )
+
+  // events fetch tugagandagina yangi referensga ega bo'ladi (useApi.js) —
+  // shuning uchun bu har render'da emas, faqat ma'lumot chindan o'zgarganda
+  // qayta hisoblanadi (keraksiz script qayta yaratilmaydi)
+  const eventsSchema = useMemo(() => {
+    const valid = (Array.isArray(events) ? events : []).filter(e => e.eventDate && !Number.isNaN(new Date(e.eventDate).getTime()))
+    if (valid.length === 0) return null
+    return valid.map(e => ({
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: e.title,
+      description: e.desc || undefined,
+      startDate: e.eventDate,
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
+      image: e.image || undefined,
+      location: {
+        '@type': 'Place',
+        name: config.university.name,
+        address: config.contact.address1,
+      },
+      organizer: { '@type': 'Organization', name: config.university.name, url: SITE_URL },
+    }))
+  }, [events])
+  useJsonLd('jsonld-events', eventsSchema)
 
   return (
     <div className="fade-up">
@@ -50,6 +95,7 @@ export default function Events() {
                   ".map is not a function" bilan qulamasin */}
               {(Array.isArray(events) ? events : []).map((e) => {
                 const tc = typeColors[e.type] || typeColors.general
+                const fd = formatEventDate(e.eventDate)
                 return (
                   <div key={e._id} className="card" style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                     {e.image ? (
@@ -61,8 +107,8 @@ export default function Events() {
                       />
                     ) : (
                       <div style={{ width: 56, height: 56, borderRadius: 12, background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
-                        <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>{e.date?.split(' ')[0]}</div>
-                        <div style={{ fontSize: 10, opacity: .8 }}>{e.month}</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>{fd.day}</div>
+                        <div style={{ fontSize: 10, opacity: .8 }}>{fd.month}</div>
                       </div>
                     )}
                     <div style={{ flex: 1 }}>
@@ -70,7 +116,7 @@ export default function Events() {
                         <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', fontFamily: 'var(--font-body)' }}>{e.title}</h3>
                         <span style={{ fontSize: 11, fontWeight: 600, color: tc.color, background: tc.bg, padding: '2px 8px', borderRadius: 20 }}>{tc.label}</span>
                         {e.image && (
-                          <span style={{ fontSize: 11, color: 'var(--muted)' }}>{e.date} {e.month}</span>
+                          <span style={{ fontSize: 11, color: 'var(--muted)' }}>{fd.full}</span>
                         )}
                       </div>
                       <p style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.6 }}>{e.desc}</p>

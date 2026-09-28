@@ -6,34 +6,19 @@ import { useSingleImageUpload } from './shared/useImageUpload'
 
 const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
 
-// Sana/Oy ma'lumotlari bazada avvalgidek ikkita alohida matn maydoni (`date`,
-// `month`) sifatida saqlanadi — backend va public sahifa o'zgarmaydi. Admin
-// formada esa endi bitta brauzer sana tanlagichi (<input type="date">)
-// ko'rsatiladi, ikkalasi shundan avtomatik hisoblanadi — qo'lda ikki marta
-// (masalan "28 mart" va yana alohida "mart") kiritish shart emas.
-// Yil ma'lumotlari bazasida saqlanmaydi/ko'rsatilmaydi (sxema buni bilmaydi),
-// shuning uchun faqat kun va oy olinadi, yil e'tiborga olinmaydi.
-function isoToDateFields(iso) {
-  if (!iso) return { date: '', month: '' }
-  const [, m, d] = iso.split('-').map(Number)
-  return { date: String(d), month: UZ_MONTHS[m - 1] || '' }
-}
-
-// Tahrirlashda saqlangan `date`/`month`dan sana tanlagich uchun taxminiy ISO
-// qiymat tiklaydi (joriy yil bilan — faqat vidjetda kun/oy to'g'ri
-// ko'rsatilishi uchun). Eski yozuvlarda `date` "28 mart" kabi qo'shilgan
-// bo'lsa ham parseInt boshidagi raqamni to'g'ri oladi.
-function dateFieldsToIso(dateStr, monthStr) {
-  const day = parseInt(dateStr, 10)
-  const monthIdx = UZ_MONTHS.indexOf((monthStr || '').trim().toLowerCase())
-  if (!day || monthIdx === -1) return ''
-  const year = new Date().getFullYear()
-  return `${year}-${String(monthIdx + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+// Ro'yxatdagi kun/oy nishonchasi uchun — eventDate'dan (ISO string) kun va
+// oy nomini ajratib oladi. UTC bilan o'qiladi, chunki backend ham sanani
+// vaqt mintaqasiz, sof kalendar sana sifatida saqlaydi (00:00 UTC).
+function dayMonthBadge(iso) {
+  if (!iso) return { day: '', month: '' }
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return { day: '', month: '' }
+  return { day: String(d.getUTCDate()), month: UZ_MONTHS[d.getUTCMonth()] || '' }
 }
 
 export default function EventsAdmin() {
   const [events, setEvents] = useState([])
-  const [form, setForm]     = useState({ title: '', desc: '', date: '', month: '', type: 'general', image: '' })
+  const [form, setForm]     = useState({ title: '', desc: '', eventDate: '', type: 'general', image: '' })
   const [editing, setEdit]  = useState(null)
   const [open, setOpen]     = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -50,7 +35,7 @@ export default function EventsAdmin() {
   }
 
   async function save() {
-    if (!form.title.trim() || !form.date.trim()) return alert('Sarlavha va sana kiritilishi shart!')
+    if (!form.title.trim() || !form.eventDate.trim()) return alert('Sarlavha va sana kiritilishi shart!')
 
     // Rasm — bor bo'lsa haqiqiy fayl sifatida, bo'lmasa mavjud/olib
     // tashlangan holatini bildiruvchi `existingImage` sifatida yuboriladi.
@@ -58,8 +43,7 @@ export default function EventsAdmin() {
     const fd = new FormData()
     fd.append('title', form.title)
     fd.append('desc', form.desc)
-    fd.append('date', form.date)
-    fd.append('month', form.month)
+    fd.append('eventDate', form.eventDate)
     fd.append('type', form.type)
     fd.append('existingImage', form.image || '')
     if (imageFile) fd.append('imageFile', imageFile)
@@ -73,7 +57,7 @@ export default function EventsAdmin() {
       if (editing) setEvents(p => p.map(e => e._id === editing ? data : e))
       else setEvents(p => [data, ...p])
 
-      setForm({ title: '', desc: '', date: '', month: '', type: 'general', image: '' })
+      setForm({ title: '', desc: '', eventDate: '', type: 'general', image: '' })
       setImageFile(null); setImagePreview(null)
       setEdit(null); setOpen(false)
     } catch {
@@ -100,7 +84,7 @@ export default function EventsAdmin() {
         <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>Tadbirlar ({events.length})</h2>
         <button style={bP} onClick={() => {
           setOpen(!open); setEdit(null)
-          setForm({ title: '', desc: '', date: '', month: '', type: 'general', image: '' })
+          setForm({ title: '', desc: '', eventDate: '', type: 'general', image: '' })
           setImageFile(null); setImagePreview(null)
         }}>{Ic.add} Yangi</button>
       </div>
@@ -115,8 +99,8 @@ export default function EventsAdmin() {
                 <label style={lbl}>Sana *</label>
                 <input
                   type="date"
-                  value={dateFieldsToIso(form.date, form.month)}
-                  onChange={e => setForm(f => ({ ...f, ...isoToDateFields(e.target.value) }))}
+                  value={form.eventDate}
+                  onChange={e => setForm(f => ({ ...f, eventDate: e.target.value }))}
                   style={inp}
                 />
               </div>
@@ -173,8 +157,8 @@ export default function EventsAdmin() {
                 />
               ) : (
                 <div style={{ width: 46, height: 46, borderRadius: 10, background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1 }}>{e.date?.split(' ')[0]}</div>
-                  <div style={{ fontSize: 9, opacity: .75 }}>{e.month}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1 }}>{dayMonthBadge(e.eventDate).day}</div>
+                  <div style={{ fontSize: 9, opacity: .75 }}>{dayMonthBadge(e.eventDate).month}</div>
                 </div>
               )}
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -185,7 +169,9 @@ export default function EventsAdmin() {
             <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
               <button style={bE} onClick={() => {
                 setEdit(e._id)
-                setForm({ title: e.title, desc: e.desc || '', date: e.date, month: e.month || '', type: e.type || 'general', image: e.image || '' })
+                // <input type="date"> aniq "YYYY-MM-DD" formatini talab qiladi —
+                // backend to'liq ISO datetime qaytaradi, shuning uchun kesib olamiz
+                setForm({ title: e.title, desc: e.desc || '', eventDate: (e.eventDate || '').slice(0, 10), type: e.type || 'general', image: e.image || '' })
                 setImageFile(null)
                 setImagePreview(e.image || null)
                 setOpen(true)

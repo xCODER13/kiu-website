@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import EventsAdmin from './EventsAdmin'
 import { mockApi, rowOf } from '../../test/helpers'
 
-const E1 = { _id: 'e1', title: 'Ochiq eshiklar kuni', desc: 'Tavsif', date: '12', month: 'may', type: 'open', image: 'https://s/e1.jpg' }
+const E1 = { _id: 'e1', title: 'Ochiq eshiklar kuni', desc: 'Tavsif', eventDate: '2026-05-12T00:00:00.000Z', type: 'open', image: 'https://s/e1.jpg' }
 const png = () => new File(['x'], 'e.png', { type: 'image/png' })
 
 beforeEach(() => {
@@ -32,7 +32,7 @@ describe('EventsAdmin', () => {
   })
 
   it('yaratish: FormData maydonlari va rasm fayli, ro\'yxat boshiga qo\'shiladi', async () => {
-    const created = { _id: 'e2', title: 'Yangi tadbir', date: '5', month: 'iyun', type: 'general' }
+    const created = { _id: 'e2', title: 'Yangi tadbir', eventDate: '2026-06-05', type: 'general' }
     const api = mockApi({ 'GET /events': [E1], 'POST /events': created })
     const user = userEvent.setup()
     const { container } = render(<EventsAdmin />)
@@ -40,34 +40,31 @@ describe('EventsAdmin', () => {
     await user.click(screen.getByRole('button', { name: /Yangi/ }))
     const inputs = container.querySelectorAll('input:not([type=file])')
     await user.type(inputs[0], 'Yangi tadbir')
-    // Sana endi bitta <input type="date"> — kun/oy shundan avtomatik hisoblanadi
     fireEvent.change(inputs[1], { target: { value: '2026-06-05' } })
     await user.upload(container.querySelector('input[type=file]'), png())
     await user.click(screen.getByRole('button', { name: /Qo'shish/ }))
     await screen.findByText('Yangi tadbir', { selector: 'div' })
     const [c] = api.find('POST', '/events')
     expect(c.body.get('title')).toBe('Yangi tadbir')
-    expect(c.body.get('date')).toBe('5')
-    expect(c.body.get('month')).toBe('iyun')
+    expect(c.body.get('eventDate')).toBe('2026-06-05')
     expect(c.body.get('type')).toBe('general')
     expect(c.body.get('imageFile').name).toBe('e.png')
     expect(c.headers).toEqual({ Authorization: 'Bearer tok' })
   })
 
-  it('sana tanlagich: tahrirlashda mavjud kun/oydan ISO qiymat tiklanadi, o\'zgartirilsa kun/oy qayta hisoblanadi', async () => {
-    const api = mockApi({ 'GET /events': [E1], 'PUT /events/e1': { ...E1, date: '3', month: 'oktyabr' } })
+  it('sana tanlagich: tahrirlashda mavjud sana to\'g\'ridan-to\'g\'ri ko\'rsatiladi, o\'zgartirilsa xuddi shu ISO qiymat yuboriladi', async () => {
+    const api = mockApi({ 'GET /events': [E1], 'PUT /events/e1': { ...E1, eventDate: '2026-10-03' } })
     const user = userEvent.setup()
     const { container } = render(<EventsAdmin />)
     const row = rowOf(await screen.findByText('Ochiq eshiklar kuni'))
     await user.click(within(row).getAllByRole('button')[0])
     const dateInput = container.querySelector('input[type=date]')
-    expect(dateInput.value).toMatch(/-05-12$/) // E1: date=12, month=may (5-oy)
+    expect(dateInput.value).toBe('2026-05-12') // E1.eventDate — yil AYNAN saqlangan, taxmin emas
     fireEvent.change(dateInput, { target: { value: '2026-10-03' } })
     await user.click(screen.getByRole('button', { name: /Saqlash/ }))
     await waitFor(() => expect(api.find('PUT', '/events/e1')).toHaveLength(1))
     const [c] = api.find('PUT', '/events/e1')
-    expect(c.body.get('date')).toBe('3')
-    expect(c.body.get('month')).toBe('oktyabr')
+    expect(c.body.get('eventDate')).toBe('2026-10-03')
   })
 
   it('tahrirlash: forma to\'ldiriladi, PUT /events/:id va existingImage yuboriladi', async () => {
