@@ -140,7 +140,7 @@ export default function FeaturedCarousel({ items }) {
 
       {/* Prev / Next buttons */}
       {items.length > 1 && (<>
-        <button onClick={prev} style={{
+        <button onClick={prev} aria-label="Oldingi yangilik" style={{
           position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)',
           width: 42, height: 42, borderRadius: '50%',
           background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.2)',
@@ -149,7 +149,7 @@ export default function FeaturedCarousel({ items }) {
         }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button onClick={next} style={{
+        <button onClick={next} aria-label="Keyingi yangilik" style={{
           position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)',
           width: 42, height: 42, borderRadius: '50%',
           background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.2)',
@@ -162,7 +162,7 @@ export default function FeaturedCarousel({ items }) {
         {/* Dots */}
         <div style={{ position: 'absolute', bottom: 24, right: 28, display: 'flex', gap: 6 }}>
           {items.map((_, i) => (
-            <button key={i} onClick={() => setIdx(i)} style={{
+            <button key={i} onClick={() => setIdx(i)} aria-label={`${i + 1}-slaydga o'tish`} aria-current={i === idx ? 'true' : undefined} style={{
               width: i === idx ? 24 : 6, height: 6, borderRadius: 10, padding: 0,
               background: i === idx ? '#fff' : 'rgba(255,255,255,.3)',
               border: 'none', cursor: 'pointer', transition: 'all .3s ease',

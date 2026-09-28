@@ -40,7 +40,7 @@ export default function Dashboard() {
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,.35)', marginTop: 1 }}>Boshqaruv paneli</div>
             </div>
           )}
-          <button onClick={() => setCollapsed(!collapsed)}
+          <button onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Panelni ochish' : 'Panelni yig\'ish'}
             style={{ background: 'rgba(255,255,255,.08)', border: 'none', borderRadius: 7, padding: '6px 8px', cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             {collapsed ? Ic.menu : Ic.close}
           </button>
@@ -82,15 +82,15 @@ export default function Dashboard() {
 
         {/* Bottom */}
         <div style={{ padding: collapsed ? '0.5rem 0' : '0.75rem 1.25rem', borderTop: '1px solid rgba(255,255,255,.07)', display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <button onClick={() => setDark(!dark)}
+          <button onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}
             style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'rgba(255,255,255,.45)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0', justifyContent: collapsed ? 'center' : 'flex-start', fontFamily: 'inherit', width: '100%' }}>
             {dark ? Ic.sun : Ic.moon}
             {!collapsed && (dark ? 'Yorug\' rejim' : 'Qorong\'u rejim')}
           </button>
-          <NavLink to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'rgba(255,255,255,.4)', textDecoration: 'none', padding: '6px 0', justifyContent: collapsed ? 'center' : 'flex-start' }}>
+          <NavLink to="/" aria-label="Saytga qaytish" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'rgba(255,255,255,.4)', textDecoration: 'none', padding: '6px 0', justifyContent: collapsed ? 'center' : 'flex-start' }}>
             {Ic.home}{!collapsed && 'Saytga qaytish'}
           </NavLink>
-          <button onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }}
+          <button onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }} aria-label="Tizimdan chiqish"
             style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0', justifyContent: collapsed ? 'center' : 'flex-start', fontFamily: 'inherit', width: '100%' }}>
             {Ic.logout}{!collapsed && 'Chiqish'}
           </button>
@@ -117,7 +117,7 @@ export default function Dashboard() {
               />
             </div>
             {/* Dark mode */}
-            <button onClick={() => setDark(!dark)}
+            <button onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}
               style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 9px', cursor: 'pointer', color: 'var(--muted)', display: 'flex', alignItems: 'center' }}>
               {dark ? Ic.sun : Ic.moon}
             </button>

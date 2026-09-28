@@ -114,11 +114,11 @@ export default function Gallery() {
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
         >
           {/* Close */}
-          <button onClick={() => setLightbox(null)} style={{ position: 'fixed', top: 16, right: 16, background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 40, height: 40, borderRadius: '50%', cursor: 'pointer', fontSize: 20, lineHeight: 1 }}>✕</button>
+          <button onClick={() => setLightbox(null)} aria-label="Yopish" style={{ position: 'fixed', top: 16, right: 16, background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 40, height: 40, borderRadius: '50%', cursor: 'pointer', fontSize: 20, lineHeight: 1 }}>✕</button>
           {/* Prev */}
-          <button onClick={e => { e.stopPropagation(); prev() }} style={{ position: 'fixed', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>‹</button>
+          <button onClick={e => { e.stopPropagation(); prev() }} aria-label="Oldingi rasm" style={{ position: 'fixed', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>‹</button>
           {/* Next */}
-          <button onClick={e => { e.stopPropagation(); next() }} style={{ position: 'fixed', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>›</button>
+          <button onClick={e => { e.stopPropagation(); next() }} aria-label="Keyingi rasm" style={{ position: 'fixed', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>›</button>
 
           <div onClick={e => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, maxWidth: '90vw', maxHeight: '90vh' }}>
             <img src={lightbox.img} alt={lightbox.title} style={{ maxWidth: '85vw', maxHeight: '75vh', objectFit: 'contain', borderRadius: 12, boxShadow: '0 8px 40px rgba(0,0,0,0.6)' }} />

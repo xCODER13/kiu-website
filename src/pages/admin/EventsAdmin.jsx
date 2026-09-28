@@ -122,7 +122,7 @@ export default function EventsAdmin() {
               {imagePreview && (
                 <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
                   <img src={imagePreview} alt="poster" loading="lazy" style={{ width: 70, height: 50, objectFit: 'cover', borderRadius: 8, border: '2px solid #7c3aed', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
-                  <button onClick={removeImage} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
+                  <button onClick={removeImage} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
                 </div>
               )}
               <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB · ixtiyoriy — bo'lmasa sana-badge ko'rsatiladi</div>
@@ -168,7 +168,7 @@ export default function EventsAdmin() {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-              <button style={bE} onClick={() => {
+              <button style={bE} aria-label="Tahrirlash" onClick={() => {
                 setEdit(e._id)
                 // <input type="date"> aniq "YYYY-MM-DD" formatini talab qiladi —
                 // backend to'liq ISO datetime qaytaradi, shuning uchun kesib olamiz
@@ -177,7 +177,7 @@ export default function EventsAdmin() {
                 setImagePreview(e.image || null)
                 setOpen(true)
               }}>{Ic.edit}</button>
-              <button style={bD} onClick={() => del(e._id)}>{Ic.del}</button>
+              <button style={bD} aria-label="O'chirish" onClick={() => del(e._id)}>{Ic.del}</button>
             </div>
           </div>
         ))}

@@ -98,7 +98,7 @@ export default function GalleryAdmin() {
                   <div key={i} style={{ position: 'relative' }}>
                     <img src={p.url} alt={`rasm-${i + 1}`} loading="lazy" style={{ width: 90, height: 70, objectFit: 'cover', borderRadius: 8, border: '2px solid ' + (p.isNew ? '#7c3aed' : '#e5e7eb'), display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
                     {p.isNew && <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 9, fontWeight: 700, background: '#7c3aed', color: '#fff', padding: '1px 5px', borderRadius: 10 }}>YANGI</span>}
-                    <button onClick={() => removeImage(i)} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', textAlign: 'center', padding: 0 }}>×</button>
+                    <button onClick={() => removeImage(i)} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', textAlign: 'center', padding: 0 }}>×</button>
                   </div>
                 ))}
               </div>

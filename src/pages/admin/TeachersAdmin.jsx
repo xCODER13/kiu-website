@@ -105,7 +105,7 @@ export default function TeachersAdmin() {
               {imagePreview && (
                 <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
                   <img src={imagePreview} alt="foto" loading="lazy" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '2px solid #7c3aed', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
-                  <button onClick={removeImage} style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
+                  <button onClick={removeImage} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
                 </div>
               )}
               <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB · rasm bo'lmasa 2-harfli avatar ko'rsatiladi</div>
@@ -156,7 +156,7 @@ export default function TeachersAdmin() {
                 setImagePreview(t.image || null)
                 setOpen(true)
               }}>{Ic.edit} Tahrir</button>
-              <button style={bD} onClick={() => del(t._id)}>{Ic.del}</button>
+              <button style={bD} aria-label="O'chirish" onClick={() => del(t._id)}>{Ic.del}</button>
             </div>
           </div>
         ))}

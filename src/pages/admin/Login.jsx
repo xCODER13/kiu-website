@@ -63,7 +63,7 @@ export default function Login() {
              onChange={e => setForm({ ...form, password: e.target.value })}
              style={{ width: '100%', padding: '10px 40px 10px 14px', border: dark ? '1px solid rgba(255,255,255,.15)' : '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', background: dark ? 'rgba(255,255,255,.07)' : '#fff', color: dark ? '#fff' : '#1a1a2e', boxSizing: 'border-box' }}
              />
-             <button type="button" onClick={() => setShowPass(!showPass)}
+             <button type="button" onClick={() => setShowPass(!showPass)} aria-label={showPass ? "Parolni berkitish" : "Parolni ko'rsatish"}
               style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex' }}>
               {showPass ? (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
