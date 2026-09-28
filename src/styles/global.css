@@ -417,6 +417,15 @@ details[open] .details-arrow { transform: rotate(180deg); }
   transform: translateY(0);
   pointer-events: auto;
 }
+/* SPA navigatsiyasidan keyin sichqoncha joyidan qimirlamasa, :hover haligacha
+   "true" bo'lib qolishi mumkin — item bosilganda Navbar.jsx shu klassni
+   qo'shib panelni majburan yopadi (sichqoncha chetga chiqqanda avtomatik olib
+   tashlanadi, oddiy hover ishlashda davom etadi) */
+.nav-group.force-closed .nav-group-panel {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 .nav-group-panel-inner {
   background: var(--bg);
   border: 1px solid var(--border);

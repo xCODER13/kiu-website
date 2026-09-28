@@ -66,6 +66,12 @@ function ChevronIcon() {
 
 export default function Navbar({ dark, setDark, onApply }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  // SPA'da (to'liq sahifa qayta yuklanmagani uchun) link bosilganda sichqoncha
+  // joyidan qimirlamasa, :hover holati brauzer nuqtai nazaridan haligacha
+  // "to'g'ri" bo'lib qoladi — shuning uchun panel ochiq ko'rinishda qolib
+  // ketardi. closedGroup shu holatni JS orqali majburan yopadi, sichqoncha
+  // haqiqatan chetga chiqqanda (onMouseLeave) yana oddiy hover ishlay boshlaydi.
+  const [closedGroup, setClosedGroup] = useState(null)
   const location = useLocation()
 
   return (
@@ -102,7 +108,11 @@ export default function Navbar({ dark, setDark, onApply }) {
           {navGroups.map(group => {
             const isActive = group.items.some(i => location.pathname === i.to)
             return (
-              <div key={group.id} className="nav-group">
+              <div
+                key={group.id}
+                className={`nav-group${closedGroup === group.id ? ' force-closed' : ''}`}
+                onMouseLeave={() => setClosedGroup(null)}
+              >
                 <button
                   onClick={(e) => e.currentTarget.blur()}
                   style={{
@@ -122,7 +132,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                   <div className="nav-group-panel-inner">
                     {group.items.map(item => (
                       <NavLink key={item.to} to={item.to}
-                        onClick={(e) => e.currentTarget.blur()}
+                        onClick={(e) => { e.currentTarget.blur(); setClosedGroup(group.id) }}
                         className={({ isActive }) => `nav-group-item${isActive ? ' active' : ''}`}>
                         {item.label}
                       </NavLink>
