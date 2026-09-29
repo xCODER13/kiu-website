@@ -1,11 +1,14 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { useEffect, useState, lazy, Suspense } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ApplyModal from './components/ApplyModal'
 import { isTokenValid } from './utils/auth'
 import useAnalytics from './hooks/useAnalytics'
+import LocaleProvider from './i18n/LocaleProvider'
+import { LANGS, DEFAULT_LANG, TRANSLATED_PATHS, localizePath, stripLangPrefix } from './i18n/locale'
 
 // Sahifalar endi alohida chunk sifatida, faqat kerak bo'lganda yuklanadi
 const Home            = lazy(() => import('./pages/Home'))
@@ -41,51 +44,94 @@ function PrivateRoute({ children }) {
   return children
 }
 
-const SEO = {
-  '/':              { title: "Bosh sahifa",             desc: "Qarshi Xalqaro Universiteti — xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish. Qarshi shahri, Qashqadaryo viloyati." },
-  '/about':         { title: "Biz haqimizda",           desc: "KIU tarixi, missiyasi, qadriyatlari va rahbariyati haqida to'liq ma'lumot." },
-  '/faculty':       { title: "Yo'nalishlar",            desc: "KIU da mavjud bakalavriat yo'nalishlari: iqtisodiyot, muhandislik, filologiya va boshqalar." },
-  '/admission':     { title: "Qabul — 2026",            desc: "KIU ga qabul shartlari, hujjatlar ro'yxati va ariza topshirish tartibi. Muddati: 1 iyul — 20 avgust 2026." },
-  '/news':          { title: "Yangiliklar",             desc: "KIU hayotidan so'nggi xabarlar, tadbirlar va e'lonlar." },
-  '/events':        { title: "Tadbirlar taqvimi",       desc: "KIU dagi yaqinlashib kelayotgan tadbirlar, konferensiyalar va bayramlar." },
-  '/teachers':      { title: "Professor-o'qituvchilar", desc: "KIU ning malakali professor-o'qituvchilar jamoasi bilan tanishing." },
-  '/gallery':       { title: "Galereya",                desc: "KIU kampusi, tadbirlari va kundalik hayotidan foto lavhalar." },
-  '/contact':       { title: "Bog'lanish",              desc: "KIU manzili, telefon raqamlari, elektron pochta va ish vaqti." },
-  '/faq':           { title: "Ko'p so'raladigan savollar", desc: "KIU ga qabul, ta'lim jarayoni va boshqa mavzulardagi tez-tez beriladigan savollarga javoblar." },
-  '/documents':     { title: "Normativ hujjatlar",      desc: "KIU ning rasmiy nizomlar, buyruqlar va normativ hujjatlari." },
-  '/vacancies':     { title: "Bo'sh ish o'rinlari",     desc: "KIU da ochiq lavozimlar va ish o'rinlari. Jamoamizga qo'shiling!" },
-  '/international': { title: "Xalqaro hamkorlik",       desc: "KIU ning xorijiy universitetlar va xalqaro tashkilotlar bilan hamkorlik dasturlari." },
-  '/hemis':         { title: "Elektron universitet",    desc: "KIU HEMIS tizimiga kirish — talabalar va o'qituvchilar uchun." },
-  '/achievements':  { title: "Yutuqlar",                desc: "KIU va uning talabalari, o'qituvchilarining yutuqlari va mukofotlari." },
-  '/testimonials':  { title: "Fikr-mulohazalar",        desc: "KIU talabalari va bitiruvchilarining universitetimiz haqidagi fikrlari." },
-  '/map':           { title: "Kampus xaritasi",         desc: "KIU kampusining interaktiv xaritasi va yo'nalish ko'rsatmalari." },
-  '/sorting-hat':   { title: "Yo'nalishni aniqlash",    desc: "KIU Sehrli Shlyapasi — bir necha savol orqali siz uchun eng mos yo'nalishni aniqlang." },
-  '/qrcode':        { title: "QR Kod",                  desc: "KIU rasmiy QR kodlari va tezkor havolalar." },
+// Yo'l → seo.pages.<kalit> (matnlar i18n/locales/*.json'da)
+const SEO_KEYS = {
+  '/': 'home',
+  '/about': 'about',
+  '/faculty': 'faculty',
+  '/admission': 'admission',
+  '/news': 'news',
+  '/events': 'events',
+  '/teachers': 'teachers',
+  '/gallery': 'gallery',
+  '/contact': 'contact',
+  '/faq': 'faq',
+  '/documents': 'documents',
+  '/vacancies': 'vacancies',
+  '/international': 'international',
+  '/hemis': 'hemis',
+  '/achievements': 'achievements',
+  '/testimonials': 'testimonials',
+  '/map': 'map',
+  '/sorting-hat': 'sortingHat',
+  '/qrcode': 'qrcode',
 }
 
-const SITE_NAME = "Qarshi Xalqaro Universiteti | KIU"
 const SITE_URL = "https://kiu-university.vercel.app"
+
+// <head>dagi meta/link teglarini topadi yoki yaratadi
+function ensureHeadTag(selector, create) {
+  let el = document.head.querySelector(selector)
+  if (!el) {
+    el = create()
+    document.head.appendChild(el)
+  }
+  return el
+}
 
 function useSeo() {
   const { pathname } = useLocation()
+  const { t, i18n } = useTranslation()
+  const lang = i18n.language
 
   useEffect(() => {
-    const meta = SEO[pathname] || {}
+    const path = stripLangPrefix(pathname)
+    const key = SEO_KEYS[path]
+    const siteName = t('seo.siteName')
+    const title = key ? t(`seo.pages.${key}.title`) : ''
+    const desc = key ? t(`seo.pages.${key}.desc`) : ''
 
-    document.title = meta.title ? `${meta.title} — ${SITE_NAME}` : SITE_NAME
+    document.documentElement.lang = lang
+    document.title = title ? `${title} — ${siteName}` : siteName
 
     const descTag = document.querySelector('meta[name="description"]')
-    if (descTag && meta.desc) descTag.setAttribute('content', meta.desc)
+    if (descTag && desc) descTag.setAttribute('content', desc)
 
     const ogTitleTag = document.querySelector('meta[property="og:title"]')
-    if (ogTitleTag && meta.title) ogTitleTag.setAttribute('content', `${meta.title} — ${SITE_NAME}`)
+    if (ogTitleTag && title) ogTitleTag.setAttribute('content', `${title} — ${siteName}`)
 
     const ogDescTag = document.querySelector('meta[property="og:description"]')
-    if (ogDescTag && meta.desc) ogDescTag.setAttribute('content', meta.desc)
+    if (ogDescTag && desc) ogDescTag.setAttribute('content', desc)
 
+    // Oxiridagi "/" olib tashlanadi ("/en/" va "/en" bitta URL bo'lsin)
+    const canonicalPath = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname
     const canonicalTag = document.querySelector('link[rel="canonical"]')
-    if (canonicalTag) canonicalTag.setAttribute('href', `${SITE_URL}${pathname}`)
-  }, [pathname])
+    if (canonicalTag) canonicalTag.setAttribute('href', `${SITE_URL}${canonicalPath}`)
+
+    // hreflang: faqat HAR IKKI tilda to'liq tayyor sahifalar uchun (TRANSLATED_PATHS).
+    // Tarjima qilinmagan /en/* sahifalar o'zbekcha matn ko'rsatadi — ularni "ingliz"
+    // sahifa deb indekslatmaslik uchun noindex beriladi.
+    document.head.querySelectorAll('link[data-hreflang]').forEach(el => el.remove())
+    const translated = TRANSLATED_PATHS.has(path)
+    if (translated) {
+      const alternates = [...LANGS.map(code => [code, code]), ['x-default', DEFAULT_LANG]]
+      alternates.forEach(([hreflang, code]) => {
+        const link = document.createElement('link')
+        link.rel = 'alternate'
+        link.setAttribute('hreflang', hreflang)
+        link.setAttribute('data-hreflang', '')
+        link.href = `${SITE_URL}${localizePath(path, code)}`
+        document.head.appendChild(link)
+      })
+    }
+    const robotsTag = ensureHeadTag('meta[name="robots"]', () => {
+      const m = document.createElement('meta')
+      m.setAttribute('name', 'robots')
+      return m
+    })
+    const hideFromIndex = lang !== DEFAULT_LANG && !translated
+    robotsTag.setAttribute('content', hideFromIndex ? 'noindex, follow' : 'index, follow')
+  }, [pathname, lang, t])
 }
 
 function ScrollReveal() {
@@ -146,10 +192,50 @@ function PublicLayout({ children, dark, setDark, onApply }) {
 }
 
 function PageLoader() {
-  return <div className="page-loading">Yuklanmoqda...</div>
+  const { t } = useTranslation()
+  return <div className="page-loading">{t('common.loading')}</div>
 }
 
+// Ommaviy sahifalar. Bir xil ro'yxat ikki joyda ishlatiladi: /en/* (inglizcha) va /* (o'zbekcha).
+// Ichki <Routes> yo'llari ota-marshrut prefiksiga nisbatan hisoblanadi, shuning uchun
+// "/faculty" ham "/faculty", ham "/en/faculty" ga mos keladi.
+function PageRoutes({ onApply }) {
+  return (
+    <Routes>
+      <Route path="/" element={<Home onApply={onApply} />} />
+      <Route path="/faculty" element={<Faculty />} />
+      <Route path="/admission" element={<Admission onApply={onApply} />} />
+      <Route path="/news" element={<News />} />
+      <Route path="/news/:id" element={<NewsDetail />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/hemis" element={<Hemis />} />
+      <Route path="/international" element={<International />} />
+      <Route path="/documents" element={<Documents />} />
+      <Route path="/vacancies" element={<Vacancies />} />
+      <Route path="/faq" element={<FAQ />} />
+      <Route path="/events" element={<Events />} />
+      <Route path="/testimonials" element={<Testimonials />} />
+      <Route path="/achievements" element={<Achievements />} />
+      <Route path="/qrcode" element={<QRCode />} />
+      <Route path="/teachers" element={<Teachers />} />
+      <Route path="/gallery" element={<Gallery />} />
+      <Route path="/map" element={<Map />} />
+      <Route path="/sorting-hat" element={<SortingHat />} />
+    </Routes>
+  )
+}
+
+// Til URL'dan aniqlanadi (LocaleProvider): /en/* — inglizcha, qolgani — o'zbekcha.
 export default function App() {
+  return (
+    <LocaleProvider>
+      <AppContent />
+    </LocaleProvider>
+  )
+}
+
+function AppContent() {
   useSeo()
   useAnalytics()
 
@@ -163,6 +249,13 @@ export default function App() {
 
   const openApplyModal = () => setApplyOpen(true)
   const closeApplyModal = () => setApplyOpen(false)
+
+  const publicPages = (
+    <PublicLayout dark={dark} setDark={setDark} onApply={openApplyModal}>
+      <PageRoutes onApply={openApplyModal} />
+      {applyOpen && <ApplyModal onClose={closeApplyModal} />}
+    </PublicLayout>
+  )
 
   return (
     <>
@@ -180,36 +273,11 @@ export default function App() {
             }
           />
 
-          <Route
-            path="/*"
-            element={
-              <PublicLayout dark={dark} setDark={setDark} onApply={openApplyModal}>
-                <Routes>
-                  <Route path="/" element={<Home onApply={openApplyModal} />} />
-                  <Route path="/faculty" element={<Faculty />} />
-                  <Route path="/admission" element={<Admission onApply={openApplyModal} />} />
-                  <Route path="/news" element={<News />} />
-                  <Route path="/news/:id" element={<NewsDetail />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/hemis" element={<Hemis />} />
-                  <Route path="/international" element={<International />} />
-                  <Route path="/documents" element={<Documents />} />
-                  <Route path="/vacancies" element={<Vacancies />} />
-                  <Route path="/faq" element={<FAQ />} />
-                  <Route path="/events" element={<Events />} />
-                  <Route path="/testimonials" element={<Testimonials />} />
-                  <Route path="/achievements" element={<Achievements />} />
-                  <Route path="/qrcode" element={<QRCode />} />
-                  <Route path="/teachers" element={<Teachers />} />
-                  <Route path="/gallery" element={<Gallery />} />
-                  <Route path="/map" element={<Map />} />
-                  <Route path="/sorting-hat" element={<SortingHat />} />
-                </Routes>
-                {applyOpen && <ApplyModal onClose={closeApplyModal} />}
-              </PublicLayout>
-            }
-          />
+          {/* Admin panel faqat o'zbekcha va prefikssiz: /en/admin → /admin */}
+          <Route path="/en/admin/*" element={<Navigate to="/admin" replace />} />
+
+          <Route path="/en/*" element={publicPages} />
+          <Route path="/*" element={publicPages} />
         </Routes>
       </Suspense>
     </>

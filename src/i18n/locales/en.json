@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "dateLocale": "en-GB"
+  },
+  "common": {
+    "loading": "Loading...",
+    "contentInUzbek": "This content is published in Uzbek."
+  },
+  "lang": {
+    "label": "Language",
+    "uz": "O'zbekcha",
+    "en": "English"
+  },
+  "university": {
+    "name": "Karshi International University",
+    "address1": "Karshi, Bahodir Sherkulov Street, 7 (Campus 1)",
+    "address2": "Karshi, Mustaqillik Street, 71 (Campus 2)",
+    "workHours": "Mon–Sat: 09:00–20:00"
+  },
+  "seo": {
+    "siteName": "Karshi International University | KIU",
+    "pages": {
+      "home": { "title": "Home", "desc": "Karshi International University — education, research and professional development to international standards. Karshi, Kashkadarya region, Uzbekistan." },
+      "about": { "title": "About us", "desc": "The history, mission, values and leadership of KIU." },
+      "faculty": { "title": "Programs", "desc": "Bachelor's programs at KIU: economics, engineering, philology and more." },
+      "admission": { "title": "Admission — 2026", "desc": "KIU admission requirements, the list of documents and how to apply. Application period: July 1 – August 20, 2026." },
+      "news": { "title": "News", "desc": "The latest news, events and announcements from KIU." },
+      "events": { "title": "Events calendar", "desc": "Upcoming events, conferences and celebrations at KIU." },
+      "teachers": { "title": "Faculty and staff", "desc": "Meet the qualified professors and teachers of KIU." },
+      "gallery": { "title": "Gallery", "desc": "Photos from the KIU campus, events and everyday life." },
+      "contact": { "title": "Contact", "desc": "KIU address, phone numbers, email and working hours." },
+      "faq": { "title": "Frequently asked questions", "desc": "Answers to common questions about admission, studying at KIU and more." },
+      "documents": { "title": "Official documents", "desc": "KIU regulations, orders and other official documents." },
+      "vacancies": { "title": "Vacancies", "desc": "Open positions and jobs at KIU. Join our team!" },
+      "international": { "title": "International cooperation", "desc": "KIU's cooperation programs with foreign universities and international organizations." },
+      "hemis": { "title": "Electronic university", "desc": "Sign in to the KIU HEMIS system — for students and teachers." },
+      "achievements": { "title": "Achievements", "desc": "Achievements and awards of KIU, its students and teachers." },
+      "testimonials": { "title": "Testimonials", "desc": "What KIU students and graduates say about our university." },
+      "map": { "title": "Campus map", "desc": "Interactive map of the KIU campuses and directions." },
+      "sortingHat": { "title": "Find your program", "desc": "The KIU Sorting Hat — answer a few questions to find the program that suits you best." },
+      "qrcode": { "title": "QR codes", "desc": "Official KIU QR codes and quick links." }
+    }
+  },
+  "nav": {
+    "logoAlt": "KIU logo",
+    "subtitle": "{{website}} — Official website",
+    "home": "Home",
+    "vacancies": "Vacancies",
+    "apply": "Apply now",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "groups": {
+      "university": "About the university",
+      "students": "For students",
+      "media": "Media",
+      "contact": "Contact"
+    },
+    "items": {
+      "about": "About us",
+      "achievements": "Achievements",
+      "international": "International cooperation",
+      "documents": "Official documents",
+      "teachers": "Faculty and staff",
+      "faculty": "Programs",
+      "admission": "Admission",
+      "faq": "FAQ",
+      "hemis": "Electronic university",
+      "sortingHat": "Sorting Hat",
+      "news": "News",
+      "events": "Events",
+      "gallery": "Gallery",
+      "testimonials": "Testimonials",
+      "contact": "Contact us",
+      "map": "Map",
+      "qrcode": "QR codes"
+    }
+  },
+  "footer": {
+    "about": "A center of international-standard education and research. Quality education in the Kashkadarya region since {{year}}.",
+    "university": "University",
+    "students": "Students",
+    "contact": "Contact",
+    "rights": "© 2026 {{name}}. All rights reserved.",
+    "links": {
+      "about": "About us",
+      "teachers": "Faculty",
+      "international": "International cooperation",
+      "documents": "Official documents",
+      "vacancies": "Vacancies",
+      "hemis": "Electronic university",
+      "faculty": "Programs",
+      "sortingHat": "Find your program",
+      "admission": "Admission",
+      "events": "Events",
+      "achievements": "Achievements",
+      "testimonials": "Testimonials",
+      "faq": "FAQ",
+      "gallery": "Photo gallery",
+      "map": "Map",
+      "qrcode": "QR codes"
+    }
+  },
+  "categories": {
+    "umumiy": "General",
+    "talim": "Education",
+    "sport": "Sport",
+    "madaniyat": "Culture",
+    "xalqaro": "International",
+    "fan": "Science"
+  },
+  "home": {
+    "stats": {
+      "students": "Students",
+      "teachers": "Teachers",
+      "programs": "Programs",
+      "founded": "Year founded"
+    },
+    "hero": {
+      "badge": "Admissions {{from}}–{{to}} are open",
+      "lead": "Education, research and professional development to international standards — in the heart of Kashkadarya.",
+      "ctaAdmission": "Admission info",
+      "ctaPrograms": "Programs",
+      "photoAlt": "KIU main building",
+      "campus1": "Campus 1"
+    },
+    "about": {
+      "badge": "Since 2022",
+      "title": "About Karshi International University",
+      "p1": "Karshi International University (KIU) was founded in 2022 in the city of Karshi, Kashkadarya region. It is one of the modern centers of higher education in the Republic of Uzbekistan.",
+      "p2": "Our goal is to prepare students for life by giving them quality education and soft skills, and to create opportunities for education, research and professional development to international standards.",
+      "more": "Learn more",
+      "campus2": "Campus 2",
+      "campus2Alt": "KIU Campus 2",
+      "features": {
+        "grant": { "title": "Grant-based study", "desc": "Rector's and founders' scholarships are available" },
+        "international": { "title": "International cooperation", "desc": "Partnerships with 6+ foreign universities" },
+        "bus": { "title": "Free bus service", "desc": "Transport is guaranteed for students" },
+        "dorm": { "title": "Modern dormitory", "desc": "Comfortable and affordable student housing" }
+      }
+    },
+    "news": {
+      "badge": "News",
+      "title": "Latest news",
+      "subtitle": "The latest updates from KIU",
+      "error": "Could not connect to the news server.",
+      "empty": "There is no news yet.",
+      "all": "All news",
+      "more": "Read more",
+      "prev": "Previous",
+      "next": "Next",
+      "itemN": "News {{n}}"
+    }
+  }
+}

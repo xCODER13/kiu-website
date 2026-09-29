@@ -1,4 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { DEFAULT_LANG } from '../i18n/locale'
 import config from '../config'
 import useReveal from '../hooks/useReveal'
 import useApi from '../hooks/useApi'
@@ -10,22 +12,26 @@ import NewsSection from './home/NewsSection'
 const API = import.meta.env.VITE_API_URL
 const SITE_URL = 'https://kiu-university.vercel.app'
 
-// Modul darajasida — config o'zgarmasa, har render'da qayta yaratilmaydi
-const UNIVERSITY_SCHEMA = {
-  '@context': 'https://schema.org',
-  '@type': 'CollegeOrUniversity',
-  name: config.university.name,
-  alternateName: config.university.shortName,
-  url: SITE_URL,
-  logo: `${SITE_URL}${config.university.logo}`,
-  foundingDate: config.university.founded,
-  telephone: config.contact.phone,
-  email: config.contact.email,
-  address: [
-    { '@type': 'PostalAddress', streetAddress: config.contact.address1, addressCountry: 'UZ' },
-    { '@type': 'PostalAddress', streetAddress: config.contact.address2, addressCountry: 'UZ' },
-  ],
-  sameAs: Object.values(config.social),
+// Til bo'yicha alohida schema (nom, manzil, inLanguage, url) — useMemo bilan barqaror
+// referens: useJsonLd har render'da script'ni qayta yaratmasligi uchun.
+function buildUniversitySchema(t, lang) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollegeOrUniversity',
+    name: t('university.name'),
+    alternateName: config.university.shortName,
+    inLanguage: lang,
+    url: lang === DEFAULT_LANG ? SITE_URL : `${SITE_URL}/${lang}`,
+    logo: `${SITE_URL}${config.university.logo}`,
+    foundingDate: config.university.founded,
+    telephone: config.contact.phone,
+    email: config.contact.email,
+    address: [
+      { '@type': 'PostalAddress', streetAddress: t('university.address1'), addressCountry: 'UZ' },
+      { '@type': 'PostalAddress', streetAddress: t('university.address2'), addressCountry: 'UZ' },
+    ],
+    sameAs: Object.values(config.social),
+  }
 }
 
 // ── MAIN ── (endi yupqa orkestrator — state/data-fetching va statistika
@@ -33,7 +39,9 @@ const UNIVERSITY_SCHEMA = {
 // home/AboutSection.jsx va home/NewsSection.jsx'ga bo'lingan)
 export default function Home() {
   useReveal()
-  useJsonLd('jsonld-university', UNIVERSITY_SCHEMA)
+  const { t, i18n } = useTranslation()
+  const schema = useMemo(() => buildUniversitySchema(t, i18n.language), [t, i18n.language])
+  useJsonLd('jsonld-university', schema)
 
   const { data: newsData, loading: newsLoading, error: newsError } = useApi(`${API}/api/news`, [])
   // useApi noto'g'ri shakldagi (array bo'lmagan) javob bersa ham

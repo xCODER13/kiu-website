@@ -1,19 +1,23 @@
-import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { NavLink } from '../../i18n/router'
+import ContentLangNote from '../../i18n/ContentLangNote'
 import HomeNewsCarousel from './NewsCarousel'
 import HomeNewsCard from './NewsCard'
 
 // "Yangiliklar" bo'limi — Home.jsx'dan o'zgarishsiz ko'chirilgan
 // (yuklanish skeleton'i, karusel + so'nggi 3 ta karta, xato/bo'sh holat).
 export default function NewsSection({ newsLoading, articles, newsError, featured, latest3 }) {
+  const { t } = useTranslation()
   return (
     <section className="section" style={{ background: 'var(--bg-2)' }}>
       <div className="container">
         <div className="reveal section-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
-            Yangiliklar
+            {t('home.news.badge')}
           </div>
-          <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>So'nggi yangiliklar</h2>
-          <p style={{ fontSize: 14, color: 'var(--muted)' }}>KIU hayotidan so'nggi xabarlar</p>
+          <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('home.news.title')}</h2>
+          <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('home.news.subtitle')}</p>
+          <ContentLangNote />
         </div>
 
         {newsLoading ? (
@@ -48,12 +52,12 @@ export default function NewsSection({ newsLoading, articles, newsError, featured
         ) : (
           // ── Xato yoki bo'sh natija ──
           <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)', fontSize: 13, border: '1px dashed var(--border)', borderRadius: 14 }}>
-            {newsError ? "Yangiliklar serveriga ulanib bo'lmadi." : "Hozircha yangiliklar yo'q."}
+            {newsError ? t('home.news.error') : t('home.news.empty')}
           </div>
         )}
 
         <div className="reveal" style={{ textAlign: 'center', marginTop: '2rem' }}>
-          <NavLink to="/news"><button className="btn btn-primary">Barcha yangiliklar</button></NavLink>
+          <NavLink to="/news"><button className="btn btn-primary">{t('home.news.all')}</button></NavLink>
         </div>
       </div>
     </section>

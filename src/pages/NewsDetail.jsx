@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import useNavigate from '../i18n/useLocalizedNavigate'
 import { getCategoryColor, getCategoryLabel } from '../utils/newsCategories'
 
 function parseImages(imageField) {

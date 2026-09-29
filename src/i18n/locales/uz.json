@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "dateLocale": "uz-UZ"
+  },
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "contentInUzbek": ""
+  },
+  "lang": {
+    "label": "Til",
+    "uz": "O'zbekcha",
+    "en": "English"
+  },
+  "university": {
+    "name": "Qarshi Xalqaro Universiteti",
+    "address1": "Qarshi sh., Bahodir Sherqulov ko'chasi, 7-uy (1-kampus)",
+    "address2": "Qarshi sh., Mustaqillik ko'chasi, 71-uy (2-kampus)",
+    "workHours": "Du–Shan: 09:00–20:00"
+  },
+  "seo": {
+    "siteName": "Qarshi Xalqaro Universiteti | KIU",
+    "pages": {
+      "home": { "title": "Bosh sahifa", "desc": "Qarshi Xalqaro Universiteti — xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish. Qarshi shahri, Qashqadaryo viloyati." },
+      "about": { "title": "Biz haqimizda", "desc": "KIU tarixi, missiyasi, qadriyatlari va rahbariyati haqida to'liq ma'lumot." },
+      "faculty": { "title": "Yo'nalishlar", "desc": "KIU da mavjud bakalavriat yo'nalishlari: iqtisodiyot, muhandislik, filologiya va boshqalar." },
+      "admission": { "title": "Qabul — 2026", "desc": "KIU ga qabul shartlari, hujjatlar ro'yxati va ariza topshirish tartibi. Muddati: 1 iyul — 20 avgust 2026." },
+      "news": { "title": "Yangiliklar", "desc": "KIU hayotidan so'nggi xabarlar, tadbirlar va e'lonlar." },
+      "events": { "title": "Tadbirlar taqvimi", "desc": "KIU dagi yaqinlashib kelayotgan tadbirlar, konferensiyalar va bayramlar." },
+      "teachers": { "title": "Professor-o'qituvchilar", "desc": "KIU ning malakali professor-o'qituvchilar jamoasi bilan tanishing." },
+      "gallery": { "title": "Galereya", "desc": "KIU kampusi, tadbirlari va kundalik hayotidan foto lavhalar." },
+      "contact": { "title": "Bog'lanish", "desc": "KIU manzili, telefon raqamlari, elektron pochta va ish vaqti." },
+      "faq": { "title": "Ko'p so'raladigan savollar", "desc": "KIU ga qabul, ta'lim jarayoni va boshqa mavzulardagi tez-tez beriladigan savollarga javoblar." },
+      "documents": { "title": "Normativ hujjatlar", "desc": "KIU ning rasmiy nizomlar, buyruqlar va normativ hujjatlari." },
+      "vacancies": { "title": "Bo'sh ish o'rinlari", "desc": "KIU da ochiq lavozimlar va ish o'rinlari. Jamoamizga qo'shiling!" },
+      "international": { "title": "Xalqaro hamkorlik", "desc": "KIU ning xorijiy universitetlar va xalqaro tashkilotlar bilan hamkorlik dasturlari." },
+      "hemis": { "title": "Elektron universitet", "desc": "KIU HEMIS tizimiga kirish — talabalar va o'qituvchilar uchun." },
+      "achievements": { "title": "Yutuqlar", "desc": "KIU va uning talabalari, o'qituvchilarining yutuqlari va mukofotlari." },
+      "testimonials": { "title": "Fikr-mulohazalar", "desc": "KIU talabalari va bitiruvchilarining universitetimiz haqidagi fikrlari." },
+      "map": { "title": "Kampus xaritasi", "desc": "KIU kampusining interaktiv xaritasi va yo'nalish ko'rsatmalari." },
+      "sortingHat": { "title": "Yo'nalishni aniqlash", "desc": "KIU Sehrli Shlyapasi — bir necha savol orqali siz uchun eng mos yo'nalishni aniqlang." },
+      "qrcode": { "title": "QR Kod", "desc": "KIU rasmiy QR kodlari va tezkor havolalar." }
+    }
+  },
+  "nav": {
+    "logoAlt": "KIU logo",
+    "subtitle": "{{website}} — Rasmiy sayt",
+    "home": "Bosh sahifa",
+    "vacancies": "Bo'sh ish o'rinlari",
+    "apply": "Ariza topshirish",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "groups": {
+      "university": "Universitet haqida",
+      "students": "Talabalar uchun",
+      "media": "Media",
+      "contact": "Bog'lanish"
+    },
+    "items": {
+      "about": "Biz haqimizda",
+      "achievements": "Yutuqlar",
+      "international": "Xalqaro hamkorlik",
+      "documents": "Normativ hujjatlar",
+      "teachers": "Professor-o'qituvchilar",
+      "faculty": "Yo'nalishlar",
+      "admission": "Qabul",
+      "faq": "FAQ",
+      "hemis": "Elektron universitet",
+      "sortingHat": "Sehrli Shlyapa",
+      "news": "Yangiliklar",
+      "events": "Tadbirlar",
+      "gallery": "Galereya",
+      "testimonials": "Fikr-mulohazalar",
+      "contact": "Bog'lanish",
+      "map": "Xarita",
+      "qrcode": "QR kod"
+    }
+  },
+  "footer": {
+    "about": "Xalqaro standartlarda ta'lim va ilmiy tadqiqot markazi. {{year}} yildan buyon Qashqadaryo viloyatida sifatli ta'lim.",
+    "university": "Universitet",
+    "students": "Talabalar",
+    "contact": "Bog'lanish",
+    "rights": "© 2026 {{name}}. Barcha huquqlar himoyalangan.",
+    "links": {
+      "about": "Biz haqimizda",
+      "teachers": "O'qituvchilar",
+      "international": "Xalqaro hamkorlik",
+      "documents": "Normativ hujjatlar",
+      "vacancies": "Bo'sh ish o'rinlari",
+      "hemis": "Elektron universitet",
+      "faculty": "Yo'nalishlar",
+      "sortingHat": "Yo'nalishni aniqlash",
+      "admission": "Qabul",
+      "events": "Tadbirlar",
+      "achievements": "Yutuqlar",
+      "testimonials": "Sharhlar",
+      "faq": "FAQ",
+      "gallery": "Fotogalereya",
+      "map": "Xarita",
+      "qrcode": "QR Kod"
+    }
+  },
+  "categories": {
+    "umumiy": "Umumiy",
+    "talim": "Ta'lim",
+    "sport": "Sport",
+    "madaniyat": "Madaniyat",
+    "xalqaro": "Xalqaro",
+    "fan": "Fan"
+  },
+  "home": {
+    "stats": {
+      "students": "Talaba",
+      "teachers": "O'qituvchi",
+      "programs": "Yo'nalish",
+      "founded": "Tashkil yili"
+    },
+    "hero": {
+      "badge": "{{from}}–{{to}} qabul ochiq",
+      "lead": "Xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish — Qashqadaryo qalbida.",
+      "ctaAdmission": "Qabul haqida",
+      "ctaPrograms": "Yo'nalishlar",
+      "photoAlt": "KIU bosh bino",
+      "campus1": "1-kampus"
+    },
+    "about": {
+      "badge": "2022 yildan buyon",
+      "title": "Qarshi Xalqaro Universiteti haqida",
+      "p1": "Qarshi Xalqaro Universiteti (KIU) 2022-yilda Qashqadaryo viloyati Qarshi shahrida tashkil topgan. O'zbekiston Respublikasidagi zamonaviy oliy ta'lim markazlaridan biri.",
+      "p2": "Bizning maqsad — talabalarga sifatli ta'lim va soft skills berib, ularni hayotga tayyorlash. Xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish imkoniyatlarini yaratish.",
+      "more": "Batafsil ma'lumot",
+      "campus2": "2-kampus",
+      "campus2Alt": "KIU 2-kampus",
+      "features": {
+        "grant": { "title": "Grant asosida o'qish", "desc": "Rektor va ta'sischilar stipendiyasi mavjud" },
+        "international": { "title": "Xalqaro hamkorlik", "desc": "6+ xorijiy universitetlar bilan aloqa" },
+        "bus": { "title": "Bepul avtobus xizmati", "desc": "Talabalar uchun transport kafolatlangan" },
+        "dorm": { "title": "Zamonaviy yotoqxona", "desc": "Qulay va arzon talabalar turar joyi" }
+      }
+    },
+    "news": {
+      "badge": "Yangiliklar",
+      "title": "So'nggi yangiliklar",
+      "subtitle": "KIU hayotidan so'nggi xabarlar",
+      "error": "Yangiliklar serveriga ulanib bo'lmadi.",
+      "empty": "Hozircha yangiliklar yo'q.",
+      "all": "Barcha yangiliklar",
+      "more": "Batafsil",
+      "prev": "Oldingi",
+      "next": "Keyingi",
+      "itemN": "{{n}}-yangilik"
+    }
+  }
+}

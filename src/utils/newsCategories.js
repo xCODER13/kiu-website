@@ -13,13 +13,14 @@
 // holda amalga oshiriladi — front tomonda qaysi sahifa ekanidan qat'i nazar
 // bir xil natija kafolatlanadi.
 
+// `key` — i18n kaliti (categories.<key>): "ta'lim"dagi apostrof kalit sifatida noqulay.
 const CATEGORY_META = {
-  umumiy: { label: 'Umumiy', color: '#d7bb04' },
-  "ta'lim": { label: "Ta'lim", color: '#0ea5e9' },
-  sport: { label: 'Sport', color: '#16a34a' },
-  madaniyat: { label: 'Madaniyat', color: '#dc2626' },
-  xalqaro: { label: 'Xalqaro', color: '#d97706' },
-  fan: { label: 'Fan', color: '#0891b2' },
+  umumiy: { key: 'umumiy', label: 'Umumiy', color: '#d7bb04' },
+  "ta'lim": { key: 'talim', label: "Ta'lim", color: '#0ea5e9' },
+  sport: { key: 'sport', label: 'Sport', color: '#16a34a' },
+  madaniyat: { key: 'madaniyat', label: 'Madaniyat', color: '#dc2626' },
+  xalqaro: { key: 'xalqaro', label: 'Xalqaro', color: '#d97706' },
+  fan: { key: 'fan', label: 'Fan', color: '#0891b2' },
 }
 
 export const DEFAULT_CATEGORY_COLOR = '#7c3aed'
@@ -32,8 +33,13 @@ export function getCategoryColor(category) {
   return CATEGORY_META[normalizeCategory(category)]?.color || DEFAULT_CATEGORY_COLOR
 }
 
-export function getCategoryLabel(category) {
-  return CATEGORY_META[normalizeCategory(category)]?.label || category
+// `t` (ixtiyoriy) — i18next t funksiyasi: berilsa ma'lum kategoriya nomi joriy tilga
+// tarjima qilinadi. Bermasa (eski chaqiruvlar, admin panel) o'zbekcha nom qaytadi.
+// Noma'lum (bazadagi erkin) kategoriya har holda o'zi qaytadi.
+export function getCategoryLabel(category, t) {
+  const meta = CATEGORY_META[normalizeCategory(category)]
+  if (!meta) return category
+  return t ? t(`categories.${meta.key}`, { defaultValue: meta.label }) : meta.label
 }
 
 // Ikki xil holatdagi ("Umumiy" / "umumiy") bir xil kategoriya bitta ekanini

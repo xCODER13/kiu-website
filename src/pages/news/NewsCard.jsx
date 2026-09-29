@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import useNavigate from '../../i18n/useLocalizedNavigate'
 import { getCategoryColor, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 

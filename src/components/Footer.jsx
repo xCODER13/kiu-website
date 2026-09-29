@@ -1,15 +1,17 @@
 // src/components/Footer.jsx
-import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { NavLink } from '../i18n/router'
 import config from '../config'
 
 export default function Footer() {
+  const { t } = useTranslation()
   return (
     <footer style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', padding: '2.5rem 0 0' }}>
       <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '2rem', paddingBottom: '1.5rem' }}>
         <div>
-          <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', marginBottom: 8 }}>{config.university.name}</h3>
+          <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', marginBottom: 8 }}>{t('university.name')}</h3>
           <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.7, marginBottom: 16 }}>
-            Xalqaro standartlarda ta'lim va ilmiy tadqiqot markazi. {config.university.founded} yildan buyon Qashqadaryo viloyatida sifatli ta'lim.
+            {t('footer.about', { year: config.university.founded })}
           </p>
           {/* Xatolik: rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab
               bloklamaydi — barcha ijtimoiy tarmoq havolalariga noopener qo'shildi
@@ -31,59 +33,59 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 style={{ fontSize: 13, fontWeight: 600, color: '#f3f4f6', marginBottom: 10 }}>Universitet</h4>
+          <h4 style={{ fontSize: 13, fontWeight: 600, color: '#f3f4f6', marginBottom: 10 }}>{t('footer.university')}</h4>
           {[
-            ['/about', 'Biz haqimizda'],
-            ['/teachers', "O'qituvchilar"],
-            ['/international', 'Xalqaro hamkorlik'],
-            ['/documents', 'Normativ hujjatlar'],
-            ['/vacancies', "Bo'sh ish o'rinlari"],
-            ['/hemis', 'Elektron universitet'],
-          ].map(([to, label]) => (
+            ['/about', 'about'],
+            ['/teachers', 'teachers'],
+            ['/international', 'international'],
+            ['/documents', 'documents'],
+            ['/vacancies', 'vacancies'],
+            ['/hemis', 'hemis'],
+          ].map(([to, key]) => (
             <NavLink key={to} to={to}
               style={{ display: 'block', fontSize: 13, color: '#9ca3af', marginBottom: 6 }}
               onMouseEnter={e => e.target.style.color = '#a78bfa'}
               onMouseLeave={e => e.target.style.color = '#9ca3af'}
-            >{label}</NavLink>
+            >{t(`footer.links.${key}`)}</NavLink>
           ))}
         </div>
 
         <div>
-          <h4 style={{ fontSize: 13, fontWeight: 600, color: '#f3f4f6', marginBottom: 10 }}>Talabalar</h4>
+          <h4 style={{ fontSize: 13, fontWeight: 600, color: '#f3f4f6', marginBottom: 10 }}>{t('footer.students')}</h4>
           {[
-            ['/faculty', "Yo'nalishlar"],
-            ['/sorting-hat', "Yo'nalishni aniqlash"],
-            ['/admission', 'Qabul'],
-            ['/events', 'Tadbirlar'],
-            ['/achievements', 'Yutuqlar'],
-            ['/testimonials', 'Sharhlar'],
-            ['/faq', 'FAQ'],
-          ].map(([to, label]) => (
+            ['/faculty', 'faculty'],
+            ['/sorting-hat', 'sortingHat'],
+            ['/admission', 'admission'],
+            ['/events', 'events'],
+            ['/achievements', 'achievements'],
+            ['/testimonials', 'testimonials'],
+            ['/faq', 'faq'],
+          ].map(([to, key]) => (
             <NavLink key={to} to={to}
               style={{ display: 'block', fontSize: 13, color: '#9ca3af', marginBottom: 6 }}
               onMouseEnter={e => e.target.style.color = '#a78bfa'}
               onMouseLeave={e => e.target.style.color = '#9ca3af'}
-            >{label}</NavLink>
+            >{t(`footer.links.${key}`)}</NavLink>
           ))}
         </div>
 
         <div>
-          <h4 style={{ fontSize: 13, fontWeight: 600, color: '#f3f4f6', marginBottom: 10 }}>Bog'lanish</h4>
+          <h4 style={{ fontSize: 13, fontWeight: 600, color: '#f3f4f6', marginBottom: 10 }}>{t('footer.contact')}</h4>
           <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 6 }}>{config.contact.phone}</p>
           <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 6 }}>{config.contact.email}</p>
-          <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 16 }}>{config.contact.workHours}</p>
+          <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 16 }}>{t('university.workHours')}</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {[
-              ['/gallery', 'Fotogalereya', <svg key="g" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>],
-              ['/map', 'Xarita', <svg key="m" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="1 6 1 22 10 18 10 2 1 6"/><polygon points="14 2 14 18 23 22 23 6 14 2"/></svg>],
-              ['/qrcode', 'QR Kod', <svg key="q" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>],
-            ].map(([to, label, icon]) => (
+              ['/gallery', 'gallery', <svg key="g" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>],
+              ['/map', 'map', <svg key="m" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="1 6 1 22 10 18 10 2 1 6"/><polygon points="14 2 14 18 23 22 23 6 14 2"/></svg>],
+              ['/qrcode', 'qrcode', <svg key="q" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>],
+            ].map(([to, key, icon]) => (
               <NavLink key={to} to={to}
                 style={{ fontSize: 13, color: '#a78bfa', display: 'flex', alignItems: 'center', gap: 6 }}
                 onMouseEnter={e => e.currentTarget.style.color = '#e9d5ff'}
                 onMouseLeave={e => e.currentTarget.style.color = '#a78bfa'}
               >
-                {icon} {label}
+                {icon} {t(`footer.links.${key}`)}
               </NavLink>
             ))}
           </div>
@@ -97,7 +99,7 @@ export default function Footer() {
         fontSize: 12, color: '#9ca3af',
         flexWrap: 'wrap', gap: 8
       }}>
-        <span>© 2026 {config.university.name}. Barcha huquqlar himoyalangan.</span>
+        <span>{t('footer.rights', { name: t('university.name') })}</span>
       </div>
     </footer>
   )

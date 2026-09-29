@@ -2,6 +2,8 @@
 import '@testing-library/jest-dom/vitest'
 import { afterEach, beforeEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
+// Global i18n nusxasi (uz) — Provider'siz render qilinadigan komponent testlari o'zbekcha matn ko'rsin
+import '../i18n'
 
 // jsdom'da IntersectionObserver yo'q, App esa (ScrollReveal) uni ishlatadi.
 // Standart: hech narsa qilmaydigan stub. Kerak bo'lgan testlar o'zining boshqariladigan
@@ -44,4 +46,6 @@ afterEach(() => {
   localStorage.clear()
   document.title = ''
   document.documentElement.removeAttribute('data-theme')
+  document.documentElement.removeAttribute('lang')
+  document.head.querySelectorAll('link[data-hreflang], script[type="application/ld+json"]').forEach(el => el.remove())
 })

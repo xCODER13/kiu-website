@@ -151,6 +151,14 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 .desktop-nav { display: flex !important; }
 .mobile-nav  { display: none !important; }
 
+/* Til almashtirgich (UZ | EN) */
+.lang-switch { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.lang-switch-item { font-size: 11px; font-weight: 600; letter-spacing: .04em; padding: 6px 9px; color: var(--muted); line-height: 1.2; transition: background .2s, color .2s; }
+a.lang-switch-item:hover { color: #7c3aed; background: rgba(124,58,237,.08); }
+.lang-switch-item.active { background: #7c3aed; color: #fff; }
+.lang-switch--menu { align-self: flex-start; margin-bottom: .5rem; }
+.lang-switch--menu .lang-switch-item { font-size: 13px; padding: 8px 16px; }
+
 /* Dark mode */
 
 

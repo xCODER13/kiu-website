@@ -1,63 +1,63 @@
-import { NavLink, useLocation } from 'react-router-dom'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { NavLink } from '../i18n/router'
+import useLocale from '../i18n/useLocale'
+import LanguageSwitcher from '../i18n/LanguageSwitcher'
 import config from '../config'
 import Search from './Search'
 
-// Guruhga kirmaydigan, doim ko'rinadigan linklar — eng boshida
+// Guruhga kirmaydigan, doim ko'rinadigan linklar — eng boshida.
+// Matnlar endi i18n'da (nav.*): bu yerda faqat yo'l va kalit turadi.
 const topLinks = [
-  { to: '/', label: 'Bosh sahifa' },
+  { to: '/', label: 'home' },
 ]
 
 // Guruhga kirmaydigan, doim ko'rinadigan linklar — dropdown guruhlaridan
 // keyin, navbar'ning eng oxirida chiqadi
 const endLinks = [
-  { to: '/vacancies', label: 'Bo\'sh ish o\'rinlari' },
+  { to: '/vacancies', label: 'vacancies' },
 ]
 
 // Qolgan 18 ta sahifa 4 ta guruhga bo'lingan (dropdown/mega-menu).
 // Avval hammasi bitta qatorda edi va ko'p sahifa (About, Events, Gallery,
 // Map, Teachers, QRCode, SortingHat) navbar'da umuman ko'rinmas edi.
+// `id` — guruh kaliti (nav.groups.<id>), `item` — nav.items.<item>.
 const navGroups = [
-   {
-    id: 'universitet',
-    label: 'Universitet haqida',
+  {
+    id: 'university',
     items: [
-      { to: '/about', label: 'Biz haqimizda' },
-      { to: '/achievements', label: 'Yutuqlar' },
-      { to: '/international', label: 'Xalqaro hamkorlik' },
-      { to: '/documents', label: 'Normativ hujjatlar' },
-      { to: '/teachers', label: "Professor-o'qituvchilar" },
+      { to: '/about', item: 'about' },
+      { to: '/achievements', item: 'achievements' },
+      { to: '/international', item: 'international' },
+      { to: '/documents', item: 'documents' },
+      { to: '/teachers', item: 'teachers' },
     ],
   },
   {
-    id: 'talabalar',
-    label: 'Talabalar uchun',
+    id: 'students',
     items: [
-      { to: '/faculty', label: "Yo'nalishlar" },
-      { to: '/admission', label: 'Qabul' },
-      { to: '/faq', label: 'FAQ' },
-      { to: '/hemis', label: 'Elektron universitet' },
-      { to: '/sorting-hat', label: 'Sehrli Shlyapa' },
+      { to: '/faculty', item: 'faculty' },
+      { to: '/admission', item: 'admission' },
+      { to: '/faq', item: 'faq' },
+      { to: '/hemis', item: 'hemis' },
+      { to: '/sorting-hat', item: 'sortingHat' },
     ],
   },
- 
   {
     id: 'media',
-    label: 'Media',
     items: [
-      { to: '/news', label: 'Yangiliklar' },
-      { to: '/events', label: 'Tadbirlar' },
-      { to: '/gallery', label: 'Galereya' },
-      { to: '/testimonials', label: 'Fikr-mulohazalar' },
+      { to: '/news', item: 'news' },
+      { to: '/events', item: 'events' },
+      { to: '/gallery', item: 'gallery' },
+      { to: '/testimonials', item: 'testimonials' },
     ],
   },
   {
-    id: 'boglanish',
-    label: "Bog'lanish",
+    id: 'contact',
     items: [
-      { to: '/contact', label: "Bog'lanish" },
-      { to: '/map', label: 'Xarita' },
-      { to: '/qrcode', label: 'QR kod' },
+      { to: '/contact', item: 'contact' },
+      { to: '/map', item: 'map' },
+      { to: '/qrcode', item: 'qrcode' },
     ],
   },
 ]
@@ -78,7 +78,9 @@ export default function Navbar({ dark, setDark, onApply }) {
   // ketardi. closedGroup shu holatni JS orqali majburan yopadi, sichqoncha
   // haqiqatan chetga chiqqanda (onMouseLeave) yana oddiy hover ishlay boshlaydi.
   const [closedGroup, setClosedGroup] = useState(null)
-  const location = useLocation()
+  const { t } = useTranslation()
+  // Faol havolani aniqlash uchun prefikssiz yo'l: /en/faculty → /faculty
+  const { path } = useLocale()
 
   return (
     <>
@@ -88,10 +90,10 @@ export default function Navbar({ dark, setDark, onApply }) {
         {/* Xatolik: mobil menyu ochiq holda logotipga bosilsa, sahifa
             almashsa ham menyu ochiq qolib qolar edi — onClick qo'shildi */}
         <NavLink to="/" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <img src="/logo.png" alt="KIU logo" className="nav-logo-img" style={{ width: 38, height: 38, objectFit: 'contain', }} />
+          <img src="/logo.png" alt={t('nav.logoAlt')} className="nav-logo-img" style={{ width: 38, height: 38, objectFit: 'contain', }} />
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: dark ? '#ffffff' : '#1a1a2e' }}>{config.university.name}</div>
-            <div style={{ fontSize: 11, color: 'var(--muted)' }}>{config.university.website} — Rasmiy sayt</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: dark ? '#ffffff' : '#1a1a2e' }}>{t('university.name')}</div>
+            <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t('nav.subtitle', { website: config.university.website })}</div>
           </div>
         </NavLink>
 
@@ -107,12 +109,12 @@ export default function Navbar({ dark, setDark, onApply }) {
                 fontWeight: isActive ? 600 : 400,
                 transition: 'all 0.2s'
               })}>
-              {l.label}
+              {t(`nav.${l.label}`)}
             </NavLink>
           ))}
 
           {navGroups.map(group => {
-            const isActive = group.items.some(i => location.pathname === i.to)
+            const isActive = group.items.some(i => path === i.to)
             return (
               <div
                 key={group.id}
@@ -130,7 +132,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                   }}
                   aria-haspopup="true"
                 >
-                  {group.label}
+                  {t(`nav.groups.${group.id}`)}
                   <ChevronIcon />
                 </button>
 
@@ -140,7 +142,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                       <NavLink key={item.to} to={item.to}
                         onClick={(e) => { e.currentTarget.blur(); setClosedGroup(group.id) }}
                         className={({ isActive }) => `nav-group-item${isActive ? ' active' : ''}`}>
-                        {item.label}
+                        {t(`nav.items.${item.item}`)}
                       </NavLink>
                     ))}
                   </div>
@@ -159,7 +161,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                 fontWeight: isActive ? 600 : 400,
                 transition: 'all 0.2s'
               })}>
-              {l.label}
+              {t(`nav.${l.label}`)}
             </NavLink>
           ))}
         </div>
@@ -167,7 +169,8 @@ export default function Navbar({ dark, setDark, onApply }) {
         {/* Right */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Search />
-          <button onClick={() => setDark(!dark)} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 9px', cursor: 'pointer', color: 'var(--muted)', display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
+          <LanguageSwitcher className="desktop-nav" />
+          <button onClick={() => setDark(!dark)} aria-label={dark ? t('nav.switchToLight') : t('nav.switchToDark')} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 9px', cursor: 'pointer', color: 'var(--muted)', display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
             {dark ? (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             ) : (
@@ -175,9 +178,9 @@ export default function Navbar({ dark, setDark, onApply }) {
             )}
           </button>
           <button onClick={onApply} className="btn btn-primary desktop-nav" style={{ fontSize: '0.8rem', padding: '8px 16px' }}>
-            Ariza topshirish
+            {t('nav.apply')}
           </button>
-          <button className="mobile-nav" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Close menu" : "Open menu"} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: 'var(--text)', fontSize: 20, lineHeight: 1 }}>
+          <button className="mobile-nav" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: 'var(--text)', fontSize: 20, lineHeight: 1 }}>
             {menuOpen ? '✕' : '☰'}
           </button>
         </div>
@@ -186,6 +189,7 @@ export default function Navbar({ dark, setDark, onApply }) {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="mobile-nav" style={{ position: 'fixed', top: 62, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 4, borderTop: '1px solid var(--border)', overflowY: 'auto' }}>
+          <LanguageSwitcher className="lang-switch--menu" onNavigate={() => setMenuOpen(false)} />
           {topLinks.map(l => (
             <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)}
               style={({ isActive }) => ({
@@ -194,7 +198,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                 padding: '0.75rem 0',
                 borderBottom: '1px solid var(--border)',
               })}>
-              {l.label}
+              {t(`nav.${l.label}`)}
             </NavLink>
           ))}
 
@@ -202,7 +206,7 @@ export default function Navbar({ dark, setDark, onApply }) {
           {navGroups.map(group => (
             <details key={group.id} style={{ borderBottom: '1px solid var(--border)' }}>
               <summary style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 18, fontWeight: 600, color: 'var(--text)', padding: '0.75rem 0', cursor: 'pointer', listStyle: 'none' }}>
-                {group.label}
+                {t(`nav.groups.${group.id}`)}
                 <ChevronIcon />
               </summary>
               <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 8 }}>
@@ -214,7 +218,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                       fontWeight: isActive ? 600 : 400,
                       padding: '0.5rem 0 0.5rem 0.75rem',
                     })}>
-                    {item.label}
+                    {t(`nav.items.${item.item}`)}
                   </NavLink>
                 ))}
               </div>
@@ -229,12 +233,12 @@ export default function Navbar({ dark, setDark, onApply }) {
                 padding: '0.75rem 0',
                 borderBottom: '1px solid var(--border)',
               })}>
-              {l.label}
+              {t(`nav.${l.label}`)}
             </NavLink>
           ))}
 
           <button onClick={() => { onApply(); setMenuOpen(false) }} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', marginTop: '1rem' }}>
-            Ariza topshirish
+            {t('nav.apply')}
           </button>
         </div>
       )}

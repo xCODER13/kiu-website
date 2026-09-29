@@ -1,5 +1,5 @@
 import config from '../config'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from '../i18n/router'
  
 const STEPS = [
   {

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { Link } from 'react-router-dom'
+import { Link } from '../../i18n/router'
 import { IC } from './Icons.jsx'
 import { fmt } from './utils'
 

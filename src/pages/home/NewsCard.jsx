@@ -1,9 +1,11 @@
-import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { NavLink } from '../../i18n/router'
 import { getCategoryColor, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 
 // Home uchun ixcham yangilik kartasi — Home.jsx'dan o'zgarishsiz ko'chirilgan.
 export default function HomeNewsCard({ item, index }) {
+  const { t } = useTranslation()
   const catColor = getCategoryColor(item.category)
   const img = parseImages(item.image)[0]
   return (
@@ -21,14 +23,14 @@ export default function HomeNewsCard({ item, index }) {
         <div style={{ padding: '0.85rem 1rem' }}>
           {item.category && (
             <span style={{ fontSize: 10, fontWeight: 600, color: catColor, background: `${catColor}18`, padding: '2px 8px', borderRadius: 20 }}>
-              {getCategoryLabel(item.category)}
+              {getCategoryLabel(item.category, t)}
             </span>
           )}
-          <h4 style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text)', lineHeight: 1.5, marginTop: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <h4 lang="uz" style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text)', lineHeight: 1.5, marginTop: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             {item.title}
           </h4>
           <div style={{ fontSize: 10.5, color: 'var(--muted)', marginTop: 6 }}>
-            {new Date(item.createdAt).toLocaleDateString('uz-UZ')}
+            {new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from '../i18n/router'
 import { validateFullName, validatePhone } from '../utils/validation'
 import { IcHat, IcStar } from './sortinghat/Icons.jsx'
 import { QUESTIONS, FACULTIES } from './sortinghat/Data.jsx'

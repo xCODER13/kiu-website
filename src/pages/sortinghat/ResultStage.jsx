@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink } from '../../i18n/router'
 import { IcStar, IcHat, IcGrad, IcArrow, IcFile, IcBulb, IcRefresh } from './Icons.jsx'
 import { FACULTIES, MEDALS, RANKS } from './Data'
 
