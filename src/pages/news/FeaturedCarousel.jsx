@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import useNavigate from '../../i18n/useLocalizedNavigate'
 import { getCategoryColor, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 
 // ── FEATURED CAROUSEL ── (News.jsx'dan o'zgarishsiz ko'chirilgan)
 export default function FeaturedCarousel({ items }) {
+  const { t } = useTranslation()
   const [idx, setIdx] = useState(0)
   const [paused, setPaused] = useState(false)
   const timer = useRef(null)
@@ -82,10 +84,10 @@ export default function FeaturedCarousel({ items }) {
               padding: '4px 12px', borderRadius: 20,
             }}>
               <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'rgba(255,255,255,.7)', display: 'inline-block' }} />
-              {getCategoryLabel(item.category)}
+              {getCategoryLabel(item.category, t)}
             </span>
             <span style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', fontFamily: 'var(--font-body)' }}>
-              {new Date(item.createdAt).toLocaleDateString('uz-UZ')}
+              {new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}
             </span>
           </div>
         )}
@@ -96,7 +98,7 @@ export default function FeaturedCarousel({ items }) {
           fontWeight: 800, color: '#fff', lineHeight: 1.3,
           fontFamily: 'var(--font-body)', maxWidth: 700,
           textShadow: '0 2px 20px rgba(0,0,0,.5)',
-        }}>
+        }} lang="uz">
           {item.title}
         </h2>
 
@@ -133,14 +135,14 @@ export default function FeaturedCarousel({ items }) {
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,.25)'}
             onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,.15)'}
           >
-            Batafsil →
+            {t('news.more')}
           </button>
         </div>
       </div>
 
       {/* Prev / Next buttons */}
       {items.length > 1 && (<>
-        <button onClick={prev} aria-label="Oldingi yangilik" style={{
+        <button onClick={prev} aria-label={t('news.prevNews')} style={{
           position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)',
           width: 42, height: 42, borderRadius: '50%',
           background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.2)',
@@ -149,7 +151,7 @@ export default function FeaturedCarousel({ items }) {
         }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button onClick={next} aria-label="Keyingi yangilik" style={{
+        <button onClick={next} aria-label={t('news.nextNews')} style={{
           position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)',
           width: 42, height: 42, borderRadius: '50%',
           background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.2)',
@@ -162,7 +164,7 @@ export default function FeaturedCarousel({ items }) {
         {/* Dots */}
         <div style={{ position: 'absolute', bottom: 24, right: 28, display: 'flex', gap: 6 }}>
           {items.map((_, i) => (
-            <button key={i} onClick={() => setIdx(i)} aria-label={`${i + 1}-slaydga o'tish`} aria-current={i === idx ? 'true' : undefined} style={{
+            <button key={i} onClick={() => setIdx(i)} aria-label={t('news.goSlide', { n: i + 1 })} aria-current={i === idx ? 'true' : undefined} style={{
               width: i === idx ? 24 : 6, height: 6, borderRadius: 10, padding: 0,
               background: i === idx ? '#fff' : 'rgba(255,255,255,.3)',
               border: 'none', cursor: 'pointer', transition: 'all .3s ease',

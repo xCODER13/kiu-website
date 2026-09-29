@@ -1,9 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import ContentLangNote from '../i18n/ContentLangNote'
 
 const API = import.meta.env.VITE_API_URL
 const COLORS = ['#7c3aed', '#4f46e5', '#0088cc', '#059669', '#d97706', '#db2777']
 
 export default function Gallery() {
+  const { t } = useTranslation()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -60,16 +63,17 @@ export default function Gallery() {
   return (
     <div className="fade-up">
       <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Fotogalerеya</h1>
-        <p style={{ fontSize: 14, color: 'var(--muted)' }}>KIU hayotidan lavhalar</p>
+        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('gallery.title')}</h1>
+        <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('gallery.subtitle')}</p>
+        <ContentLangNote />
       </section>
 
       <section className="section">
         <div className="container">
-          {loading && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center' }}>Yuklanmoqda...</p>}
+          {loading && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center' }}>{t('common.loading')}</p>}
 
           {!loading && error && (
-            <p style={{ fontSize: 13, color: '#dc2626', textAlign: 'center' }}>Galereyani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.</p>
+            <p style={{ fontSize: 13, color: '#dc2626', textAlign: 'center' }}>{t('gallery.error')}</p>
           )}
 
           {!loading && !error && photos.length === 0 && (
@@ -77,7 +81,7 @@ export default function Gallery() {
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto 8px', display: 'block', opacity: 0.5 }}>
                 <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
               </svg>
-              <p style={{ fontSize: 13, color: 'var(--muted)' }}>Haqiqiy rasmlar tez orada qo'shiladi</p>
+              <p style={{ fontSize: 13, color: 'var(--muted)' }}>{t('gallery.empty')}</p>
             </div>
           )}
 
@@ -97,8 +101,8 @@ export default function Gallery() {
                       <div style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(255,255,255,0.9)', borderRadius: 6, padding: '3px 8px', fontSize: 10, color, fontWeight: 600 }}>KIU</div>
                     </div>
                     <div style={{ padding: '1rem' }}>
-                      <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3, fontFamily: 'var(--font-body)' }}>{p.title}</h3>
-                      <p style={{ fontSize: 11, color: 'var(--muted)' }}>{p.desc}</p>
+                      <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3, fontFamily: 'var(--font-body)' }} lang="uz">{p.title}</h3>
+                      <p style={{ fontSize: 11, color: 'var(--muted)' }} lang="uz">{p.desc}</p>
                     </div>
                   </div>
                 )
@@ -114,17 +118,17 @@ export default function Gallery() {
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
         >
           {/* Close */}
-          <button onClick={() => setLightbox(null)} aria-label="Yopish" style={{ position: 'fixed', top: 16, right: 16, background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 40, height: 40, borderRadius: '50%', cursor: 'pointer', fontSize: 20, lineHeight: 1 }}>✕</button>
+          <button onClick={() => setLightbox(null)} aria-label={t('gallery.close')} style={{ position: 'fixed', top: 16, right: 16, background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 40, height: 40, borderRadius: '50%', cursor: 'pointer', fontSize: 20, lineHeight: 1 }}>✕</button>
           {/* Prev */}
-          <button onClick={e => { e.stopPropagation(); prev() }} aria-label="Oldingi rasm" style={{ position: 'fixed', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>‹</button>
+          <button onClick={e => { e.stopPropagation(); prev() }} aria-label={t('gallery.prev')} style={{ position: 'fixed', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>‹</button>
           {/* Next */}
-          <button onClick={e => { e.stopPropagation(); next() }} aria-label="Keyingi rasm" style={{ position: 'fixed', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>›</button>
+          <button onClick={e => { e.stopPropagation(); next() }} aria-label={t('gallery.next')} style={{ position: 'fixed', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>›</button>
 
           <div onClick={e => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, maxWidth: '90vw', maxHeight: '90vh' }}>
             <img src={lightbox.img} alt={lightbox.title} style={{ maxWidth: '85vw', maxHeight: '75vh', objectFit: 'contain', borderRadius: 12, boxShadow: '0 8px 40px rgba(0,0,0,0.6)' }} />
             <div style={{ color: '#fff', textAlign: 'center' }}>
-              <div style={{ fontWeight: 600, fontSize: 15 }}>{lightbox.title}</div>
-              {lightbox.desc && <div style={{ fontSize: 12, opacity: 0.65, marginTop: 4 }}>{lightbox.desc}</div>}
+              <div style={{ fontWeight: 600, fontSize: 15 }} lang="uz">{lightbox.title}</div>
+              {lightbox.desc && <div style={{ fontSize: 12, opacity: 0.65, marginTop: 4 }} lang="uz">{lightbox.desc}</div>}
             </div>
           </div>
         </div>

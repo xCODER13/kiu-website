@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { validateFullName, validatePhone, validateEmail, validateRequired } from '../utils/validation'
 import InfoTab from './vacancies/InfoTab'
 import ApplicationForm from './vacancies/ApplicationForm'
@@ -8,6 +9,7 @@ const EMPTY_FORM = { fullName: '', phone: '', email: '', position: '', faculty: 
 // ── MAIN ── (endi yupqa orkestrator — UI blok va state, real render
 // mantig'i vacancies/InfoTab.jsx va vacancies/ApplicationForm.jsx'ga bo'lingan)
 export default function Vacancies() {
+  const { t } = useTranslation()
   const [form, setForm] = useState(EMPTY_FORM)
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -22,13 +24,13 @@ export default function Vacancies() {
 
   function validate() {
     const errs = {
-      fullName: validateFullName(form.fullName),
-      phone: validatePhone(form.phone),
-      email: validateEmail(form.email, false),
-      position: validateRequired(form.position, 'Lavozim'),
-      faculty: validateRequired(form.faculty, "Bo'lim/Kafedra"),
-      education: validateRequired(form.education, "Ta'lim darajasi"),
-      experience: validateRequired(form.experience, 'Ish tajribasi'),
+      fullName: validateFullName(form.fullName, t),
+      phone: validatePhone(form.phone, t),
+      email: validateEmail(form.email, false, t),
+      position: validateRequired(form.position, t('vacancies.fieldNames.position'), t),
+      faculty: validateRequired(form.faculty, t('vacancies.fieldNames.faculty'), t),
+      education: validateRequired(form.education, t('vacancies.fieldNames.education'), t),
+      experience: validateRequired(form.experience, t('vacancies.fieldNames.experience'), t),
     }
     setFieldErrors(errs)
     return Object.values(errs).every(v => !v)
@@ -70,11 +72,11 @@ export default function Vacancies() {
       <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
         <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.25)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#7c3aed', display: 'inline-block', animation: 'pulse 2s infinite' }} />
-          Vakant o'rinlar mavjud
+          {t('vacancies.badge')}
         </div>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Jamoamizga qo'shiling!</h1>
+        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('vacancies.title')}</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)', maxWidth: 560, margin: '0 auto' }}>
-          Qarshi xalqaro universiteti o'z jamoasiga tashabbuskor, malakali va fidokor mutaxassislarni taklif etadi.
+          {t('vacancies.subtitle')}
         </p>
       </section>
 
@@ -83,7 +85,7 @@ export default function Vacancies() {
 
           {/* Tabs */}
           <div style={{ display: 'flex', gap: 4, marginBottom: '2rem', borderBottom: '1px solid var(--border)' }}>
-            {[{ key: 'info', label: "Ma'lumot" }, { key: 'form', label: 'Ariza topshirish' }].map(tab => (
+            {[{ key: 'info', label: t('vacancies.tabs.info') }, { key: 'form', label: t('vacancies.tabs.form') }].map(tab => (
               <button key={tab.key} onClick={() => setActiveTab(tab.key)}
                 style={{ padding: '10px 24px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: activeTab === tab.key ? '#7c3aed' : 'var(--muted)', borderBottom: activeTab === tab.key ? '2px solid #7c3aed' : '2px solid transparent', marginBottom: -1, fontFamily: 'var(--font-body)', transition: 'all .2s' }}>
                 {tab.label}

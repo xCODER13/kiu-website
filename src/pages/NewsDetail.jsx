@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import useNavigate from '../i18n/useLocalizedNavigate'
 import { getCategoryColor, getCategoryLabel } from '../utils/newsCategories'
+import ContentLangNote from '../i18n/ContentLangNote'
 
 function parseImages(imageField) {
   if (!imageField) return []
@@ -13,6 +15,7 @@ function parseImages(imageField) {
 }
 
 function ImageCarousel({ imgs, title }) {
+  const { t } = useTranslation()
   const [cur, setCur]   = useState(0)
   const [dir, setDir]   = useState(0)   // -1 chap, 1 o'ng
   const [anim, setAnim] = useState(false)
@@ -80,16 +83,16 @@ function ImageCarousel({ imgs, title }) {
         </div>
 
         {/* Arrows */}
-        <button onClick={prev} aria-label="Oldingi rasm" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
+        <button onClick={prev} aria-label={t('news.prevImage')} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
           onMouseEnter={e => e.target.style.background='rgba(0,0,0,.7)'} onMouseLeave={e => e.target.style.background='rgba(0,0,0,.45)'}>‹</button>
-        <button onClick={next} aria-label="Keyingi rasm" style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
+        <button onClick={next} aria-label={t('news.nextImage')} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
           onMouseEnter={e => e.target.style.background='rgba(0,0,0,.7)'} onMouseLeave={e => e.target.style.background='rgba(0,0,0,.45)'}>›</button>
       </div>
 
       {/* Dots */}
       <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
         {imgs.map((_, i) => (
-          <button key={i} onClick={() => go(i)} aria-label={`${i + 1}-rasm`}
+          <button key={i} onClick={() => go(i)} aria-label={t('news.imageN', { n: i + 1 })}
             style={{ width: i === cur ? 22 : 8, height: 8, borderRadius: 4, border: 'none', background: i === cur ? '#fff' : 'rgba(255,255,255,.45)', cursor: 'pointer', padding: 0, transition: 'all .25s' }} />
         ))}
       </div>
@@ -102,6 +105,7 @@ function ImageCarousel({ imgs, title }) {
 const API = import.meta.env.VITE_API_URL
 
 export default function NewsDetail() {
+  const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
   const [news, setNews] = useState(null)
@@ -115,7 +119,7 @@ export default function NewsDetail() {
         if (!res.ok) throw new Error('Topilmadi')
         const data = await res.json()
         setNews(data)
-        document.title = `${data.title} — Qarshi Xalqaro Universiteti | KIU`
+        document.title = `${data.title} — ${t('seo.siteName')}`
         // Ko'rishlar sonini oshirish
         await fetch(`${API}/api/news/${id}/view`, { method: 'PUT' })
       } catch (e) {
@@ -125,7 +129,8 @@ export default function NewsDetail() {
       }
     }
     fetchNews()
-    return () => { document.title = 'Qarshi Xalqaro Universiteti | KIU' }
+    return () => { document.title = t('seo.siteName') }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t tilga qarab o'zgaradi; sahifa tilini almashtirganda qayta yuklash shart emas
   }, [id])
 
   if (loading) return (
@@ -136,7 +141,7 @@ export default function NewsDetail() {
         borderRadius: '50%', animation: 'spin 0.8s linear infinite',
         margin: '0 auto 14px',
       }} />
-      <p style={{ fontSize: 14 }}>Yuklanmoqda...</p>
+      <p style={{ fontSize: 14 }}>{t('common.loading')}</p>
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   )
@@ -147,13 +152,13 @@ export default function NewsDetail() {
         style={{ opacity: .3, marginBottom: 16 }}>
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
-      <p style={{ fontSize: 15, marginBottom: 20 }}>Yangilik topilmadi</p>
+      <p style={{ fontSize: 15, marginBottom: 20 }}>{t('news.notFound')}</p>
       <button onClick={() => navigate('/news')} style={{
         padding: '9px 22px', background: 'linear-gradient(135deg,#7c3aed,#4f46e5)',
         color: '#fff', border: 'none', borderRadius: 10, cursor: 'pointer',
         fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)',
       }}>
-        ← Yangiliklarga qaytish
+        {t('news.backArrow')}
       </button>
     </div>
   )
@@ -184,8 +189,9 @@ export default function NewsDetail() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <polyline points="15 18 9 12 15 6"/>
             </svg>
-            Yangiliklarga qaytish
+            {t('news.back')}
           </button>
+          <ContentLangNote />
         </div>
       </section>
 
@@ -201,11 +207,11 @@ export default function NewsDetail() {
                 color: catColor, background: `${catColor}18`,
                 padding: '4px 12px', borderRadius: 20, textTransform: 'uppercase',
               }}>
-                {getCategoryLabel(news.category)}
+                {getCategoryLabel(news.category, t)}
               </span>
             )}
             <span style={{ fontSize: 12, color: 'var(--muted)' }}>
-              {new Date(news.createdAt).toLocaleDateString('uz-UZ', {
+              {new Date(news.createdAt).toLocaleDateString(t('meta.dateLocale'), {
                 year: 'numeric', month: 'long', day: 'numeric',
               })}
             </span>
@@ -214,12 +220,12 @@ export default function NewsDetail() {
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
               </svg>
-              {news.views} ko'rish
+              {t('news.views', { count: news.views })}
             </span>
           </div>
 
           {/* Title */}
-          <h1 style={{
+          <h1 lang="uz" style={{
             fontSize: 'clamp(1.5rem, 4vw, 2.1rem)',
             fontWeight: 800, color: 'var(--text)',
             lineHeight: 1.3, marginBottom: '1.75rem',
@@ -233,7 +239,7 @@ export default function NewsDetail() {
 
           {/* Body text */}
           {news.content ? (
-            <div style={{
+            <div lang="uz" style={{
               fontSize: 15.5, color: 'var(--text)', lineHeight: 1.85,
               fontFamily: 'var(--font-body)', whiteSpace: 'pre-wrap',
             }}>
@@ -241,7 +247,7 @@ export default function NewsDetail() {
             </div>
           ) : (
             <p style={{ fontSize: 14, color: 'var(--muted)', fontStyle: 'italic' }}>
-              Matn kiritilmagan.
+              {t('news.noContent')}
             </p>
           )}
 
@@ -267,7 +273,7 @@ export default function NewsDetail() {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <polyline points="15 18 9 12 15 6"/>
               </svg>
-              Yangiliklarga qaytish
+              {t('news.back')}
             </button>
           </div>
 

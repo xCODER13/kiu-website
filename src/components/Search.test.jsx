@@ -19,7 +19,7 @@ function renderSearch() {
 }
 
 async function openSearch(user) {
-  await user.click(screen.getByLabelText('Search'))
+  await user.click(screen.getByLabelText('Qidiruv'))
 }
 
 describe('Search (qidiruv)', () => {

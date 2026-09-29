@@ -382,5 +382,424 @@
         "career": ["Iqtisodchi-tahlilchi", "Davlat boshqaruv mutaxassisi", "Konsultant", "Ilmiy tadqiqotchi", "Xalqaro tashkilotlar mutaxassisi"]
       }
     }
+  },
+  "achievements": {
+    "title": "Yutuqlar va mukofotlar",
+    "subtitle": "KIU ning erishgan yutuqlari",
+    "awards": {
+      "1": { "title": "Yil ta'lim muassasasi", "org": "O'zbekiston Ta'lim Vazirligi" },
+      "2": { "title": "Eng yaxshi xususiy universitet", "org": "Qashqadaryo viloyati hokimligi" },
+      "3": { "title": "Xalqaro olimpiada g'olibi", "org": "Yoshlar innovatsiyalar festivali" },
+      "4": { "title": "Hamkorlik mukofoti", "org": "INTI International University" },
+      "5": { "title": "Sport musobaqasi g'olibi", "org": "Universitetlararo sport o'yinlari" },
+      "6": { "title": "Innovatsion loyiha mukofoti", "org": "StartUp Uzbekistan 2023" },
+      "7": { "title": "Millatim faxri — 1-o'rin", "org": "Respublika ko'rik-tanlovi" },
+      "8": { "title": "Zakovat kubogi g'olibi", "org": "KIU Rektor kubogi" }
+    }
+  },
+  "testimonials": {
+    "title": "Talabalar sharhlari",
+    "subtitle": "Talabalarimiz KIU haqida nima deydi",
+    "year": "{{n}}-kurs",
+    "graduate": "Bitiruvchi",
+    "reviews": {
+      "1": { "faculty": "Dasturiy injiniring", "text": "KIU da o'qish hayotimni o'zgartirdi. Zamonaviy o'qitish usullari va professional o'qituvchilar tufayli ko'p narsani o'rgandim." },
+      "2": { "faculty": "Iqtisodiyot", "text": "Xalqaro hamkorlik dasturlari va stipendiya imkoniyatlari juda zo'r. Xorijiy universitetlarda o'qish imkonim bo'ldi." },
+      "3": { "faculty": "Psixologiya", "text": "O'qituvchilar har doim yordam berishga tayyor. Kampus muhiti juda iliq va do'stona. KIU ni tanlashimdan xursandman!" },
+      "4": { "faculty": "Moliya", "text": "Bepul avtobus, yotoqxona va zamonaviy kutubxona — bularning barchasi o'qishni qulay qilib berdi." },
+      "5": { "faculty": "Filologiya", "text": "Xalqaro konferensiyalarda ishtirok etish imkoniyati ajoyib. Bu tajriba mening kelajak rejalari uchun katta ahamiyat kasb etdi." },
+      "6": { "faculty": "Dasturiy injiniring", "text": "KIU da olgan bilimlarim tufayli yaxshi ish topishga muvaffaq bo'ldim. Universitetimizdan faxrlanaman!" }
+    }
+  },
+  "map": {
+    "title": "Kampus xaritasi",
+    "subtitle": "KIU kampuslari joylashuvi",
+    "campus": "{{n}}-kampus"
+  },
+  "qrcode": {
+    "title": "QR Kodlar",
+    "subtitle": "KIU rasmiy ijtimoiy tarmoqlari — telefon kamerasi bilan skanerlang",
+    "socials": {
+      "Telegram": { "desc": "Rasmiy Telegram kanal" },
+      "Instagram": { "desc": "Rasmiy Instagram sahifasi" },
+      "YouTube": { "desc": "Rasmiy YouTube kanali" },
+      "Facebook": { "desc": "Rasmiy Facebook sahifasi" }
+    },
+    "goTo": "{{name}} ga o'tish",
+    "howTitle": "Qanday foydalanish kerak?",
+    "howText": "Telefon kamerangizni QR kodga yo'naltiring → Avtomatik havola ochiladi → Obuna bo'ling va yangiliklar olish boshlang!"
+  },
+  "gallery": {
+    "title": "Fotogalerеya",
+    "subtitle": "KIU hayotidan lavhalar",
+    "error": "Galereyani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.",
+    "empty": "Haqiqiy rasmlar tez orada qo'shiladi",
+    "close": "Yopish",
+    "prev": "Oldingi rasm",
+    "next": "Keyingi rasm"
+  },
+  "teachers": {
+    "title": "Professor-o'qituvchilar",
+    "subtitle": "KIU ning malakali o'qituvchilar jamoasi",
+    "departments": "Kafedralar",
+    "all": "Barcha o'qituvchilar",
+    "offline": "Serverga ulanib bo'lmadi — saqlangan ma'lumotlar ko'rsatilmoqda",
+    "count_one": "{{count}} nafar",
+    "count_other": "{{count}} nafar",
+    "empty": "Bu kafedraga biriktirilgan o'qituvchi topilmadi"
+  },
+  "events": {
+    "title": "Tadbirlar taqvimi",
+    "subtitle": "KIU dagi yaqinlashib kelayotgan tadbirlar",
+    "offline": "Serverga ulanib bo'lmadi — saqlangan ma'lumotlar ko'rsatilmoqda",
+    "closeHint": "Yopish (Esc)",
+    "closeLabel": "Modalni yopish",
+    "dateFull": "{{day}} {{month}} {{year}}",
+    "months": ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"],
+    "monthsShort": ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"],
+    "types": { "open": "Ochiq kun", "culture": "Madaniy", "science": "Ilmiy", "sport": "Sport", "graduation": "Bitiruvchilar", "admission": "Qabul", "general": "Umumiy" }
+  },
+  "validation": {
+    "required": "Bu maydon majburiy",
+    "lettersOnly": "Faqat harflardan foydalaning (raqam yoki belgi bo'lmasin)",
+    "fullNameIncomplete": "Ism va familiyangizni to'liq kiriting",
+    "nameWordLength": "Har bir so'z kamida 2 ta harfdan iborat bo'lsin",
+    "phoneInvalid": "Telefon raqam noto'g'ri. Namuna: +998 90 123 45 67",
+    "emailInvalid": "Email manzil noto'g'ri formatda",
+    "fieldRequired": "{{field}} majburiy"
+  },
+  "vacancies": {
+    "badge": "Vakant o'rinlar mavjud",
+    "title": "Jamoamizga qo'shiling!",
+    "subtitle": "Qarshi xalqaro universiteti o'z jamoasiga tashabbuskor, malakali va fidokor mutaxassislarni taklif etadi.",
+    "tabs": { "info": "Ma'lumot", "form": "Ariza topshirish" },
+    "fieldNames": { "position": "Lavozim", "faculty": "Bo'lim/Kafedra", "education": "Ta'lim darajasi", "experience": "Ish tajribasi" },
+    "info": {
+      "whyTitle": "Nima uchun KIU?",
+      "whyText": "Bu yerda siz nafaqat ish, balki o'sish, ilmiy izlanish va o'z salohiyatingizni ro'yobga chiqarish imkoniyatiga ega bo'lasiz. Biz bilimli, yetuk va zamonaviy fikrlaydigan kadrlarni tarbiyalash yo'lida birga ishlashni xohlaymiz.",
+      "offerTitle": "Biz taklif etamiz",
+      "benefits": {
+        "salary": { "title": "Raqobatbardosh ish haqi", "desc": "Bozor narxidan yuqori maosh" },
+        "infra": { "title": "Zamonaviy infratuzilma", "desc": "Akademik va texnik jihozlar" },
+        "international": { "title": "Xalqaro loyihalar", "desc": "Konferensiyalar va xorijiy hamkorlik" },
+        "career": { "title": "Martaba o'sishi", "desc": "Malaka oshirish imkoniyatlari" },
+        "team": { "title": "Samimiy jamoa", "desc": "Yangi xodimlarga moslashishda yordam" },
+        "research": { "title": "Ilmiy izlanish", "desc": "Tadqiqot va nashrlar uchun imkoniyat" }
+      },
+      "reqTitle": "Umumiy talablar",
+      "requirements": {
+        "education": "Oliygoh darajasidagi tegishli yo'nalishda ma'lumot (o'qituvchilar uchun kamida magistr darajasi)",
+        "skills": "Zamonaviy o'qitish uslublari va axborot texnologiyalarini bilish",
+        "growth": "O'z ustida ishlashga intilish va yangiliklarga ochiqlik",
+        "teamwork": "Javobgarlik, muloqot qobiliyati va jamoada ishlash ko'nikmasi"
+      },
+      "howTitle": "Qanday ariza topshirish mumkin?",
+      "byEmail": "Email orqali",
+      "sendDocs": "Hujjatlarni <b>{{email}}</b> manziliga yuboring:",
+      "reviewTime": "Arizalar <b>7 ish kuni</b> ichida ko'rib chiqiladi",
+      "contact": "Bog'lanish",
+      "phone1": "Telefon 1",
+      "phone2": "Telefon 2",
+      "cta": "Online ariza topshirish →"
+    },
+    "docs": { "cv": "Rezyume (CV)", "resume": "Obyektivka", "diplomas": "Diplom va sertifikatlar nusxasi", "portfolio": "Portfel (agar mavjud bo'lsa)" },
+    "form": {
+      "title": "Ishga joylashish uchun so'rovnoma",
+      "subtitle": "Barcha maydonlarni to'liq va aniq to'ldiring. Arizangiz 7 ish kuni ichida ko'rib chiqiladi.",
+      "personal": "Shaxsiy ma'lumotlar",
+      "fullName": "To'liq ism (FIO) *",
+      "fullNamePh": "Familiya Ism Otasining ismi",
+      "phone": "Telefon *",
+      "work": "Ish ma'lumotlari",
+      "position": "Lavozim *",
+      "faculty": "Bo'lim / Kafedra *",
+      "education": "Ta'lim darajasi *",
+      "experience": "Ish tajribasi *",
+      "extra": "Qo'shimcha ma'lumotlar",
+      "about": "O'zingiz haqingizda qisqacha",
+      "aboutPh": "Tajribangiz, qobiliyatlaringiz va nima uchun KIU ga qo'shilmoqchi ekanlingingiz haqida yozing...",
+      "hasPortfolio": "Portfelim (portfolio) mavjud",
+      "docsReminder": "Hujjatlarni email orqali yuboring: {{email}}",
+      "error": "Arizani yuborishda xatolik yuz berdi. Internet aloqasini tekshirib, qayta urinib ko'ring.",
+      "sending": "Yuborilmoqda...",
+      "submit": "Ariza yuborish",
+      "successTitle": "Arizangiz qabul qilindi!",
+      "successText": "Hurmatli <b>{{name}}</b>, arizangiz muvaffaqiyatli yuborildi. Mutaxassislarimiz <b>7 ish kuni</b> ichida siz bilan bog'lanadi.",
+      "newApplication": "Yangi ariza",
+      "backToInfo": "Ma'lumotlarga qaytish",
+      "options": {
+        "position": { "teacher": "O'qituvchi", "seniorTeacher": "Katta o'qituvchi", "docent": "Dotsent", "professor": "Professor", "lab": "Laborant", "methodist": "Metodist", "adminStaff": "Ma'muriy xodim", "itSpecialist": "IT mutaxassisi", "other": "Boshqa" },
+        "faculty": { "exact": "Aniq fanlar kafedrasi", "humanities": "Ijtimoiy-gumanitar fanlar kafedrasi", "languages": "Tillar kafedrasi", "econEng": "Iqtisodiyot va muhandislik kafedrasi", "administration": "Ma'muriyat", "itDept": "IT bo'limi", "sportDept": "Sport bo'limi", "other": "Boshqa" },
+        "education": { "bachelor": "Bakalavr", "master": "Magistr", "phd": "PhD", "doctor": "Fan doktori" },
+        "experience": { "none": "Tajribam yo'q", "lt1": "1 yilgacha", "y1_3": "1–3 yil", "y3_5": "3–5 yil", "y5_10": "5–10 yil", "gt10": "10 yildan ortiq" }
+      },
+      "select": "Tanlang"
+    }
+  },
+  "news": {
+    "title": "Yangiliklar",
+    "subtitle": "KIU hayotidan so'nggi xabarlar",
+    "tabs": { "news": "Yangiliklar", "video": "Video" },
+    "empty": "Hozircha yangiliklar yo'q",
+    "emptyHint": "Admin panel orqali yangilik qo'shing",
+    "allNews": "Barcha yangiliklar (@kiu_uz) →",
+    "offline": "Serverga ulanib bo'lmadi",
+    "searchPh": "Yangiliklar ichida qidiring...",
+    "all": "Barchasi",
+    "noResults": "\"{{query}}\" bo'yicha hech narsa topilmadi",
+    "loadMore": "Ko'proq yuklash ({{count}} ta qoldi)",
+    "more": "Batafsil →",
+    "prevNews": "Oldingi yangilik",
+    "nextNews": "Keyingi yangilik",
+    "goSlide": "{{n}}-slaydga o'tish",
+    "channelTitle": "KIU YouTube kanali",
+    "channelGo": "Kanalga o'tish →",
+    "watch": "YouTube da ko'rish →",
+    "back": "Yangiliklarga qaytish",
+    "backArrow": "← Yangiliklarga qaytish",
+    "notFound": "Yangilik topilmadi",
+    "views_one": "{{count}} ko'rish",
+    "views_other": "{{count}} ko'rish",
+    "noContent": "Matn kiritilmagan.",
+    "prevImage": "Oldingi rasm",
+    "nextImage": "Keyingi rasm",
+    "imageN": "{{n}}-rasm"
+  },
+  "sortingHat": {
+    "badge": "KIU Sehrli Shlyapasi",
+    "title": "Qaysi yo'nalish siz uchun?",
+    "subtitle": "Bir necha savolga javob bering — tizim qiziqishlaringizni tahlil qilib, eng mos yo'nalishni tavsiya qiladi!",
+    "backToAdmission": "Qabul sahifasi",
+    "intro": {
+      "cards": {
+        "questions": { "title": "{{n}} ta savol", "desc": "Oddiy va qiziqarli" },
+        "time": { "title": "3 daqiqa", "desc": "Tez va aniq" },
+        "top3": { "title": "Top 3 tavsiya", "desc": "Mos yo'nalishlar" },
+        "personal": { "title": "Shaxsiy tahlil", "desc": "Faqat siz uchun" }
+      },
+      "howTitle": "Qanday ishlaydi?",
+      "steps": {
+        "1": { "title": "Savolga javob bering", "desc": "Har bir savolda o'zingizga eng mos variantni tanlang" },
+        "2": { "title": "Tizim tahlil qiladi", "desc": "Javoblaringiz asosida kuchli tomonlaringiz aniqlanadi" },
+        "3": { "title": "Tavsiya olasiz", "desc": "Top 3 ta mos yo'nalish va karyera imkoniyatlari ko'rsatiladi" },
+        "4": { "title": "Qaror o'z qo'lingizda", "desc": "Shlyapa maslahat beradi — yakuniy tanlov siz bilan!" }
+      },
+      "start": "Testni boshlash"
+    },
+    "register": {
+      "title": "Bir qadam qoldi!",
+      "desc": "Natijangiz tayyor bo'lgach, mutaxassislarimiz siz bilan bog'lanishi uchun ma'lumotlaringizni kiriting",
+      "name": "Ism Familiya *",
+      "namePlaceholder": "Masalan: Xurshid Xamrayev",
+      "phone": "Telefon raqam *",
+      "back": "Orqaga",
+      "start": "Testni boshlash →",
+      "privacy": "Ma'lumotlaringiz faqat KIU mutaxassislari bilan bog'lanish uchun ishlatiladi"
+    },
+    "quiz": { "progress": "Savol {{current}} / {{total}}" },
+    "result": {
+      "title": "Tahlil tayyor!",
+      "desc": "Javoblaringiz asosida sizga eng mos yo'nalishlar aniqlandi",
+      "ranks": { "first": "Birinchi tavsiya", "second": "Ikkinchi tavsiya", "third": "Uchinchi tavsiya" },
+      "best": "Eng mos",
+      "careers": "Karyera yo'llari",
+      "subjects": "Asosiy fanlar",
+      "cta": "Shlyapa <b>maslahat berdi</b> — ammo yakuniy qaror siz bilan! Qo'shimcha ma'lumot uchun yo'nalishlar sahifasini ko'ring yoki ariza topshiring.",
+      "viewPrograms": "Yo'nalishlarni ko'rish",
+      "apply": "Ariza topshirish",
+      "restart": "Qayta o'tish"
+    },
+    "questions": {
+      "1": {
+        "q": "Bo'sh vaqtingizda nima qilishni yaxshi ko'rasiz?",
+        "opts": { "a": "Dasturlash yoki texnik loyihalar ustida ishlashni yaxshi ko'raman", "b": "Bolalar bilan o'ynab, ularga nimadir o'rgataman", "c": "Kitob o'qiyman, chet til o'rganaman", "d": "Hisob-kitob qilaman, moliyaviy rejalar tuzaman" }
+      },
+      "2": {
+        "q": "Qaysi fan sizga eng qiziqarli?",
+        "opts": { "a": "Matematika va fizika — aniq javoblar yoqadi", "b": "Psixologiya va falsafa — inson tafakkuri qiziq", "c": "Adabiyot va tillar — so'z va ifoda kuchida", "d": "Kimyo va biologiya — tabiat sirlari" }
+      },
+      "3": {
+        "q": "Muammo yuzaga kelganda qanday harakat qilasiz?",
+        "opts": { "a": "Mantiqiy tahlil qilib, ketma-ket yechaman", "b": "Odamlar bilan muloqot qilib, birgalikda hal qilaman", "c": "Ijodiy yondashuv — noodatiy yechimlar qidiraman", "d": "Qoidalar va qonunlarga asoslanib harakat qilaman" }
+      },
+      "4": {
+        "q": "Kelajakda qanday ish qilishni xohlaysiz?",
+        "opts": { "a": "Dastur va ilovalar yaratib, texnologiya dunyosida", "b": "Yosh avlodni tarbiyalab, ta'lim sohasida ishlashni", "c": "Bank, moliya yoki biznesda pul boshqarishni", "d": "Odamlarga psixologik yordam ko'rsatishni" }
+      },
+      "5": {
+        "q": "Jamoada qanday rol o'ynaysiz?",
+        "opts": { "a": "Rahbar — qarorlar qabul qilaman, yo'naltiraman", "b": "Tahlilchi — ma'lumotlarni o'rganib, tavsiya beraman", "c": "Muloqotchi — muammolarni muzokaralar orqali hal qilaman", "d": "Ijodkor — yangi g'oyalar taklif qilaman" }
+      },
+      "6": {
+        "q": "Qaysi ish muhiti sizga ko'proq yoqadi?",
+        "opts": { "a": "Ofis va kompyuter — sokin, analitik muhit", "b": "Sinfxona — bolalar va yoshlar bilan ishlash", "c": "Ko'p odamlar — muloqot, seminar, treninglar", "d": "Dala va amaliy joy — qurilma va texnika bilan" }
+      },
+      "7": {
+        "q": "Quyidagilardan qaysi biri sizni ilhomlantiradi?",
+        "opts": { "a": "Yangi texnologiyalar va sun'iy intellekt", "b": "Yosh bolaning biror narsani tushunib yetishi", "c": "Adolat o'rnatilishi va qonun himoyasi", "d": "Moliyaviy mustaqillik va biznes muvaffaqiyati" }
+      },
+      "8": {
+        "q": "Chet tillarini o'rganishga munosabatingiz?",
+        "opts": { "a": "Juda yaxshi ko'raman — tillar meni hayajonga soladi", "b": "Ish uchun kerak — ingliz tilini bilsam yetarli", "c": "O'rganaman, lekin asosiy ixtisosim muhimroq", "d": "Qiziqarli, lekin aniq fanlar menga yaqinroq" }
+      },
+      "9": {
+        "q": "Maktabda qaysi fan olimpiadasida qatnashgan bo'lardingiz?",
+        "opts": { "a": "Matematika yoki fizika — aniq fanlar meni qiziqtiradi", "b": "Biologiya yoki kimyo — tabiat va moddalar sirlarini sevaman", "c": "Ona tili yoki adabiyot — so'z va ifoda kuchida", "d": "Tarix yoki huquqshunoslik — jamiyat va qonunlar qiziq" }
+      },
+      "10": {
+        "q": "Do'stlaringiz muammoga duchor bo'lsa, sizdan nima so'rashadi?",
+        "opts": { "a": "Texnik yordam — kompyuter, dastur yoki internet masalalarida", "b": "Moliyaviy maslahat — pul, qarz yoki investitsiya haqida", "c": "Gaplashish va ruhiy qo'llab-quvvatlash", "d": "Qonuniy maslahat — huquq va hujjatlar bo'yicha" }
+      },
+      "11": {
+        "q": "Qaysi lavozim sizga eng jozibali?",
+        "opts": { "a": "Dasturchi yoki IT menejeri — texnologiya kompaniyasida", "b": "Bog'cha yoki boshlang'ich maktab o'qituvchisi", "c": "Moliyaviy tahlilchi yoki auditor — bank yoki kompaniyada", "d": "Advokat yoki yurist — huquq va adolat himoyachisi" }
+      },
+      "12": {
+        "q": "Erkin vaqtingizda qaysi video yoki kontent ko'rishni yaxshi ko'rasiz?",
+        "opts": { "a": "Texnologiya, dasturlash va sun'iy intellekt haqida", "b": "Bolalar bilan qiziqarli tajribalar va ta'lim videolari", "c": "Inson psixologiyasi, munosabatlar va motivatsiya", "d": "Neft, geologiya, sanoat va energetika haqida" }
+      },
+      "13": {
+        "q": "Qaysi ko'nikma sizda eng kuchli deb o'ylaysiz?",
+        "opts": { "a": "Mantiqiy fikrlash va muammolarni tizimli yechish", "b": "Til va muloqot — odamlar bilan oson til topaman", "c": "Raqamlar va hisoblar — moliyaviy hisob-kitob oson", "d": "Empatiya — odamlarni tushunish va yordam berish" }
+      },
+      "14": {
+        "q": "Qaysi jumla sizning hayot falsafangizga eng mos keladi?",
+        "opts": { "a": "\"Har bir bola — kelajak, ularni to'g'ri tarbiyalash zarur\"", "b": "\"Texnologiya dunyoni o'zgartiradi — men ham shu jarayonda\"", "c": "\"Qonun hammaga teng — adolat uchun kurashish kerak\"", "d": "\"Pul — vosita, uni to'g'ri boshqarish san'at\"" }
+      }
+    },
+    "faculties": {
+      "it": {
+        "name": "Dasturiy injiniring",
+        "desc": "Mantiqiy tafakkur, texnologiyalarga qiziqish va muammolarni algoritmik yechish — IT sohasida katta kelajak siz uchun!",
+        "career": ["Dasturchi (Frontend/Backend)", "Mobile Developer", "Data Scientist", "DevOps Engineer"],
+        "subjects": ["Algoritmlar va ma'lumotlar tuzilmasi", "Web dasturlash", "Ma'lumotlar bazasi", "Sun'iy intellekt"]
+      },
+      "maktab": {
+        "name": "Maktabgacha ta'lim",
+        "desc": "Bolalarga bo'lgan mehrli munosabat, sabr-toqat va ijodkorlik — yosh avlodning birinchi murabbiysi bo'lasiz!",
+        "career": ["Maktabgacha ta'lim muallimi", "Bog'cha direktori", "Ta'lim metodisti", "Bolalar psixologi"],
+        "subjects": ["Bolalar psixologiyasi", "O'yin texnologiyalari", "Musiqa va san'at", "Pedagogika"]
+      },
+      "boshlang": {
+        "name": "Boshlang'ich ta'lim",
+        "desc": "Bolalarga bilim berishga intilasiz, sabr-toqatli va mehribonsiz. Boshlang'ich sinf o'qituvchisi kelajakni quradi!",
+        "career": ["Boshlang'ich sinf o'qituvchisi", "Ta'lim metodisti", "Maktab direktori", "Tarbiyachi"],
+        "subjects": ["Pedagogika", "Ona tili va adabiyot", "Matematika metodikasi", "Bolalar psixologiyasi"]
+      },
+      "psixo": {
+        "name": "Psixologiya",
+        "desc": "Odamlarni tushunish, ichki dunyoni tahlil qilish — psixolog sifatida jamiyatga ulkan hissa qo'sha olasiz!",
+        "career": ["Klinik psixolog", "HR menejeri", "Oilaviy maslahatchi", "Ta'lim psixologi"],
+        "subjects": ["Umumiy psixologiya", "Ijtimoiy psixologiya", "Psixodiagnostika", "Psixoterapiya"]
+      },
+      "filolog": {
+        "name": "Filologiya va tillarni o'qitish",
+        "desc": "Tillar va adabiyotga bo'lgan sevgi, so'z bilan ishlash qobiliyati — ajoyib tilshunos yoki tarjimon bo'lasiz!",
+        "career": ["Ingliz tili o'qituvchisi", "Tarjimon", "Jurnalist", "Diplomat"],
+        "subjects": ["Ingliz tili adabiyoti", "Tilshunoslik nazariyasi", "Tarjima nazariyasi", "Chet tili o'qitish metodikasi"]
+      },
+      "neft": {
+        "name": "Neft va gaz ishi",
+        "desc": "Texnik fanlarni yaxshi ko'rasiz, amaliy ishlarga qiziqasiz. Neft-gaz sanoati — Qashqadaryoning tayanchi!",
+        "career": ["Neft-gaz muhandisi", "Gidrogeolog", "Texnologik jarayon mutaxassisi", "Energetika menejeri"],
+        "subjects": ["Neft va gaz geologiyasi", "Qazib olish texnologiyasi", "Kimyoviy texnologiya", "Ekologiya"]
+      },
+      "moliya": {
+        "name": "Moliya va moliyaviy texnologiyalar",
+        "desc": "Hisob-kitob, moliyaviy tahlil va biznes qiziqtiradi. FinTech — kelajakdagi eng istiqbolli soha!",
+        "career": ["Moliya tahlilchisi", "Bank mutaxassisi", "Investitsiya maslahatchi", "FinTech startap asoschisi"],
+        "subjects": ["Moliya nazariyasi", "Korporativ moliya", "Raqamli moliya", "Qimmatli qog'ozlar bozori"]
+      },
+      "buxgal": {
+        "name": "Buxgalteriya hisobi",
+        "desc": "Aniqlik, qoidalarga rioya va raqamlar bilan ishlash sizning kuchli tomoningiz. Har bir tashkilot tajribali buxgalterni kutadi!",
+        "career": ["Buxgalter", "Auditor", "Soliq maslahatchi", "Moliyaviy nazoratchi"],
+        "subjects": ["Buxgalteriya hisobi", "Moliyaviy audit", "Soliq huquqi", "Xalqaro moliyaviy hisobot"]
+      },
+      "huquq": {
+        "name": "Milliy g'oya va huquq ta'limi",
+        "desc": "Adolat va qonunga hurmat asosiy qadriyatingiz. Fuqarolar huquqini himoya qiladigan mutaxassis bo'lasiz!",
+        "career": ["Huquqshunoslik o'qituvchisi", "Yurist-maslahatchi", "Davlat xizmatchisi", "Notarius"],
+        "subjects": ["Konstitutsiyaviy huquq", "Fuqarolik huquqi", "Milliy g'oya va ma'naviyat", "Xalqaro huquq"]
+      }
+    }
+  },
+  "search": {
+    "open": "Qidiruv",
+    "placeholder": "Qidiring... (yo'nalish, sahifa)",
+    "clear": "Qidiruvni tozalash",
+    "found_one": "{{count}} natija topildi",
+    "found_other": "{{count}} natija topildi",
+    "noResults": "Hech narsa topilmadi",
+    "noResultsFor": "\"{{query}}\" bo'yicha natija yo'q",
+    "quickLinks": "Tezkor havolalar",
+    "hints": { "select": "Tanlash", "go": "O'tish", "close": "Yopish" },
+    "categories": { "program": "Fakultet", "page": "Sahifa", "admission": "Qabul", "media": "Media", "contact": "Kontakt", "university": "Universitet" },
+    "items": {
+      "preschool": "Maktabgacha ta'lim",
+      "primary": "Boshlang'ich ta'lim",
+      "softwareEng": "Dasturiy injiniring",
+      "economics": "Iqtisodiyot",
+      "psychology": "Psixologiya",
+      "philology": "Filologiya va tillarni o'qitish",
+      "oilGas": "Neft va gaz ishi",
+      "finance": "Moliya va moliyaviy texnologiyalar",
+      "accounting": "Buxgalteriya hisobi",
+      "nationalIdea": "Milliy g'oya va huquq ta'limi",
+      "admission": "Qabul",
+      "documents": "Hujjatlar topshirish",
+      "apply": "Ariza topshirish",
+      "grants": "Grant stipendiya",
+      "news": "Yangiliklar",
+      "shorts": "YouTube Shorts",
+      "contact": "Bog'lanish",
+      "address": "Manzil kampus",
+      "about": "Biz haqimizda",
+      "mission": "Missiya va maqsad",
+      "leadership": "Rahbariyat",
+      "teachers": "O'qituvchilar",
+      "international": "Xalqaro hamkorlik",
+      "regulations": "Normativ hujjatlar",
+      "vacancies": "Bo'sh ish o'rinlari vakansiyalar",
+      "hemis": "Elektron universitet HEMIS",
+      "faq": "FAQ savol javob",
+      "events": "Tadbirlar taqvimi",
+      "testimonials": "Talabalar sharhlari",
+      "achievements": "Yutuqlar mukofotlar",
+      "gallery": "Fotogalereya rasmlar",
+      "map": "Xarita kampus joylashuvi",
+      "qrcode": "QR Kod Telegram kanal"
+    },
+    "quick": { "admission": "Qabul", "programs": "Yo'nalishlar", "contact": "Bog'lanish", "news": "Yangiliklar", "hemis": "HEMIS", "about": "Biz haqimizda" }
+  },
+  "applyModal": {
+    "closeModal": "Modalni yopish",
+    "title": "Ariza topshirish",
+    "subtitle": "Ma'lumotlaringizni kiriting — biz siz bilan bog'lanamiz",
+    "fullName": "To'liq ism *",
+    "fullNamePlaceholder": "Ism Familiya",
+    "phone": "Telefon raqam *",
+    "program": "Yo'nalish",
+    "programPlaceholder": "Yo'nalishni tanlang",
+    "comment": "Qo'shimcha izoh",
+    "commentPlaceholder": "Savollaringiz bo'lsa yozing...",
+    "error": "Arizani yuborishda xatolik yuz berdi. Internet aloqasini tekshirib, qayta urinib ko'ring.",
+    "submit": "Yuborish",
+    "sending": "Yuborilmoqda...",
+    "successTitle": "Ariza yuborildi!",
+    "successDesc": "Tez orada siz bilan bog'lanamiz.",
+    "close": "Yopish",
+    "programs": {
+      "preschool": "Maktabgacha ta'lim",
+      "primary": "Boshlang'ich ta'lim",
+      "softwareEng": "Dasturiy injiniring",
+      "economics": "Iqtisodiyot",
+      "finance": "Moliya va moliyaviy texnologiyalar",
+      "accounting": "Buxgalteriya hisobi",
+      "psychology": "Psixologiya",
+      "philology": "Filologiya va tillarni o'qitish",
+      "oilGas": "Neft va gaz ishi",
+      "nationalIdea": "Milliy g'oya va huquq ta'limi"
+    }
   }
 }

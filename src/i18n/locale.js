@@ -16,9 +16,15 @@ const PREFIXED_LANGS = LANGS.filter(l => l !== DEFAULT_LANG)
 // beriladi va indekslashga ruxsat etiladi; qolgan /en/* sahifalar hozircha o'zbekcha
 // matn ko'rsatgani uchun `noindex` bo'ladi (aks holda Google "ingliz" sahifa deb
 // o'zbekcha matnni indekslardi). Har bosqichda shu ro'yxat kengaytiriladi.
+// Eslatma: bazadan keladigan kontent (yangilik, tadbir, o'qituvchi, galereya, vakansiya)
+// o'zbekcha qoladi (ContentLangNote bilan belgilangan) — bu sahifalarda interfeys tarjima
+// qilingani uchun ro'yxatda. Dinamik /news/:id esa maqola matni o'zbekcha bo'lgani sababli
+// ro'yxatda YO'Q va /en/news/:id `noindex` bo'lib qoladi.
 export const TRANSLATED_PATHS = new Set([
   '/', '/admission', '/international', '/contact', '/faq',
   '/about', '/faculty', '/hemis', '/documents',
+  '/achievements', '/testimonials', '/map', '/qrcode', '/gallery',
+  '/teachers', '/events', '/vacancies', '/news', '/sorting-hat',
 ])
 
 // `/admin` hech qachon tilga bog'lanmaydi (faqat admin uchun, o'zbekcha)

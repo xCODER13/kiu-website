@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import useNavigate from '../../i18n/useLocalizedNavigate'
 import { getCategoryColor, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 
 // ── NEWS CARD ── (News.jsx'dan o'zgarishsiz ko'chirilgan)
 export default function NewsCard({ item }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const catColor = getCategoryColor(item.category)
   return (
@@ -30,18 +32,18 @@ export default function NewsCard({ item }) {
               fontSize: 10, fontWeight: 600, color: catColor,
               background: `${catColor}18`, padding: '2px 8px', borderRadius: 20,
             }}>
-              {getCategoryLabel(item.category)}
+              {getCategoryLabel(item.category, t)}
             </span>
           )}
-          <span style={{ fontSize: 11, color: 'var(--muted)' }}>{new Date(item.createdAt).toLocaleDateString('uz-UZ')}</span>
+          <span style={{ fontSize: 11, color: 'var(--muted)' }}>{new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}</span>
         </div>
-        <h3 style={{
+        <h3 lang="uz" style={{
           fontSize: 13, fontWeight: 600, color: 'var(--text)', lineHeight: 1.5, marginBottom: 6,
           fontFamily: 'var(--font-body)', display: '-webkit-box', WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical', overflow: 'hidden',
         }}>{item.title}</h3>
         {item.content && (
-          <p style={{
+          <p lang="uz" style={{
             fontSize: 12, color: 'var(--muted)', lineHeight: 1.5,
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}>{item.content}</p>
@@ -63,7 +65,7 @@ export default function NewsCard({ item }) {
             onMouseEnter={e => e.currentTarget.style.opacity = '.85'}
             onMouseLeave={e => e.currentTarget.style.opacity = '1'}
           >
-            Batafsil →
+            {t('news.more')}
           </button>
         </div>
       </div>

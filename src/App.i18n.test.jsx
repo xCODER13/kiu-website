@@ -124,16 +124,23 @@ describe('SEO: hreflang / canonical / robots', () => {
     expect(hreflangs()).toEqual({ uz: `${SITE}/about`, en: `${SITE}/en/about`, 'x-default': `${SITE}/about` })
   })
 
-  it("hali tarjima qilinmagan /en/news: noindex va hreflang yo'q", async () => {
-    renderAt('/en/news')
-    await screen.findByText('NEWS')
+  it("hali tarjima qilinmagan /en/news/:id (kontent o'zbekcha): noindex va hreflang yo'q", async () => {
+    renderAt('/en/news/abc')
+    await screen.findByText('NEWS-DETAIL')
     expect(robots()).toBe('noindex, follow')
     expect(hreflangs()).toEqual({})
   })
 
-  it("o'zbekcha /news: indekslanadi, hreflang yo'q (hali inglizcha varianti yo'q)", async () => {
-    renderAt('/news')
+  it("/en/news (interfeys tarjima qilingan): indekslanadi, hreflang to'plami bor", async () => {
+    renderAt('/en/news')
     await screen.findByText('NEWS')
+    expect(robots()).toBe('index, follow')
+    expect(hreflangs()).toEqual({ uz: `${SITE}/news`, en: `${SITE}/en/news`, 'x-default': `${SITE}/news` })
+  })
+
+  it("o'zbekcha /news/:id: indekslanadi, hreflang yo'q (inglizcha varianti yo'q)", async () => {
+    renderAt('/news/abc')
+    await screen.findByText('NEWS-DETAIL')
     expect(robots()).toBe('index, follow')
     expect(hreflangs()).toEqual({})
   })

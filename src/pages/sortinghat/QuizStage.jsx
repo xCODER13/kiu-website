@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { IcQuestion, IcCheck, IcArrow } from './Icons.jsx'
 import { QUESTIONS } from './Data'
 
 /* ── Quiz Stage ────────────────────────────────────────────── */
 export default function QuizStage({ current, selected, busy, onPick }) {
+  const { t } = useTranslation()
   const pct = (current / QUESTIONS.length) * 100
 
   return (
@@ -12,7 +14,7 @@ export default function QuizStage({ current, selected, busy, onPick }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 12, color: 'var(--muted)' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <IcQuestion />
-            <span style={{ marginLeft: 2 }}>Savol {current + 1} / {QUESTIONS.length}</span>
+            <span style={{ marginLeft: 2 }}>{t('sortingHat.quiz.progress', { current: current + 1, total: QUESTIONS.length })}</span>
           </span>
           <span style={{ fontWeight: 600, color: '#7c3aed' }}>{Math.round(pct)}%</span>
         </div>
@@ -33,7 +35,7 @@ export default function QuizStage({ current, selected, busy, onPick }) {
           {QUESTIONS[current].icon}
         </div>
         <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1.55, fontFamily: 'var(--font-body)' }}>
-          {QUESTIONS[current].q}
+          {t(`sortingHat.questions.${QUESTIONS[current].id}.q`)}
         </h2>
       </div>
 
@@ -59,7 +61,7 @@ export default function QuizStage({ current, selected, busy, onPick }) {
               <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .18s', background: isSel ? 'linear-gradient(135deg,#7c3aed,#4f46e5)' : 'var(--bg-2)', border: `2px solid ${isSel ? '#7c3aed' : 'var(--border)'}`, color: isSel ? '#fff' : 'var(--muted)', fontSize: 12, fontWeight: 700 }}>
                 {isSel ? <IcCheck s={13} c="#fff" /> : ['A','B','C','D'][i]}
               </div>
-              <span style={{ lineHeight: 1.5 }}>{opt.t}</span>
+              <span style={{ lineHeight: 1.5 }}>{t(`sortingHat.questions.${QUESTIONS[current].id}.opts.${opt.id}`)}</span>
               {isSel && <span style={{ marginLeft: 'auto', flexShrink: 0, color: '#7c3aed' }}><IcArrow /></span>}
             </button>
           )

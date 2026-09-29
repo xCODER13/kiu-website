@@ -371,5 +371,433 @@
         "career": ["Economist-analyst", "Public administration specialist", "Consultant", "Researcher", "International organization specialist"]
       }
     }
+  },
+  "achievements": {
+    "title": "Achievements and awards",
+    "subtitle": "Achievements of KIU",
+    "awards": {
+      "1": { "title": "Educational Institution of the Year", "org": "Ministry of Education of Uzbekistan" },
+      "2": { "title": "Best Private University", "org": "Kashkadarya Regional Governor's Office" },
+      "3": { "title": "International Olympiad Winner", "org": "Youth Innovation Festival" },
+      "4": { "title": "Partnership Award", "org": "INTI International University" },
+      "5": { "title": "Sports Competition Winner", "org": "Inter-University Sports Games" },
+      "6": { "title": "Innovation Project Award", "org": "StartUp Uzbekistan 2023" },
+      "7": { "title": "Pride of the Nation — 1st Place", "org": "Republican Competition" },
+      "8": { "title": "Zakovat Cup Winner", "org": "KIU Rector's Cup" }
+    }
+  },
+  "testimonials": {
+    "title": "Student reviews",
+    "subtitle": "What our students say about KIU",
+    "year": "Year {{n}}",
+    "graduate": "Graduate",
+    "reviews": {
+      "1": { "faculty": "Software Engineering", "text": "Studying at KIU changed my life. Thanks to modern teaching methods and professional teachers, I have learned a great deal." },
+      "2": { "faculty": "Economics", "text": "The international cooperation programs and scholarship opportunities are excellent. I got the chance to study at foreign universities." },
+      "3": { "faculty": "Psychology", "text": "The teachers are always ready to help. The campus atmosphere is very warm and friendly. I am happy I chose KIU!" },
+      "4": { "faculty": "Finance", "text": "The free bus, the dormitory and the modern library — all of these have made studying comfortable." },
+      "5": { "faculty": "Philology", "text": "The opportunity to take part in international conferences is wonderful. This experience matters a lot for my future plans." },
+      "6": { "faculty": "Software Engineering", "text": "Thanks to the knowledge I gained at KIU, I was able to find a good job. I am proud of our university!" }
+    }
+  },
+  "map": {
+    "title": "Campus map",
+    "subtitle": "Locations of the KIU campuses",
+    "campus": "Campus {{n}}"
+  },
+  "qrcode": {
+    "title": "QR codes",
+    "subtitle": "Official KIU social media — scan with your phone camera",
+    "socials": {
+      "Telegram": { "desc": "Official Telegram channel" },
+      "Instagram": { "desc": "Official Instagram page" },
+      "YouTube": { "desc": "Official YouTube channel" },
+      "Facebook": { "desc": "Official Facebook page" }
+    },
+    "goTo": "Go to {{name}}",
+    "howTitle": "How to use",
+    "howText": "Point your phone camera at the QR code → the link opens automatically → subscribe and start getting the news!"
+  },
+  "gallery": {
+    "title": "Photo gallery",
+    "subtitle": "Snapshots from life at KIU",
+    "error": "Could not load the gallery. Please reload the page.",
+    "empty": "Real photos will be added soon",
+    "close": "Close",
+    "prev": "Previous photo",
+    "next": "Next photo"
+  },
+  "teachers": {
+    "title": "Faculty members",
+    "subtitle": "KIU's team of qualified teachers",
+    "departments": "Departments",
+    "all": "All teachers",
+    "offline": "Could not connect to the server — showing saved data",
+    "count_one": "{{count}} person",
+    "count_other": "{{count}} people",
+    "empty": "No teachers are assigned to this department"
+  },
+  "events": {
+    "title": "Events calendar",
+    "subtitle": "Upcoming events at KIU",
+    "offline": "Could not connect to the server — showing saved data",
+    "closeHint": "Close (Esc)",
+    "closeLabel": "Close dialog",
+    "dateFull": "{{day}} {{month}} {{year}}",
+    "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "monthsShort": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "types": { "open": "Open day", "culture": "Culture", "science": "Science", "sport": "Sport", "graduation": "Graduates", "admission": "Admission", "general": "General" }
+  },
+  "validation": {
+    "required": "This field is required",
+    "lettersOnly": "Use letters only (no digits or symbols)",
+    "fullNameIncomplete": "Enter your first and last name in full",
+    "nameWordLength": "Each word must be at least 2 letters long",
+    "phoneInvalid": "Invalid phone number. Example: +998 90 123 45 67",
+    "emailInvalid": "Invalid email address format",
+    "fieldRequired": "{{field}} is required"
+  },
+  "vacancies": {
+    "badge": "Open positions available",
+    "title": "Join our team!",
+    "subtitle": "Karshi International University invites proactive, qualified and dedicated professionals to join its team.",
+    "tabs": { "info": "Information", "form": "Apply" },
+    "fieldNames": { "position": "Position", "faculty": "Department", "education": "Education level", "experience": "Work experience" },
+    "info": {
+      "whyTitle": "Why KIU?",
+      "whyText": "Here you will find not just a job, but the chance to grow, do research and realize your potential. We want to work together to develop knowledgeable, mature and modern-minded professionals.",
+      "offerTitle": "What we offer",
+      "benefits": {
+        "salary": { "title": "Competitive salary", "desc": "Pay above the market rate" },
+        "infra": { "title": "Modern infrastructure", "desc": "Academic and technical equipment" },
+        "international": { "title": "International projects", "desc": "Conferences and foreign cooperation" },
+        "career": { "title": "Career growth", "desc": "Professional development opportunities" },
+        "team": { "title": "Friendly team", "desc": "Support for new staff as they settle in" },
+        "research": { "title": "Research", "desc": "Opportunities for research and publications" }
+      },
+      "reqTitle": "General requirements",
+      "requirements": {
+        "education": "A higher education degree in a relevant field (at least a master's degree for teaching positions)",
+        "skills": "Knowledge of modern teaching methods and information technology",
+        "growth": "A drive for self-improvement and openness to new ideas",
+        "teamwork": "Responsibility, communication skills and the ability to work in a team"
+      },
+      "howTitle": "How can I apply?",
+      "byEmail": "By email",
+      "sendDocs": "Send your documents to <b>{{email}}</b>:",
+      "reviewTime": "Applications are reviewed within <b>7 working days</b>",
+      "contact": "Contact",
+      "phone1": "Phone 1",
+      "phone2": "Phone 2",
+      "cta": "Apply online →"
+    },
+    "docs": { "cv": "Resume (CV)", "resume": "Personal data sheet (obyektivka)", "diplomas": "Copies of diplomas and certificates", "portfolio": "Portfolio (if available)" },
+    "form": {
+      "title": "Job application form",
+      "subtitle": "Please fill in all fields fully and accurately. Your application will be reviewed within 7 working days.",
+      "personal": "Personal information",
+      "fullName": "Full name *",
+      "fullNamePh": "Last name, first name, patronymic",
+      "phone": "Phone *",
+      "work": "Work information",
+      "position": "Position *",
+      "faculty": "Department *",
+      "education": "Education level *",
+      "experience": "Work experience *",
+      "extra": "Additional information",
+      "about": "A short note about yourself",
+      "aboutPh": "Tell us about your experience, your skills and why you want to join KIU...",
+      "hasPortfolio": "I have a portfolio",
+      "docsReminder": "Send your documents by email: {{email}}",
+      "error": "Something went wrong while submitting your application. Check your internet connection and try again.",
+      "sending": "Sending...",
+      "submit": "Submit application",
+      "successTitle": "Your application has been received!",
+      "successText": "Dear <b>{{name}}</b>, your application has been submitted successfully. Our specialists will contact you within <b>7 working days</b>.",
+      "newApplication": "New application",
+      "backToInfo": "Back to information",
+      "options": {
+        "position": { "teacher": "Teacher", "seniorTeacher": "Senior teacher", "docent": "Associate professor", "professor": "Professor", "lab": "Laboratory assistant", "methodist": "Methodologist", "adminStaff": "Administrative staff", "itSpecialist": "IT specialist", "other": "Other" },
+        "faculty": {
+          "exact": "Department of Exact Sciences",
+          "humanities": "Department of Social Sciences and Humanities",
+          "languages": "Department of Languages",
+          "econEng": "Department of Economics and Engineering",
+          "administration": "Administration",
+          "itDept": "IT department",
+          "sportDept": "Sports department",
+          "other": "Other"
+        },
+        "education": { "bachelor": "Bachelor's", "master": "Master's", "phd": "PhD", "doctor": "Doctor of Sciences" },
+        "experience": { "none": "No experience", "lt1": "Less than 1 year", "y1_3": "1–3 years", "y3_5": "3–5 years", "y5_10": "5–10 years", "gt10": "More than 10 years" }
+      },
+      "select": "Select"
+    }
+  },
+  "news": {
+    "title": "News",
+    "subtitle": "The latest news from KIU",
+    "tabs": { "news": "News", "video": "Video" },
+    "empty": "No news yet",
+    "emptyHint": "Add news through the admin panel",
+    "allNews": "All news (@kiu_uz) →",
+    "offline": "Could not connect to the server",
+    "searchPh": "Search within the news...",
+    "all": "All",
+    "noResults": "Nothing found for \"{{query}}\"",
+    "loadMore": "Load more ({{count}} left)",
+    "more": "Read more →",
+    "prevNews": "Previous news",
+    "nextNews": "Next news",
+    "goSlide": "Go to slide {{n}}",
+    "channelTitle": "KIU YouTube channel",
+    "channelGo": "Go to the channel →",
+    "watch": "Watch on YouTube →",
+    "back": "Back to news",
+    "backArrow": "← Back to news",
+    "notFound": "News not found",
+    "views_one": "{{count}} view",
+    "views_other": "{{count}} views",
+    "noContent": "No text provided.",
+    "prevImage": "Previous photo",
+    "nextImage": "Next photo",
+    "imageN": "Photo {{n}}"
+  },
+  "sortingHat": {
+    "badge": "KIU Sorting Hat",
+    "title": "Which program is right for you?",
+    "subtitle": "Answer a few questions — the system will analyze your interests and recommend the best-matching program!",
+    "backToAdmission": "Admission page",
+    "intro": {
+      "cards": {
+        "questions": { "title": "{{n}} questions", "desc": "Simple and engaging" },
+        "time": { "title": "3 minutes", "desc": "Quick and accurate" },
+        "top3": { "title": "Top 3 picks", "desc": "Programs that fit you" },
+        "personal": { "title": "Personal analysis", "desc": "Just for you" }
+      },
+      "howTitle": "How does it work?",
+      "steps": {
+        "1": { "title": "Answer the questions", "desc": "For each question, pick the option that suits you best" },
+        "2": { "title": "The system analyzes", "desc": "Your strengths are identified from your answers" },
+        "3": { "title": "Get recommendations", "desc": "Your top 3 matching programs and career options are shown" },
+        "4": { "title": "The decision is yours", "desc": "The hat gives advice — the final choice is yours!" }
+      },
+      "start": "Start the test"
+    },
+    "register": {
+      "title": "One step left!",
+      "desc": "Enter your details so our specialists can contact you once your result is ready",
+      "name": "Full name *",
+      "namePlaceholder": "e.g. Ali Valiyev",
+      "phone": "Phone number *",
+      "back": "Back",
+      "start": "Start the test →",
+      "privacy": "Your details are used only so KIU specialists can contact you"
+    },
+    "quiz": { "progress": "Question {{current}} / {{total}}" },
+    "result": {
+      "title": "Analysis complete!",
+      "desc": "Based on your answers, the programs that suit you best have been identified",
+      "ranks": { "first": "First recommendation", "second": "Second recommendation", "third": "Third recommendation" },
+      "best": "Best match",
+      "careers": "Career paths",
+      "subjects": "Core subjects",
+      "cta": "The hat has <b>given its advice</b> — but the final decision is yours! See the Programs page for more information or submit an application.",
+      "viewPrograms": "View programs",
+      "apply": "Apply now",
+      "restart": "Retake the test"
+    },
+    "questions": {
+      "1": {
+        "q": "What do you like to do in your free time?",
+        "opts": { "a": "I enjoy programming or working on technical projects", "b": "I play with children and teach them something", "c": "I read books and learn foreign languages", "d": "I do calculations and make financial plans" }
+      },
+      "2": {
+        "q": "Which subject interests you the most?",
+        "opts": { "a": "Mathematics and physics — I like exact answers", "b": "Psychology and philosophy — human thinking fascinates me", "c": "Literature and languages — the power of words and expression", "d": "Chemistry and biology — the secrets of nature" }
+      },
+      "3": {
+        "q": "How do you act when a problem comes up?",
+        "opts": { "a": "I analyze it logically and solve it step by step", "b": "I talk it through with people and solve it together", "c": "A creative approach — I look for unconventional solutions", "d": "I act based on rules and laws" }
+      },
+      "4": {
+        "q": "What kind of work do you want to do in the future?",
+        "opts": { "a": "Creating software and apps in the world of technology", "b": "Raising the younger generation and working in education", "c": "Managing money in banking, finance or business", "d": "Providing psychological support to people" }
+      },
+      "5": {
+        "q": "What role do you play in a team?",
+        "opts": { "a": "Leader — I make decisions and give direction", "b": "Analyst — I study the data and make recommendations", "c": "Communicator — I resolve problems through negotiation", "d": "Creative — I come up with new ideas" }
+      },
+      "6": {
+        "q": "Which work environment do you like more?",
+        "opts": { "a": "Office and computer — a quiet, analytical setting", "b": "Classroom — working with children and young people", "c": "Lots of people — communication, seminars, trainings", "d": "Field and hands-on work — with equipment and machinery" }
+      },
+      "7": {
+        "q": "Which of these inspires you?",
+        "opts": { "a": "New technologies and artificial intelligence", "b": "A young child coming to understand something", "c": "Justice being served and the law protecting people", "d": "Financial independence and business success" }
+      },
+      "8": {
+        "q": "How do you feel about learning foreign languages?",
+        "opts": { "a": "I love it — languages excite me", "b": "I need it for work — knowing English is enough", "c": "I'll learn, but my main specialty matters more", "d": "Interesting, but exact sciences are closer to me" }
+      },
+      "9": {
+        "q": "Which school subject Olympiad would you have entered?",
+        "opts": { "a": "Mathematics or physics — exact sciences interest me", "b": "Biology or chemistry — I love the secrets of nature and substances", "c": "Native language or literature — the power of words and expression", "d": "History or law — society and laws are interesting to me" }
+      },
+      "10": {
+        "q": "When your friends run into trouble, what do they ask you for?",
+        "opts": { "a": "Technical help — with computers, software or the internet", "b": "Financial advice — about money, debt or investment", "c": "A talk and emotional support", "d": "Legal advice — on law and documents" }
+      },
+      "11": {
+        "q": "Which position appeals to you the most?",
+        "opts": { "a": "Developer or IT manager — at a technology company", "b": "Kindergarten or primary school teacher", "c": "Financial analyst or auditor — at a bank or company", "d": "Lawyer or attorney — a defender of law and justice" }
+      },
+      "12": {
+        "q": "What videos or content do you like to watch in your free time?",
+        "opts": { "a": "About technology, programming and artificial intelligence", "b": "Fun experiments and educational videos with kids", "c": "Human psychology, relationships and motivation", "d": "About oil, geology, industry and energy" }
+      },
+      "13": {
+        "q": "Which skill do you think is your strongest?",
+        "opts": { "a": "Logical thinking and solving problems systematically", "b": "Language and communication — I get along with people easily", "c": "Numbers and calculations — financial math comes easily to me", "d": "Empathy — understanding and helping people" }
+      },
+      "14": {
+        "q": "Which sentence best matches your philosophy of life?",
+        "opts": { "a": "\"Every child is the future, and they must be raised right\"", "b": "\"Technology changes the world — and I want to be part of it\"", "c": "\"The law is equal for all — we must fight for justice\"", "d": "\"Money is a tool — managing it well is an art\"" }
+      }
+    },
+    "faculties": {
+      "it": {
+        "name": "Software Engineering",
+        "desc": "Logical thinking, an interest in technology and solving problems algorithmically — a great future in IT is waiting for you!",
+        "career": ["Developer (Frontend/Backend)", "Mobile Developer", "Data Scientist", "DevOps Engineer"],
+        "subjects": ["Algorithms and data structures", "Web development", "Databases", "Artificial intelligence"]
+      },
+      "maktab": {
+        "name": "Preschool Education",
+        "desc": "A caring attitude toward children, patience and creativity — you will be the first mentor of the younger generation!",
+        "career": ["Preschool teacher", "Kindergarten director", "Education methodologist", "Child psychologist"],
+        "subjects": ["Child psychology", "Play-based learning technologies", "Music and art", "Pedagogy"]
+      },
+      "boshlang": {
+        "name": "Primary Education",
+        "desc": "You want to teach children, and you are patient and kind. A primary school teacher builds the future!",
+        "career": ["Primary school teacher", "Education methodologist", "School principal", "Educator"],
+        "subjects": ["Pedagogy", "Native language and literature", "Mathematics teaching methods", "Child psychology"]
+      },
+      "psixo": {
+        "name": "Psychology",
+        "desc": "Understanding people and analyzing the inner world — as a psychologist you can make a great contribution to society!",
+        "career": ["Clinical psychologist", "HR manager", "Family counselor", "Educational psychologist"],
+        "subjects": ["General psychology", "Social psychology", "Psychodiagnostics", "Psychotherapy"]
+      },
+      "filolog": {
+        "name": "Philology and Language Teaching",
+        "desc": "A love of languages and literature and a way with words — you will make an excellent linguist or translator!",
+        "career": ["English teacher", "Translator", "Journalist", "Diplomat"],
+        "subjects": ["English literature", "Linguistic theory", "Translation theory", "Foreign language teaching methods"]
+      },
+      "neft": {
+        "name": "Oil and Gas Engineering",
+        "desc": "You enjoy technical subjects and hands-on work. The oil and gas industry is the backbone of Kashkadarya!",
+        "career": ["Oil and gas engineer", "Hydrogeologist", "Process technology specialist", "Energy manager"],
+        "subjects": ["Oil and gas geology", "Extraction technology", "Chemical technology", "Ecology"]
+      },
+      "moliya": {
+        "name": "Finance and Financial Technologies",
+        "desc": "You are interested in calculation, financial analysis and business. FinTech is the most promising field of the future!",
+        "career": ["Financial analyst", "Banking specialist", "Investment advisor", "FinTech startup founder"],
+        "subjects": ["Finance theory", "Corporate finance", "Digital finance", "Securities market"]
+      },
+      "buxgal": {
+        "name": "Accounting",
+        "desc": "Precision, following rules and working with numbers are your strengths. Every organization is looking for a skilled accountant!",
+        "career": ["Accountant", "Auditor", "Tax advisor", "Financial controller"],
+        "subjects": ["Accounting", "Financial audit", "Tax law", "International financial reporting"]
+      },
+      "huquq": {
+        "name": "National Idea and Legal Education",
+        "desc": "Justice and respect for the law are your core values. You will become a specialist who protects citizens' rights!",
+        "career": ["Law teacher", "Legal counsel", "Civil servant", "Notary"],
+        "subjects": ["Constitutional law", "Civil law", "National idea and spirituality", "International law"]
+      }
+    }
+  },
+  "search": {
+    "open": "Search",
+    "placeholder": "Search... (program, page)",
+    "clear": "Clear search",
+    "found_one": "{{count}} result found",
+    "found_other": "{{count}} results found",
+    "noResults": "Nothing found",
+    "noResultsFor": "No results for \"{{query}}\"",
+    "quickLinks": "Quick links",
+    "hints": { "select": "Select", "go": "Go", "close": "Close" },
+    "categories": { "program": "Program", "page": "Page", "admission": "Admission", "media": "Media", "contact": "Contact", "university": "University" },
+    "items": {
+      "preschool": "Preschool Education",
+      "primary": "Primary Education",
+      "softwareEng": "Software Engineering",
+      "economics": "Economics",
+      "psychology": "Psychology",
+      "philology": "Philology and Language Teaching",
+      "oilGas": "Oil and Gas Engineering",
+      "finance": "Finance and Financial Technologies",
+      "accounting": "Accounting",
+      "nationalIdea": "National Idea and Legal Education",
+      "admission": "Admission",
+      "documents": "Document submission",
+      "apply": "Submit an application",
+      "grants": "Grants and scholarships",
+      "news": "News",
+      "shorts": "YouTube Shorts",
+      "contact": "Contact",
+      "address": "Address and campus",
+      "about": "About us",
+      "mission": "Mission and goals",
+      "leadership": "Leadership",
+      "teachers": "Faculty and staff",
+      "international": "International cooperation",
+      "regulations": "Official documents",
+      "vacancies": "Job openings and vacancies",
+      "hemis": "HEMIS electronic university",
+      "faq": "FAQ — questions and answers",
+      "events": "Events calendar",
+      "testimonials": "Student testimonials",
+      "achievements": "Achievements and awards",
+      "gallery": "Photo gallery",
+      "map": "Map and campus location",
+      "qrcode": "QR code, Telegram channel"
+    },
+    "quick": { "admission": "Admission", "programs": "Programs", "contact": "Contact", "news": "News", "hemis": "HEMIS", "about": "About us" }
+  },
+  "applyModal": {
+    "closeModal": "Close dialog",
+    "title": "Apply now",
+    "subtitle": "Enter your details — we will contact you",
+    "fullName": "Full name *",
+    "fullNamePlaceholder": "First and last name",
+    "phone": "Phone number *",
+    "program": "Program",
+    "programPlaceholder": "Select a program",
+    "comment": "Additional comment",
+    "commentPlaceholder": "Write here if you have any questions...",
+    "error": "Something went wrong while submitting your application. Please check your internet connection and try again.",
+    "submit": "Submit",
+    "sending": "Sending...",
+    "successTitle": "Application submitted!",
+    "successDesc": "We will contact you soon.",
+    "close": "Close",
+    "programs": {
+      "preschool": "Preschool Education",
+      "primary": "Primary Education",
+      "softwareEng": "Software Engineering",
+      "economics": "Economics",
+      "finance": "Finance and Financial Technologies",
+      "accounting": "Accounting",
+      "psychology": "Psychology",
+      "philology": "Philology and Language Teaching",
+      "oilGas": "Oil and Gas Engineering",
+      "nationalIdea": "National Idea and Legal Education"
+    }
   }
 }

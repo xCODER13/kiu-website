@@ -4,6 +4,11 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import SortingHat from './SortingHat'
 import { QUESTIONS, FACULTIES } from './sortinghat/Data'
+import uz from '../i18n/locales/uz.json'
+
+// Matnlar endi tarjima faylida (uz — standart til); id/variant kaliti bo'yicha olinadi
+const qText = i => uz.sortingHat.questions[QUESTIONS[i].id].q
+const optText = (i, j) => uz.sortingHat.questions[QUESTIONS[i].id].opts[QUESTIONS[i].opts[j].id]
 
 const setup = () => render(<MemoryRouter><SortingHat /></MemoryRouter>)
 const lead = () => vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true })))
@@ -18,7 +23,7 @@ async function register(user, name = 'Ali Valiyev', phone = '+998 90 123 45 67')
 // Har savolda `optIndex` variantini tanlaydi; 480ms taymerni fake timers bilan o'tkazadi
 async function answerAll(pick = () => 0) {
   for (let i = 0; i < QUESTIONS.length; i++) {
-    const text = QUESTIONS[i].opts[pick(i)].t
+    const text = optText(i, pick(i))
     fireEvent.click(screen.getByText(text))
     await act(async () => { await vi.advanceTimersByTimeAsync(500) })
   }
@@ -63,7 +68,7 @@ describe('Sorting Hat oqimi', () => {
     const user = userEvent.setup()
     setup(); await register(user)
     expect(screen.getByText(new RegExp(`Savol 1 / ${QUESTIONS.length}`))).toBeInTheDocument()
-    expect(screen.getByText(QUESTIONS[0].q)).toBeInTheDocument()
+    expect(screen.getByText(qText(0))).toBeInTheDocument()
   })
 
   it('to\'liq oqim: barcha savollar → top-3 natija, lead bir marta to\'g\'ri ma\'lumot bilan yuboriladi', async () => {
@@ -120,8 +125,8 @@ describe('Sorting Hat oqimi', () => {
     setup(); await register(user)
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
     try {
-      fireEvent.click(screen.getByText(QUESTIONS[0].opts[0].t))
-      expect(screen.getByText(QUESTIONS[0].opts[1].t).closest('button')).toBeDisabled()
+      fireEvent.click(screen.getByText(optText(0, 0)))
+      expect(screen.getByText(optText(0, 1)).closest('button')).toBeDisabled()
       await act(async () => { await vi.advanceTimersByTimeAsync(500) })
       expect(screen.getByText(new RegExp(`Savol 2 / ${QUESTIONS.length}`))).toBeInTheDocument()
     } finally { vi.useRealTimers() }

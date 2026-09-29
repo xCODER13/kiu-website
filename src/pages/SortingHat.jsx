@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { NavLink } from '../i18n/router'
 import { validateFullName, validatePhone } from '../utils/validation'
 import { IcHat, IcStar } from './sortinghat/Icons.jsx'
@@ -11,6 +12,7 @@ import ResultStage from './sortinghat/ResultStage.jsx'
 
 // ── COMPONENT ───────────────────────────────────────────────
 export default function SortingHat() {
+  const { t } = useTranslation()
   const [stage, setStage]       = useState('intro')
   const [current, setCurrent]   = useState(0)
   const [scores, setScores]     = useState({})
@@ -23,7 +25,7 @@ export default function SortingHat() {
   function startQuiz() { setStage('register') }
 
   async function submitInfo() {
-    const errs = { name: validateFullName(userInfo.name), phone: validatePhone(userInfo.phone) }
+    const errs = { name: validateFullName(userInfo.name, t), phone: validatePhone(userInfo.phone, t) }
     setFieldErrors(errs)
     if (errs.name || errs.phone) return
     setStage('quiz'); setCurrent(0)
@@ -75,19 +77,19 @@ export default function SortingHat() {
       <line x1="19" y1="12" x2="5" y2="12"/>
       <polyline points="12 19 5 12 12 5"/>
     </svg>
-    Qabul sahifasi
+    {t('sortingHat.backToAdmission')}
   </NavLink>
 
   <div style={{ position: 'relative', zIndex: 1 }}>
     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}><IcHat /></div>
     <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.25)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
-      <IcStar s={11} c="#7c3aed" /> KIU Sehrli Shlyapasi <IcStar s={11} c="#7c3aed" />
+      <IcStar s={11} c="#7c3aed" /> {t('sortingHat.badge')} <IcStar s={11} c="#7c3aed" />
     </div>
     <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '0.6rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
-      Qaysi yo'nalish siz uchun?
+      {t('sortingHat.title')}
     </h1>
     <p style={{ fontSize: 14, color: 'var(--muted)', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
-      Bir necha savolga javob bering — tizim qiziqishlaringizni tahlil qilib, eng mos yo'nalishni tavsiya qiladi!
+      {t('sortingHat.subtitle')}
     </p>
   </div>
 </section>

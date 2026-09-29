@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import TelegramPanel from '../../components/TelegramPanel'
 import { getCategoryColor, getCategoryLabel, categoryMatches } from '../../utils/newsCategories'
 import FeaturedCarousel from './FeaturedCarousel'
@@ -10,11 +11,12 @@ export default function NewsTab({
   activeCategory, setActiveCategory, search, setSearch,
   visibleCount, setVisibleCount, filtered,
 }) {
+  const { t } = useTranslation()
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--muted)' }}>
         <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-        Yuklanmoqda...
+        {t('common.loading')}
         <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
       </div>
     )
@@ -24,8 +26,8 @@ export default function NewsTab({
     return (
       <div style={{ textAlign: 'center', padding: '5rem 2rem', color: 'var(--muted)' }}>
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ opacity: .3, marginBottom: 12 }}><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-        <p style={{ fontSize: 14 }}>Hozircha yangiliklar yo'q</p>
-        <p style={{ fontSize: 12, marginTop: 4 }}>Admin panel orqali yangilik qo'shing</p>
+        <p style={{ fontSize: 14 }}>{t('news.empty')}</p>
+        <p style={{ fontSize: 12, marginTop: 4 }}>{t('news.emptyHint')}</p>
       </div>
     )
   }
@@ -46,7 +48,7 @@ export default function NewsTab({
         </div>
         <a href="https://t.me/kiu_uz" target="_blank" rel="noreferrer"
           style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginTop: '0.75rem', display: 'inline-block' }}>
-          Barcha yangiliklar (@kiu_uz) →
+          {t('news.allNews')}
         </a>
       </div>
 
@@ -59,7 +61,7 @@ export default function NewsTab({
               background: 'rgba(124,58,237,.06)', borderRadius: 10, fontSize: 13,
               color: 'var(--muted)', border: '1px solid var(--border)',
             }}>
-              Serverga ulanib bo'lmadi
+              {t('news.offline')}
             </div>
           )}
 
@@ -70,7 +72,7 @@ export default function NewsTab({
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
             <input value={search} onChange={e => { setSearch(e.target.value); setVisibleCount(6) }}
-              placeholder="Yangiliklar ichida qidiring..."
+              placeholder={t('news.searchPh')}
               style={{
                 width: '100%', padding: '10px 14px 10px 36px',
                 border: '1px solid var(--border)', borderRadius: 10, fontSize: 13,
@@ -94,7 +96,7 @@ export default function NewsTab({
                     background: isActive ? `${color}18` : 'transparent',
                     color: isActive ? color : 'var(--muted)',
                   }}>
-                    {cat === 'all' ? 'Barchasi' : getCategoryLabel(cat)}
+                    {cat === 'all' ? t('news.all') : getCategoryLabel(cat, t)}
                     <span style={{ marginLeft: 5, fontSize: 10 }}>
                       {cat === 'all' ? articles.length : articles.filter(n => categoryMatches(n.category, cat)).length}
                     </span>
@@ -107,7 +109,7 @@ export default function NewsTab({
           {/* News grid */}
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)', fontSize: 13 }}>
-              "{search}" bo'yicha hech narsa topilmadi
+              {t('news.noResults', { query: search })}
             </div>
           ) : (
             <>
@@ -125,7 +127,7 @@ export default function NewsTab({
                     fontSize: 13, fontWeight: 600, cursor: 'pointer',
                     fontFamily: 'var(--font-body)',
                   }}>
-                    Ko'proq yuklash ({filtered.length - visibleCount} ta qoldi)
+                    {t('news.loadMore', { count: filtered.length - visibleCount })}
                   </button>
                 </div>
               )}

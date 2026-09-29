@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next'
 import { FALLBACK_SHORTS } from './data'
 
 // "SHORTS TAB" bo'limi — News.jsx'dan o'zgarishsiz ko'chirilgan.
 export default function ShortsTab({ shorts }) {
+  const { t } = useTranslation()
   return (
     <section className="section">
       <div className="container">
@@ -12,8 +14,8 @@ export default function ShortsTab({ shorts }) {
         }}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>KIU YouTube kanali</div>
-            <a href="https://youtube.com/@kiu_uz" target="_blank" rel="noreferrer" style={{ fontSize: 12, color: '#ff0000' }}>Kanalga o'tish →</a>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{t('news.channelTitle')}</div>
+            <a href="https://youtube.com/@kiu_uz" target="_blank" rel="noreferrer" style={{ fontSize: 12, color: '#ff0000' }}>{t('news.channelGo')}</a>
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
@@ -32,7 +34,7 @@ export default function ShortsTab({ shorts }) {
                 <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)' }}>{s.title}</p>
                 <a href={`https://youtube.com/shorts/${s.videoId}`} target="_blank" rel="noreferrer"
                   style={{ fontSize: 11, color: '#ff0000', marginTop: 4, display: 'inline-block' }}>
-                  YouTube da ko'rish →
+                  {t('news.watch')}
                 </a>
               </div>
             </div>
