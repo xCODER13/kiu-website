@@ -87,10 +87,10 @@ describe('til routing', () => {
 })
 
 describe('SEO: hreflang / canonical / robots', () => {
-  it("tarjima qilingan sahifa (/): uz, en va x-default hreflang'lar", async () => {
+  it("tarjima qilingan sahifa (/): uz, ru, en va x-default hreflang'lar", async () => {
     renderAt('/')
     await screen.findByText('HOME')
-    expect(hreflangs()).toEqual({ uz: `${SITE}/`, en: `${SITE}/en`, 'x-default': `${SITE}/` })
+    expect(hreflangs()).toEqual({ uz: `${SITE}/`, ru: `${SITE}/ru`, en: `${SITE}/en`, 'x-default': `${SITE}/` })
     expect(robots()).toBe('index, follow')
     expect(document.querySelector('link[rel="canonical"]').getAttribute('href')).toBe(`${SITE}/`)
   })
@@ -98,7 +98,7 @@ describe('SEO: hreflang / canonical / robots', () => {
   it("/en da ham xuddi shu hreflang to'plami, canonical o'zi (/en), indekslanadi", async () => {
     renderAt('/en')
     await screen.findByText('HOME')
-    expect(hreflangs()).toEqual({ uz: `${SITE}/`, en: `${SITE}/en`, 'x-default': `${SITE}/` })
+    expect(hreflangs()).toEqual({ uz: `${SITE}/`, ru: `${SITE}/ru`, en: `${SITE}/en`, 'x-default': `${SITE}/` })
     expect(robots()).toBe('index, follow')
     expect(document.querySelector('link[rel="canonical"]').getAttribute('href')).toBe(`${SITE}/en`)
   })
@@ -113,7 +113,7 @@ describe('SEO: hreflang / canonical / robots', () => {
     renderAt('/en/about')
     await screen.findByText('ABOUT')
     expect(robots()).toBe('index, follow')
-    expect(hreflangs()).toEqual({ uz: `${SITE}/about`, en: `${SITE}/en/about`, 'x-default': `${SITE}/about` })
+    expect(hreflangs()).toEqual({ uz: `${SITE}/about`, ru: `${SITE}/ru/about`, en: `${SITE}/en/about`, 'x-default': `${SITE}/about` })
     expect(document.querySelector('link[rel="canonical"]').getAttribute('href')).toBe(`${SITE}/en/about`)
   })
 
@@ -121,7 +121,7 @@ describe('SEO: hreflang / canonical / robots', () => {
     renderAt('/about')
     await screen.findByText('ABOUT')
     expect(robots()).toBe('index, follow')
-    expect(hreflangs()).toEqual({ uz: `${SITE}/about`, en: `${SITE}/en/about`, 'x-default': `${SITE}/about` })
+    expect(hreflangs()).toEqual({ uz: `${SITE}/about`, ru: `${SITE}/ru/about`, en: `${SITE}/en/about`, 'x-default': `${SITE}/about` })
   })
 
   it("hali tarjima qilinmagan /en/news/:id (kontent o'zbekcha): noindex va hreflang yo'q", async () => {
@@ -135,7 +135,7 @@ describe('SEO: hreflang / canonical / robots', () => {
     renderAt('/en/news')
     await screen.findByText('NEWS')
     expect(robots()).toBe('index, follow')
-    expect(hreflangs()).toEqual({ uz: `${SITE}/news`, en: `${SITE}/en/news`, 'x-default': `${SITE}/news` })
+    expect(hreflangs()).toEqual({ uz: `${SITE}/news`, ru: `${SITE}/ru/news`, en: `${SITE}/en/news`, 'x-default': `${SITE}/news` })
   })
 
   it("o'zbekcha /news/:id: indekslanadi, hreflang yo'q (inglizcha varianti yo'q)", async () => {
@@ -152,7 +152,7 @@ describe('SEO: hreflang / canonical / robots', () => {
     const header = screen.getAllByRole('navigation')[0]
     await user.click(within(header).getAllByRole('link', { name: 'English' })[0])
     await user.click(within(header).getAllByRole('link', { name: "O'zbekcha" })[0])
-    expect(document.head.querySelectorAll('link[rel="alternate"][hreflang]')).toHaveLength(3)
+    expect(document.head.querySelectorAll('link[rel="alternate"][hreflang]')).toHaveLength(4)
   })
 
   it("og:url, og:locale, twitter:* va keywords sahifa va tilga qarab yangilanadi", async () => {
@@ -195,5 +195,47 @@ describe('404 sahifa', () => {
     await screen.findByText('NEWS-DETAIL')
     expect(screen.queryByRole('heading', { name: 'Sahifa topilmadi' })).not.toBeInTheDocument()
     expect(robots()).toBe('index, follow')
+  })
+})
+
+describe('rus tili (/ru)', () => {
+  const meta = (attr, name) => document.head.querySelector(`meta[${attr}="${name}"]`)?.getAttribute('content')
+
+  it("/ru — ruscha bosh sahifa: <html lang=ru>, ruscha title, og:locale ru_RU, indekslanadi, hreflang to'plami", async () => {
+    renderAt('/ru')
+    await screen.findByText('HOME')
+    expect(document.documentElement.lang).toBe('ru')
+    expect(document.title).toBe('Главная — Каршинский международный университет | KIU')
+    expect(meta('property', 'og:locale')).toBe('ru_RU')
+    expect(meta('property', 'og:url')).toBe(`${SITE}/ru`)
+    expect(robots()).toBe('index, follow')
+    expect(hreflangs()).toEqual({ uz: `${SITE}/`, ru: `${SITE}/ru`, en: `${SITE}/en`, 'x-default': `${SITE}/` })
+    expect(document.querySelector('link[rel="canonical"]').getAttribute('href')).toBe(`${SITE}/ru`)
+  })
+
+  it("hali tarjima qilinmagan /ru/news/:id (kontent o'zbekcha): noindex va hreflang yo'q", async () => {
+    renderAt('/ru/news/abc')
+    await screen.findByText('NEWS-DETAIL')
+    expect(robots()).toBe('noindex, follow')
+    expect(hreflangs()).toEqual({})
+  })
+
+  it("ruscha tayyor sahifa (/ru/about): indekslanadi, hreflang uz/ru/en + x-default", async () => {
+    renderAt('/ru/about')
+    await screen.findByText('ABOUT')
+    expect(robots()).toBe('index, follow')
+    expect(hreflangs()).toEqual({ uz: `${SITE}/about`, ru: `${SITE}/ru/about`, en: `${SITE}/en/about`, 'x-default': `${SITE}/about` })
+  })
+
+  it("/ru/admin → o'zbekcha admin (login'ga yo'naltiriladi)", async () => {
+    renderAt('/ru/admin')
+    expect(await screen.findByText('LOGIN')).toBeInTheDocument()
+  })
+
+  it("Navbar'da uch til: UZ, RU, EN — RU havolasi /ru ga olib boradi", async () => {
+    renderAt('/about')
+    await screen.findByText('ABOUT')
+    const header = screen.getAllByRole('navigation')[0]
+    expect(within(header).getAllByRole('link', { name: 'Русский' })[0]).toHaveAttribute('href', '/ru/about')
   })
 })

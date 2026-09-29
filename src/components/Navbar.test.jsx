@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
@@ -53,6 +53,28 @@ describe('Navbar', () => {
     await user.click(screen.getByRole('button', { name: 'Open menu' }))
     expect(screen.getByRole('button', { name: 'Close menu' })).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: 'Yangiliklar' }).length).toBeGreaterThan(0)
+  })
+
+  it("regressiya: mobil menyu header'ning haqiqiy balandligidan boshlanadi (uzun sarlavha header'ni balandlatganda til almashtirgich yopilib qolmasin)", async () => {
+    let notify
+    class FakeResizeObserver {
+      constructor(cb) { notify = cb }
+      observe() {}
+      disconnect() {}
+    }
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver)
+    const rectSpy = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => ({ height: 108, width: 390, top: 0, left: 0, right: 390, bottom: 108, x: 0, y: 0 }))
+    try {
+      const user = userEvent.setup()
+      const { container } = renderNavbar()
+      act(() => notify())
+      await user.click(screen.getByRole('button', { name: 'Open menu' }))
+      const menu = container.querySelector('div.mobile-nav')
+      expect(menu.style.top).toBe('108px')
+    } finally {
+      rectSpy.mockRestore()
+      vi.unstubAllGlobals()
+    }
   })
 
   it('mobil menyudagi havolani bosish menyuni yopadi va navigatsiya qiladi', async () => {

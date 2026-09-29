@@ -10,7 +10,8 @@
   "lang": {
     "label": "Til",
     "uz": "O'zbekcha",
-    "en": "English"
+    "en": "English",
+    "ru": "Русский"
   },
   "university": {
     "name": "Qarshi Xalqaro Universiteti",
@@ -282,7 +283,8 @@
     "subtitle": "Xalqaro standartlarda yuqori sifatli ta'lim",
     "degrees": { "bakalavr": "Bakalavr", "magistratura": "Magistratura" },
     "stats": { "programs": "Yo'nalish", "duration": "Davomiyligi", "lowestFee": "Eng past narx", "studyForm": "O'qish shakli" },
-    "years": "{{n}} yil",
+    "years_one": "{{count}} yil",
+    "years_other": "{{count}} yil",
     "currency": "so'm",
     "price": "{{price}} so'm",
     "pricePerYear": "{{price}} so'm/yil",

@@ -13,7 +13,7 @@ export function localizeProgram(f, t) {
     subjects: t(`${base}.subjects`, { returnObjects: true }),
     career: t(`${base}.career`, { returnObjects: true }),
     note: f.hasNote ? t(`${base}.note`) : undefined,
-    duration: t('faculty.years', { n: f.years }),
+    duration: t('faculty.years', { count: f.years }),
     lang: f.langs.map(code => t(`faculty.langs.${code}`)).join(' / '),
     studyFormLabel: t(`faculty.studyForms.${f.studyForm}`),
   }

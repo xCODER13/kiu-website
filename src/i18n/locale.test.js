@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  LANGS, DEFAULT_LANG, TRANSLATED_PATHS,
+  LANGS, DEFAULT_LANG, TRANSLATED_BY_LANG, isTranslated, translatedLangs,
   getLangFromPath, stripLangPrefix, localizePath, localizeTo, switchLangPath,
 } from './locale'
 
@@ -103,8 +103,20 @@ describe('switchLangPath', () => {
 })
 
 describe('konfiguratsiya', () => {
-  it("standart til LANGS ichida; TRANSLATED_PATHS faqat '/' bilan boshlanadi", () => {
+  it("standart til LANGS ichida, almashtirgich tartibi UZ | RU | EN; TRANSLATED_BY_LANG yo'llari '/' bilan boshlanadi", () => {
+    expect(LANGS).toEqual(['uz', 'ru', 'en'])
     expect(LANGS).toContain(DEFAULT_LANG)
-    for (const p of TRANSLATED_PATHS) expect(p.startsWith('/')).toBe(true)
+    for (const [lang, set] of Object.entries(TRANSLATED_BY_LANG)) {
+      expect(LANGS, lang).toContain(lang)
+      for (const p of set) expect(p.startsWith('/')).toBe(true)
+    }
+  })
+
+  it('isTranslated / translatedLangs: standart til doim tayyor, boshqalar ro\'yxat bo\'yicha', () => {
+    expect(isTranslated('/news/abc', 'uz')).toBe(true)
+    expect(isTranslated('/news/abc', 'en')).toBe(false)
+    expect(isTranslated('/about', 'en')).toBe(true)
+    expect(translatedLangs('/news/abc')).toEqual(['uz'])
+    expect(translatedLangs('/')).toEqual(expect.arrayContaining(['uz', 'en']))
   })
 })

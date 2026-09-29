@@ -85,7 +85,7 @@ export default function Faculty() {
         }}>
           {[
             { v: tabMeta[tab].count,                                         l: t('faculty.stats.programs') },
-            { v: t('faculty.years', { n: tabMeta[tab].years }),               l: t('faculty.stats.duration') },
+            { v: t('faculty.years', { count: tabMeta[tab].years }),               l: t('faculty.stats.duration') },
             { v: t('faculty.price', { price: fmt(tabMeta[tab].from, t('meta.thousandsSep')) }), l: t('faculty.stats.lowestFee') },
             { v: t('faculty.studyForms.fullTime'),                            l: t('faculty.stats.studyForm') },
           ].map(({ v, l }) => (

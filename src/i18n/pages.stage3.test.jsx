@@ -79,7 +79,7 @@ describe('Bazadan keladigan sahifalar (EN): interfeys inglizcha, kontent o\'zbek
     at('/en/teachers', <Teachers />)
     expect(await screen.findByText('Ali Valiyev')).toBeInTheDocument()
     expect(screen.getByText('Ali Valiyev')).toHaveAttribute('lang', 'uz')
-    expect(screen.getByText('Faculty members')).toBeInTheDocument()
+    expect(screen.getByText('Professor and Teachers')).toBeInTheDocument()
     expect(screen.getByText('All teachers')).toBeInTheDocument()
     await userEvent.setup().click(screen.getAllByText('Aniq fanlar kafedrasi')[0])
     expect(screen.getByText(/— 1 person/)).toBeInTheDocument()

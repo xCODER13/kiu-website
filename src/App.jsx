@@ -8,7 +8,7 @@ import ApplyModal from './components/ApplyModal'
 import { isTokenValid } from './utils/auth'
 import useAnalytics from './hooks/useAnalytics'
 import LocaleProvider from './i18n/LocaleProvider'
-import { LANGS, DEFAULT_LANG, TRANSLATED_PATHS, localizePath, stripLangPrefix } from './i18n/locale'
+import { DEFAULT_LANG, PREFIXED_LANGS, isTranslated, translatedLangs, localizePath, stripLangPrefix } from './i18n/locale'
 
 // Sahifalar endi alohida chunk sifatida, faqat kerak bo'lganda yuklanadi
 const Home            = lazy(() => import('./pages/Home'))
@@ -71,7 +71,7 @@ const SEO_KEYS = {
 const SITE_URL = "https://kiu-university.vercel.app"
 
 // og:locale qiymatlari
-const OG_LOCALES = { uz: 'uz_UZ', en: 'en_US' }
+const OG_LOCALES = { uz: 'uz_UZ', en: 'en_US', ru: 'ru_RU' }
 
 // Tarjima kerak bo'lmagan dinamik yo'llar (SEO_KEYS'da yo'q, lekin mavjud sahifa)
 const DYNAMIC_PATH = /^\/news\/[^/]+$/
@@ -136,13 +136,16 @@ function useSeo() {
     setMeta('name', 'twitter:description', desc)
     setMeta('name', 'keywords', t('seo.keywords'))
 
-    // hreflang: faqat HAR IKKI tilda to'liq tayyor sahifalar uchun (TRANSLATED_PATHS).
-    // Tarjima qilinmagan /en/* sahifalar o'zbekcha matn ko'rsatadi — ularni "ingliz"
+    // hreflang: faqat shu tilda to'liq tayyor sahifalar uchun (isTranslated). To'plam
+    // barcha tillardagi variantlarda bir xil (Google o'zaro havolalarni talab qiladi).
+    // Tarjima qilinmagan /en/*, /ru/* sahifalar o'zbekcha matn ko'rsatadi — ularni "ingliz/rus"
     // sahifa deb indekslatmaslik uchun noindex beriladi.
     document.head.querySelectorAll('link[data-hreflang]').forEach(el => el.remove())
-    const translated = TRANSLATED_PATHS.has(path)
-    if (translated) {
-      const alternates = [...LANGS.map(code => [code, code]), ['x-default', DEFAULT_LANG]]
+    const translated = isTranslated(path, lang)
+    const pageLangs = translatedLangs(path)
+    // Faqat o'zbekchada mavjud sahifaga (masalan /news/:id, 404) hreflang kerak emas
+    if (translated && pageLangs.length > 1) {
+      const alternates = [...pageLangs.map(code => [code, code]), ['x-default', DEFAULT_LANG]]
       alternates.forEach(([hreflang, code]) => {
         const link = document.createElement('link')
         link.rel = 'alternate'
@@ -224,7 +227,7 @@ function PageLoader() {
   return <div className="page-loading">{t('common.loading')}</div>
 }
 
-// Ommaviy sahifalar. Bir xil ro'yxat ikki joyda ishlatiladi: /en/* (inglizcha) va /* (o'zbekcha).
+// Ommaviy sahifalar. Bir xil ro'yxat har til uchun ishlatiladi: /en/*, /ru/* va /* (o'zbekcha).
 // Ichki <Routes> yo'llari ota-marshrut prefiksiga nisbatan hisoblanadi, shuning uchun
 // "/faculty" ham "/faculty", ham "/en/faculty" ga mos keladi.
 function PageRoutes({ onApply }) {
@@ -255,7 +258,7 @@ function PageRoutes({ onApply }) {
   )
 }
 
-// Til URL'dan aniqlanadi (LocaleProvider): /en/* — inglizcha, qolgani — o'zbekcha.
+// Til URL'dan aniqlanadi (LocaleProvider): /en/* — inglizcha, /ru/* — ruscha, qolgani — o'zbekcha.
 export default function App() {
   return (
     <LocaleProvider>
@@ -302,10 +305,14 @@ function AppContent() {
             }
           />
 
-          {/* Admin panel faqat o'zbekcha va prefikssiz: /en/admin → /admin */}
-          <Route path="/en/admin/*" element={<Navigate to="/admin" replace />} />
+          {/* Admin panel faqat o'zbekcha va prefikssiz: /en/admin, /ru/admin → /admin */}
+          {PREFIXED_LANGS.map(code => (
+            <Route key={`${code}-admin`} path={`/${code}/admin/*`} element={<Navigate to="/admin" replace />} />
+          ))}
 
-          <Route path="/en/*" element={publicPages} />
+          {PREFIXED_LANGS.map(code => (
+            <Route key={code} path={`/${code}/*`} element={publicPages} />
+          ))}
           <Route path="/*" element={publicPages} />
         </Routes>
       </Suspense>

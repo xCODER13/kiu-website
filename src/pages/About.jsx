@@ -99,18 +99,23 @@ export default function About() {
           <h2 className="reveal" style={{ fontSize: '1.4rem', margin: '2.5rem 0 1.5rem', color: '#1a1a2e' }}>{t('about.leadershipTitle')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
             {[
-              { k: 'rector', hasInfo: true, avatar: 'PU', color: '#7c3aed' },
-              { k: 'viceRector', avatar: 'NF', color: '#08b310' },
-              { k: 'financeDirector', hasInfo: true, avatar: 'RU', color: '#0088cc' },
-              { k: 'boardChair', hasInfo: true, avatar: 'YA', color: '#059669' },
-            ].map((p, i) => (
+              { k: 'rector', hasInfo: true, color: '#7c3aed' },
+              { k: 'viceRector', color: '#08b310' },
+              { k: 'financeDirector', hasInfo: true, color: '#0088cc' },
+              { k: 'boardChair', hasInfo: true, color: '#059669' },
+            ].map((p, i) => {
+              // Avatar bosh harflari tarjima qilingan ismdan olinadi (Panjiyev Ulug'bek → PU, Панжиев Улугбек → ПУ)
+              const name = t(`about.leaders.${p.k}.name`)
+              const initials = name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()
+              return (
               <div key={i} className={`card reveal reveal-delay-${i + 1}`} style={{ textAlign: 'center', padding: '1.5rem' }}>
-                <div style={{ width: 60, height: 60, borderRadius: '50%', background: p.color, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff', fontSize: 18, fontWeight: 700 }}>{p.avatar}</div>
-                <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)', lineHeight: 1.4 }}>{t(`about.leaders.${p.k}.name`)}</h3>
+                <div style={{ width: 60, height: 60, borderRadius: '50%', background: p.color, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff', fontSize: 18, fontWeight: 700 }}>{initials}</div>
+                <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)', lineHeight: 1.4 }}>{name}</h3>
                 <div style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20, display: 'inline-block', marginBottom: 6 }}>{t(`about.leaders.${p.k}.role`)}</div>
                 <p style={{ fontSize: 11, color: 'var(--muted)' }}>{p.hasInfo ? t(`about.leaders.${p.k}.info`) : undefined}</p>
               </div>
-            ))}
+              )
+            })}
           </div>
 
           <h2 className="reveal" style={{ fontSize: '1.4rem', margin: '2.5rem 0 1.5rem', color: '#1a1a2e' }}>{t('about.infraTitle')}</h2>

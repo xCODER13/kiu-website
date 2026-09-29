@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from '../i18n/router'
 import useLocale from '../i18n/useLocale'
@@ -72,6 +72,12 @@ function ChevronIcon() {
 
 export default function Navbar({ dark, setDark, onApply }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  // Mobil menyu header ostidan boshlanishi kerak. Header balandligi qat'iy emas:
+  // sarlavha matni (masalan ruscha "Каршинский международный университет")
+  // 3 qatorga o'tib, header'ni balandroq qiladi — shuning uchun 62px'ni qotirib
+  // qo'ymay, haqiqiy balandlikni o'lchaymiz.
+  const navRef = useRef(null)
+  const [navHeight, setNavHeight] = useState(62)
   // SPA'da (to'liq sahifa qayta yuklanmagani uchun) link bosilganda sichqoncha
   // joyidan qimirlamasa, :hover holati brauzer nuqtai nazaridan haligacha
   // "to'g'ri" bo'lib qoladi — shuning uchun panel ochiq ko'rinishda qolib
@@ -82,9 +88,17 @@ export default function Navbar({ dark, setDark, onApply }) {
   // Faol havolani aniqlash uchun prefikssiz yo'l: /en/faculty → /faculty
   const { path } = useLocale()
 
+  useEffect(() => {
+    const el = navRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return undefined
+    const observer = new ResizeObserver(() => setNavHeight(Math.round(el.getBoundingClientRect().height) || 62))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <>
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
+      <nav ref={navRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
 
         {/* Logo */}
         {/* Xatolik: mobil menyu ochiq holda logotipga bosilsa, sahifa
@@ -188,7 +202,7 @@ export default function Navbar({ dark, setDark, onApply }) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="mobile-nav" style={{ position: 'fixed', top: 62, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 4, borderTop: '1px solid var(--border)', overflowY: 'auto' }}>
+        <div className="mobile-nav" style={{ position: 'fixed', top: navHeight, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 4, borderTop: '1px solid var(--border)', overflowY: 'auto' }}>
           <LanguageSwitcher className="lang-switch--menu" onNavigate={() => setMenuOpen(false)} />
           {topLinks.map(l => (
             <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)}

@@ -5,6 +5,7 @@ import { MemoryRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import uz from './locales/uz.json'
 import en from './locales/en.json'
+import ru from './locales/ru.json'
 import config from '../config'
 import LocaleProvider from './LocaleProvider'
 import LanguageSwitcher from './LanguageSwitcher'
@@ -22,6 +23,10 @@ function flatten(obj, prefix = '') {
 }
 const uzFlat = Object.fromEntries(flatten(uz))
 const enFlat = Object.fromEntries(flatten(en))
+const ruFlat = Object.fromEntries(flatten(ru))
+// Ko'plik shakllari tilga xos (uz/en: _one/_other; ru: _one/_few/_many/_other) — taqqoslashda suffiks olib tashlanadi
+const PLURAL = /_(zero|one|two|few|many|other)$/
+const baseKey = k => k.replace(PLURAL, '')
 const placeholders = str => (String(str).match(/\{\{\s*\w+\s*\}\}/g) || []).sort().join(',')
 
 function LocationMarker() {
@@ -77,6 +82,50 @@ describe('tarjima fayllari', () => {
   })
 })
 
+describe('ru.json', () => {
+  it("uz.json'dagi har bir kalit ruscha ham bor (ko'plik shakllari suffikssiz taqqoslanadi)", () => {
+    const ruBase = new Set(Object.keys(ruFlat).map(baseKey))
+    const missing = Object.keys(uzFlat).filter(k => !ruBase.has(baseKey(k)))
+    expect(missing, "ru.json'da yetishmaydigan kalitlar").toEqual([])
+  })
+
+  it("ko'plik shakllari to'liq: ruscha {{count}} kalitlarida _one/_few/_many/_other to'rttasi ham bor", () => {
+    const groups = {}
+    for (const k of Object.keys(ruFlat)) {
+      if (PLURAL.test(k)) (groups[baseKey(k)] ||= new Set()).add(k.match(PLURAL)[1])
+    }
+    for (const [base, forms] of Object.entries(groups)) {
+      expect([...forms].sort(), base).toEqual(['few', 'many', 'one', 'other'])
+    }
+  })
+
+  it("ortiqcha kalit yo'q: har bir ruscha kalit uz.json'da ham bor (ko'plik shakllaridan tashqari)", () => {
+    const uzBase = new Set(Object.keys(uzFlat).map(baseKey))
+    const extra = Object.keys(ruFlat).filter(k => !uzBase.has(baseKey(k)))
+    expect(extra, "uz.json'da yo'q kalitlar").toEqual([])
+  })
+
+  it("ruscha qiymatlar bo'sh emas, interpolyatsiya o'zgaruvchilari uz bilan bir xil", () => {
+    for (const [key, value] of Object.entries(ruFlat)) {
+      if (key === 'meta.thousandsSep') continue // ajratuvchi bo'shliq (NBSP) — trim'da bo'sh ko'rinadi
+      expect(String(value).trim(), key).not.toBe('')
+      const uzKey = key in uzFlat ? key : Object.keys(uzFlat).find(k => baseKey(k) === baseKey(key))
+      // ko'plikda {{count}} ruscha shakllarda ham bo'lishi shart
+      expect(placeholders(value), key).toBe(placeholders(uzFlat[uzKey]))
+    }
+  })
+
+  it("ruscha qiymatlar kirill harflarini o'z ichiga oladi (tasodifan o'zbekcha yoki inglizcha qolib ketmasin)", () => {
+    // Xalqaro brend/texnologiya nomlari lotincha qoladi (tarjima qilinmaydi)
+    const LATIN_NAMES = new Set(['INTI International University', 'Presidency University', 'ICFAI (Institute of Chartered Financial Analysts of India)', 'Soft Skills', 'Python', 'JavaScript', 'FinTech', 'StartUp Uzbekistan 2023', 'HEMIS', 'YouTube Shorts', 'PhD'])
+    const allowLatin = new Set(['events.dateFull', 'lang.uz', 'lang.en', 'meta.dateLocale', 'meta.thousandsSep', 'nav.items.faq', 'footer.links.faq'])
+    for (const [key, value] of Object.entries(ruFlat)) {
+      if (allowLatin.has(key) || key.endsWith('.dateLocale') || LATIN_NAMES.has(value)) continue
+      expect(/[А-Яа-яЁё]/.test(value), `${key}: ${value}`).toBe(true)
+    }
+  })
+})
+
 describe('LocaleProvider', () => {
   function Probe() {
     const { t, i18n } = useTranslation()
@@ -92,6 +141,11 @@ describe('LocaleProvider', () => {
   it("/en/... da inglizcha, birinchi render'dayoq (o'zbekchadan sakrashsiz)", () => {
     renderAt('/en/about', <Probe />)
     expect(screen.getByTestId('probe')).toHaveTextContent('en|en|/about|Home')
+  })
+
+  it("/ru/... da ruscha (tarjimasi bor kalit ruscha)", () => {
+    renderAt('/ru/about', <Probe />)
+    expect(screen.getByTestId('probe')).toHaveTextContent('ru|ru|/about|Главная')
   })
 
   it("/en (bosh sahifa) ham inglizcha", () => {
@@ -177,6 +231,25 @@ describe('LanguageSwitcher', () => {
     renderAt('/en/faculty', <LanguageSwitcher />)
     expect(screen.getByText('EN')).toHaveAttribute('aria-current', 'true')
     expect(screen.getByRole('link', { name: "O'zbekcha" })).toHaveAttribute('href', '/faculty')
+  })
+
+  it("uch til: har biri o'z prefiksiga havola, faol til belgi (RU)", () => {
+    renderAt('/ru/faculty', <LanguageSwitcher />)
+    expect(screen.getByText('RU')).toHaveAttribute('aria-current', 'true')
+    expect(screen.getByRole('link', { name: "O'zbekcha" })).toHaveAttribute('href', '/faculty')
+    expect(screen.getByRole('link', { name: 'English' })).toHaveAttribute('href', '/en/faculty')
+  })
+
+  it("o'zbekchada RU havolasi /ru manziliga olib boradi (hreflang=ru)", () => {
+    renderAt('/faculty', <LanguageSwitcher />)
+    const ruLink = screen.getByRole('link', { name: 'Русский' })
+    expect(ruLink).toHaveAttribute('href', '/ru/faculty')
+    expect(ruLink).toHaveAttribute('hreflang', 'ru')
+  })
+
+  it("tartib UZ | RU | EN", () => {
+    renderAt('/', <LanguageSwitcher />)
+    expect(screen.getAllByText(/^(UZ|RU|EN)$/).map(e => e.textContent)).toEqual(['UZ', 'RU', 'EN'])
   })
 
   it("bosh sahifa: / ↔ /en", () => {

@@ -10,7 +10,8 @@
   "lang": {
     "label": "Language",
     "uz": "O'zbekcha",
-    "en": "English"
+    "en": "English",
+    "ru": "Русский"
   },
   "university": {
     "name": "Karshi International University",
@@ -271,7 +272,8 @@
     "subtitle": "High-quality education to international standards",
     "degrees": { "bakalavr": "Bachelor's", "magistratura": "Master's" },
     "stats": { "programs": "Programs", "duration": "Duration", "lowestFee": "Lowest tuition fee", "studyForm": "Study mode" },
-    "years": "{{n}} years",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years",
     "currency": "UZS",
     "price": "{{price}} UZS",
     "pricePerYear": "{{price}} UZS/year",
@@ -758,7 +760,7 @@
       "about": "About us",
       "mission": "Mission and goals",
       "leadership": "Leadership",
-      "teachers": "Professor and Teachers",
+      "teachers": "Professor and teachers",
       "international": "International cooperation",
       "regulations": "Official documents",
       "vacancies": "Job openings and vacancies",

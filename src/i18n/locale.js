@@ -3,29 +3,44 @@
 // URL sxemasi (xCODER qarori, band 8):
 //   /admission        → O'zbekcha (standart, prefikssiz)
 //   /en/admission     → Inglizcha
-// Boshqa til (masalan RU) qo'shish: LANGS'ga kod qo'shish, `locales/<kod>.json`
-// yaratish va PREFIXED_LANGS'ga kiritish — routing/almashtirgich o'zi moslashadi.
+//   /ru/admission     → Ruscha
+// Yangi til qo'shish: LANGS'ga kod qo'shish, `locales/<kod>.json` yaratish, index.js'da
+// resursga ulash va TRANSLATED_BY_LANG'ga kiritish — routing/almashtirgich o'zi moslashadi.
 
-export const LANGS = ['uz', 'en']
+export const LANGS = ['uz', 'ru', 'en'] // almashtirgichdagi tartib: UZ | RU | EN
 export const DEFAULT_LANG = 'uz'
 
 // Prefiksli tillar (standart til prefikssiz turadi)
-const PREFIXED_LANGS = LANGS.filter(l => l !== DEFAULT_LANG)
+export const PREFIXED_LANGS = LANGS.filter(l => l !== DEFAULT_LANG)
 
-// Inglizcha varianti TO'LIQ tarjima qilingan sahifalar. Faqat shular uchun hreflang
-// beriladi va indekslashga ruxsat etiladi; qolgan /en/* sahifalar hozircha o'zbekcha
-// matn ko'rsatgani uchun `noindex` bo'ladi (aks holda Google "ingliz" sahifa deb
-// o'zbekcha matnni indekslardi). Har bosqichda shu ro'yxat kengaytiriladi.
+// Har bir til uchun TO'LIQ tarjima qilingan sahifalar. Faqat shular uchun hreflang
+// beriladi va indekslashga ruxsat etiladi; qolgan /<til>/* sahifalar hozircha o'zbekcha
+// matn ko'rsatgani uchun `noindex` bo'ladi (aks holda Google "ingliz/rus" sahifa deb
+// o'zbekcha matnni indekslardi). Har bosqichda tegishli ro'yxat kengaytiriladi.
 // Eslatma: bazadan keladigan kontent (yangilik, tadbir, o'qituvchi, galereya, vakansiya)
 // o'zbekcha qoladi (ContentLangNote bilan belgilangan) — bu sahifalarda interfeys tarjima
 // qilingani uchun ro'yxatda. Dinamik /news/:id esa maqola matni o'zbekcha bo'lgani sababli
 // ro'yxatda YO'Q va /en/news/:id `noindex` bo'lib qoladi.
-export const TRANSLATED_PATHS = new Set([
+const ALL_PAGES = [
   '/', '/admission', '/international', '/contact', '/faq',
   '/about', '/faculty', '/hemis', '/documents',
   '/achievements', '/testimonials', '/map', '/qrcode', '/gallery',
   '/teachers', '/events', '/vacancies', '/news', '/sorting-hat',
-])
+]
+export const TRANSLATED_BY_LANG = {
+  en: new Set(ALL_PAGES),
+  ru: new Set(ALL_PAGES),
+}
+
+// Sahifaning shu tildagi varianti to'liq tayyormi (standart til — doim tayyor)
+export function isTranslated(path, lang) {
+  return lang === DEFAULT_LANG || !!TRANSLATED_BY_LANG[lang]?.has(path)
+}
+
+// Sahifa to'liq tayyor bo'lgan tillar (hreflang to'plami): ['uz', 'en', ...]
+export function translatedLangs(path) {
+  return LANGS.filter(lang => isTranslated(path, lang))
+}
 
 // `/admin` hech qachon tilga bog'lanmaydi (faqat admin uchun, o'zbekcha)
 function isAdminPath(path) {

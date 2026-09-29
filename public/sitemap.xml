@@ -3,13 +3,23 @@
   <url>
     <loc>https://kiu-university.vercel.app/</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/"/>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://kiu-university.vercel.app/ru</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/"/>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://kiu-university.vercel.app/en</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/"/>
     <priority>0.9</priority>
@@ -17,6 +27,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/about</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/about"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/about"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/about</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/about"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/about"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/about"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/about"/>
     <priority>0.8</priority>
@@ -24,6 +43,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/about</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/about"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/about"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/about"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/about"/>
     <priority>0.8</priority>
@@ -31,6 +51,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/faculty</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/faculty"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/faculty"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/faculty"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/faculty"/>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/faculty</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/faculty"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/faculty"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/faculty"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/faculty"/>
     <priority>0.9</priority>
@@ -38,6 +67,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/faculty</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/faculty"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/faculty"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/faculty"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/faculty"/>
     <priority>0.9</priority>
@@ -45,6 +75,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/admission</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/admission"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/admission"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/admission"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/admission"/>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/admission</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/admission"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/admission"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/admission"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/admission"/>
     <priority>0.9</priority>
@@ -52,6 +91,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/admission</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/admission"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/admission"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/admission"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/admission"/>
     <priority>0.9</priority>
@@ -59,6 +99,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/news</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/news"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/news"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/news"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/news"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/news</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/news"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/news"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/news"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/news"/>
     <priority>0.8</priority>
@@ -66,6 +115,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/news</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/news"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/news"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/news"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/news"/>
     <priority>0.8</priority>
@@ -73,6 +123,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/contact</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/contact"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/contact"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/contact</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/contact"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/contact"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/contact"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/contact"/>
     <priority>0.8</priority>
@@ -80,6 +139,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/contact</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/contact"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/contact"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/contact"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/contact"/>
     <priority>0.8</priority>
@@ -87,6 +147,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/faq</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/faq"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/faq"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/faq"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/faq"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/faq</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/faq"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/faq"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/faq"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/faq"/>
     <priority>0.7</priority>
@@ -94,6 +163,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/faq</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/faq"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/faq"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/faq"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/faq"/>
     <priority>0.7</priority>
@@ -101,6 +171,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/events</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/events"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/events"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/events"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/events"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/events</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/events"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/events"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/events"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/events"/>
     <priority>0.7</priority>
@@ -108,6 +187,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/events</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/events"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/events"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/events"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/events"/>
     <priority>0.7</priority>
@@ -115,6 +195,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/teachers</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/teachers"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/teachers"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/teachers"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/teachers"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/teachers</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/teachers"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/teachers"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/teachers"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/teachers"/>
     <priority>0.7</priority>
@@ -122,6 +211,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/teachers</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/teachers"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/teachers"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/teachers"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/teachers"/>
     <priority>0.7</priority>
@@ -129,6 +219,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/international</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/international"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/international"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/international"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/international"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/international</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/international"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/international"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/international"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/international"/>
     <priority>0.7</priority>
@@ -136,6 +235,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/international</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/international"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/international"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/international"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/international"/>
     <priority>0.7</priority>
@@ -143,6 +243,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/documents</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/documents"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/documents"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/documents"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/documents"/>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/documents</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/documents"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/documents"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/documents"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/documents"/>
     <priority>0.6</priority>
@@ -150,6 +259,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/documents</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/documents"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/documents"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/documents"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/documents"/>
     <priority>0.6</priority>
@@ -157,6 +267,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/achievements</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/achievements"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/achievements"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/achievements"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/achievements"/>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/achievements</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/achievements"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/achievements"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/achievements"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/achievements"/>
     <priority>0.6</priority>
@@ -164,6 +283,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/achievements</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/achievements"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/achievements"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/achievements"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/achievements"/>
     <priority>0.6</priority>
@@ -171,6 +291,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/gallery</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/gallery"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/gallery"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/gallery"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/gallery"/>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/gallery</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/gallery"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/gallery"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/gallery"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/gallery"/>
     <priority>0.6</priority>
@@ -178,6 +307,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/gallery</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/gallery"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/gallery"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/gallery"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/gallery"/>
     <priority>0.6</priority>
@@ -185,6 +315,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/hemis</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/hemis"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/hemis"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/hemis"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/hemis"/>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/hemis</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/hemis"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/hemis"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/hemis"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/hemis"/>
     <priority>0.6</priority>
@@ -192,6 +331,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/hemis</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/hemis"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/hemis"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/hemis"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/hemis"/>
     <priority>0.6</priority>
@@ -199,6 +339,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/vacancies</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/vacancies"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/vacancies"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/vacancies"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/vacancies"/>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/vacancies</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/vacancies"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/vacancies"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/vacancies"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/vacancies"/>
     <priority>0.6</priority>
@@ -206,6 +355,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/vacancies</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/vacancies"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/vacancies"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/vacancies"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/vacancies"/>
     <priority>0.6</priority>
@@ -213,6 +363,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/sorting-hat</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/sorting-hat"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/sorting-hat"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/sorting-hat"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/sorting-hat"/>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/sorting-hat</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/sorting-hat"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/sorting-hat"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/sorting-hat"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/sorting-hat"/>
     <priority>0.6</priority>
@@ -220,6 +379,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/sorting-hat</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/sorting-hat"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/sorting-hat"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/sorting-hat"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/sorting-hat"/>
     <priority>0.6</priority>
@@ -227,6 +387,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/testimonials</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/testimonials"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/testimonials"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/testimonials"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/testimonials"/>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/testimonials</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/testimonials"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/testimonials"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/testimonials"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/testimonials"/>
     <priority>0.5</priority>
@@ -234,6 +403,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/testimonials</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/testimonials"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/testimonials"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/testimonials"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/testimonials"/>
     <priority>0.5</priority>
@@ -241,6 +411,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/map</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/map"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/map"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/map"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/map"/>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/map</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/map"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/map"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/map"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/map"/>
     <priority>0.5</priority>
@@ -248,6 +427,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/map</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/map"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/map"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/map"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/map"/>
     <priority>0.5</priority>
@@ -255,6 +435,15 @@
   <url>
     <loc>https://kiu-university.vercel.app/qrcode</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/qrcode"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/qrcode"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/qrcode"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/qrcode"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/qrcode</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/qrcode"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/qrcode"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/qrcode"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/qrcode"/>
     <priority>0.4</priority>
@@ -262,6 +451,7 @@
   <url>
     <loc>https://kiu-university.vercel.app/en/qrcode</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/qrcode"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/qrcode"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/qrcode"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/qrcode"/>
     <priority>0.4</priority>
