@@ -128,7 +128,7 @@ async function getSortingHatFaculties(req, res) {
       SortingHatLead.aggregate([
         { $unwind: '$faculties' },
         { $group: { _id: '$faculties', count: { $sum: 1 } } },
-        { $sort: { count: -1 } },
+        { $sort: { count: -1, _id: 1 } },
         { $limit: limit },
         { $project: { _id: 0, faculty: '$_id', count: 1 } },
       ]),
@@ -138,4 +138,28 @@ async function getSortingHatFaculties(req, res) {
   } catch (e) { fail(req, res, 500, e) }
 }
 
-module.exports = { getStats, getApplicationsTrend, getTopNews, getTopEvents, getSortingHatFaculties }
+// GET /api/stats/applications-faculties?limit=N — qabul (admission) arizalarida
+// eng ko'p tanlangan yo'nalishlar. Vakansiya arizalari va yo'nalishi ko'rsatilmagan
+// (bo'sh / faqat bo'shliqdan iborat) arizalar hisobga olinmaydi. Sortinghat
+// endpointi kabi faqat AGREGATSIYA qaytariladi (yo'nalish nomi + sanoq) — ariza
+// beruvchining ismi/telefoni bu yerdan hech qachon chiqmaydi. Teng sanoqda tartib
+// barqaror bo'lishi uchun ikkinchi kalit sifatida nom bo'yicha saralanadi.
+async function getApplicationFaculties(req, res) {
+  try {
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 20)
+    const match = { type: 'admission', faculty: { $regex: /\S/ } }
+    const [rows, total] = await Promise.all([
+      Application.aggregate([
+        { $match: match },
+        { $group: { _id: '$faculty', count: { $sum: 1 } } },
+        { $sort: { count: -1, _id: 1 } },
+        { $limit: limit },
+        { $project: { _id: 0, faculty: '$_id', count: 1 } },
+      ]),
+      Application.countDocuments(match),
+    ])
+    res.json({ total, faculties: rows })
+  } catch (e) { fail(req, res, 500, e) }
+}
+
+module.exports = { getStats, getApplicationsTrend, getTopNews, getTopEvents, getSortingHatFaculties, getApplicationFaculties }

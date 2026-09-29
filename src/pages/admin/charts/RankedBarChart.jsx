@@ -10,8 +10,8 @@ const BAR_HEIGHT = 14
 const ROW_GAP = 14
 const ROW_HEIGHT = LABEL_HEIGHT + BAR_HEIGHT
 
-// Gorizontal "reyting" ustunli grafik — top-yangiliklar, top-tadbirlar va
-// SortingHat fakultetlari statistikasi uchun qayta ishlatiladi. Har bir qator
+// Gorizontal "reyting" ustunli grafik — top-yangiliklar, top-tadbirlar,
+// SortingHat va ariza yo'nalishlari statistikasi uchun qayta ishlatiladi. Har bir qator
 // ikki qatlamdan iborat: tepada yorliq (HTML — uzun o'zbekcha sarlavhalar
 // SVG <text>'da o'ralmaydi, shuning uchun ellipsis bilan kesiladi), pastda esa
 // ustun. Yorliq ustunning USTIGA chizilmaydi — avval shunday edi va matn ustun
@@ -30,7 +30,7 @@ function Chart({ width, height, data, color }) {
       {data.map((d, i) => (
         <div key={i} title={d.label} style={{
           position: 'absolute', left: MARGIN.left, top: MARGIN.top + i * (ROW_HEIGHT + ROW_GAP),
-          height: LABEL_HEIGHT, width: innerWidth, display: 'flex', alignItems: 'center',
+          height: LABEL_HEIGHT, width: innerWidth, lineHeight: `${LABEL_HEIGHT}px`,
           fontSize: 12, color: 'var(--text)', fontWeight: 500,
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>

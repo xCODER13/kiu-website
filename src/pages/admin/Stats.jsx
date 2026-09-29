@@ -8,6 +8,10 @@ import RankedBarChart from './charts/RankedBarChart'
 
 const loadingText = { color: 'var(--muted)', fontSize: 13 }
 const errorText = { color: '#dc2626', fontSize: 13 }
+// Top-yangiliklar / top-tadbirlar grafiklarida nechta qator ko'rsatilishi
+// (backend standarti 5, maksimum 20 — `limit` query parametri bilan oshiriladi)
+const TOP_LIMIT = 10
+
 const sectionCardTitle = { fontSize: 13, fontWeight: 600, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }
 
 // Bucket sanasi (server UTC'da $dateTrunc bilan hisoblagan, masalan "2026-09-01")
@@ -57,7 +61,7 @@ export default function Stats() {
   const [topNews, setTopNews] = useState(null)
   const [topNewsError, setTopNewsError] = useState(false)
   useEffect(() => {
-    fetch(`${API}/stats/top-news`, { headers: H() })
+    fetch(`${API}/stats/top-news?limit=${TOP_LIMIT}`, { headers: H() })
       .then(r => r.json()).then(setTopNews)
       .catch(err => { console.error("Top yangiliklarni yuklashda xatolik:", err); setTopNewsError(true) })
   }, [])
@@ -65,7 +69,7 @@ export default function Stats() {
   const [topEvents, setTopEvents] = useState(null)
   const [topEventsError, setTopEventsError] = useState(false)
   useEffect(() => {
-    fetch(`${API}/stats/top-events`, { headers: H() })
+    fetch(`${API}/stats/top-events?limit=${TOP_LIMIT}`, { headers: H() })
       .then(r => r.json()).then(setTopEvents)
       .catch(err => { console.error('Top tadbirlarni yuklashda xatolik:', err); setTopEventsError(true) })
   }, [])
@@ -76,6 +80,14 @@ export default function Stats() {
     fetch(`${API}/stats/sortinghat-faculties`, { headers: H() })
       .then(r => r.json()).then(setSortingHat)
       .catch(err => { console.error('SortingHat statistikasini yuklashda xatolik:', err); setSortingHatError(true) })
+  }, [])
+
+  const [appFaculties, setAppFaculties] = useState(null)
+  const [appFacultiesError, setAppFacultiesError] = useState(false)
+  useEffect(() => {
+    fetch(`${API}/stats/applications-faculties`, { headers: H() })
+      .then(r => r.json()).then(setAppFaculties)
+      .catch(err => { console.error("Ariza yo'nalishlari statistikasini yuklashda xatolik:", err); setAppFacultiesError(true) })
   }, [])
 
   const dateLabel = useCallback((d, full = false) => formatBucketDate(d, full, granularity), [granularity])
@@ -100,6 +112,7 @@ export default function Stats() {
   const topNewsData = (Array.isArray(topNews) ? topNews : []).map(n => ({ label: n.title, value: n.views ?? 0 }))
   const topEventsData = (Array.isArray(topEvents) ? topEvents : []).map(e => ({ label: e.title, value: e.views ?? 0 }))
   const facultyData = (sortingHat?.faculties ?? []).map(f => ({ label: f.faculty, value: f.count }))
+  const appFacultyData = (appFaculties?.faculties ?? []).map(f => ({ label: f.faculty, value: f.count }))
 
   return (
     <div>
@@ -164,7 +177,9 @@ export default function Stats() {
         )}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+      {/* 2 qator x 2 ustun: keng ekranda doim 2 ustun; tor ekranda (ustun 260px dan
+          kichraymasligi uchun) o'zi 1 ustunga tushadi */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(max(260px, calc(50% - 8px)), 1fr))', gap: 12 }}>
         <div style={card}>
           <div style={sectionCardTitle}><span style={{ color: '#f11717' }}>{Ic.news}</span>Eng ko'p ko'rilgan yangiliklar</div>
           {topNewsError ? <p style={errorText}>Yuklashda xatolik yuz berdi.</p>
@@ -180,13 +195,25 @@ export default function Stats() {
         </div>
 
         <div style={card}>
-          <div style={sectionCardTitle}><span style={{ color: '#7c3aed' }}>{Ic.teach}</span>SortingHat fakultet tavsiyalari</div>
+          <div style={sectionCardTitle}><span style={{ color: '#7c3aed' }}>{Ic.teach}</span>Sehrli shlyapa yo'nalish tavsiyalari</div>
           {sortingHatError ? <p style={errorText}>Yuklashda xatolik yuz berdi.</p>
             : !sortingHat ? <p style={loadingText}>Yuklanmoqda...</p>
             : (
               <>
                 <RankedBarChart data={facultyData} color="#7c3aed" />
                 <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 8 }}>Jami: {sortingHat.total ?? 0} ta murojaat</div>
+              </>
+            )}
+        </div>
+
+        <div style={card}>
+          <div style={sectionCardTitle}><span style={{ color: '#059669' }}>{Ic.apps}</span>Eng ko'p ariza tushgan yo'nalishlar</div>
+          {appFacultiesError ? <p style={errorText}>Yuklashda xatolik yuz berdi.</p>
+            : !appFaculties ? <p style={loadingText}>Yuklanmoqda...</p>
+            : (
+              <>
+                <RankedBarChart data={appFacultyData} color="#059669" />
+                <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 8 }}>Jami: {appFaculties.total ?? 0} ta ariza</div>
               </>
             )}
         </div>

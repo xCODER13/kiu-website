@@ -27,6 +27,7 @@ const TOP_NEWS = [
 const TOP_EVENTS = [
   { _id: '1', title: 'Bitiruv marosimi', views: 50, eventDate: '2026-06-20' },
 ]
+const APP_FACULTIES = { total: 9, faculties: [{ faculty: 'Pedagogika', count: 6 }, { faculty: 'Tarix', count: 3 }] }
 const SORTINGHAT = { total: 7, faculties: [{ faculty: 'Informatika', count: 4 }, { faculty: 'Iqtisodiyot', count: 3 }] }
 
 describe('Stats', () => {
@@ -98,9 +99,10 @@ describe('Stats — batafsil statistika (band 6)', () => {
     const { calls } = mockApi({
       'GET /stats': { newsCount: 1 },
       'GET /stats/applications-trend?granularity=day': TREND_DAY,
-      'GET /stats/top-news': TOP_NEWS,
-      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
       'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
     })
     setup()
     await screen.findByText('Arizalar trendi')
@@ -117,9 +119,10 @@ describe('Stats — batafsil statistika (band 6)', () => {
       'GET /stats': { newsCount: 1 },
       'GET /stats/applications-trend?granularity=day': TREND_DAY,
       'GET /stats/applications-trend?granularity=week': TREND_WEEK,
-      'GET /stats/top-news': TOP_NEWS,
-      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
       'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
     })
     setup()
     await screen.findByText('Arizalar trendi')
@@ -136,9 +139,10 @@ describe('Stats — batafsil statistika (band 6)', () => {
     mockApi({
       'GET /stats': { newsCount: 1 },
       'GET /stats/applications-trend?granularity=day': TREND_DAY,
-      'GET /stats/top-news': TOP_NEWS,
-      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
       'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
     })
     setup()
     expect(await screen.findByText('Ochiq eshiklar kuni haqida')).toBeInTheDocument()
@@ -150,9 +154,10 @@ describe('Stats — batafsil statistika (band 6)', () => {
     mockApi({
       'GET /stats': { newsCount: 1 },
       'GET /stats/applications-trend?granularity=day': TREND_DAY,
-      'GET /stats/top-news': TOP_NEWS,
-      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
       'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
     })
     setup()
     expect(await screen.findByText('Bitiruv marosimi')).toBeInTheDocument()
@@ -163,9 +168,10 @@ describe('Stats — batafsil statistika (band 6)', () => {
     mockApi({
       'GET /stats': { newsCount: 1 },
       'GET /stats/applications-trend?granularity=day': TREND_DAY,
-      'GET /stats/top-news': TOP_NEWS,
-      'GET /stats/top-events': TOP_EVENTS,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
       'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
     })
     setup()
     expect(await screen.findByText('Informatika')).toBeInTheDocument()
@@ -173,31 +179,119 @@ describe('Stats — batafsil statistika (band 6)', () => {
     expect(screen.getByText('Jami: 7 ta murojaat')).toBeInTheDocument()
   })
 
+  it("SortingHat kartasi \"Sehrli shlyapa yo'nalish tavsiyalari\" deb nomlanadi", async () => {
+    mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
+    })
+    setup()
+    expect(await screen.findByText("Sehrli shlyapa yo'nalish tavsiyalari")).toBeInTheDocument()
+  })
+
+  it("Eng ko'p ariza tushgan yo'nalishlar kartasi reyting va jami arizalar sonini ko'rsatadi", async () => {
+    localStorage.setItem('kiu_token', 'tok')
+    const { calls } = mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
+    })
+    setup()
+    expect(await screen.findByText("Eng ko'p ariza tushgan yo'nalishlar")).toBeInTheDocument()
+    expect(await screen.findByText('Pedagogika')).toBeInTheDocument()
+    expect(screen.getByText('Tarix')).toBeInTheDocument()
+    expect(screen.getByText('Jami: 9 ta ariza')).toBeInTheDocument()
+    // Admin endpoint — token bilan so'raladi
+    const call = calls.find(c => c.path === '/stats/applications-faculties')
+    expect(call?.headers.Authorization).toBe('Bearer tok')
+  })
+
+  it("4 ta ranked karta 2 ustunli setkada (2 qator x 2 ustun) joylashadi", async () => {
+    mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
+    })
+    setup()
+    const title = await screen.findByText("Eng ko'p ariza tushgan yo'nalishlar")
+    // sarlavha -> karta -> setka
+    let grid = title
+    while (grid && grid.style?.display !== 'grid') grid = grid.parentElement
+    expect(grid).not.toBeNull()
+    expect(grid.children).toHaveLength(4)
+    expect(grid.style.gridTemplateColumns).toContain('50%')
+  })
+
+  it("Ariza yo'nalishlari xato bersa faqat shu karta xato ko'rsatadi, qolganlari ishlaydi", async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn((url) => {
+      const path = String(url).replace('http://api.test/api', '')
+      if (path === '/stats/applications-faculties') return Promise.reject(new Error('net'))
+      const body =
+        path === '/stats' ? { newsCount: 1 } :
+        path === '/stats/applications-trend?granularity=day' ? TREND_DAY :
+        path === '/stats/top-news?limit=10' ? TOP_NEWS :
+        path === '/stats/top-events?limit=10' ? TOP_EVENTS :
+        path === '/stats/sortinghat-faculties' ? SORTINGHAT : {}
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) })
+    }))
+    setup()
+    await screen.findByText('Informatika')
+    expect(await screen.findByText('Yuklashda xatolik yuz berdi.')).toBeInTheDocument()
+    expect(spy).toHaveBeenCalled()
+    spy.mockRestore()
+  })
+
   it('bo\'lim ma\'lumoti bo\'sh bo\'lsa "Ma\'lumot yo\'q" ko\'rsatiladi', async () => {
     mockApi({
       'GET /stats': { newsCount: 1 },
       'GET /stats/applications-trend?granularity=day': { granularity: 'day', buckets: [] },
-      'GET /stats/top-news': [],
-      'GET /stats/top-events': [],
+      'GET /stats/top-news?limit=10': [],
+      'GET /stats/top-events?limit=10': [],
       'GET /stats/sortinghat-faculties': { total: 0, faculties: [] },
+      'GET /stats/applications-faculties': { total: 0, faculties: [] },
     })
     setup()
     await screen.findByText('Arizalar trendi')
     // findAllByText birinchi topilgan zahoti qaytadi (trend darhol, RankedBarChart'lar esa
-    // ParentSize'ning async ResizeObserver orqali kengligini olgach) — shu sababli barcha 4 ta
+    // ParentSize'ning async ResizeObserver orqali kengligini olgach) — shu sababli barcha 5 ta
     // paydo bo'lishini waitFor bilan kutamiz, birinchi moslikda emas.
-    await waitFor(() => expect(screen.getAllByText("Ma'lumot yo'q")).toHaveLength(4)) // trendi + 3 ranked karta
+    await waitFor(() => expect(screen.getAllByText("Ma'lumot yo'q")).toHaveLength(5)) // trendi + 4 ranked karta
+  })
+
+  it("top-yangiliklar va top-tadbirlar 10 tadan (limit=10) so'raladi", async () => {
+    const { calls } = mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
+    })
+    setup()
+    await screen.findByText('Bitiruv marosimi')
+    expect(calls.some(c => c.path === '/stats/top-news?limit=10')).toBe(true)
+    expect(calls.some(c => c.path === '/stats/top-events?limit=10')).toBe(true)
   })
 
   it('bitta bo\'lim (top-news) xato bersa ham, qolgan bo\'limlar baribir ko\'rsatiladi', async () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.stubGlobal('fetch', vi.fn((url) => {
       const path = String(url).replace('http://api.test/api', '')
-      if (path === '/stats/top-news') return Promise.reject(new Error('net'))
+      if (path === '/stats/top-news?limit=10') return Promise.reject(new Error('net'))
       const body =
         path === '/stats' ? { newsCount: 1 } :
         path === '/stats/applications-trend?granularity=day' ? TREND_DAY :
-        path === '/stats/top-events' ? TOP_EVENTS :
+        path === '/stats/top-events?limit=10' ? TOP_EVENTS :
         path === '/stats/sortinghat-faculties' ? SORTINGHAT : {}
       return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) })
     }))

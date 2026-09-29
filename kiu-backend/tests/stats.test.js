@@ -201,3 +201,52 @@ describe('GET /api/stats/sortinghat-faculties', () => {
     expect(JSON.stringify(res.body)).not.toContain(PHONE)
   })
 })
+
+describe('GET /api/stats/applications-faculties', () => {
+  test("auth'siz 401", async () => {
+    expect((await request(app).get('/api/stats/applications-faculties')).status).toBe(401)
+  })
+
+  test("bo'sh bazada total=0, faculties=[]", async () => {
+    const res = await authed('/api/stats/applications-faculties')
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({ total: 0, faculties: [] })
+  })
+
+  test("faqat yo'nalishi ko'rsatilgan qabul arizalari sanaladi; vakansiya va bo'sh yo'nalish hisobga olinmaydi", async () => {
+    await Application.create([
+      { name: 'A', phone: PHONE, type: 'admission', faculty: 'Informatika' },
+      { name: 'B', phone: PHONE, type: 'admission', faculty: 'Informatika' },
+      { name: 'C', phone: PHONE, type: 'admission', faculty: 'Iqtisodiyot' },
+      { name: 'D', phone: PHONE, type: 'admission', faculty: '' },
+      { name: 'E', phone: PHONE, type: 'admission', faculty: '   ' },
+      { name: 'F', phone: PHONE, type: 'vacancy', faculty: 'Informatika' },
+    ])
+    const res = await authed('/api/stats/applications-faculties')
+    expect(res.status).toBe(200)
+    expect(res.body.total).toBe(3)
+    expect(res.body.faculties).toEqual([
+      { faculty: 'Informatika', count: 2 },
+      { faculty: 'Iqtisodiyot', count: 1 },
+    ])
+  })
+
+  test("teng sanoqda tartib barqaror (nom bo'yicha), limit natijalarni cheklaydi", async () => {
+    await Application.create([
+      { name: 'A', phone: PHONE, type: 'admission', faculty: 'Psixologiya' },
+      { name: 'B', phone: PHONE, type: 'admission', faculty: 'Filologiya' },
+      { name: 'C', phone: PHONE, type: 'admission', faculty: 'Buxgalteriya' },
+    ])
+    const res = await authed('/api/stats/applications-faculties?limit=2')
+    expect(res.body.faculties.map(f => f.faculty)).toEqual(['Buxgalteriya', 'Filologiya'])
+    expect(res.body.total).toBe(3) // total limitdan mustaqil
+  })
+
+  test("xavfsizlik: ariza beruvchining ismi/telefoni javobda HECH QACHON chiqmaydi", async () => {
+    await Application.create({ name: 'Maxfiy Ism', phone: PHONE, type: 'admission', faculty: 'Informatika' })
+    const res = await authed('/api/stats/applications-faculties')
+    const json = JSON.stringify(res.body)
+    expect(json).not.toContain('Maxfiy')
+    expect(json).not.toContain(PHONE)
+  })
+})
