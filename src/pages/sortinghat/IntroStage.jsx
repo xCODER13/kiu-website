@@ -2,11 +2,16 @@ import { IcQuestion, IcBolt, IcTarget, IcSparkle, IcBulb, IcPlay } from './Icons
 import { QUESTIONS } from './Data.jsx'
 
 /* ── Intro Stage ───────────────────────────────────────────── */
+export const INFO_CARD_MIN_WIDTH = 128
+export const INFO_CARD_GAP = 12
+
 export default function IntroStage({ onStart }) {
   return (
     <div>
-      {/* info cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(148px,1fr))', gap: 12, marginBottom: '1.75rem' }}>
+      {/* info cards — 4 tasi bitta qatorda. Sahifa konteyneri 680px (ichki kenglik ~615px), shuning
+          uchun minimal ustun kengligi INFO_CARD_MIN_WIDTH: 4*128 + 3*12 = 548px sig'adi. Avval 148px edi
+          (4*148 + 36 = 628px > 615px) va 4-karta pastki qatorga tushib qolardi. Telefonda o'zi 2x2 bo'ladi. */}
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit,minmax(${INFO_CARD_MIN_WIDTH}px,1fr))`, gap: INFO_CARD_GAP, marginBottom: '1.75rem' }}>
         {[
           { icon: <IcQuestion />,   title: `${QUESTIONS.length} ta savol`, desc: 'Oddiy va qiziqarli' },
           { icon: <IcBolt />,        title: '3 daqiqa',        desc: 'Tez va aniq'       },
