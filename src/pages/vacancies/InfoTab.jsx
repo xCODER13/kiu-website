@@ -19,7 +19,7 @@ export default function InfoTab({ setActiveTab }) {
 
       {/* Benefits */}
       <h2 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', color: '#1a1a2e' }}>{t('vacancies.info.offerTitle')}</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12, marginBottom: '2.5rem' }}>
+      <div className="grid-3" style={{ marginBottom: '2.5rem' }}>
         {BENEFITS.map((b, i) => (
           <div key={i} className="card" style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             <div className="vacancy-icon" style={iconStyle}>{b.icon}</div>
