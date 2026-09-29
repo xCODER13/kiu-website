@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { Link } from '../../i18n/router'
 import { IC } from './Icons.jsx'
-import { fmt } from './utils'
+import { fmt, localizeProgram } from './utils'
 
 /* ── Modal ─────────────────────────────────────────────────── */
-export default function FacultyModal({ f, degree, onClose }) {
+export default function FacultyModal({ f: program, degree, onClose }) {
+  const { t } = useTranslation()
+  const f = localizeProgram(program, t)
   const closeBtnRef = useRef(null)
 
   useEffect(() => {
@@ -38,9 +41,9 @@ export default function FacultyModal({ f, degree, onClose }) {
   }, [])
 
   const infoItems = [
-    { label: 'Davomiyligi',   value: f.duration,   iconFn: () => IC.clock(20)  },
-    { label: "O'qitish tili", value: f.lang,        iconFn: () => IC.globe(20)  },
-    { label: "O'qish shakli", value: f.studyForm,   iconFn: () => IC.sun(20)    },
+    { label: t('faculty.modal.duration'), value: f.duration,       iconFn: () => IC.clock(20)  },
+    { label: t('faculty.modal.language'), value: f.lang,           iconFn: () => IC.globe(20)  },
+    { label: t('faculty.modal.studyForm'), value: f.studyFormLabel, iconFn: () => IC.sun(20)   },
   ]
 
   const modalContent = (
@@ -78,8 +81,8 @@ export default function FacultyModal({ f, degree, onClose }) {
         <button
           ref={closeBtnRef}
           onClick={onClose}
-          title="Yopish (Esc)"
-          aria-label="Modalni yopish"
+          title={t('faculty.modal.close')}
+          aria-label={t('faculty.modal.closeLabel')}
           style={{
             position: 'absolute', top: 14, right: 14,
             width: 34, height: 34, borderRadius: '50%',
@@ -105,7 +108,7 @@ export default function FacultyModal({ f, degree, onClose }) {
             border: `1px solid ${f.color}40`,
           }}>
             {degree === 'bakalavr' ? IC.graduation(13) : IC.building(13)}
-            {degree === 'bakalavr' ? 'Bakalavr' : 'Magistratura'}
+            {t(`faculty.degrees.${degree}`)}
           </span>
         </div>
 
@@ -158,10 +161,10 @@ export default function FacultyModal({ f, degree, onClose }) {
           </div>
           <div>
             <div style={{ fontSize: 10.5, color: f.color, marginBottom: 2, fontWeight: 500, opacity: 0.8 }}>
-              Kontrakt narxi (kunduzgi, yillik)
+              {t('faculty.modal.fee')}
             </div>
             <div style={{ fontSize: 19, fontWeight: 800, color: f.color, letterSpacing: '-0.5px' }}>
-              {fmt(f.price)} so'm
+              {t('faculty.price', { price: fmt(f.price, t('meta.thousandsSep')) })}
             </div>
           </div>
         </div>
@@ -198,7 +201,7 @@ export default function FacultyModal({ f, degree, onClose }) {
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
               <span style={{ color: f.color, display: 'flex', alignItems: 'center' }}>{IC.bookOpen(14)}</span>
-              O'qitiladigan fanlar
+              {t('faculty.modal.subjects')}
             </h4>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {f.subjects.map(s => (
@@ -219,7 +222,7 @@ export default function FacultyModal({ f, degree, onClose }) {
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
               <span style={{ color: f.color, display: 'flex', alignItems: 'center' }}>{IC.briefcase(14)}</span>
-              Karyera imkoniyatlari
+              {t('faculty.modal.career')}
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               {f.career.map(c => (
@@ -250,7 +253,7 @@ export default function FacultyModal({ f, degree, onClose }) {
             }}
           >
             {IC.pen(14)}
-            Ariza topshirish
+            {t('faculty.modal.apply')}
           </Link>
           <a
             href="tel:+998555009944"
@@ -279,7 +282,7 @@ export default function FacultyModal({ f, degree, onClose }) {
           display: 'flex', alignItems: 'center', gap: 7,
         }}>
           <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{IC.calendar(14)}</span>
-          Qabul muddati: 1 iyul — 20 avgust 2026
+          {t('faculty.modal.deadline')}
         </div>
       </div>
     </div>

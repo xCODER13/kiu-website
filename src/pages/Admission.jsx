@@ -1,11 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import config from '../config'
 import { NavLink } from '../i18n/router'
  
 const STEPS = [
   {
-    n: '1-qadam',
-    title: 'Hujjatlar',
-    desc: 'Pasport, attestat, 3×4 surat',
+    key: 'documents',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -14,9 +13,7 @@ const STEPS = [
     ),
   },
   {
-    n: '2-qadam',
-    title: 'Ariza',
-    desc: 'Online yoki shaxsan topshirish',
+    key: 'application',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -25,9 +22,7 @@ const STEPS = [
     ),
   },
   {
-    n: '3-qadam',
-    title: 'Imtihon',
-    desc: 'DTM natijalari yoki KIU testi',
+    key: 'exam',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="9 11 12 14 22 4"/>
@@ -36,9 +31,7 @@ const STEPS = [
     ),
   },
   {
-    n: '4-qadam',
-    title: 'Natija',
-    desc: "Qabul ro'yxati e'lon qilinadi",
+    key: 'result',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="8" r="7"/>
@@ -49,14 +42,15 @@ const STEPS = [
 ]
  
 export default function Admission({ onApply }) {
+  const { t } = useTranslation()
   return (
     <div className="fade-up">
       {/* Hero */}
       <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
         <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>
-          Qabul — {config.admission.year}
+          {t('admission.title', { year: config.admission.year })}
         </h1>
-        <p style={{ fontSize: 14, color: 'var(--muted)' }}>Hujjat topshirish tartibi va shartlar</p>
+        <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('admission.subtitle')}</p>
       </section>
  
       <section className="section">
@@ -66,17 +60,17 @@ export default function Admission({ onApply }) {
           <div className="reveal" style={{ background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, padding: '2.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
             <div>
               <h2 style={{ color: '#fff', fontSize: '1.4rem', marginBottom: '.35rem' }}>
-                Hujjatlar qabul qilinmoqda
+                {t('admission.banner')}
               </h2>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,.6)' }}>
-                Muddati: {config.admission.deadline}
+                {t('admission.deadlineLabel', { deadline: t('admission.deadline') })}
               </p>
             </div>
  
             {/* Tugmalar */}
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
               <button onClick={onApply} className="btn btn-primary">
-                Ariza topshirish
+                {t('admission.apply')}
               </button>
  
               <NavLink to="/sorting-hat" style={{ textDecoration: 'none' }}>
@@ -84,7 +78,7 @@ export default function Admission({ onApply }) {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
-    Yo'nalishni aniqlash
+    {t('admission.findProgram')}
   </button>
 </NavLink>
             </div>
@@ -93,17 +87,17 @@ export default function Admission({ onApply }) {
           {/* Steps */}
           <div className="grid-auto">
             {STEPS.map((s, i) => (
-              <div key={s.n} className={`card reveal reveal-delay-${i + 1}`}>
+              <div key={s.key} className={`card reveal reveal-delay-${i + 1}`}>
                 <div className="step-icon" style={{ width: 42, height: 42, borderRadius: 10, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10, color: '#7c3aed' }}>
                   {s.icon}
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 9px', borderRadius: 20, display: 'inline-block', marginBottom: 8 }}>
-                  {s.n}
+                  {t('admission.stepN', { n: i + 1 })}
                 </span>
                 <h3 style={{ fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)', marginBottom: 3 }}>
-                  {s.title}
+                  {t(`admission.steps.${s.key}.title`)}
                 </h3>
-                <p style={{ fontSize: 11, color: 'var(--muted)' }}>{s.desc}</p>
+                <p style={{ fontSize: 11, color: 'var(--muted)' }}>{t(`admission.steps.${s.key}.desc`)}</p>
               </div>
             ))}
           </div>

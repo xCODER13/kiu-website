@@ -16,7 +16,10 @@ const PREFIXED_LANGS = LANGS.filter(l => l !== DEFAULT_LANG)
 // beriladi va indekslashga ruxsat etiladi; qolgan /en/* sahifalar hozircha o'zbekcha
 // matn ko'rsatgani uchun `noindex` bo'ladi (aks holda Google "ingliz" sahifa deb
 // o'zbekcha matnni indekslardi). Har bosqichda shu ro'yxat kengaytiriladi.
-export const TRANSLATED_PATHS = new Set(['/'])
+export const TRANSLATED_PATHS = new Set([
+  '/', '/admission', '/international', '/contact', '/faq',
+  '/about', '/faculty', '/hemis', '/documents',
+])
 
 // `/admin` hech qachon tilga bog'lanmaydi (faqat admin uchun, o'zbekcha)
 function isAdminPath(path) {

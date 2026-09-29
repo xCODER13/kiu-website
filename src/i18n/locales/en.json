@@ -1,6 +1,7 @@
 {
   "meta": {
-    "dateLocale": "en-GB"
+    "dateLocale": "en-GB",
+    "thousandsSep": ","
   },
   "common": {
     "loading": "Loading...",
@@ -51,12 +52,7 @@
     "switchToDark": "Switch to dark mode",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "groups": {
-      "university": "About the university",
-      "students": "For students",
-      "media": "Media",
-      "contact": "Contact"
-    },
+    "groups": { "university": "About the university", "students": "For students", "media": "Media", "contact": "Contact" },
     "items": {
       "about": "About us",
       "achievements": "Achievements",
@@ -111,20 +107,8 @@
     "fan": "Science"
   },
   "home": {
-    "stats": {
-      "students": "Students",
-      "teachers": "Teachers",
-      "programs": "Programs",
-      "founded": "Year founded"
-    },
-    "hero": {
-      "badge": "Admissions {{from}}–{{to}} are open",
-      "lead": "Education, research and professional development to international standards — in the heart of Kashkadarya.",
-      "ctaAdmission": "Admission info",
-      "ctaPrograms": "Programs",
-      "photoAlt": "KIU main building",
-      "campus1": "Campus 1"
-    },
+    "stats": { "students": "Students", "teachers": "Teachers", "programs": "Programs", "founded": "Year founded" },
+    "hero": { "badge": "Admissions {{from}}–{{to}} are open", "lead": "Education, research and professional development to international standards — in the heart of Kashkadarya.", "ctaAdmission": "Admission info", "ctaPrograms": "Programs", "photoAlt": "KIU main building", "campus1": "Campus 1" },
     "about": {
       "badge": "Since 2022",
       "title": "About Karshi International University",
@@ -140,17 +124,252 @@
         "dorm": { "title": "Modern dormitory", "desc": "Comfortable and affordable student housing" }
       }
     },
-    "news": {
-      "badge": "News",
-      "title": "Latest news",
-      "subtitle": "The latest updates from KIU",
-      "error": "Could not connect to the news server.",
-      "empty": "There is no news yet.",
-      "all": "All news",
-      "more": "Read more",
-      "prev": "Previous",
-      "next": "Next",
-      "itemN": "News {{n}}"
+    "news": { "badge": "News", "title": "Latest news", "subtitle": "The latest updates from KIU", "error": "Could not connect to the news server.", "empty": "There is no news yet.", "all": "All news", "more": "Read more", "prev": "Previous", "next": "Next", "itemN": "News {{n}}" }
+  },
+  "admission": {
+    "title": "Admission — {{year}}",
+    "subtitle": "Application procedure and requirements",
+    "banner": "Applications are being accepted",
+    "deadline": "July 1 – August 20, 2026",
+    "deadlineLabel": "Deadline: {{deadline}}",
+    "apply": "Apply now",
+    "findProgram": "Find your program",
+    "stepN": "Step {{n}}",
+    "steps": {
+      "documents": { "title": "Documents", "desc": "Passport, school-leaving certificate, 3×4 photo" },
+      "application": { "title": "Application", "desc": "Submit online or in person" },
+      "exam": { "title": "Entrance exam", "desc": "DTM results or the KIU test" },
+      "result": { "title": "Results", "desc": "The admission list is published" }
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "subtitle": "Answers to common questions",
+    "items": [
+      { "q": "When does admission start?", "a": "Admission runs every year from July 1 to August 20. Documents can be submitted to the admissions committee in person or online." },
+      { "q": "Which documents are required?", "a": "Passport or birth certificate, school-leaving certificate, two 3x4 photos, and a medical certificate (form 086)." },
+      { "q": "Can I study on a grant?", "a": "Yes! KIU offers rector's and founders' scholarships. Applicants with high scores can study on a grant." },
+      { "q": "Is there a dormitory?", "a": "Yes, the university has a modern dormitory for students. Places are limited, so we recommend applying early." },
+      { "q": "Which programs are the most in demand?", "a": "Software Engineering, Economics and Psychology are the most in-demand programs." },
+      { "q": "How much is the tuition fee?", "a": "The fee depends on the program. For details, contact the admissions committee: +998 55 500 99 44." },
+      { "q": "Is there cooperation with foreign universities?", "a": "Yes! KIU has signed cooperation agreements with reputable universities in Malaysia, Germany, Poland and other countries." },
+      { "q": "Is there a free bus service?", "a": "Yes, the university runs a free bus service for students. Contact us for information about routes and the schedule." }
+    ]
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Get in touch with KIU",
+    "campus1": "Campus 1 address",
+    "campus2": "Campus 2 address",
+    "phone": "Phone",
+    "email": "Email",
+    "workHours": "Working hours"
+  },
+  "telegram": {
+    "channel": "Official Telegram channel",
+    "subscribe": "Subscribe to the channel",
+    "posts": {
+      "1": { "text": "The admission documents package has been updated.", "date": "Today 09:45" },
+      "2": { "text": "Scholarship applications are accepted until March 25.", "date": "Yesterday 14:20" },
+      "3": { "text": "Open Doors Day — March 28 at 10:00.", "date": "March 13" },
+      "4": { "text": "New laboratory equipment has been installed.", "date": "March 12" }
+    }
+  },
+  "hemis": {
+    "title": "Electronic university",
+    "subtitle": "Sign in to the HEMIS information system",
+    "studentsTitle": "For students",
+    "studentsDesc": "Class schedule, grades, payment information and other services",
+    "teachersTitle": "For teachers",
+    "teachersDesc": "Class schedule, grade entry, reports and other services",
+    "helpTitle": "Need help?",
+    "helpText": "For problems signing in to HEMIS: {{phone}} or {{telegram}}"
+  },
+  "documents": {
+    "title": "Official documents",
+    "subtitle": "Official documents and regulations",
+    "items": {
+      "license1": { "title": "License 1", "desc": "License to carry out educational activities" },
+      "license2": { "title": "License 2", "desc": "License to carry out educational activities" },
+      "accreditation": { "title": "Certificate", "desc": "State accreditation certificate" },
+      "collective": { "title": "Collective agreement", "desc": "KIU Collective Agreement 2026" },
+      "labor": { "title": "Internal labor regulations", "desc": "Internal labor regulations 2026" },
+      "ethics": { "title": "Code of ethics", "desc": "University code of ethics" }
+    }
+  },
+  "international": {
+    "title": "International cooperation",
+    "subtitle": "KIU's relationships with international partners",
+    "strategyTitle": "Internationalization strategy",
+    "strategyText": "KIU builds partnerships with leading universities around the world, giving our students access to international education and internship opportunities.",
+    "stats": { "partners": "International partners", "countries": "Countries", "programs": "International programs", "formats": "Education formats" },
+    "opportunitiesTitle": "International cooperation opportunities",
+    "opportunities": {
+      "mobility": { "title": "Academic mobility", "desc": "Opportunities for students to join exchange programs and study at foreign universities." },
+      "programs": { "title": "Advanced programs", "desc": "Developing joint bachelor's, master's and PhD programs." },
+      "exchange": { "title": "Academic exchange", "desc": "Opportunities for faculty and researchers to take part in academic exchanges and contribute to international publications." },
+      "grants": { "title": "Research grants", "desc": "Carrying out research projects funded by international grants." },
+      "methods": { "title": "Innovative methods", "desc": "Introducing modern educational technologies and innovative teaching methods." }
+    },
+    "partnersTitle": "Partner universities",
+    "partners": {
+      "inti": { "name": "INTI International University", "country": "Malaysia", "type": "Academic exchange" },
+      "turiba": { "name": "Turiba University", "country": "Latvia", "type": "Cooperation agreement" },
+      "icfai": { "name": "ICAFAI University", "country": "India", "type": "Research" },
+      "italy": { "name": "Italian university", "country": "Italy", "type": "Education exchange" },
+      "msu": { "name": "Moscow State University", "country": "Russia", "type": "Cooperation" },
+      "indian": { "name": "Indian University", "country": "India", "type": "Internship program" }
+    },
+    "exchangeTitle": "Academic exchange program",
+    "exchange": {
+      "students": { "title": "For students", "desc": "The chance to study at a foreign university for one semester or one year. A scholarship and accommodation are provided." },
+      "teachers": { "title": "For teachers", "desc": "Research internships at foreign universities, experience exchange and participation in conferences." }
+    }
+  },
+  "about": {
+    "title": "About us",
+    "subtitle": "The history and mission of Karshi International University",
+    "ourUniversity": "About our university",
+    "p1": "Karshi International University (KIU) was founded in 2022 in the city of Karshi, Kashkadarya region. It is one of the leading higher education centers in the Republic of Uzbekistan.",
+    "p2": "Our goal is to give students quality education and soft skills, preparing them for life, not just for exams. Most importantly, we wish for others the best that we wish for ourselves!",
+    "p3": "Through modern teaching methods, a team of professional teachers and international partnerships, the university prepares students for the professions of the future.",
+    "stats": { "students": "Students", "teachers": "Teachers", "programs": "Programs", "awards": "Awards", "grants": "Billion UZS in grants", "clubs": "Clubs" },
+    "missionTitle": "Our mission",
+    "missionText": "Not limiting ourselves to giving students knowledge alone, but equipping them with the skills they need and preparing them for life. Creating opportunities for education, research and professional development to international standards.",
+    "advantagesTitle": "Why KIU",
+    "advantages": {
+      "campus": { "title": "Modern campus", "desc": "Comfortable, modern academic buildings" },
+      "grant": { "title": "Grant-based study", "desc": "Rector's and founders' scholarships" },
+      "bus": { "title": "Free bus", "desc": "Transport service for students" },
+      "dorm": { "title": "Dormitory", "desc": "Modern student dormitory" },
+      "abroad": { "title": "Internships abroad", "desc": "The opportunity for a 6-month internship abroad" },
+      "international": { "title": "International cooperation", "desc": "Ties with foreign universities" },
+      "softSkills": { "title": "Soft Skills", "desc": "Clubs for professional skills" },
+      "creative": { "title": "Creative community", "desc": "A community of creative and active students" }
+    },
+    "leadershipTitle": "Leadership",
+    "leaders": {
+      "rector": { "name": "Panjiyev Ulug'bek Rustamovich", "role": "Rector", "info": "PhD in Chemistry, Associate Professor" },
+      "viceRector": { "name": "Norinov Faxriyor Kurbonovich", "role": "Vice-Rector" },
+      "financeDirector": { "name": "Raxmanov Uchqun Toshpo'latovich", "role": "Financial Director", "info": "Founder of the university" },
+      "boardChair": { "name": "Yakubov Axtam Nusratilloyevich", "role": "Chairman of the Board of Karshi International University", "info": "Vice-Rector for International Relations and Continuing Education at Tashkent State University of Law." }
+    },
+    "infraTitle": "KIU Infrastructure",
+    "infraText": "A digital and secure learning environment — an innovative campus equipped with the latest technology.",
+    "infra": {
+      "wifi": { "title": "Free Wi-Fi", "desc": "High-speed internet across the campus" },
+      "computers": { "title": "50+ computers", "desc": "Programming and design in a modern computer center" },
+      "library": { "title": "Electronic library", "desc": "A database of books and academic articles — access from anywhere" },
+      "cctv": { "title": "24/7 Video surveillance", "desc": "Every part of the campus is covered by security cameras" }
+    }
+  },
+  "faculty": {
+    "title": "Programs",
+    "subtitle": "High-quality education to international standards",
+    "degrees": { "bakalavr": "Bachelor's", "magistratura": "Master's" },
+    "stats": { "programs": "Programs", "duration": "Duration", "lowestFee": "Lowest tuition fee", "studyForm": "Study mode" },
+    "years": "{{n}} years",
+    "currency": "UZS",
+    "price": "{{price}} UZS",
+    "pricePerYear": "{{price}} UZS/year",
+    "studyForms": { "fullTime": "Full-time" },
+    "langs": { "uz": "Uzbek", "ru": "Russian", "en": "English" },
+    "card": { "details": "Details" },
+    "modal": {
+      "close": "Close (Esc)",
+      "closeLabel": "Close dialog",
+      "duration": "Duration",
+      "language": "Language of instruction",
+      "studyForm": "Study mode",
+      "fee": "Tuition fee (full-time, per year)",
+      "subjects": "Subjects taught",
+      "career": "Career opportunities",
+      "apply": "Apply now",
+      "deadline": "Application period: July 1 – August 20, 2026"
+    },
+    "programs": {
+      "preschool": {
+        "name": "Preschool Education",
+        "desc": "Training highly qualified specialists to work with preschool-age children. Professionals grounded in child psychology and pedagogy.",
+        "subjects": ["Psychology", "Pedagogy", "Children's literature", "Fundamentals of mathematics", "Music", "Physical education"],
+        "career": ["Head of a preschool institution", "Educator", "Methodologist", "Psychologist", "Kindergarten manager"]
+      },
+      "primary": {
+        "name": "Primary Education",
+        "desc": "Training qualified teachers for primary school pupils. Modern teaching methods and innovative educational technologies.",
+        "subjects": ["Native language", "Mathematics", "Natural science", "Fine arts", "Music", "Fundamentals of pedagogy"],
+        "career": ["Primary school teacher", "Methodologist", "School principal", "Education manager"]
+      },
+      "nationalIdea": {
+        "name": "National Idea, Fundamentals of Spirituality and Legal Education",
+        "desc": "Training knowledgeable, patriotic specialists in national values, law and spirituality. A program focused on legal awareness and civic education.",
+        "subjects": ["Constitutional law", "National idea", "Philosophy", "History", "Jurisprudence", "Fundamentals of spirituality"],
+        "career": ["Teacher", "Civil service specialist", "Legal adviser", "Promoter of spiritual values"]
+      },
+      "oilGas": {
+        "name": "Oil and Gas Engineering",
+        "desc": "Training highly qualified engineers and technologists for the oil and gas industry. Specialization by type of activity is available.",
+        "subjects": ["Petroleum chemistry", "Extraction technology", "Ecology", "Economics", "Engineering", "Geology"],
+        "career": ["Oil and gas engineer", "Technologist", "Laboratory technician", "Project manager", "Environmental specialist"],
+        "note": "Specialization by type of activity is available"
+      },
+      "economics": {
+        "name": "Economics",
+        "desc": "Training competitive economists for the modern market economy. Specialization by sector and field is available.",
+        "subjects": ["Macroeconomics", "Microeconomics", "Marketing", "Management", "Statistics", "Digital economy"],
+        "career": ["Economist", "Financial analyst", "Bank employee", "Entrepreneur", "Public administration specialist"],
+        "note": "Specialization by sector and field is available"
+      },
+      "softwareEng": {
+        "name": "Software Engineering",
+        "desc": "Training highly qualified specialists in modern software development. Artificial intelligence, web and mobile development.",
+        "subjects": ["Python", "JavaScript", "Databases", "Artificial intelligence", "Mobile development", "Cybersecurity"],
+        "career": ["Software developer", "Web developer", "Data scientist", "DevOps engineer", "IT manager", "Cybersecurity specialist"]
+      },
+      "finance": {
+        "name": "Finance and Financial Technologies",
+        "desc": "Training innovative specialists in FinTech and modern finance. Blockchain, digital banking and investment technologies.",
+        "subjects": ["Financial theory", "Blockchain", "FinTech", "Risk management", "Investment", "Cryptocurrency"],
+        "career": ["Financial adviser", "FinTech specialist", "Bank employee", "Investment manager", "Risk manager"]
+      },
+      "accounting": {
+        "name": "Accounting",
+        "desc": "Training qualified accountants in financial reporting, audit and taxation. Teaching is based on IFRS international standards.",
+        "subjects": ["Accounting", "Audit", "Taxation", "Financial analysis", "1C software", "IFRS standards"],
+        "career": ["Accountant", "Auditor", "Financial director", "Tax adviser", "IFRS specialist"]
+      },
+      "psychology": {
+        "name": "Psychology",
+        "desc": "Training psychologists who address people's mental health and social problems. Specialization by type of activity is available.",
+        "subjects": ["General psychology", "Clinical psychology", "Social psychology", "Psychodiagnostics", "Fundamentals of neurology"],
+        "career": ["Psychologist", "Psychotherapist", "HR specialist", "Clinical psychologist", "Social worker"],
+        "note": "Specialization by type of activity is available"
+      },
+      "philology": {
+        "name": "Philology and Language Teaching",
+        "desc": "Training knowledgeable language and literature specialists who can work internationally. Three tracks: English, Uzbek and Russian.",
+        "subjects": ["English", "Literature", "Linguistics", "Translation theory", "Speech culture", "Uzbek language"],
+        "career": ["Teacher", "Translator", "Editor", "Diplomat", "Journalist"],
+        "note": "Tracks: English | Uzbek | Russian"
+      },
+      "linguisticsEn": {
+        "name": "Linguistics (English)",
+        "desc": "Training highly qualified specialists for research and teaching in English linguistics. Opportunities for international research cooperation.",
+        "subjects": ["Theory of English linguistics", "Comparative linguistics", "Research methodology", "Translation theory", "Linguoculturology", "Discourse analysis"],
+        "career": ["University lecturer", "Researcher", "Translator", "Linguistics specialist", "International organization specialist"]
+      },
+      "linguisticsRu": {
+        "name": "Linguistics (Russian)",
+        "desc": "Training deeply knowledgeable specialists for research and teaching in Russian linguistics. Cognitive and comparative linguistics.",
+        "subjects": ["Theory of Russian linguistics", "Comparative grammar", "Research methodology", "Speech culture", "Stylistics", "Cognitive linguistics"],
+        "career": ["University lecturer", "Translator", "Researcher", "Editor", "Diplomat"]
+      },
+      "economicsMaster": {
+        "name": "Economics",
+        "desc": "Training specialists with in-depth academic knowledge of economic policy, analysis and management. Specializations in international economics and the digital economy.",
+        "subjects": ["Macroeconomic analysis", "Research methodology", "Digital economy", "International economics", "Economic policy", "Econometrics"],
+        "career": ["Economist-analyst", "Public administration specialist", "Consultant", "Researcher", "International organization specialist"]
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 {
   "meta": {
-    "dateLocale": "uz-UZ"
+    "dateLocale": "uz-UZ",
+    "thousandsSep": " "
   },
   "common": {
     "loading": "Yuklanmoqda...",
@@ -51,12 +52,7 @@
     "switchToDark": "Switch to dark mode",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "groups": {
-      "university": "Universitet haqida",
-      "students": "Talabalar uchun",
-      "media": "Media",
-      "contact": "Bog'lanish"
-    },
+    "groups": { "university": "Universitet haqida", "students": "Talabalar uchun", "media": "Media", "contact": "Bog'lanish" },
     "items": {
       "about": "Biz haqimizda",
       "achievements": "Yutuqlar",
@@ -111,20 +107,8 @@
     "fan": "Fan"
   },
   "home": {
-    "stats": {
-      "students": "Talaba",
-      "teachers": "O'qituvchi",
-      "programs": "Yo'nalish",
-      "founded": "Tashkil yili"
-    },
-    "hero": {
-      "badge": "{{from}}–{{to}} qabul ochiq",
-      "lead": "Xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish — Qashqadaryo qalbida.",
-      "ctaAdmission": "Qabul haqida",
-      "ctaPrograms": "Yo'nalishlar",
-      "photoAlt": "KIU bosh bino",
-      "campus1": "1-kampus"
-    },
+    "stats": { "students": "Talaba", "teachers": "O'qituvchi", "programs": "Yo'nalish", "founded": "Tashkil yili" },
+    "hero": { "badge": "{{from}}–{{to}} qabul ochiq", "lead": "Xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish — Qashqadaryo qalbida.", "ctaAdmission": "Qabul haqida", "ctaPrograms": "Yo'nalishlar", "photoAlt": "KIU bosh bino", "campus1": "1-kampus" },
     "about": {
       "badge": "2022 yildan buyon",
       "title": "Qarshi Xalqaro Universiteti haqida",
@@ -151,6 +135,252 @@
       "prev": "Oldingi",
       "next": "Keyingi",
       "itemN": "{{n}}-yangilik"
+    }
+  },
+  "admission": {
+    "title": "Qabul — {{year}}",
+    "subtitle": "Hujjat topshirish tartibi va shartlar",
+    "banner": "Hujjatlar qabul qilinmoqda",
+    "deadline": "1 iyul — 20 avgust 2026 gacha",
+    "deadlineLabel": "Muddati: {{deadline}}",
+    "apply": "Ariza topshirish",
+    "findProgram": "Yo'nalishni aniqlash",
+    "stepN": "{{n}}-qadam",
+    "steps": {
+      "documents": { "title": "Hujjatlar", "desc": "Pasport, attestat, 3×4 surat" },
+      "application": { "title": "Ariza", "desc": "Online yoki shaxsan topshirish" },
+      "exam": { "title": "Imtihon", "desc": "DTM natijalari yoki KIU testi" },
+      "result": { "title": "Natija", "desc": "Qabul ro'yxati e'lon qilinadi" }
+    }
+  },
+  "faq": {
+    "title": "Ko'p so'raladigan savollar",
+    "subtitle": "Tez-tez beriladigan savollarga javoblar",
+    "items": [
+      { "q": "Qabul qachon boshlanadi?", "a": "Qabul har yili 1-iyuldan 20-avgustgacha davom etadi. Hujjatlar qabul komissiyasiga shaxsan yoki online topshiriladi." },
+      { "q": "Qanday hujjatlar kerak?", "a": "Pasport yoki tug'ilganlik guvohnomasi, attestat, 3x4 o'lchamdagi 2 ta surat, tibbiy ma'lumotnoma (086-shakl)." },
+      { "q": "Grant asosida o'qish mumkinmi?", "a": "Ha! KIU da rektor va ta'sischilar stipendiyasi mavjud. Yuqori ball to'plagan abituriyentlar grant asosida o'qish imkoniyatiga ega." },
+      { "q": "Yotoqxona bormi?", "a": "Ha, universitetimizda talabalar uchun zamonaviy yotoqxona mavjud. Joylar cheklangan, shuning uchun erta murojaat qilish tavsiya etiladi." },
+      { "q": "Qaysi yo'nalishlar eng ko'p talab qilinadi?", "a": "Dasturiy injiniring, Iqtisodiyot va Psixologiya yo'nalishlari eng ko'p talab qilinadigan yo'nalishlar hisoblanadi." },
+      { "q": "To'lov qancha?", "a": "To'lov miqdori yo'nalishga qarab farqlanadi. Batafsil ma'lumot uchun qabul komissiyasiga murojaat qiling: +998 55 500 99 44." },
+      { "q": "Xorijiy universitetlar bilan hamkorlik bormi?", "a": "Ha! KIU Malayziya, Germaniya, Polsha va boshqa mamlakatlarning nufuzli universitetlari bilan hamkorlik shartnomasi imzolagan." },
+      { "q": "Bepul avtobus xizmati bormi?", "a": "Ha, universitetimiz talabalar uchun bepul avtobus xizmatini yo'lga qo'ygan. Marshrut va jadval haqida ma'lumot olish uchun murojaat qiling." }
+    ]
+  },
+  "contact": {
+    "title": "Bog'lanish",
+    "subtitle": "KIU bilan aloqaga chiqing",
+    "campus1": "1-kampus manzili",
+    "campus2": "2-kampus manzili",
+    "phone": "Telefon",
+    "email": "Email",
+    "workHours": "Ish vaqti"
+  },
+  "telegram": {
+    "channel": "Rasmiy Telegram kanal",
+    "subscribe": "Kanalga obuna bo'lish",
+    "posts": {
+      "1": { "text": "Qabul hujjatlari to'plami yangilandi.", "date": "Bugun 09:45" },
+      "2": { "text": "Stipendiya arizalari: 25-martgacha qabul qilinadi.", "date": "Kecha 14:20" },
+      "3": { "text": "Ochiq eshiklar kuni — 28-mart soat 10:00.", "date": "13 mart" },
+      "4": { "text": "Yangi laboratoriya jihozlari o'rnatildi.", "date": "12 mart" }
+    }
+  },
+  "hemis": {
+    "title": "Elektron universitet",
+    "subtitle": "HEMIS axborot tizimiga kirish",
+    "studentsTitle": "Talabalar uchun",
+    "studentsDesc": "Dars jadvali, baholar, to'lov ma'lumotlari va boshqa xizmatlar",
+    "teachersTitle": "O'qituvchilar uchun",
+    "teachersDesc": "Dars jadvali, baholar kiritish, hisobotlar va boshqa xizmatlar",
+    "helpTitle": "Yordam kerakmi?",
+    "helpText": "HEMIS tizimiga kirish bo'yicha muammolar uchun: {{phone}} yoki {{telegram}}"
+  },
+  "documents": {
+    "title": "Normativ hujjatlar",
+    "subtitle": "Rasmiy hujjatlar va normativ bazalar",
+    "items": {
+      "license1": { "title": "Litsenziya 1", "desc": "Ta'lim faoliyatini yuritish litsenziyasi" },
+      "license2": { "title": "Litsenziya 2", "desc": "Ta'lim faoliyatini yuritish litsenziyasi" },
+      "accreditation": { "title": "Guvohnoma", "desc": "Davlat akkreditatsiyasi guvohnomasi" },
+      "collective": { "title": "Jamoa shartnomasi", "desc": "KIU Jamoa shartnomasi 2026" },
+      "labor": { "title": "Ichki mehnat tartibi", "desc": "Ichki mehnat tartib qoidalari 2026" },
+      "ethics": { "title": "Odob-axloq kodeksi", "desc": "Universitet odob-axloq kodeksi" }
+    }
+  },
+  "international": {
+    "title": "Xalqaro hamkorlik",
+    "subtitle": "KIU ning xalqaro sheriklar bilan munosabatlari",
+    "strategyTitle": "Xalqarolashtirish strategiyasi",
+    "strategyText": "KIU dunyoning nufuzli universitetlari bilan hamkorlik o'rnatib, talabalarimizga xalqaro ta'lim va amaliyot imkoniyatlarini taqdim etmoqda.",
+    "stats": { "partners": "Xalqaro hamkor", "countries": "Davlatlar", "programs": "Xalqaro dasturlar", "formats": "Ta'lim formatlari" },
+    "opportunitiesTitle": "Xalqaro hamkorlik imkoniyatlari",
+    "opportunities": {
+      "mobility": { "title": "Akademik mobillik", "desc": "Talabalar uchun almashinuv dasturlarida ishtirok etish va xorijiy universitetlarda tahsil olish imkoniyatlari." },
+      "programs": { "title": "Ilg'or dasturlar", "desc": "Qo'shma bakalavriat, magistratura va PhD dasturlarini ishlab chiqish." },
+      "exchange": { "title": "Ilmiy almashinuv", "desc": "Professor-o'qituvchilar va tadqiqotchilar uchun akademik almashinuvlarda qatnashish hamda xalqaro nashrlarda o'z hissalarini qo'shish." },
+      "grants": { "title": "Tadqiqot grantlari", "desc": "Xalqaro grantlar va moliyalashtiriladigan ilmiy loyihalarni amalga oshirish." },
+      "methods": { "title": "Innovatsion metodlar", "desc": "Zamonaviy ta'lim texnologiyalari va innovatsion o'qitish usullarini joriy etish." }
+    },
+    "partnersTitle": "Hamkor universitetlar",
+    "partners": {
+      "inti": { "name": "INTI International University", "country": "Malayziya", "type": "Akademik almashinuv" },
+      "turiba": { "name": "Turiba University", "country": "Latviya", "type": "Hamkorlik shartnomasi" },
+      "icfai": { "name": "ICAFAI University", "country": "Hindiston", "type": "Ilmiy tadqiqot" },
+      "italy": { "name": "Italia universiteti", "country": "Italiya", "type": "Ta'lim almashinuvi" },
+      "msu": { "name": "Moscow State University", "country": "Rossiya", "type": "Hamkorlik" },
+      "indian": { "name": "Indian University", "country": "Hindiston", "type": "Amaliyot dasturi" }
+    },
+    "exchangeTitle": "Akademik almashinuv dasturi",
+    "exchange": {
+      "students": { "title": "Talabalar uchun", "desc": "Xorijiy universitetlarda 1 semestr yoki 1 yil o'qish imkoniyati. Stipendiya va turar joy bilan ta'minlanadi." },
+      "teachers": { "title": "O'qituvchilar uchun", "desc": "Xorijiy universitetlarda ilmiy stajirovka, tajriba almashinuv va konferensiyalarda ishtirok etish." }
+    }
+  },
+  "about": {
+    "title": "Biz haqimizda",
+    "subtitle": "Qarshi Xalqaro Universiteti tarixi va missiyasi",
+    "ourUniversity": "Universitetimiz haqida",
+    "p1": "Qarshi Xalqaro Universiteti (KIU) 2022-yilda Qashqadaryo viloyati Qarshi shahrida tashkil topgan. O'zbekiston Respublikasidagi Oliy ta'lim markazlaridandir.",
+    "p2": "Bizning maqsad talabalarga sifatli ta'lim va soft skills berib, ularni imtihonga emas hayotga tayyorlash. Eng muhimi — o'zimizga ravo ko'rgan eng yaxshi narsani o'zgalarga ham ravo ko'ramiz!",
+    "p3": "Universitetimiz zamonaviy o'qitish uslublari, professional o'qituvchilar jamoasi va xalqaro hamkorliklar orqali talabalarni kelajak kasblarga tayyorlaydi.",
+    "stats": { "students": "Talaba", "teachers": "O'qituvchi", "programs": "Yo'nalish", "awards": "Mukofot", "grants": "Mlrd. grant", "clubs": "To'garak" },
+    "missionTitle": "Missiyamiz",
+    "missionText": "Talabalarga faqat bilim berish bilan cheklanib qolmasdan, kerakli ko'nikma berib, ularni hayotga tayyorlash. Xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish imkoniyatlarini yaratish.",
+    "advantagesTitle": "Bizdagi afzalliklar",
+    "advantages": {
+      "campus": { "title": "Zamonaviy kampus", "desc": "Qulay va zamonaviy o'quv binolari" },
+      "grant": { "title": "Grant asosida o'qish", "desc": "Rektor va ta'sischilar stipendiyasi" },
+      "bus": { "title": "Bepul avtobus", "desc": "Talabalar uchun transport xizmati" },
+      "dorm": { "title": "Yotoqxona", "desc": "Zamonaviy talabalar yotoqxonasi" },
+      "abroad": { "title": "Xorijda amaliyot", "desc": "6 oylik xorijiy amaliyot imkoniyati" },
+      "international": { "title": "Xalqaro hamkorlik", "desc": "Chet el universitetlari bilan aloqa" },
+      "softSkills": { "title": "Soft Skills", "desc": "Kasb ko'nikmalari to'garaklari" },
+      "creative": { "title": "Creative jamoa", "desc": "Ijodkor va faol talabalar hamjamiyati" }
+    },
+    "leadershipTitle": "Rahbariyat",
+    "leaders": {
+      "rector": { "name": "Panjiyev Ulug'bek Rustamovich", "role": "Rektor", "info": "Kimyo fanlari PhD, dotsent" },
+      "viceRector": { "name": "Norinov Faxriyor Kurbonovich", "role": "Prorektor" },
+      "financeDirector": { "name": "Raxmanov Uchqun Toshpo'latovich", "role": "Moliyaviy direktor", "info": "Universtitet asoschisi" },
+      "boardChair": { "name": "Yakubov Axtam Nusratilloyevich", "role": "Qarshi Xalqaro Universtiteti Boshqaruv kengashi raisi", "info": "Toshkent davlat yuridik universitetining Xalqaro munosabatlar va uzluksiz ta’lim bo‘yicha prorektori." }
+    },
+    "infraTitle": "KIU Infratuzilmasi",
+    "infraText": "Raqamli va xavfsiz ta'lim muhiti — eng so'nggi texnologiyalar bilan jihozlangan innovatsion hudud.",
+    "infra": {
+      "wifi": { "title": "Bepul Wi-Fi", "desc": "Universitet hududi bo'ylab yuqori tezlikdagi internet" },
+      "computers": { "title": "50+ kompyuter", "desc": "Zamonaviy kompyuter markazida dasturlash va dizayn" },
+      "library": { "title": "Elektron kutubxona", "desc": "Kitoblar va ilmiy maqolalar bazasi — istalgan joydan kirish" },
+      "cctv": { "title": "24/7 Videokuzatuv", "desc": "Kampusning har bir nuqtasi xavfsizlik kameralari bilan qamrab olingan" }
+    }
+  },
+  "faculty": {
+    "title": "Yo'nalishlar",
+    "subtitle": "Xalqaro standartlarda yuqori sifatli ta'lim",
+    "degrees": { "bakalavr": "Bakalavr", "magistratura": "Magistratura" },
+    "stats": { "programs": "Yo'nalish", "duration": "Davomiyligi", "lowestFee": "Eng past narx", "studyForm": "O'qish shakli" },
+    "years": "{{n}} yil",
+    "currency": "so'm",
+    "price": "{{price}} so'm",
+    "pricePerYear": "{{price}} so'm/yil",
+    "studyForms": { "fullTime": "Kunduzgi" },
+    "langs": { "uz": "O'zbek", "ru": "Rus", "en": "Ingliz" },
+    "card": { "details": "Batafsil" },
+    "modal": {
+      "close": "Yopish (Esc)",
+      "closeLabel": "Modalni yopish",
+      "duration": "Davomiyligi",
+      "language": "O'qitish tili",
+      "studyForm": "O'qish shakli",
+      "fee": "Kontrakt narxi (kunduzgi, yillik)",
+      "subjects": "O'qitiladigan fanlar",
+      "career": "Karyera imkoniyatlari",
+      "apply": "Ariza topshirish",
+      "deadline": "Qabul muddati: 1 iyul — 20 avgust 2026"
+    },
+    "programs": {
+      "preschool": {
+        "name": "Maktabgacha ta'lim",
+        "desc": "Maktabgacha yoshdagi bolalar bilan ishlash bo'yicha yuqori malakali mutaxassislar tayyorlash. Bolalar psixologiyasi va pedagogikasi asosida professional kadrlar.",
+        "subjects": ["Psixologiya", "Pedagogika", "Bolalar adabiyoti", "Matematika asoslari", "Musiqa", "Jismoniy tarbiya"],
+        "career": ["Maktabgacha ta'lim muassasasi direktori", "Tarbiyachi", "Metodist", "Psixolog", "Bolalar bog'chasi rahbari"]
+      },
+      "primary": {
+        "name": "Boshlang'ich ta'lim",
+        "desc": "Boshlang'ich sinf o'quvchilariga ta'lim beruvchi malakali o'qituvchilar tayyorlash. Zamonaviy pedagogik usullar va innovatsion ta'lim texnologiyalari.",
+        "subjects": ["Ona tili", "Matematika", "Tabiat", "Tasviriy san'at", "Musiqa", "Pedagogika asoslari"],
+        "career": ["Boshlang'ich sinf o'qituvchisi", "Metodist", "Maktab direktori", "Ta'lim menejeri"]
+      },
+      "nationalIdea": {
+        "name": "Milliy g'oya, ma'naviyat asoslari va huquqta'limi",
+        "desc": "Milliy qadriyatlar, huquq va ma'naviyat sohasida bilimli, vatanparvar mutaxassislar tayyorlash. Huquqiy ong va fuqarolik tarbiyasiga yo'naltirilgan dastur.",
+        "subjects": ["Konstitutsiyaviy huquq", "Milliy g'oya", "Falsafa", "Tarix", "Huquqshunoslik", "Ma'naviyat asoslari"],
+        "career": ["O'qituvchi", "Davlat xizmati mutaxassisi", "Huquqiy maslahatchi", "Ma'naviyat targ'ibotchisi"]
+      },
+      "oilGas": {
+        "name": "Neft va gaz ishi",
+        "desc": "Neft-gaz sanoati uchun yuqori malakali muhandis va texnologlar tayyorlash. Faoliyat turlari bo'yicha ixtisoslashish imkoniyati mavjud.",
+        "subjects": ["Neft kimyosi", "Qazib olish texnologiyasi", "Ekologiya", "Iqtisodiyot", "Muhandislik", "Geologiya"],
+        "career": ["Neft-gaz muhandisi", "Texnolog", "Laborant", "Loyiha menejeri", "Ekolog-mutaxassis"],
+        "note": "Faoliyat turlari bo'yicha ixtisoslashish mavjud"
+      },
+      "economics": {
+        "name": "Iqtisodiyot",
+        "desc": "Zamonaviy bozor iqtisodiyoti sharoitida raqobatbardosh iqtisodchilar tayyorlash. Tarmoqlar va sohalar bo'yicha ixtisoslashish imkoniyati mavjud.",
+        "subjects": ["Makroiqtisodiyot", "Mikroiqtisodiyot", "Marketing", "Menejment", "Statistika", "Raqamli iqtisodiyot"],
+        "career": ["Iqtisodchi", "Moliyaviy tahlilchi", "Bank xodimi", "Tadbirkor", "Davlat boshqaruvi mutaxassisi"],
+        "note": "Tarmoqlar va sohalar bo'yicha ixtisoslashish mavjud"
+      },
+      "softwareEng": {
+        "name": "Dasturiy injiniring",
+        "desc": "Zamonaviy dasturiy ta'minot ishlab chiqish sohasida yuqori malakali mutaxassislar tayyorlash. Sun'iy intellekt, veb va mobil dasturlash.",
+        "subjects": ["Python", "JavaScript", "Ma'lumotlar bazasi", "Sun'iy intellekt", "Mobil dasturlash", "Kiberxavfsizlik"],
+        "career": ["Dasturchi", "Web developer", "Data scientist", "DevOps", "IT menejeri", "Kiberxavfsizlik mutaxassisi"]
+      },
+      "finance": {
+        "name": "Moliya va moliyaviy texnologiyalar",
+        "desc": "FinTech va zamonaviy moliya sohasida innovatsion mutaxassislar tayyorlash. Blokcheyn, raqamli bankchilik va investitsiya texnologiyalari.",
+        "subjects": ["Moliya nazariyasi", "Blokcheyn", "FinTech", "Risk menejment", "Investitsiya", "Kriptovalyuta"],
+        "career": ["Moliyaviy maslahatchi", "FinTech mutaxassisi", "Bank xodimi", "Investitsiya menejeri", "Risk-menejer"]
+      },
+      "accounting": {
+        "name": "Buxgalteriya hisobi",
+        "desc": "Moliyaviy hisobot, audit va soliq sohasida malakali buxgalterlar tayyorlash. IFRS xalqaro standartlari asosida o'qitish.",
+        "subjects": ["Buxgalteriya hisobi", "Audit", "Soliqlar", "Moliyaviy tahlil", "1C dasturi", "IFRS standartlari"],
+        "career": ["Buxgalter", "Auditor", "Moliyaviy direktor", "Soliq maslahatchi", "IFRS mutaxassisi"]
+      },
+      "psychology": {
+        "name": "Psixologiya",
+        "desc": "Insonlar ruhiy salomatligi va ijtimoiy muammolarini hal qiluvchi psixologlar tayyorlash. Faoliyat turlari bo'yicha ixtisoslashish imkoniyati mavjud.",
+        "subjects": ["Umumiy psixologiya", "Klinik psixologiya", "Ijtimoiy psixologiya", "Psixodiagnostika", "Nevrologiya asoslari"],
+        "career": ["Psixolog", "Psixoterapevt", "HR mutaxassisi", "Klinik psixolog", "Ijtimoiy ishchi"],
+        "note": "Faoliyat turlari bo'yicha ixtisoslashish mavjud"
+      },
+      "philology": {
+        "name": "Filologiya va tillarni o'qitish",
+        "desc": "Til va adabiyot sohasida bilimli, xalqaro miqyosda faoliyat yurita oladigan mutaxassislar tayyorlash. Uch yo'nalish: Ingliz, O'zbek va Rus tili.",
+        "subjects": ["Ingliz tili", "Adabiyot", "Tilshunoslik", "Tarjima nazariyasi", "Nutq madaniyati", "O'zbek tili"],
+        "career": ["O'qituvchi", "Tarjimon", "Muharrir", "Diplomat", "Jurnalist"],
+        "note": "Yo'nalishlar: Ingliz tili | O'zbek tili | Rus tili"
+      },
+      "linguisticsEn": {
+        "name": "Lingvistika (Ingliz tili)",
+        "desc": "Ingliz tili lingvistikasi sohasida ilmiy-tadqiqot va pedagogik faoliyat olib boruvchi yuqori malakali mutaxassislar tayyorlash. Xalqaro ilmiy hamkorlik imkoniyatlari.",
+        "subjects": ["Ingliz tilshunoslik nazariyasi", "Qiyosiy tilshunoslik", "Ilmiy tadqiqot metodologiyasi", "Tarjima nazariyasi", "Lingvokulturologiya", "Diskurs tahlili"],
+        "career": ["Oliy o'quv yurti o'qituvchisi", "Ilmiy tadqiqotchi", "Tarjimon", "Lingvistika mutaxassisi", "Xalqaro tashkilot mutaxassisi"]
+      },
+      "linguisticsRu": {
+        "name": "Lingvistika (Rus tili)",
+        "desc": "Rus tili lingvistikasi sohasida ilmiy-tadqiqot va pedagogik faoliyatga tayyorlangan chuqur bilimli mutaxassislar yetishtirish. Kognitiv va qiyosiy tilshunoslik.",
+        "subjects": ["Rus tilshunoslik nazariyasi", "Qiyosiy grammatika", "Ilmiy tadqiqot metodologiyasi", "Nutq madaniyati", "Stilistika", "Kognitiv tilshunoslik"],
+        "career": ["Oliy o'quv yurti o'qituvchisi", "Tarjimon", "Ilmiy tadqiqotchi", "Muharrir", "Diplomat"]
+      },
+      "economicsMaster": {
+        "name": "Iqtisodiyot",
+        "desc": "Iqtisodiy siyosat, tahlil va boshqaruv sohasida chuqur ilmiy bilimga ega mutaxassislar tayyorlash. Xalqaro iqtisodiyot va raqamli iqtisod ixtisoslashuvi.",
+        "subjects": ["Makroiqtisodiy tahlil", "Tadqiqot metodologiyasi", "Raqamli iqtisodiyot", "Xalqaro iqtisodiyot", "Iqtisodiy siyosat", "Ekonometrika"],
+        "career": ["Iqtisodchi-tahlilchi", "Davlat boshqaruv mutaxassisi", "Konsultant", "Ilmiy tadqiqotchi", "Xalqaro tashkilotlar mutaxassisi"]
+      }
     }
   }
 }

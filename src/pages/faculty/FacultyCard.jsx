@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IC } from './Icons.jsx'
-import { fmt } from './utils'
+import { fmt, localizeProgram } from './utils'
 
 /* ── Faculty Card ──────────────────────────────────────────── */
-export default function FacultyCard({ f, index, onClick }) {
+export default function FacultyCard({ f: program, index, onClick }) {
+  const { t } = useTranslation()
+  const f = localizeProgram(program, t)
   const [hover, setHover] = useState(false)
 
   // Xatolik: karta faqat sichqoncha uchun ochiladigan div edi — klaviatura
@@ -57,7 +60,7 @@ export default function FacultyCard({ f, index, onClick }) {
         display: 'flex', alignItems: 'center', gap: 5,
       }}>
         <span style={{ color: '#d97706', display: 'flex', alignItems: 'center' }}>{IC.sun(13)}</span>
-        {f.studyForm}
+        {f.studyFormLabel}
         <span style={{ opacity: .4 }}>·</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 3, color: 'var(--muted)' }}>
           {IC.clock(12)}{f.duration}
@@ -73,7 +76,7 @@ export default function FacultyCard({ f, index, onClick }) {
       }}>
         <span style={{ color: f.color, display: 'flex', alignItems: 'center' }}>{IC.tag(11)}</span>
         <span style={{ fontSize: 11, fontWeight: 700, color: f.color }}>
-          {fmt(f.price)} so'm/yil
+          {t('faculty.pricePerYear', { price: fmt(f.price, t('meta.thousandsSep')) })}
         </span>
       </div>
 
@@ -81,7 +84,7 @@ export default function FacultyCard({ f, index, onClick }) {
         fontSize: 12, fontWeight: 600, color: f.color,
         display: 'flex', alignItems: 'center', gap: 5,
       }}>
-        Batafsil
+        {t('faculty.card.details')}
         <span style={{ display: 'flex', alignItems: 'center' }}>{IC.arrowRight(13)}</span>
       </div>
     </div>

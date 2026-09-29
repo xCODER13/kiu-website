@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import config from '../config'
 
+// Matn va sana i18n'da (telegram.posts.<id>) — bu yerda faqat id va ikonka turi
 const DEMO_POSTS = [
-  { id: 1, text: "Qabul hujjatlari to'plami yangilandi.", date: 'Bugun 09:45', type: 'announce' },
-  { id: 2, text: 'Stipendiya arizalari: 25-martgacha qabul qilinadi.', date: 'Kecha 14:20', type: 'edu' },
-  { id: 3, text: 'Ochiq eshiklar kuni — 28-mart soat 10:00.', date: '13 mart', type: 'calendar' },
-  { id: 4, text: "Yangi laboratoriya jihozlari o'rnatildi.", date: '12 mart', type: 'check' },
+  { id: 1, type: 'announce' },
+  { id: 2, type: 'edu' },
+  { id: 3, type: 'calendar' },
+  { id: 4, type: 'check' },
 ]
 
 const TgIcon = () => (
@@ -49,6 +51,7 @@ const PostIcon = ({ type }) => {
 }
 
 export default function TelegramPanel() {
+  const { t } = useTranslation()
   const [posts] = useState(DEMO_POSTS)
 
   return (
@@ -61,7 +64,7 @@ export default function TelegramPanel() {
         </div>
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e' }}>{config.telegram.username}</div>
-          <div style={{ fontSize: 11, color: 'var(--muted)' }}>Rasmiy Telegram kanal</div>
+          <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t('telegram.channel')}</div>
         </div>
         <span style={{ marginLeft: 'auto', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: '#fff', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20 }}>LIVE</span>
       </div>
@@ -74,8 +77,8 @@ export default function TelegramPanel() {
               <PostIcon type={p.type} />
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 12, lineHeight: 1.6, color: '#1a1a2e' }}>{p.text}</p>
-              <time style={{ fontSize: 10, color: 'var(--muted)', display: 'block', textAlign: 'right', marginTop: 3 }}>{p.date}</time>
+              <p style={{ fontSize: 12, lineHeight: 1.6, color: '#1a1a2e' }}>{t(`telegram.posts.${p.id}.text`)}</p>
+              <time style={{ fontSize: 10, color: 'var(--muted)', display: 'block', textAlign: 'right', marginTop: 3 }}>{t(`telegram.posts.${p.id}.date`)}</time>
             </div>
           </div>
         ))}
@@ -88,7 +91,7 @@ export default function TelegramPanel() {
         <a href={config.telegram.url} target="_blank" rel="noopener noreferrer"
           style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'linear-gradient(135deg, #0088cc, #0055aa)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '8px 18px', borderRadius: 8, textDecoration: 'none' }}>
           <TgIcon />
-          Kanalga obuna bo'lish
+          {t('telegram.subscribe')}
         </a>
       </div>
     </div>

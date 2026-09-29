@@ -10,6 +10,7 @@ vi.mock('./pages/admin/Dashboard', () => ({ default: () => <div>DASHBOARD</div> 
 vi.mock('./pages/admin/Login', () => ({ default: () => <div>LOGIN</div> }))
 vi.mock('./pages/Home', () => ({ default: () => <div>HOME</div> }))
 vi.mock('./pages/About', () => ({ default: () => <div>ABOUT</div> }))
+vi.mock('./pages/News', () => ({ default: () => <div>NEWS</div> }))
 vi.mock('./pages/NewsDetail', () => ({ default: () => <div>NEWS-DETAIL</div> }))
 vi.mock('./components/ApplyModal', () => ({ default: () => <div>APPLY</div> }))
 vi.mock('./components/Search', () => ({ default: () => null }))
@@ -108,16 +109,31 @@ describe('SEO: hreflang / canonical / robots', () => {
     expect(document.querySelector('link[rel="canonical"]').getAttribute('href')).toBe(`${SITE}/en`)
   })
 
-  it("hali tarjima qilinmagan /en/about: noindex va hreflang yo'q", async () => {
+  it("tarjima qilingan /en/about: indekslanadi, hreflang juftligi to'liq", async () => {
     renderAt('/en/about')
     await screen.findByText('ABOUT')
+    expect(robots()).toBe('index, follow')
+    expect(hreflangs()).toEqual({ uz: `${SITE}/about`, en: `${SITE}/en/about`, 'x-default': `${SITE}/about` })
+    expect(document.querySelector('link[rel="canonical"]').getAttribute('href')).toBe(`${SITE}/en/about`)
+  })
+
+  it("o'zbekcha /about ham xuddi shu hreflang to'plamiga ega", async () => {
+    renderAt('/about')
+    await screen.findByText('ABOUT')
+    expect(robots()).toBe('index, follow')
+    expect(hreflangs()).toEqual({ uz: `${SITE}/about`, en: `${SITE}/en/about`, 'x-default': `${SITE}/about` })
+  })
+
+  it("hali tarjima qilinmagan /en/news: noindex va hreflang yo'q", async () => {
+    renderAt('/en/news')
+    await screen.findByText('NEWS')
     expect(robots()).toBe('noindex, follow')
     expect(hreflangs()).toEqual({})
   })
 
-  it("o'zbekcha /about: indekslanadi, hreflang yo'q (hali inglizcha varianti yo'q)", async () => {
-    renderAt('/about')
-    await screen.findByText('ABOUT')
+  it("o'zbekcha /news: indekslanadi, hreflang yo'q (hali inglizcha varianti yo'q)", async () => {
+    renderAt('/news')
+    await screen.findByText('NEWS')
     expect(robots()).toBe('index, follow')
     expect(hreflangs()).toEqual({})
   })

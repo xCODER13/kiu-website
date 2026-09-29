@@ -1,43 +1,39 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import useJsonLd from '../hooks/useJsonLd'
 
-const FAQS = [
-  { q: "Qabul qachon boshlanadi?", a: "Qabul har yili 1-iyuldan 20-avgustgacha davom etadi. Hujjatlar qabul komissiyasiga shaxsan yoki online topshiriladi." },
-  { q: "Qanday hujjatlar kerak?", a: "Pasport yoki tug'ilganlik guvohnomasi, attestat, 3x4 o'lchamdagi 2 ta surat, tibbiy ma'lumotnoma (086-shakl)." },
-  { q: "Grant asosida o'qish mumkinmi?", a: "Ha! KIU da rektor va ta'sischilar stipendiyasi mavjud. Yuqori ball to'plagan abituriyentlar grant asosida o'qish imkoniyatiga ega." },
-  { q: "Yotoqxona bormi?", a: "Ha, universitetimizda talabalar uchun zamonaviy yotoqxona mavjud. Joylar cheklangan, shuning uchun erta murojaat qilish tavsiya etiladi." },
-  { q: "Qaysi yo'nalishlar eng ko'p talab qilinadi?", a: "Dasturiy injiniring, Iqtisodiyot va Psixologiya yo'nalishlari eng ko'p talab qilinadigan yo'nalishlar hisoblanadi." },
-  { q: "To'lov qancha?", a: "To'lov miqdori yo'nalishga qarab farqlanadi. Batafsil ma'lumot uchun qabul komissiyasiga murojaat qiling: +998 55 500 99 44." },
-  { q: "Xorijiy universitetlar bilan hamkorlik bormi?", a: "Ha! KIU Malayziya, Germaniya, Polsha va boshqa mamlakatlarning nufuzli universitetlari bilan hamkorlik shartnomasi imzolagan." },
-  { q: "Bepul avtobus xizmati bormi?", a: "Ha, universitetimiz talabalar uchun bepul avtobus xizmatini yo'lga qo'ygan. Marshrut va jadval haqida ma'lumot olish uchun murojaat qiling." },
-]
-
-// Modul darajasida — FAQS o'zgarmasa, har render'da qayta yaratilmaydi
-// (useJsonLd shu barqaror referensga tayanadi)
-const FAQ_SCHEMA = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: FAQS.map(f => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a },
-  })),
+// Savol/javoblar matni i18n'da (faq.items) — bu yerda faqat soni. Massiv tilga qarab
+// alohida olinadi (returnObjects), JSON-LD ham shu tilda quriladi.
+function buildFaqSchema(faqs) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  }
 }
 
 export default function FAQ() {
-  useJsonLd('jsonld-faq', FAQ_SCHEMA)
+  const { t } = useTranslation()
+  const faqs = t('faq.items', { returnObjects: true })
+  // useMemo: useJsonLd barqaror referensga tayanadi (har render'da script qayta yaratilmasin)
+  const schema = useMemo(() => buildFaqSchema(faqs), [faqs])
+  useJsonLd('jsonld-faq', schema)
   const [open, setOpen] = useState(null)
 
   return (
     <div className="fade-up">
       <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>Ko'p so'raladigan savollar</h1>
-        <p style={{ fontSize: 14, color: 'var(--muted)' }}>Tez-tez beriladigan savollarga javoblar</p>
+        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('faq.title')}</h1>
+        <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('faq.subtitle')}</p>
       </section>
 
       <section className="section">
         <div className="container" style={{ maxWidth: 700 }}>
-          {FAQS.map((faq, i) => (
+          {faqs.map((faq, i) => (
             <div key={i} className="reveal" style={{ borderBottom: '1px solid var(--border)' }}>
               <button
                 onClick={() => setOpen(open === i ? null : i)}
