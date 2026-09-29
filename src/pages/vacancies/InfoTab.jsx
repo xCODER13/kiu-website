@@ -1,5 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
-import { BENEFITS, REQUIREMENTS, DOCS_NEEDED } from './Data'
+import { BENEFITS, REQUIREMENTS, DOCS_NEEDED } from './data'
 import config from '../../config'
 import { iconStyle } from './styles'
 

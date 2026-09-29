@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { errorBorder } from '../../utils/validation'
-import { POSITIONS, FACULTIES, EDUCATION, EXPERIENCE, DOCS_NEEDED } from './Data'
+import { POSITIONS, FACULTIES, EDUCATION, EXPERIENCE, DOCS_NEEDED } from './data'
 import config from '../../config'
 import { inputStyle, labelStyle, sectionBoxStyle, sectionTitleStyle } from './styles'
 
