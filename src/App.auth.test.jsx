@@ -71,9 +71,9 @@ describe('SEO', () => {
     await screen.findByText('ABOUT')
     expect(document.title).toBe('Biz haqimizda — Qarshi Xalqaro Universiteti | KIU')
   })
-  it('noma\'lum yo\'l — umumiy sayt nomi', async () => {
+  it('noma\'lum yo\'l — 404 sarlavhasi (sayt nomi bilan)', async () => {
     renderAt('/yoq-sahifa')
-    expect(document.title).toBe('Qarshi Xalqaro Universiteti | KIU')
+    expect(document.title).toBe('Sahifa topilmadi — Qarshi Xalqaro Universiteti | KIU')
   })
   it('meta va canonical teglar yangilanadi', async () => {
     document.head.innerHTML = '<meta name="description" content=""><meta property="og:title" content=""><link rel="canonical" href="">'

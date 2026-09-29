@@ -18,4 +18,12 @@ describe('FAQ (smoke test)', () => {
     await user.click(screen.getByText('Qabul qachon boshlanadi?'))
     expect(screen.queryByText(/Qabul har yili 1-iyuldan/)).not.toBeInTheDocument()
   })
+
+  it("xorijiy hamkorlik javobi International sahifasidagi davlatlarga mos (Germaniya yo'q)", async () => {
+    const user = userEvent.setup()
+    render(<FAQ />)
+    await user.click(screen.getByText('Xorijiy universitetlar bilan hamkorlik bormi?'))
+    expect(screen.getByText(/Polsha/)).toBeInTheDocument()
+    expect(screen.queryByText(/Germaniya/)).not.toBeInTheDocument()
+  })
 })

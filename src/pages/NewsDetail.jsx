@@ -120,8 +120,8 @@ export default function NewsDetail() {
         const data = await res.json()
         setNews(data)
         document.title = `${data.title} — ${t('seo.siteName')}`
-        // Ko'rishlar sonini oshirish
-        await fetch(`${API}/api/news/${id}/view`, { method: 'PUT' })
+        // Ko'rishlar sonini oshirish — yordamchi amal: xato bersa maqola yashirinmasligi kerak
+        fetch(`${API}/api/news/${id}/view`, { method: 'PUT' }).catch(() => {})
       } catch (e) {
         setError(e.message)
       } finally {

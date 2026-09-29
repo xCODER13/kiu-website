@@ -1,14 +1,19 @@
 // Nom/davlat/turi i18n'da (international.partners.<id>); bu yerda faqat id va davlat kodi
 import { useTranslation } from 'react-i18next'
 
+// Ro'yxat kiu.uz/xalqaro dagi hamkorlar (6 ta) + INTI (universitet talabi bilan saqlangan)
 const PARTNERS = [
   { id: 'inti', code: 'MY' },
+  { id: 'mgpu', code: 'RU' },
   { id: 'turiba', code: 'LV' },
+  { id: 'gdansk', code: 'PL' },
+  { id: 'mediterranea', code: 'IT' },
+  { id: 'presidency', code: 'IN' },
   { id: 'icfai', code: 'IN' },
-  { id: 'italy', code: 'IT' },
-  { id: 'msu', code: 'RU' },
-  { id: 'indian', code: 'IN' },
 ]
+
+// Statistikadagi hamkor va davlat sonlari ro'yxatdan hisoblanadi: qo'lda yozilgan raqam ro'yxatga zid bo'lib qolmasin
+const COUNTRY_COUNT = new Set(PARTNERS.map(p => p.code)).size
 
 const OPPORTUNITIES = [
   {
@@ -52,7 +57,7 @@ export default function International() {
               {t('international.strategyText')}
             </p>
             <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
-              {[{ n: '7', k: 'partners' }, { n: '5', k: 'countries' }, { n: '11', k: 'programs' }, { n: '2', k: 'formats' }].map(s => (
+              {[{ n: PARTNERS.length, k: 'partners' }, { n: COUNTRY_COUNT, k: 'countries' }, { n: '11', k: 'programs' }, { n: '2', k: 'formats' }].map(s => (
                 <div key={s.k} style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#c4b5fd' }}>{s.n}</div>
                   <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>{t(`international.stats.${s.k}`)}</div>

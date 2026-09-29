@@ -33,6 +33,7 @@ const International   = lazy(() => import('./pages/International'))
 const Documents       = lazy(() => import('./pages/Documents'))
 const Vacancies       = lazy(() => import('./pages/Vacancies'))
 const SortingHat      = lazy(() => import('./pages/SortingHat'))
+const NotFound        = lazy(() => import('./pages/NotFound'))
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('kiu_token')
@@ -69,6 +70,12 @@ const SEO_KEYS = {
 
 const SITE_URL = "https://kiu-university.vercel.app"
 
+// og:locale qiymatlari
+const OG_LOCALES = { uz: 'uz_UZ', en: 'en_US' }
+
+// Tarjima kerak bo'lmagan dinamik yo'llar (SEO_KEYS'da yo'q, lekin mavjud sahifa)
+const DYNAMIC_PATH = /^\/news\/[^/]+$/
+
 // <head>dagi meta/link teglarini topadi yoki yaratadi
 function ensureHeadTag(selector, create) {
   let el = document.head.querySelector(selector)
@@ -86,7 +93,10 @@ function useSeo() {
 
   useEffect(() => {
     const path = stripLangPrefix(pathname)
-    const key = SEO_KEYS[path]
+    // Tanilmagan yo'l = 404 sahifa: noindex + o'z sarlavhasi
+    const isAdmin = /^\/admin(\/|$)/.test(path)
+    const isNotFound = !isAdmin && !Object.hasOwn(SEO_KEYS, path) && !DYNAMIC_PATH.test(path)
+    const key = isNotFound ? 'notFound' : SEO_KEYS[path]
     const siteName = t('seo.siteName')
     const title = key ? t(`seo.pages.${key}.title`) : ''
     const desc = key ? t(`seo.pages.${key}.desc`) : ''
@@ -105,8 +115,26 @@ function useSeo() {
 
     // Oxiridagi "/" olib tashlanadi ("/en/" va "/en" bitta URL bo'lsin)
     const canonicalPath = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname
+    const canonicalUrl = `${SITE_URL}${canonicalPath}`
     const canonicalTag = document.querySelector('link[rel="canonical"]')
-    if (canonicalTag) canonicalTag.setAttribute('href', `${SITE_URL}${canonicalPath}`)
+    if (canonicalTag) canonicalTag.setAttribute('href', canonicalUrl)
+
+    // Ijtimoiy tarmoqlarda ulashilganda sahifa/til bo'yicha to'g'ri ko'rinishi uchun
+    // og:url, og:locale, twitter:* va keywords ham har sahifa/tilga qarab yangilanadi.
+    const setMeta = (attr, name, value) => {
+      if (!value) return
+      const tag = ensureHeadTag(`meta[${attr}="${name}"]`, () => {
+        const m = document.createElement('meta')
+        m.setAttribute(attr, name)
+        return m
+      })
+      tag.setAttribute('content', value)
+    }
+    setMeta('property', 'og:url', canonicalUrl)
+    setMeta('property', 'og:locale', OG_LOCALES[lang])
+    setMeta('name', 'twitter:title', title ? `${title} — ${siteName}` : siteName)
+    setMeta('name', 'twitter:description', desc)
+    setMeta('name', 'keywords', t('seo.keywords'))
 
     // hreflang: faqat HAR IKKI tilda to'liq tayyor sahifalar uchun (TRANSLATED_PATHS).
     // Tarjima qilinmagan /en/* sahifalar o'zbekcha matn ko'rsatadi — ularni "ingliz"
@@ -129,7 +157,7 @@ function useSeo() {
       m.setAttribute('name', 'robots')
       return m
     })
-    const hideFromIndex = lang !== DEFAULT_LANG && !translated
+    const hideFromIndex = isNotFound || isAdmin || (lang !== DEFAULT_LANG && !translated)
     robotsTag.setAttribute('content', hideFromIndex ? 'noindex, follow' : 'index, follow')
   }, [pathname, lang, t])
 }
@@ -222,6 +250,7 @@ function PageRoutes({ onApply }) {
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/map" element={<Map />} />
       <Route path="/sorting-hat" element={<SortingHat />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

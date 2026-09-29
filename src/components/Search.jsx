@@ -56,6 +56,7 @@ export default function Search() {
   const wrapRef  = useRef(null)
   const inputRef = useRef(null)
   const focusTimer = useRef(null)
+  const toggleRef = useRef(null)
   const isMobile = window.innerWidth <= 768
 
   useEffect(() => {
@@ -76,6 +77,17 @@ export default function Search() {
     // Panel yopilishi/komponent unmount bo'lishi 50ms ichida sodir bo'lsa,
     // kechiktirilgan focus() keyinroq yana tetiklanib qolmasin
     return () => { if (focusTimer.current) clearTimeout(focusTimer.current) }
+  }, [open])
+  // Esc paneli fokus qayerda bo'lishidan qat'i nazar (natija/tezkor havola ustida ham) yopadi
+  // va fokusni ochuvchi tugmaga qaytaradi
+  useEffect(() => {
+    if (!open) return undefined
+    const button = toggleRef.current
+    function onEsc(e) {
+      if (e.key === 'Escape') { setOpen(false); button?.focus() }
+    }
+    document.addEventListener('keydown', onEsc)
+    return () => document.removeEventListener('keydown', onEsc)
   }, [open])
   useEffect(() => {
     if (isMobile) return
@@ -118,7 +130,9 @@ export default function Search() {
   return (
     <div ref={wrapRef} style={{ position: 'relative' }}>
       <button
+        ref={toggleRef}
         onClick={() => setOpen(o => !o)} aria-label={t('search.open')}
+        aria-expanded={open} aria-controls="site-search-panel" aria-haspopup="dialog"
         style={{
           background: open ? 'rgba(124,58,237,.08)' : 'none',
           border: `1px solid ${open ? '#7c3aed' : 'var(--border)'}`,
@@ -132,7 +146,7 @@ export default function Search() {
       </button>
 
       {open && (
-        <div style={{
+        <div id="site-search-panel" role="dialog" aria-label={t('search.placeholder')} style={{
                position: isMobile ? 'fixed' : 'absolute',
                top: isMobile ? '70px' : 'calc(100% + 10px)',
                left: isMobile ? '16px' : 'auto',
@@ -156,6 +170,8 @@ export default function Search() {
               value={query}
               onChange={e => setQuery(e.target.value)}
               onKeyDown={handleKey}
+              role="combobox" aria-expanded={results.length > 0} aria-controls="site-search-results"
+              aria-autocomplete="list" aria-activedescendant={results.length > 0 ? `site-search-opt-${selected}` : undefined}
               placeholder={t('search.placeholder')}
               style={{ flex: 1, border: 'none', outline: 'none', fontSize: 14, background: 'none', color: 'var(--text)', fontFamily: 'inherit' }}
             />
@@ -176,8 +192,9 @@ export default function Search() {
               <div style={{ padding: '6px 1rem', fontSize: 10, color: 'var(--muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.05em', background: 'var(--bg-2)', borderBottom: '1px solid var(--border)' }}>
                 {t('search.found', { count: results.length })}
               </div>
+              <div id="site-search-results" role="listbox">
               {results.map((item, i) => (
-                <div key={i} onClick={() => go(item.url)}
+                <div key={i} id={`site-search-opt-${i}`} role="option" aria-selected={selected === i} onClick={() => go(item.url)}
                   onMouseEnter={() => setSelected(i)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 10,
@@ -200,6 +217,7 @@ export default function Search() {
                   </svg>
                 </div>
               ))}
+              </div>
             </div>
           )}
 

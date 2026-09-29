@@ -149,4 +149,31 @@ describe('ApplyModal', () => {
     await screen.findByText('Ariza yuborildi!')
     expect(document.querySelector('img[src="x"]')).toBeNull()
   })
+
+  it('qulaylik: role=dialog, ochilganda fokus birinchi maydonda, Esc yopadi', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+    render(<ApplyModal onClose={onClose} />)
+    const dialog = screen.getByRole('dialog', { name: 'Ariza topshirish' })
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(screen.getByPlaceholderText('Ism Familiya')).toHaveFocus()
+    await user.keyboard('{Escape}')
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('qulaylik: Tab modal ichida aylanadi, yopilganda fokus avvalgi tugmaga qaytadi', async () => {
+    const user = userEvent.setup()
+    const opener = document.createElement('button')
+    document.body.appendChild(opener)
+    opener.focus()
+    const { unmount } = render(<ApplyModal onClose={() => {}} />)
+    const dialog = screen.getByRole('dialog')
+    for (let i = 0; i < 12; i++) {
+      await user.tab()
+      expect(dialog.contains(document.activeElement)).toBe(true)
+    }
+    unmount()
+    expect(opener).toHaveFocus()
+    opener.remove()
+  })
 })

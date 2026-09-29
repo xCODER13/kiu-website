@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { validateFullName, validatePhone, errorBorder } from '../utils/validation'
+import useModalA11y from '../hooks/useModalA11y'
 
 const inputBase = { width: '100%', padding: '10px 14px', border: '1px solid var(--border)', borderRadius: 10, fontSize: 13, background: 'var(--bg)', color: 'var(--text)', outline: 'none' }
 const fieldErrStyle = { fontSize: 11.5, color: '#dc2626', marginTop: 4 }
@@ -21,6 +22,8 @@ const PROGRAMS = [
 
 export default function ApplyModal({ onClose }) {
   const { t } = useTranslation()
+  const dialogRef = useRef(null)
+  useModalA11y(dialogRef, onClose)
   const [form, setForm] = useState({ name: '', phone: '', faculty: '', message: '' })
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -61,7 +64,7 @@ export default function ApplyModal({ onClose }) {
 
   return (
     <div onClick={onClose} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: 'var(--bg)', borderRadius: 16, padding: '2rem', width: '100%', maxWidth: 480, position: 'relative' }}>
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={t('applyModal.title')} onClick={e => e.stopPropagation()} style={{ background: 'var(--bg)', borderRadius: 16, padding: '2rem', width: '100%', maxWidth: 480, position: 'relative' }}>
         {/* aria-label "Modalni yopish" — muvaffaqiyat ekranidagi pastki "Yopish" tugmasi bilan
             bir xil nomga ega bo'lmasligi uchun (ikkalasi bir vaqtda DOM'da bo'lishi mumkin) */}
         <button onClick={onClose} aria-label={t('applyModal.closeModal')} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: 'var(--muted)' }}>

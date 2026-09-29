@@ -39,8 +39,10 @@
       "testimonials": { "title": "Fikr-mulohazalar", "desc": "KIU talabalari va bitiruvchilarining universitetimiz haqidagi fikrlari." },
       "map": { "title": "Kampus xaritasi", "desc": "KIU kampusining interaktiv xaritasi va yo'nalish ko'rsatmalari." },
       "sortingHat": { "title": "Yo'nalishni aniqlash", "desc": "KIU Sehrli Shlyapasi — bir necha savol orqali siz uchun eng mos yo'nalishni aniqlang." },
-      "qrcode": { "title": "QR Kod", "desc": "KIU rasmiy QR kodlari va tezkor havolalar." }
-    }
+      "qrcode": { "title": "QR Kod", "desc": "KIU rasmiy QR kodlari va tezkor havolalar." },
+      "notFound": { "title": "Sahifa topilmadi", "desc": "Siz izlagan sahifa topilmadi." }
+    },
+    "keywords": "KIU, Qarshi, universitet, ta'lim, qabul, bakalavriat, grant"
   },
   "nav": {
     "logoAlt": "KIU logo",
@@ -163,7 +165,7 @@
       { "q": "Yotoqxona bormi?", "a": "Ha, universitetimizda talabalar uchun zamonaviy yotoqxona mavjud. Joylar cheklangan, shuning uchun erta murojaat qilish tavsiya etiladi." },
       { "q": "Qaysi yo'nalishlar eng ko'p talab qilinadi?", "a": "Dasturiy injiniring, Iqtisodiyot va Psixologiya yo'nalishlari eng ko'p talab qilinadigan yo'nalishlar hisoblanadi." },
       { "q": "To'lov qancha?", "a": "To'lov miqdori yo'nalishga qarab farqlanadi. Batafsil ma'lumot uchun qabul komissiyasiga murojaat qiling: +998 55 500 99 44." },
-      { "q": "Xorijiy universitetlar bilan hamkorlik bormi?", "a": "Ha! KIU Malayziya, Germaniya, Polsha va boshqa mamlakatlarning nufuzli universitetlari bilan hamkorlik shartnomasi imzolagan." },
+      { "q": "Xorijiy universitetlar bilan hamkorlik bormi?", "a": "Ha! KIU Malayziya, Rossiya, Latviya, Polsha, Italiya va Hindiston universitetlari bilan hamkorlik qilmoqda. To'liq ro'yxat «Xalqaro hamkorlik» sahifasida." },
       { "q": "Bepul avtobus xizmati bormi?", "a": "Ha, universitetimiz talabalar uchun bepul avtobus xizmatini yo'lga qo'ygan. Marshrut va jadval haqida ma'lumot olish uchun murojaat qiling." }
     ]
   },
@@ -225,11 +227,12 @@
     "partnersTitle": "Hamkor universitetlar",
     "partners": {
       "inti": { "name": "INTI International University", "country": "Malayziya", "type": "Akademik almashinuv" },
-      "turiba": { "name": "Turiba University", "country": "Latviya", "type": "Hamkorlik shartnomasi" },
-      "icfai": { "name": "ICAFAI University", "country": "Hindiston", "type": "Ilmiy tadqiqot" },
-      "italy": { "name": "Italia universiteti", "country": "Italiya", "type": "Ta'lim almashinuvi" },
-      "msu": { "name": "Moscow State University", "country": "Rossiya", "type": "Hamkorlik" },
-      "indian": { "name": "Indian University", "country": "Hindiston", "type": "Amaliyot dasturi" }
+      "mgpu": { "name": "Moskva shahar pedagogika universiteti", "country": "Rossiya", "type": "Hamkorlik shartnomasi" },
+      "turiba": { "name": "Turība University", "country": "Latviya", "type": "Hamkorlik shartnomasi" },
+      "gdansk": { "name": "Gdańsk universiteti (University of Gdańsk)", "country": "Polsha", "type": "Hamkorlik shartnomasi" },
+      "mediterranea": { "name": "Università degli Studi Mediterranea di Reggio Calabria", "country": "Italiya", "type": "Hamkorlik shartnomasi" },
+      "presidency": { "name": "Presidency University", "country": "Hindiston", "type": "Hamkorlik shartnomasi" },
+      "icfai": { "name": "ICFAI (Institute of Chartered Financial Analysts of India)", "country": "Hindiston", "type": "Hamkorlik shartnomasi" }
     },
     "exchangeTitle": "Akademik almashinuv dasturi",
     "exchange": {
@@ -262,8 +265,8 @@
     "leaders": {
       "rector": { "name": "Panjiyev Ulug'bek Rustamovich", "role": "Rektor", "info": "Kimyo fanlari PhD, dotsent" },
       "viceRector": { "name": "Norinov Faxriyor Kurbonovich", "role": "Prorektor" },
-      "financeDirector": { "name": "Raxmanov Uchqun Toshpo'latovich", "role": "Moliyaviy direktor", "info": "Universtitet asoschisi" },
-      "boardChair": { "name": "Yakubov Axtam Nusratilloyevich", "role": "Qarshi Xalqaro Universtiteti Boshqaruv kengashi raisi", "info": "Toshkent davlat yuridik universitetining Xalqaro munosabatlar va uzluksiz ta’lim bo‘yicha prorektori." }
+      "financeDirector": { "name": "Raxmanov Uchqun Toshpo'latovich", "role": "Moliyaviy direktor", "info": "Universitet asoschisi" },
+      "boardChair": { "name": "Yakubov Axtam Nusratilloyevich", "role": "Qarshi Xalqaro Universiteti Boshqaruv kengashi raisi", "info": "Toshkent davlat yuridik universitetining Xalqaro munosabatlar va uzluksiz ta’lim bo‘yicha prorektori." }
     },
     "infraTitle": "KIU Infratuzilmasi",
     "infraText": "Raqamli va xavfsiz ta'lim muhiti — eng so'nggi texnologiyalar bilan jihozlangan innovatsion hudud.",
@@ -312,7 +315,7 @@
         "career": ["Boshlang'ich sinf o'qituvchisi", "Metodist", "Maktab direktori", "Ta'lim menejeri"]
       },
       "nationalIdea": {
-        "name": "Milliy g'oya, ma'naviyat asoslari va huquqta'limi",
+        "name": "Milliy g'oya, ma'naviyat asoslari va huquq ta'limi",
         "desc": "Milliy qadriyatlar, huquq va ma'naviyat sohasida bilimli, vatanparvar mutaxassislar tayyorlash. Huquqiy ong va fuqarolik tarbiyasiga yo'naltirilgan dastur.",
         "subjects": ["Konstitutsiyaviy huquq", "Milliy g'oya", "Falsafa", "Tarix", "Huquqshunoslik", "Ma'naviyat asoslari"],
         "career": ["O'qituvchi", "Davlat xizmati mutaxassisi", "Huquqiy maslahatchi", "Ma'naviyat targ'ibotchisi"]
@@ -430,7 +433,7 @@
     "howText": "Telefon kamerangizni QR kodga yo'naltiring → Avtomatik havola ochiladi → Obuna bo'ling va yangiliklar olish boshlang!"
   },
   "gallery": {
-    "title": "Fotogalerеya",
+    "title": "Fotogalereya",
     "subtitle": "KIU hayotidan lavhalar",
     "error": "Galereyani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.",
     "empty": "Haqiqiy rasmlar tez orada qo'shiladi",
@@ -801,5 +804,10 @@
       "oilGas": "Neft va gaz ishi",
       "nationalIdea": "Milliy g'oya va huquq ta'limi"
     }
+  },
+  "notFound": {
+    "title": "Sahifa topilmadi",
+    "text": "Siz izlagan sahifa mavjud emas yoki boshqa manzilga ko'chirilgan.",
+    "home": "Bosh sahifaga qaytish"
   }
 }

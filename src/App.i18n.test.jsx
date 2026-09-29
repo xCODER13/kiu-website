@@ -154,4 +154,46 @@ describe('SEO: hreflang / canonical / robots', () => {
     await user.click(within(header).getAllByRole('link', { name: "O'zbekcha" })[0])
     expect(document.head.querySelectorAll('link[rel="alternate"][hreflang]')).toHaveLength(3)
   })
+
+  it("og:url, og:locale, twitter:* va keywords sahifa va tilga qarab yangilanadi", async () => {
+    const meta = (attr, name) => document.head.querySelector(`meta[${attr}="${name}"]`)?.getAttribute('content')
+    renderAt('/en/about')
+    await screen.findByText('ABOUT')
+    expect(meta('property', 'og:url')).toBe(`${SITE}/en/about`)
+    expect(meta('property', 'og:locale')).toBe('en_US')
+    expect(meta('name', 'twitter:title')).toMatch(/^About us — Karshi International University/)
+    expect(meta('name', 'twitter:description')).toBe(meta('property', 'og:description'))
+    expect(meta('name', 'keywords')).toMatch(/university/)
+  })
+
+  it("o'zbekcha sahifada og:url o'sha sahifaga ko'rsatadi, og:locale uz_UZ", async () => {
+    renderAt('/about')
+    await screen.findByText('ABOUT')
+    expect(document.head.querySelector('meta[property="og:url"]').getAttribute('content')).toBe(`${SITE}/about`)
+    expect(document.head.querySelector('meta[property="og:locale"]').getAttribute('content')).toBe('uz_UZ')
+  })
+})
+
+describe('404 sahifa', () => {
+  it("noma'lum yo'l: NotFound ko'rinadi, noindex, hreflang yo'q, sarlavha 'Sahifa topilmadi'", async () => {
+    renderAt('/nonexistent')
+    expect(await screen.findByRole('heading', { name: 'Sahifa topilmadi' })).toBeInTheDocument()
+    expect(robots()).toBe('noindex, follow')
+    expect(hreflangs()).toEqual({})
+    expect(document.title).toMatch(/^Sahifa topilmadi — /)
+  })
+
+  it("/en/zzz: inglizcha 404, bosh sahifaga havola /en ga olib boradi", async () => {
+    renderAt('/en/zzz')
+    expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Back to home' })).toHaveAttribute('href', '/en')
+    expect(robots()).toBe('noindex, follow')
+  })
+
+  it("mavjud sahifalar (/about, /news/:id) 404 bo'lib qolmaydi", async () => {
+    renderAt('/news/abc')
+    await screen.findByText('NEWS-DETAIL')
+    expect(screen.queryByRole('heading', { name: 'Sahifa topilmadi' })).not.toBeInTheDocument()
+    expect(robots()).toBe('index, follow')
+  })
 })

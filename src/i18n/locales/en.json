@@ -27,7 +27,7 @@
       "admission": { "title": "Admission — 2026", "desc": "KIU admission requirements, the list of documents and how to apply. Application period: July 1 – August 20, 2026." },
       "news": { "title": "News", "desc": "The latest news, events and announcements from KIU." },
       "events": { "title": "Events calendar", "desc": "Upcoming events, conferences and celebrations at KIU." },
-      "teachers": { "title": "Faculty and staff", "desc": "Meet the qualified professors and teachers of KIU." },
+      "teachers": { "title": "Professors and Teachers", "desc": "Meet the qualified professors and teachers of KIU." },
       "gallery": { "title": "Gallery", "desc": "Photos from the KIU campus, events and everyday life." },
       "contact": { "title": "Contact", "desc": "KIU address, phone numbers, email and working hours." },
       "faq": { "title": "Frequently asked questions", "desc": "Answers to common questions about admission, studying at KIU and more." },
@@ -39,8 +39,10 @@
       "testimonials": { "title": "Testimonials", "desc": "What KIU students and graduates say about our university." },
       "map": { "title": "Campus map", "desc": "Interactive map of the KIU campuses and directions." },
       "sortingHat": { "title": "Find your program", "desc": "The KIU Sorting Hat — answer a few questions to find the program that suits you best." },
-      "qrcode": { "title": "QR codes", "desc": "Official KIU QR codes and quick links." }
-    }
+      "qrcode": { "title": "QR codes", "desc": "Official KIU QR codes and quick links." },
+      "notFound": { "title": "Page not found", "desc": "The page you are looking for was not found." }
+    },
+    "keywords": "KIU, Karshi, university, education, admission, bachelor's, grant"
   },
   "nav": {
     "logoAlt": "KIU logo",
@@ -58,7 +60,7 @@
       "achievements": "Achievements",
       "international": "International cooperation",
       "documents": "Official documents",
-      "teachers": "Faculty and staff",
+      "teachers": "Professors and Teachers",
       "faculty": "Programs",
       "admission": "Admission",
       "faq": "FAQ",
@@ -152,7 +154,7 @@
       { "q": "Is there a dormitory?", "a": "Yes, the university has a modern dormitory for students. Places are limited, so we recommend applying early." },
       { "q": "Which programs are the most in demand?", "a": "Software Engineering, Economics and Psychology are the most in-demand programs." },
       { "q": "How much is the tuition fee?", "a": "The fee depends on the program. For details, contact the admissions committee: +998 55 500 99 44." },
-      { "q": "Is there cooperation with foreign universities?", "a": "Yes! KIU has signed cooperation agreements with reputable universities in Malaysia, Germany, Poland and other countries." },
+      { "q": "Is there cooperation with foreign universities?", "a": "Yes! KIU cooperates with universities in Malaysia, Russia, Latvia, Poland, Italy and India. The full list is on the International cooperation page." },
       { "q": "Is there a free bus service?", "a": "Yes, the university runs a free bus service for students. Contact us for information about routes and the schedule." }
     ]
   },
@@ -214,11 +216,12 @@
     "partnersTitle": "Partner universities",
     "partners": {
       "inti": { "name": "INTI International University", "country": "Malaysia", "type": "Academic exchange" },
-      "turiba": { "name": "Turiba University", "country": "Latvia", "type": "Cooperation agreement" },
-      "icfai": { "name": "ICAFAI University", "country": "India", "type": "Research" },
-      "italy": { "name": "Italian university", "country": "Italy", "type": "Education exchange" },
-      "msu": { "name": "Moscow State University", "country": "Russia", "type": "Cooperation" },
-      "indian": { "name": "Indian University", "country": "India", "type": "Internship program" }
+      "mgpu": { "name": "Moscow City Pedagogical University", "country": "Russia", "type": "Cooperation agreement" },
+      "turiba": { "name": "Turība University", "country": "Latvia", "type": "Cooperation agreement" },
+      "gdansk": { "name": "University of Gdańsk", "country": "Poland", "type": "Cooperation agreement" },
+      "mediterranea": { "name": "Università degli Studi Mediterranea di Reggio Calabria", "country": "Italy", "type": "Cooperation agreement" },
+      "presidency": { "name": "Presidency University", "country": "India", "type": "Cooperation agreement" },
+      "icfai": { "name": "ICFAI (Institute of Chartered Financial Analysts of India)", "country": "India", "type": "Cooperation agreement" }
     },
     "exchangeTitle": "Academic exchange program",
     "exchange": {
@@ -755,7 +758,7 @@
       "about": "About us",
       "mission": "Mission and goals",
       "leadership": "Leadership",
-      "teachers": "Faculty and staff",
+      "teachers": "Professors and Teachers",
       "international": "International cooperation",
       "regulations": "Official documents",
       "vacancies": "Job openings and vacancies",
@@ -799,5 +802,10 @@
       "oilGas": "Oil and Gas Engineering",
       "nationalIdea": "National Idea and Legal Education"
     }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The page you are looking for does not exist or has been moved.",
+    "home": "Back to home"
   }
 }
