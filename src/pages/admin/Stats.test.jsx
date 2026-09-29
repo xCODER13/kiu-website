@@ -38,9 +38,10 @@ describe('Stats', () => {
   })
 
   it('kartalar to\'g\'ri qiymatlar bilan ko\'rsatiladi', async () => {
-    mockApi({ 'GET /stats': { newsCount: 5, eventsCount: 2, teachersCount: 10, appsCount: 3, vacancyApps: 1, galleryCount: 4 } })
+    mockApi({ 'GET /stats': { newsCount: 5, shortsCount: 8, eventsCount: 2, teachersCount: 10, appsCount: 3, vacancyApps: 1, galleryCount: 4 } })
     setup()
     expect(await screen.findByText('5')).toBeInTheDocument()
+    expect(screen.getByText('8')).toBeInTheDocument()
     expect(screen.getByText('2')).toBeInTheDocument()
     expect(screen.getByText('10')).toBeInTheDocument()
     expect(screen.getByText('3')).toBeInTheDocument()
@@ -51,7 +52,20 @@ describe('Stats', () => {
   it('qiymat kelmagan maydonlar 0 ko\'rsatadi (nullish coalescing)', async () => {
     mockApi({ 'GET /stats': {} })
     setup()
-    expect(await screen.findAllByText('0')).toHaveLength(6)
+    expect(await screen.findAllByText('0')).toHaveLength(7)
+  })
+
+  it('"Yangiliklar" va "Youtube shorts" alohida kartalar — har biri o\'z sonini ko\'rsatadi', async () => {
+    mockApi({ 'GET /stats': { newsCount: 6, shortsCount: 13 } })
+    setup()
+    const news = (await screen.findByText('Yangiliklar')).closest('a')
+    const shorts = screen.getByText('Youtube shorts').closest('a')
+    expect(news).not.toBe(shorts)
+    expect(news).toHaveTextContent('6')
+    expect(shorts).toHaveTextContent('13')
+    // ikkalasi ham admin yangiliklar sahifasiga olib boradi (Shorts o'sha yerda boshqariladi)
+    expect(news).toHaveAttribute('href', '/admin/news')
+    expect(shorts).toHaveAttribute('href', '/admin/news')
   })
 
   it('token bo\'lsa so\'rov Authorization header bilan yuboriladi', async () => {

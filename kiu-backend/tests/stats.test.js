@@ -20,10 +20,26 @@ describe('GET /api/stats', () => {
     expect((await request(app).get('/api/stats')).status).toBe(401)
   })
 
-  test("bo'sh bazada barcha sanoqlar 0, javob aynan 7 ta raqamli maydondan iborat", async () => {
+  test("bo'sh bazada barcha sanoqlar 0, javob aynan 8 ta raqamli maydondan iborat", async () => {
     const res = await getStats()
     expect(res.status).toBe(200)
-    expect(res.body).toEqual({ newsCount: 0, eventsCount: 0, teachersCount: 0, appsCount: 0, newApps: 0, vacancyApps: 0, galleryCount: 0 })
+    expect(res.body).toEqual({ newsCount: 0, shortsCount: 0, eventsCount: 0, teachersCount: 0, appsCount: 0, newApps: 0, vacancyApps: 0, galleryCount: 0 })
+  })
+
+  test("newsCount faqat yangiliklarni, shortsCount faqat YouTube Shorts videolarni sanaydi (saytdagi ajratish bilan bir xil)", async () => {
+    await News.create([
+      { title: 'maqola-1' },                                  // videoId default ''
+      { title: 'maqola-2', videoId: '' },
+      { title: 'video-1', videoId: 'SUzoqeWvQHY', shortsUrl: 'https://www.youtube.com/shorts/SUzoqeWvQHY' },
+      { title: 'video-2', videoId: 'zKzMdF3MtkU' },
+      { title: 'video-3', videoId: 'eOlgKMWoHrc' },
+    ])
+    // eski hujjatlarda `videoId` maydoni umuman bo'lmasligi ham mumkin — u ham yangilik hisoblanadi
+    await News.collection.insertOne({ title: 'eski-maqola', views: 0 })
+
+    const { body } = await getStats()
+    expect(body.newsCount).toBe(3)
+    expect(body.shortsCount).toBe(3)
   })
 
   test("news, events, teachers va gallery sanoqlari to'g'ri", async () => {
@@ -157,6 +173,20 @@ describe('GET /api/stats/top-news', () => {
   test('limit parametri natijalar sonini cheklaydi', async () => {
     await News.create([{ title: 'a', views: 1 }, { title: 'b', views: 2 }, { title: 'c', views: 3 }])
     expect((await authed('/api/stats/top-news?limit=2')).body).toHaveLength(2)
+  })
+
+  test("YouTube Shorts (videoId bor) yozuvlar ro'yxatga umuman kirmaydi, hatto views eng katta bo'lsa ham", async () => {
+    await News.create([
+      { title: 'Maqola A', views: 5 },
+      { title: 'Maqola B', views: 0 },
+      { title: 'Video X', videoId: 'SUzoqeWvQHY', views: 999 },
+      { title: 'Video Y', videoId: 'zKzMdF3MtkU', views: 0 },
+    ])
+    await News.collection.insertOne({ title: 'Eski maqola (videoId maydoni yo\'q)', views: 3 })
+
+    const res = await authed('/api/stats/top-news?limit=20')
+    expect(res.status).toBe(200)
+    expect(res.body.map(n => n.title)).toEqual(['Maqola A', "Eski maqola (videoId maydoni yo'q)", 'Maqola B'])
   })
 })
 

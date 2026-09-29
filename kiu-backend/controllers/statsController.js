@@ -6,11 +6,19 @@ const Gallery = require('../models/Gallery')
 const SortingHatLead = require('../models/SortingHatLead')
 const { fail } = require('../middleware/errorHandler')
 
+// News kolleksiyasida ikki xil yozuv bor: oddiy yangilik (maqola) va YouTube Shorts video.
+// Saytdagi News.jsx ularni `videoId` bo'yicha ajratadi (`!n.videoId` — yangilik, aks holda video),
+// statistika ham AYNAN shu qoidaga amal qiladi: bo'sh string, null yoki maydon yo'q = yangilik.
+// `views` faqat maqola sahifasi (NewsDetail) ochilganda oshadi — videolarda doim 0 bo'lib qoladi.
+const ARTICLE_FILTER = { videoId: { $in: ['', null] } }
+const SHORTS_FILTER = { videoId: { $nin: ['', null] } }
+
 async function getStats(req, res) {
   try {
     const admFilter = { type: 'admission' }
-    const [newsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps, galleryCount] = await Promise.all([
-      News.countDocuments(),
+    const [newsCount, shortsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps, galleryCount] = await Promise.all([
+      News.countDocuments(ARTICLE_FILTER),
+      News.countDocuments(SHORTS_FILTER),
       Event.countDocuments(),
       Teacher.countDocuments(),
       Application.countDocuments(admFilter),
@@ -18,7 +26,7 @@ async function getStats(req, res) {
       Application.countDocuments({ type: 'vacancy' }),
       Gallery.countDocuments(),
     ])
-    res.json({ newsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps, galleryCount })
+    res.json({ newsCount, shortsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps, galleryCount })
   } catch (e) { fail(req, res, 500, e) }
 }
 
@@ -99,7 +107,7 @@ async function getApplicationsTrend(req, res) {
 async function getTopNews(req, res) {
   try {
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 5, 1), 20)
-    const rows = await News.find({}, 'title views category createdAt')
+    const rows = await News.find(ARTICLE_FILTER, 'title views category createdAt')
       .sort({ views: -1, createdAt: -1 })
       .limit(limit)
     res.json(rows)

@@ -97,6 +97,7 @@ export default function Stats() {
 
   const cards = [
     { label: 'Yangiliklar',        value: stats.newsCount,     color: '#f11717', icon: Ic.news,    to: '/admin/news'         },
+    { label: 'Youtube shorts',     value: stats.shortsCount,   color: '#ea580c', icon: Ic.video,   to: '/admin/news'         },
     { label: 'Tadbirlar',          value: stats.eventsCount,   color: '#e546e5', icon: Ic.events,  to: '/admin/events'       },
     { label: "O'qituvchilar",      value: stats.teachersCount, color: '#0088cc', icon: Ic.teach,   to: '/admin/teachers'     },
     { label: 'Qabul arizalari',    value: stats.appsCount,     color: '#059669', icon: Ic.apps,    to: '/admin/applications' },
@@ -117,14 +118,17 @@ export default function Stats() {
   return (
     <div>
       <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', marginBottom: '1.5rem' }}>Statistika</h2>
-      {/* "Yangi arizalar" kartasi olib tashlandi (Qabul arizalari bilan dublikat edi).
+      {/* Kartalar 7 ta: 132px asosda (7*132 + 6*12 = 996px) keng ekranda hammasi bitta qatorga sig'adi
+          (avval 155px edi va 7-karta yolg'iz ikkinchi qatorga tushib qolardi). NavLink `display:flex` va
+          ichki karta `flex:1` — bir qatordagi kartalar yorliq 2 qatorga o'ralib ketsa ham bir xil balandlikda.
+          "Yangi arizalar" kartasi olib tashlandi (Qabul arizalari bilan dublikat edi).
           grid o'rniga flex + justify-content:center ishlatildi — shunda oxirgi qatorda
           kartalar soni ustunlar soniga to'liq bo'linmasa ham, ikki tomonga bir xil
           bo'sh joy qoladi (grid'da bo'sh ustun faqat o'ngda qolib, assimetrik ko'rinar edi) */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 12, marginBottom: '2rem' }}>
         {cards.map(c => (
-          <NavLink key={c.label} to={c.to} style={{ textDecoration: 'none', flex: '1 1 155px', maxWidth: 220 }}>
-            <div style={{ ...card, borderLeft: `3px solid ${c.color}`, cursor: 'pointer', transition: 'transform .15s' }}
+          <NavLink key={c.label} to={c.to} style={{ textDecoration: 'none', display: 'flex', flex: '1 1 132px', maxWidth: 220 }}>
+            <div style={{ ...card, flex: 1, minWidth: 0, borderLeft: `3px solid ${c.color}`, cursor: 'pointer', transition: 'transform .15s' }}
               onMouseEnter={e => e.currentTarget.style.transform='translateY(-2px)'}
               onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
