@@ -9,17 +9,6 @@ import ContentLangNote from '../i18n/ContentLangNote'
 const API = import.meta.env.VITE_API_URL
 const SITE_URL = 'https://kiu-university.vercel.app'
 
-// eventDate — to'liq ISO sana (yil bilan). Avval date/month alohida matn
-// sifatida (yilsiz) saqlanardi — bazaga ham, shu yerga ham eventDate qo'shildi.
-const FALLBACK_EVENTS = [
-  { _id: 1, eventDate: '2026-03-28', title: "Ochiq eshiklar kuni", desc: "Abituriyentlar va ota-onalar uchun universitet bilan tanishuv kuni. Soat 10:00.", type: 'open' },
-  { _id: 2, eventDate: '2026-04-01', title: "Navro'z sayli", desc: "Milliy bayram munosabati bilan o'tkaziladigan katta shodiyona tadbir.", type: 'culture' },
-  { _id: 3, eventDate: '2026-04-15', title: "Ilmiy konferensiya", desc: "Talabalar va o'qituvchilar ishtirokidagi ilmiy-amaliy konferensiya.", type: 'science' },
-  { _id: 4, eventDate: '2026-05-01', title: "Sport musobaqalari", desc: "Universitetlararo sport musobaqalari.", type: 'sport' },
-  { _id: 5, eventDate: '2026-05-20', title: "Bitiruvchilar kuni", desc: "2025-2026 o'quv yili bitiruvchilari tantanali marosimi.", type: 'graduation' },
-  { _id: 6, eventDate: '2026-07-01', title: "Qabul boshlanadi", desc: "2026-2027 o'quv yiliga hujjat qabul qilish boshlandi.", type: 'admission' },
-]
-
 // Kartochkadagi kun/oy nishonchasi va sana matni uchun — eventDate'dan (ISO)
 // kun, oy nomi va yilni ajratib oladi. Oy nomlari tarjima faylidan (events.months /
 // events.monthsShort) olinadi — brauzer/ICU sozlamasiga bog'liq emas.
@@ -131,7 +120,8 @@ export default function Events() {
   const { t } = useTranslation()
   const { data: events, loading, error } = useApi(
     `${API}/api/events`,
-    FALLBACK_EVENTS
+    // fallback ma'lumotlar ishlatilmaydi, chunki ular faqat frontend'da ko'rsatiladi, backend'da esa haqiqiy ma'lumotlar bo'lmasa ham bo'sh array qaytariladi
+    []
   )
   const [activeEvent, setActiveEvent] = useState(null)
 

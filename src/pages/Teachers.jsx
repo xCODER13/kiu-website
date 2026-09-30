@@ -12,28 +12,7 @@ const KAFEDRALAR = [
   "Maktabgacha va boshlang'ich ta'lim kafedrasi",
 ]
 
-const FALLBACK_TEACHERS = [
-  { id: 1,  name: "Panjiyev Ulug'bek Rustamovich",      role: "Rektor",           dept: "Iqtisodiyot va muhandislik kafedrasi",      avatar: "PU" },
-  { id: 2,  name: "Norinov Faxriyor Kurbonovich",       role: "Prorektor",        dept: "Iqtisodiyot va muhandislik kafedrasi",      avatar: "NF" },
-  { id: 3,  name: "Ibragimov Suxrob",                   role: "Kafedra mudiri",   dept: "Iqtisodiyot va muhandislik kafedrasi",      avatar: "IS" },
-  { id: 4,  name: "Ochilov Anvar Maxamad o'g'li",       role: "O'qituvchi",       dept: "Filologiya va tillarni o'qitish kafedrasi", avatar: "OA" },
-  { id: 5,  name: "Shukurova Nargiza Ikramovna",        role: "O'qituvchi",       dept: "Ijtimoiy-gumanitar fanlar kafedrasi",       avatar: "SN" },
-  { id: 6,  name: "Murodov Shukrilla Abdusaid o'g'li",  role: "Vb. dotsent",      dept: "Aniq fanlar kafedrasi",                     avatar: "MS" },
-  { id: 7,  name: "Mardonova Go'zal Mamatqul qizi",     role: "O'qituvchi",       dept: "Aniq fanlar kafedrasi",                     avatar: "MG" },
-  { id: 8,  name: "Nomozova Nargiza Turayevna",         role: "O'qituvchi",       dept: "Filologiya va tillarni o'qitish kafedrasi", avatar: "NN" },
-  { id: 9,  name: "Jo'rayev Sulton Murodullo o'g'li",   role: "O'qituvchi",       dept: "Ijtimoiy-gumanitar fanlar kafedrasi",       avatar: "JS" },
-  { id: 10, name: "Yakubova Gulchehra Ziyatovna",       role: "Katta o'qituvchi", dept: "Ijtimoiy-gumanitar fanlar kafedrasi",       avatar: "YG" },
-  { id: 11, name: "Xidoyatova Nigora Shorakibovna",     role: "Katta o'qituvchi", dept: "Aniq fanlar kafedrasi",                     avatar: "XN" },
-  { id: 12, name: "Rustamov Mirzoxid Mansur o'g'li",    role: "O'qituvchi",       dept: "Iqtisodiyot va muhandislik kafedrasi",      avatar: "RM" },
-  { id: 13, name: "G'afforov Javohir Farhodjon o'g'li", role: "O'qituvchi",       dept: "Iqtisodiyot va muhandislik kafedrasi",      avatar: "GJ" },
-  { id: 14, name: "Abdushukurova Sevara Shavkatovna",   role: "O'qituvchi",       dept: "Filologiya va tillarni o'qitish kafedrasi", avatar: "AS" },
-  { id: 15, name: "To'rayev Dostonjon Erkin o'g'li",    role: "O'qituvchi",       dept: "Iqtisodiyot va muhandislik kafedrasi",      avatar: "TD" },
-  { id: 16, name: "Tursunov Mirolim",                   role: "O'qituvchi",       dept: "Iqtisodiyot va muhandislik kafedrasi",      avatar: "TM" },
-  { id: 17, name: "Rashidov Azizjon",                   role: "O'qituvchi",       dept: "Iqtisodiyot va muhandislik kafedrasi",      avatar: "RA" },
-  { id: 18, name: "Gulzoda Muhiddinova",                role: "O'qituvchi",       dept: "Iqtisodiyot va muhandislik kafedrasi",      avatar: "GM" },
-  { id: 19, name: "Faxriddin Samarov",                  role: "O'qituvchi",       dept: "Ijtimoiy-gumanitar fanlar kafedrasi",       avatar: "FS" },
-  { id: 20, name: "Malohat Rahimova",                   role: "O'qituvchi",       dept: "Filologiya va tillarni o'qitish kafedrasi", avatar: "MR" },
-]
+
 
 const colors = ['#7c3aed','#4f46e5','#0088cc','#059669','#d97706','#db2777']
 
@@ -87,7 +66,7 @@ export default function Teachers() {
   const { t } = useTranslation()
   const { data: teachers, loading, error } = useApi(
     `${import.meta.env.VITE_API_URL}/api/teachers`,
-    FALLBACK_TEACHERS
+    [] 
   )
   const [activeKafedra, setActiveKafedra] = useState(null)
 
