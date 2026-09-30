@@ -31,7 +31,7 @@ describe('Statik sahifalar (RU)', () => {
   it('Achievements: sarlavha va mukofotlar ruscha', () => {
     at('/ru/achievements', <Achievements />)
     expect(screen.getByText('Достижения и награды')).toBeInTheDocument()
-    expect(screen.getByText('Образовательное учреждение года')).toBeInTheDocument()
+    expect(screen.getByText('Призёр конкурса «ПРИЗНАНИЕ ГОДА – 2023»')).toBeInTheDocument()
     expect(screen.queryByText('Yutuqlar va mukofotlar')).not.toBeInTheDocument()
   })
 

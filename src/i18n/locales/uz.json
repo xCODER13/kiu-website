@@ -51,10 +51,10 @@
     "home": "Bosh sahifa",
     "vacancies": "Bo'sh ish o'rinlari",
     "apply": "Ariza topshirish",
-    "switchToLight": "Switch to light mode",
-    "switchToDark": "Switch to dark mode",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
+    "switchToLight": "Yorug' rejimga o'tish",
+    "switchToDark": "Qorong'i rejimga o'tish",
+    "openMenu": "Menyuni ochish",
+    "closeMenu": "Menyuni yopish",
     "groups": { "university": "Universitet haqida", "students": "Talabalar uchun", "media": "Media", "contact": "Bog'lanish" },
     "items": {
       "about": "Biz haqimizda",
@@ -392,7 +392,7 @@
     "title": "Yutuqlar va mukofotlar",
     "subtitle": "KIU ning erishgan yutuqlari",
     "awards": {
-      "1": { "title": "Yil ta'lim muassasasi", "org": "O'zbekiston Ta'lim Vazirligi" },
+      "1": { "title": "Yil e'tirofi — 2023 tanlovi sovrindori", "org": "O'zbekiston Respublikasi Oliy ta'lim, fan va innovatsiyalar vazirligi" },
       "2": { "title": "Eng yaxshi xususiy universitet", "org": "Qashqadaryo viloyati hokimligi" },
       "3": { "title": "Xalqaro olimpiada g'olibi", "org": "Yoshlar innovatsiyalar festivali" },
       "4": { "title": "Hamkorlik mukofoti", "org": "INTI International University" },
