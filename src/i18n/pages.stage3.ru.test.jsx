@@ -90,7 +90,7 @@ describe("Bazadan keladigan sahifalar (RU): interfeys ruscha, kontent o'zbekcha"
   it('Teachers: server xatosida ruscha banner', async () => {
     mockApi({ 'GET /teachers': { status: 500, body: {} } })
     at('/ru/teachers', <Teachers />)
-    expect(await screen.findByText(/показаны сохранённые данные/)).toBeInTheDocument()
+    expect(await screen.findByText(/Не удалось подключиться к серверу/)).toBeInTheDocument()
   })
 
   it("Events: tur yorlig'i va sana ruscha (genitiv: '5 марта 2026'), sarlavha o'zbekcha", async () => {

@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import { FALLBACK_SHORTS } from './data'
 
 // "SHORTS TAB" bo'limi — News.jsx'dan o'zgarishsiz ko'chirilgan.
+// Hardcode FALLBACK_SHORTS olib tashlandi (2026-09-30, a3b632e) — video ro'yxati
+// endi to'liq backend/admin panelga bog'liq. Bo'sh bo'lsa NewsTab.jsx'dagi bilan
+// bir xil naqshda (ikonka + matn) bo'sh holat ko'rsatiladi.
 export default function ShortsTab({ shorts }) {
   const { t } = useTranslation()
   return (
@@ -18,8 +20,15 @@ export default function ShortsTab({ shorts }) {
             <a href="https://youtube.com/@kiu_uz" target="_blank" rel="noreferrer" style={{ fontSize: 12, color: '#ff0000' }}>{t('news.channelGo')}</a>
           </div>
         </div>
+        {shorts.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3rem 2rem', color: 'var(--muted)' }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ opacity: .3, marginBottom: 12 }}><rect x="3" y="3" width="18" height="18" rx="2"/><polygon points="10 9 15 12 10 15 10 9"/></svg>
+            <p style={{ fontSize: 14 }}>{t('news.emptyShorts')}</p>
+            <p style={{ fontSize: 12, marginTop: 4 }}>{t('news.emptyShortsHint')}</p>
+          </div>
+        ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
-          {(shorts.length > 0 ? shorts : FALLBACK_SHORTS).map(s => (
+          {shorts.map(s => (
             <div key={s._id || s.id} className="card" style={{ padding: 0, overflow: 'hidden' }}>
               <div style={{ position: 'relative', width: '100%', paddingBottom: '177.77%', background: '#000', overflow: 'hidden' }}>
                 <iframe
@@ -40,6 +49,7 @@ export default function ShortsTab({ shorts }) {
             </div>
           ))}
         </div>
+        )}
       </div>
     </section>
   )

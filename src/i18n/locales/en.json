@@ -437,7 +437,7 @@
     "subtitle": "KIU's team of qualified teachers",
     "departments": "Departments",
     "all": "All teachers",
-    "offline": "Could not connect to the server — showing saved data",
+    "offline": "Could not connect to the server",
     "count_one": "{{count}} person",
     "count_other": "{{count}} people",
     "empty": "No teachers are assigned to this department"
@@ -445,7 +445,7 @@
   "events": {
     "title": "Events calendar",
     "subtitle": "Upcoming events at KIU",
-    "offline": "Could not connect to the server — showing saved data",
+    "offline": "Could not connect to the server",
     "closeHint": "Close (Esc)",
     "closeLabel": "Close dialog",
     "dateFull": "{{day}} {{month}} {{year}}",
@@ -545,6 +545,8 @@
     "tabs": { "news": "News", "video": "Video" },
     "empty": "No news yet",
     "emptyHint": "Add news through the admin panel",
+    "emptyShorts": "No videos yet",
+    "emptyShortsHint": "Add YouTube Shorts through the admin panel",
     "allNews": "All news (@kiu_uz) →",
     "offline": "Could not connect to the server",
     "searchPh": "Search within the news...",

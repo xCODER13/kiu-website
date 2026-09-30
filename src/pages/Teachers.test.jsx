@@ -54,11 +54,11 @@ describe('Teachers (public)', () => {
     expect(screen.getByText('Vali Aliyev')).toBeInTheDocument()
   })
 
-  it("server xatosi — banner ko'rsatiladi, lekin standart (fallback) o'qituvchilar baribir chiqadi", async () => {
+  it("server xatosi — offline banner ko'rsatiladi, ro'yxat bo'sh (fallback yo'q)", async () => {
     mockApi({ 'GET /teachers': { status: 500, body: {} } })
     render(<Teachers />)
-    expect(await screen.findByText(/saqlangan ma'lumotlar ko'rsatilmoqda/)).toBeInTheDocument()
-    expect(screen.getByText("Panjiyev Ulug'bek Rustamovich")).toBeInTheDocument()
+    expect(await screen.findByText(/[Ss]erverga ulanib bo'lmadi/)).toBeInTheDocument()
+    expect(screen.getByText("Bu kafedraga biriktirilgan o'qituvchi topilmadi")).toBeInTheDocument()
   })
 
   it("javob massiv bo'lmasa ({error}) — qulamaydi, ro'yxat bo'sh ko'rsatiladi", async () => {

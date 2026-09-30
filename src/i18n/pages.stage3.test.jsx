@@ -89,7 +89,7 @@ describe('Bazadan keladigan sahifalar (EN): interfeys inglizcha, kontent o\'zbek
   it('Teachers: server xatosida inglizcha banner', async () => {
     mockApi({ 'GET /teachers': { status: 500, body: {} } })
     at('/en/teachers', <Teachers />)
-    expect(await screen.findByText(/showing saved data/)).toBeInTheDocument()
+    expect(await screen.findByText(/Could not connect to the server/)).toBeInTheDocument()
   })
 
   it('Events: tur yorlig\'i va sana inglizcha, sarlavha o\'zbekcha', async () => {

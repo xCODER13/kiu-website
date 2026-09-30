@@ -30,11 +30,11 @@ describe('Events (public)', () => {
     expect(await screen.findByText('Umumiy')).toBeInTheDocument()
   })
 
-  it("server xatosi — banner ko'rsatiladi, lekin standart (fallback) tadbirlar baribir chiqadi", async () => {
+  it("server xatosi — offline banner ko'rsatiladi, ro'yxat bo'sh (fallback yo'q)", async () => {
     mockApi({ 'GET /events': { status: 500, body: {} } })
     render(<Events />)
-    expect(await screen.findByText(/saqlangan ma'lumotlar ko'rsatilmoqda/)).toBeInTheDocument()
-    expect(screen.getByText('Ochiq eshiklar kuni')).toBeInTheDocument()
+    expect(await screen.findByText(/[Ss]erverga ulanib bo'lmadi/)).toBeInTheDocument()
+    expect(document.querySelectorAll('.card')).toHaveLength(0)
   })
 
   it("javob massiv bo'lmasa ({error}) — qulamaydi, ro'yxat bo'sh ko'rsatiladi", async () => {
@@ -100,11 +100,18 @@ describe('Events (public)', () => {
       expect(await screen.findByRole('dialog')).toBeInTheDocument()
     })
 
-    it("ko'rish so'rovi muvaffaqiyatsiz bo'lsa ham (masalan fallback ma'lumot) modal ochiladi", async () => {
-      vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('net'))))
+    it("ko'rish so'rovi (PUT .../view) muvaffaqiyatsiz bo'lsa ham modal ochiladi", async () => {
+      // mockApi haqiqiy tarmoq xatosini emulyatsiya qilolmaydi (har doim
+      // Promise.resolve qaytaradi) — shuning uchun HTTP 500 ishlatiladi.
+      // Events.jsx bu chaqiruvning javobini/xatosini umuman tekshirmaydi
+      // (fetch(...).catch(() => {})), shuning uchun bu ham yetarli tekshiruv.
+      mockApi({
+        'GET /events': [E1],
+        'PUT /events/e1/view': { status: 500, body: {} },
+      })
       render(<Events />)
       const user = userEvent.setup()
-      const card = await screen.findByText('Ochiq eshiklar kuni') // FALLBACK_EVENTS
+      const card = await screen.findByText('Ochiq eshiklar')
       await user.click(card)
       expect(await screen.findByRole('dialog')).toBeInTheDocument()
     })

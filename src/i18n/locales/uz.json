@@ -448,7 +448,7 @@
     "subtitle": "KIU ning malakali o'qituvchilar jamoasi",
     "departments": "Kafedralar",
     "all": "Barcha o'qituvchilar",
-    "offline": "Serverga ulanib bo'lmadi — saqlangan ma'lumotlar ko'rsatilmoqda",
+    "offline": "Serverga ulanib bo'lmadi",
     "count_one": "{{count}} nafar",
     "count_other": "{{count}} nafar",
     "empty": "Bu kafedraga biriktirilgan o'qituvchi topilmadi"
@@ -456,7 +456,7 @@
   "events": {
     "title": "Tadbirlar taqvimi",
     "subtitle": "KIU dagi yaqinlashib kelayotgan tadbirlar",
-    "offline": "Serverga ulanib bo'lmadi — saqlangan ma'lumotlar ko'rsatilmoqda",
+    "offline": "Serverga ulanib bo'lmadi",
     "closeHint": "Yopish (Esc)",
     "closeLabel": "Modalni yopish",
     "dateFull": "{{day}} {{month}} {{year}}",
@@ -547,6 +547,8 @@
     "tabs": { "news": "Yangiliklar", "video": "Video" },
     "empty": "Hozircha yangiliklar yo'q",
     "emptyHint": "Admin panel orqali yangilik qo'shing",
+    "emptyShorts": "Hozircha video yo'q",
+    "emptyShortsHint": "Admin panel orqali YouTube Shorts qo'shing",
     "allNews": "Barcha yangiliklar (@kiu_uz) →",
     "offline": "Serverga ulanib bo'lmadi",
     "searchPh": "Yangiliklar ichida qidiring...",

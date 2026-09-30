@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import News from './News'
-import { FALLBACK_SHORTS } from './news/data'
 import { mockApi } from '../test/helpers'
 
 const A1 = { _id: 'a1', title: 'Birinchi yangilik', content: 'Birinchi tavsif', category: "ta'lim", views: 10, createdAt: '2026-01-01' }
@@ -78,13 +77,13 @@ describe('News (public)', () => {
     expect(screen.queryByRole('heading', { level: 3, name: 'Birinchi yangilik' })).not.toBeInTheDocument()
   })
 
-  it("'Video' tabida backend'dan short kelmasa, standart (fallback) ro'yxat ko'rsatiladi", async () => {
+  it("'Video' tabida backend'dan short kelmasa, bo'sh holat xabari ko'rsatiladi", async () => {
     mockApi({ 'GET /news': [A1] })
     const user = userEvent.setup()
     renderNews()
     await screen.findByRole('heading', { level: 3, name: 'Birinchi yangilik' })
 
     await user.click(screen.getByRole('button', { name: /Video/ }))
-    expect(screen.getByText(FALLBACK_SHORTS[0].title)).toBeInTheDocument()
+    expect(screen.getByText("Hozircha video yo'q")).toBeInTheDocument()
   })
 })
