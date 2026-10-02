@@ -65,7 +65,7 @@ const navGroups = [
 
 function ChevronIcon() {
   return (
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4, flexShrink: 0 }}>
+    <svg className="icon-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="6 9 12 15 18 9" />
     </svg>
   )
@@ -99,31 +99,23 @@ export default function Navbar({ dark, setDark, onApply }) {
 
   return (
     <>
-      <nav ref={navRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'color-mix(in srgb, var(--color-bg) 97%, transparent)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
+      <nav ref={navRef} className="site-nav">
 
         {/* Logo */}
         {/* Xatolik: mobil menyu ochiq holda logotipga bosilsa, sahifa
             almashsa ham menyu ochiq qolib qolar edi — onClick qo'shildi */}
-        <NavLink to="/" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <NavLink to="/" onClick={() => setMenuOpen(false)} className="nav-brand">
           <Logo height={36} />
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text)' }}>{t('university.name')}</div>
-            <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t('nav.subtitle', { website: config.university.website })}</div>
+            <div className="nav-brand-name">{t('university.name')}</div>
+            <div className="nav-brand-sub">{t('nav.subtitle', { website: config.university.website })}</div>
           </div>
         </NavLink>
 
         {/* Desktop links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }} className="desktop-nav">
+        <div className="nav-links desktop-nav">
           {topLinks.map(l => (
-            <NavLink key={l.to} to={l.to} end
-              style={({ isActive }) => ({
-                fontSize: 11,
-                color: isActive ? 'var(--color-brand)' : 'var(--color-text)',
-                borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
-                paddingBottom: 3,
-                fontWeight: isActive ? 600 : 400,
-                transition: 'all 0.2s'
-              })}>
+            <NavLink key={l.to} to={l.to} end className="nav-link">
               {t(`nav.${l.label}`)}
             </NavLink>
           ))}
@@ -138,13 +130,8 @@ export default function Navbar({ dark, setDark, onApply }) {
               >
                 <button
                   onClick={(e) => e.currentTarget.blur()}
-                  style={{
-                    display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer',
-                    fontFamily: 'inherit', fontSize: 11, padding: 0, paddingBottom: 3,
-                    color: isActive ? 'var(--color-brand)' : 'var(--color-text)',
-                    fontWeight: isActive ? 600 : 400,
-                    borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
-                  }}
+                  className="nav-group-trigger"
+                  data-active={isActive}
                   aria-haspopup="true"
                 >
                   {t(`nav.groups.${group.id}`)}
@@ -167,25 +154,17 @@ export default function Navbar({ dark, setDark, onApply }) {
           })}
 
           {endLinks.map(l => (
-            <NavLink key={l.to} to={l.to} end
-              style={({ isActive }) => ({
-                fontSize: 11,
-                color: isActive ? 'var(--color-brand)' : 'var(--color-text)',
-                borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
-                paddingBottom: 3,
-                fontWeight: isActive ? 600 : 400,
-                transition: 'all 0.2s'
-              })}>
+            <NavLink key={l.to} to={l.to} end className="nav-link">
               {t(`nav.${l.label}`)}
             </NavLink>
           ))}
         </div>
 
         {/* Right */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="nav-actions">
           <Search />
           <LanguageSwitcher className="desktop-nav" />
-          <button onClick={() => setDark(!dark)} aria-label={dark ? t('nav.switchToLight') : t('nav.switchToDark')} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 9px', cursor: 'pointer', color: 'var(--muted)', display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
+          <button onClick={() => setDark(!dark)} aria-label={dark ? t('nav.switchToLight') : t('nav.switchToDark')} className="nav-icon-btn">
             {dark ? (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             ) : (
@@ -195,44 +174,32 @@ export default function Navbar({ dark, setDark, onApply }) {
           <button onClick={onApply} className="btn btn-primary btn-sm desktop-nav">
             {t('nav.apply')}
           </button>
-          <button className="mobile-nav" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: 'var(--text)', fontSize: 20, lineHeight: 1 }}>
+          <button className="mobile-nav nav-icon-btn nav-icon-btn--menu" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}>
             {menuOpen ? '✕' : '☰'}
           </button>
         </div>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Mobile menu. `top` — dinamik (header balandligi), shuning uchun inline qoladi */}
       {menuOpen && (
-        <div className="mobile-nav" style={{ position: 'fixed', top: navHeight, left: 0, right: 0, bottom: 0, background: 'var(--bg)', zIndex: 99, display: 'flex', flexDirection: 'column', padding: '1.5rem 2rem', gap: 4, borderTop: '1px solid var(--border)', overflowY: 'auto' }}>
+        <div className="mobile-nav mobile-menu" style={{ top: navHeight }}>
           <LanguageSwitcher className="lang-switch--menu" onNavigate={() => setMenuOpen(false)} />
           {topLinks.map(l => (
-            <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)}
-              style={({ isActive }) => ({
-                fontSize: 18, fontWeight: 600,
-                color: isActive ? 'var(--color-brand)' : 'var(--text)',
-                padding: '0.75rem 0',
-                borderBottom: '1px solid var(--border)',
-              })}>
+            <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)} className="mobile-menu-link">
               {t(`nav.${l.label}`)}
             </NavLink>
           ))}
 
           {/* Har bir guruh — <details> orqali ochiladi/yopiladi, qo'shimcha JS holat kerak emas */}
           {navGroups.map(group => (
-            <details key={group.id} style={{ borderBottom: '1px solid var(--border)' }}>
-              <summary style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 18, fontWeight: 600, color: 'var(--text)', padding: '0.75rem 0', cursor: 'pointer', listStyle: 'none' }}>
+            <details key={group.id} className="mobile-menu-group">
+              <summary className="mobile-menu-summary">
                 {t(`nav.groups.${group.id}`)}
                 <ChevronIcon />
               </summary>
-              <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 8 }}>
+              <div className="mobile-menu-sub">
                 {group.items.map(item => (
-                  <NavLink key={item.to} to={item.to} onClick={() => setMenuOpen(false)}
-                    style={({ isActive }) => ({
-                      fontSize: 15,
-                      color: isActive ? 'var(--color-brand)' : 'var(--muted)',
-                      fontWeight: isActive ? 600 : 400,
-                      padding: '0.5rem 0 0.5rem 0.75rem',
-                    })}>
+                  <NavLink key={item.to} to={item.to} onClick={() => setMenuOpen(false)} className="mobile-menu-sublink">
                     {t(`nav.items.${item.item}`)}
                   </NavLink>
                 ))}
@@ -241,18 +208,12 @@ export default function Navbar({ dark, setDark, onApply }) {
           ))}
 
           {endLinks.map(l => (
-            <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)}
-              style={({ isActive }) => ({
-                fontSize: 18, fontWeight: 600,
-                color: isActive ? 'var(--color-brand)' : 'var(--text)',
-                padding: '0.75rem 0',
-                borderBottom: '1px solid var(--border)',
-              })}>
+            <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)} className="mobile-menu-link">
               {t(`nav.${l.label}`)}
             </NavLink>
           ))}
 
-          <button onClick={() => { onApply(); setMenuOpen(false) }} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', marginTop: '1rem' }}>
+          <button onClick={() => { onApply(); setMenuOpen(false) }} className="btn btn-primary btn-block mobile-menu-apply">
             {t('nav.apply')}
           </button>
         </div>

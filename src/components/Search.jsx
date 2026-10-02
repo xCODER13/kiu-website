@@ -128,40 +128,20 @@ export default function Search() {
   }
 
   return (
-    <div ref={wrapRef} style={{ position: 'relative' }}>
+    <div ref={wrapRef} className="search">
       <button
         ref={toggleRef}
         onClick={() => setOpen(o => !o)} aria-label={t('search.open')}
         aria-expanded={open} aria-controls="site-search-panel" aria-haspopup="dialog"
-        style={{
-          background: open ? 'color-mix(in srgb, var(--color-brand) 8%, transparent)' : 'none',
-          border: `1px solid ${open ? 'var(--color-brand)' : 'var(--border)'}`,
-          borderRadius: 8, padding: '7px 9px', cursor: 'pointer',
-          color: open ? 'var(--color-brand)' : 'var(--muted)',
-          display: 'flex', alignItems: 'center', transition: 'all .2s',
-        }}>
+        className="nav-icon-btn">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </button>
 
       {open && (
-        <div id="site-search-panel" role="dialog" aria-label={t('search.placeholder')} style={{
-               position: isMobile ? 'fixed' : 'absolute',
-               top: isMobile ? '70px' : 'calc(100% + 10px)',
-               left: isMobile ? '16px' : 'auto',
-               right: isMobile ? '16px' : 0,
-               width: isMobile ? 'auto' : 420,
-               background: 'var(--bg)',
-               border: '1px solid var(--border)',
-               borderRadius: 14,
-               boxShadow: '0 12px 40px rgba(0,0,0,.15)',
-               zIndex: 200,
-               overflow: 'hidden',
-               maxHeight: isMobile ? 'calc(100vh - 90px)' : 'none',
-               overflowY: isMobile ? 'auto' : 'hidden',
-  }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)' }}>
+        <div id="site-search-panel" role="dialog" aria-label={t('search.placeholder')} className="search-panel">
+          <div className="search-head">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
@@ -173,44 +153,37 @@ export default function Search() {
               role="combobox" aria-expanded={results.length > 0} aria-controls="site-search-results"
               aria-autocomplete="list" aria-activedescendant={results.length > 0 ? `site-search-opt-${selected}` : undefined}
               placeholder={t('search.placeholder')}
-              style={{ flex: 1, border: 'none', outlineOffset: -2, fontSize: 14, background: 'none', color: 'var(--text)', fontFamily: 'inherit' }}
+              className="search-input"
             />
             {query ? (
-              <button onClick={() => setQuery('')} aria-label={t('search.clear')}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', padding: 2 }}>
+              <button onClick={() => setQuery('')} aria-label={t('search.clear')} className="search-clear">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
               </button>
             ) : (
-              <kbd style={{ fontSize: 10, color: 'var(--muted)', background: 'var(--bg-2)', padding: '2px 5px', borderRadius: 4, border: '1px solid var(--border)', whiteSpace: 'nowrap' }}>Esc</kbd>
+              <kbd className="search-kbd">Esc</kbd>
             )}
           </div>
 
           {results.length > 0 && (
-            <div style={{ maxHeight: 340, overflowY: 'auto' }}>
-              <div style={{ padding: '6px 1rem', fontSize: 10, color: 'var(--muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.05em', background: 'var(--bg-2)', borderBottom: '1px solid var(--border)' }}>
+            <div className="search-results">
+              <div className="search-count">
                 {t('search.found', { count: results.length })}
               </div>
               <div id="site-search-results" role="listbox">
               {results.map((item, i) => (
                 <div key={i} id={`site-search-opt-${i}`} role="option" aria-selected={selected === i} onClick={() => go(item.url)}
                   onMouseEnter={() => setSelected(i)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: '0.65rem 1rem', cursor: 'pointer',
-                    background: selected === i ? 'color-mix(in srgb, var(--color-brand) 6%, transparent)' : 'none',
-                    borderLeft: selected === i ? '3px solid var(--color-brand)' : '3px solid transparent',
-                    transition: 'all .1s',
-                  }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 9, background: 'color-mix(in srgb, var(--color-brand) 8%, transparent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  className="search-option">
+                  <div className="search-option-icon">
                     {item.icon}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: selected === i ? 'var(--color-brand)' : 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div className="search-option-text">
+                    <div className="search-option-title">
                       {item.title}
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--muted)' }}>{item.category}</div>
+                    <div className="search-option-cat">{item.category}</div>
                   </div>
 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="9 18 15 12 9 6"/>
@@ -222,33 +195,24 @@ export default function Search() {
           )}
 
           {query && results.length === 0 && (
-            <div style={{ padding: '2rem', textAlign: 'center' }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 8 }}>
+            <div className="search-empty">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 <line x1="8" y1="11" x2="14" y2="11"/>
               </svg>
-              <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text)', marginBottom: 4 }}>{t('search.noResults')}</div>
-              <div style={{ fontSize: 12, color: 'var(--muted)' }}>{t('search.noResultsFor', { query })}</div>
+              <div className="search-empty-title">{t('search.noResults')}</div>
+              <div className="search-empty-sub">{t('search.noResultsFor', { query })}</div>
             </div>
           )}
 
           {!query && (
-            <div style={{ padding: '0.75rem 1rem' }}>
-              <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: '0.6rem' }}>
+            <div className="search-quick">
+              <div className="search-quick-label">
                 {t('search.quickLinks')}
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              <div className="search-quick-list">
                 {QUICK.map((l, i) => (
-                  <button key={i} onClick={() => go(l.url)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 5,
-                      padding: '5px 11px', background: 'var(--bg-2)',
-                      border: '1px solid var(--border)', borderRadius: 8,
-                      fontSize: 12, color: 'var(--text)', cursor: 'pointer',
-                      fontFamily: 'inherit', transition: 'all .15s',
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor='var(--color-brand)'; e.currentTarget.style.color='var(--color-brand)'; e.currentTarget.style.background='color-mix(in srgb, var(--color-brand) 6%, transparent)' }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.color='var(--text)'; e.currentTarget.style.background='var(--bg-2)' }}>
+                  <button key={i} onClick={() => go(l.url)} className="search-chip">
                     {l.icon} {t(`search.quick.${l.id}`)}
                   </button>
                 ))}
@@ -256,10 +220,10 @@ export default function Search() {
             </div>
           )}
 
-          <div style={{ padding: '0.5rem 1rem', borderTop: '1px solid var(--border)', display: 'flex', gap: 12, fontSize: 10, color: 'var(--muted)', background: 'var(--bg-2)' }}>
-            <span><kbd style={{ background: 'var(--bg)', padding: '1px 4px', borderRadius: 3, border: '1px solid var(--border)' }}>↑↓</kbd> {t('search.hints.select')}</span>
-            <span><kbd style={{ background: 'var(--bg)', padding: '1px 4px', borderRadius: 3, border: '1px solid var(--border)' }}>Enter</kbd> {t('search.hints.go')}</span>
-            <span><kbd style={{ background: 'var(--bg)', padding: '1px 4px', borderRadius: 3, border: '1px solid var(--border)' }}>Esc</kbd> {t('search.hints.close')}</span>
+          <div className="search-hints">
+            <span><kbd>↑↓</kbd> {t('search.hints.select')}</span>
+            <span><kbd>Enter</kbd> {t('search.hints.go')}</span>
+            <span><kbd>Esc</kbd> {t('search.hints.close')}</span>
           </div>
         </div>
       )}

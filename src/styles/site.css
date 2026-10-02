@@ -1,0 +1,327 @@
+/* Sayt "ramkasi": Navbar, Footer, Qidiruv (Bosqich 5a).
+   Inline `style={{}}` va `onMouseEnter` o'rniga — qiymatlar ataylab o'zgarmagan (vizual farq 0).
+   Qatlam: `components`. Bu fayl components.css DAN KEYIN import qilinadi (main.jsx):
+   bir xil qatlamda tartib hal qiladi, shuning uchun `.footer-grid` padding'i `.container` ni bosib o'tadi.
+   Faqat token ishlatiladi; istisno — soyadagi `rgb(0 0 0 / a)` va to'q yuza ustidagi `rgb(255 255 255 / a)`. */
+
+@layer components {
+  /* ── Navbar (5a) ──────────────────────────────────────────────────── */
+  .site-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 2rem;
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    background: color-mix(in srgb, var(--color-bg) 97%, transparent);
+    backdrop-filter: blur(10px);
+    z-index: var(--z-sticky);
+  }
+  .nav-brand { display: flex; align-items: center; gap: 10px; }
+  .nav-brand-name { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .nav-brand-sub { font-size: 11px; color: var(--color-text-muted); }
+
+  .nav-links { display: flex; align-items: center; gap: 16px; }
+  .nav-actions { display: flex; align-items: center; gap: 8px; }
+
+  /* Havola va guruh triggeri: faol holat — NavLink `active` klassini o'zi qo'yadi, trigger — `data-active` */
+  .nav-link {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--color-text);
+    padding-bottom: 3px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-group-trigger {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--color-text);
+    padding: 0 0 3px;
+  }
+  .nav-link.active,
+  .nav-group-trigger[data-active="true"] {
+    font-weight: 600;
+    color: var(--color-brand);
+    border-bottom-color: var(--color-brand);
+  }
+  .icon-chevron { margin-left: 4px; flex-shrink: 0; }
+
+  /* Tema / qidiruv / menyu tugmasi. 6.11 da `.icon-btn` (40 px) ga almashadi; hozir hozirgi ko'rinish saqlangan */
+  .nav-icon-btn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 7px 9px;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    transition: all 0.2s;
+  }
+  .nav-icon-btn[aria-expanded="true"] {
+    background: color-mix(in srgb, var(--color-brand) 8%, transparent);
+    border-color: var(--color-brand);
+    color: var(--color-brand);
+  }
+  .nav-icon-btn--menu {
+    padding: 6px 10px;
+    color: var(--color-text);
+    font-size: 20px;
+    line-height: 1;
+    transition: none;
+  }
+
+  /* Mobil menyu: `top` — dinamik (header balandligi), JSX da inline qoladi */
+  .mobile-menu {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-bg);
+    z-index: var(--z-mobile-menu);
+    flex-direction: column;
+    padding: 1.5rem 2rem;
+    gap: 4px;
+    border-top: 1px solid var(--color-border);
+    overflow-y: auto;
+  }
+  .mobile-menu-link {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mobile-menu-link.active { color: var(--color-brand); }
+  .mobile-menu-group { border-bottom: 1px solid var(--color-border); }
+  .mobile-menu-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+    padding: 0.75rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .mobile-menu-sub { display: flex; flex-direction: column; padding-bottom: 8px; }
+  .mobile-menu-sublink {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    padding: 0.5rem 0 0.5rem 0.75rem;
+  }
+  .mobile-menu-sublink.active { font-weight: 600; color: var(--color-brand); }
+  .mobile-menu-apply { padding: 12px; margin-top: 1rem; }
+
+  /* ── Footer (5a) ──────────────────────────────────────────────────── */
+  .site-footer { background: var(--gradient-footer); padding: 2.5rem 0 0; }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2rem;
+    padding-bottom: 1.5rem;
+  }
+  .footer-title { font-size: 1rem; font-weight: 700; color: var(--color-on-brand); margin: 12px 0 8px; }
+  .footer-about { font-size: 13px; color: var(--color-on-dark-muted); line-height: 1.7; margin-bottom: 16px; }
+  .footer-social { display: flex; gap: 10px; }
+  .footer-social-link {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: rgb(255 255 255 / 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-on-dark-muted);
+  }
+  .footer-heading { font-size: 13px; font-weight: 600; color: var(--color-on-dark); margin-bottom: 10px; }
+  .footer-link { display: block; font-size: 13px; color: var(--color-on-dark-muted); margin-bottom: 6px; }
+  .footer-link:hover { color: var(--color-brand-on-dark); }
+  .footer-text { font-size: 13px; color: var(--color-on-dark-muted); margin-bottom: 6px; }
+  .footer-text--last { margin-bottom: 16px; }
+  .footer-media { display: flex; flex-direction: column; gap: 6px; }
+  .footer-media-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--color-brand-on-dark);
+  }
+  .footer-media-link:hover { color: var(--color-brand-on-dark-hover); }
+  .footer-bottom {
+    padding-top: 1rem;
+    padding-bottom: 1.25rem;
+    border-top: 1px solid rgb(255 255 255 / 0.08);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--color-on-dark-muted);
+  }
+
+  /* ── Qidiruv (5a) ─────────────────────────────────────────────────── */
+  .search { position: relative; }
+  .search-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 420px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgb(0 0 0 / 0.15);
+    z-index: var(--z-popover);
+    overflow: hidden;
+  }
+  .search-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .search-input {
+    flex: 1;
+    border: none;
+    outline-offset: -2px;
+    font-size: 14px;
+    background: none;
+    color: var(--color-text);
+    font-family: inherit;
+  }
+  .search-clear {
+    display: flex;
+    padding: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+  }
+  .search-kbd {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    background: var(--color-surface-2);
+    padding: 2px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+  .search-results { max-height: 340px; overflow-y: auto; }
+  .search-count {
+    padding: 6px 1rem;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--color-surface-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .search-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.65rem 1rem;
+    cursor: pointer;
+    background: none;
+    border-left: 3px solid transparent;
+    transition: all 0.1s;
+  }
+  .search-option[aria-selected="true"] {
+    background: color-mix(in srgb, var(--color-brand) 6%, transparent);
+    border-left-color: var(--color-brand);
+  }
+  .search-option-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--color-brand) 8%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .search-option-text { flex: 1; min-width: 0; }
+  .search-option-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .search-option[aria-selected="true"] .search-option-title { color: var(--color-brand); }
+  .search-option-cat { font-size: 11px; color: var(--color-text-muted); }
+  .search-empty { padding: 2rem; text-align: center; }
+  .search-empty svg { margin-bottom: 8px; }
+  .search-empty-title { font-size: 13px; font-weight: 500; color: var(--color-text); margin-bottom: 4px; }
+  .search-empty-sub { font-size: 12px; color: var(--color-text-muted); }
+  .search-quick { padding: 0.75rem 1rem; }
+  .search-quick-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.6rem;
+  }
+  .search-quick-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .search-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .search-chip:hover {
+    border-color: var(--color-brand);
+    color: var(--color-brand);
+    background: color-mix(in srgb, var(--color-brand) 6%, transparent);
+  }
+  .search-hints {
+    display: flex;
+    gap: 12px;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 10px;
+    color: var(--color-text-muted);
+    background: var(--color-surface-2);
+  }
+  .search-hints kbd {
+    background: var(--color-bg);
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid var(--color-border);
+  }
+
+  @media (max-width: 768px) {
+    .search-panel {
+      position: fixed;
+      top: 70px;
+      left: 16px;
+      right: 16px;
+      width: auto;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+  }
+}
