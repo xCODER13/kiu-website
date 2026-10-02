@@ -192,11 +192,15 @@ describe('Vacancies — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () =
     render(<Vacancies />)
     const info = screen.getByRole('button', { name: "Ma'lumot" })
     const form = screen.getByRole('button', { name: /Ariza topshirish/ })
-    expect(info).toHaveClass('tab')
+    // 6.11c4: eski `.tab` o'rniga Fakultet bilan umumiy pill-tab (`kiu-tab-btn`) + `aria-pressed`
+    expect(info).toHaveClass('kiu-tab-btn')
     expect(info).toHaveAttribute('data-active', 'true')
+    expect(info).toHaveAttribute('aria-pressed', 'true')
     expect(form).toHaveAttribute('data-active', 'false')
+    expect(form).toHaveAttribute('aria-pressed', 'false')
     await user.click(form)
     expect(form).toHaveAttribute('data-active', 'true')
+    expect(form).toHaveAttribute('aria-pressed', 'true')
     expect(info).toHaveAttribute('data-active', 'false')
   })
 
@@ -205,7 +209,7 @@ describe('Vacancies — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () =
     const { container } = render(<Vacancies />)
     await goToForm(user)
     expect(container.querySelectorAll('[style]')).toHaveLength(0)
-    expect(screen.getByPlaceholderText('Familiya Ism Otasining ismi')).toHaveClass('input', 'input--form')
+    expect(screen.getByPlaceholderText('Familiya Ism Otasining ismi')).toHaveClass('input', 'input--lg')  // 6.11c4: yangi forma tizimi
     expect(container.querySelectorAll('.panel')).toHaveLength(3)
     expect(container.querySelectorAll('select.input')).toHaveLength(4)
   })
@@ -242,5 +246,73 @@ describe('Vacancies — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () =
     await screen.findByText('Arizangiz qabul qilindi!')
     expect(r.container.querySelector('.vac-success')).not.toBeNull()
     expect(r.container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+})
+
+// Bosqich 6.11c4: Vakansiyalar qayta dizayni — a11y va semantika.
+describe('Vacancies — qayta dizayn (Bosqich 6.11c4)', () => {
+  it("tablar hero ichida (pill-tab), inline stil yo'q", () => {
+    const { container } = render(<Vacancies />)
+    const hero = container.querySelector('.inner-hero')
+    expect(hero).not.toBeNull()
+    expect(hero.querySelector('.kiu-tab-wrap')).not.toBeNull()
+    expect(hero.querySelectorAll('.kiu-tab-btn')).toHaveLength(2)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+
+  it("Info tab: telefonlar `tel:`, email `mailto:` havola", () => {
+    const { container } = render(<Vacancies />)
+    const tels = container.querySelectorAll('a[href^="tel:"]')
+    expect(tels).toHaveLength(2)
+    tels.forEach((a) => expect(a.getAttribute('href')).toMatch(/^tel:\+998\d+$/))
+    expect(container.querySelectorAll('a[href^="mailto:"]').length).toBeGreaterThan(0)
+  })
+
+  it("Forma: label↔input bog'langan, `*` aria-hidden, majburiylar `aria-required`, email ixtiyoriy", async () => {
+    const user = userEvent.setup()
+    const { container } = render(<Vacancies />)
+    await goToForm(user)
+    const name = screen.getByPlaceholderText('Familiya Ism Otasining ismi')
+    expect(name.id).toBe('vac-fullName')
+    expect(container.querySelector('label[for="vac-fullName"]')).not.toBeNull()
+    expect(name).toHaveAttribute('aria-required', 'true')
+    const email = screen.getByPlaceholderText('email@example.com')
+    expect(email).not.toHaveAttribute('aria-required', 'true')
+    const stars = container.querySelectorAll('.label__req')
+    expect(stars.length).toBeGreaterThan(0)
+    stars.forEach((s) => expect(s).toHaveAttribute('aria-hidden', 'true'))
+    expect(screen.getByPlaceholderText('+998 90 123 45 67')).toHaveAttribute('type', 'tel')
+  })
+
+  it("Xato: `aria-describedby` xato elementiga ishora qiladi; selectlar `.select-wrap` ichida", async () => {
+    const user = userEvent.setup()
+    const { container } = render(<Vacancies />)
+    await goToForm(user)
+    expect(container.querySelectorAll('.select-wrap select')).toHaveLength(4)
+    await user.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
+    const name = screen.getByPlaceholderText('Familiya Ism Otasining ismi')
+    const errId = name.getAttribute('aria-describedby')
+    expect(errId).toBe('vac-fullName-err')
+    expect(container.querySelector('#' + errId)).toHaveTextContent('Bu maydon majburiy')
+  })
+
+  it("Server xatosi: `role=alert` banner sarlavha bilan", async () => {
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) })))
+    const user = userEvent.setup()
+    render(<Vacancies />)
+    await fillValid(user)
+    await user.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent('Ariza yuborilmadi.')
+  })
+
+  it("Muvaffaqiyat ekrani `role=status`", async () => {
+    okFetch()
+    const user = userEvent.setup()
+    render(<Vacancies />)
+    await fillValid(user)
+    await user.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
+    await screen.findByText('Arizangiz qabul qilindi!')
+    expect(screen.getByRole('status')).toBeInTheDocument()
   })
 })
