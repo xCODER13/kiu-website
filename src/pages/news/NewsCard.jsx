@@ -57,8 +57,8 @@ export default function NewsCard({ item }) {
             onClick={() => navigate(`/news/${item._id}`)}
             style={{
               padding: '5px 14px',
-              background: 'linear-gradient(135deg,#7c3aed,#4f46e5)',
-              color: '#fff', border: 'none', borderRadius: 7,
+              background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))',
+              color: 'var(--color-on-brand)', border: 'none', borderRadius: 7,
               fontSize: 11, fontWeight: 600, cursor: 'pointer',
               fontFamily: 'var(--font-body)', transition: 'opacity .2s',
             }}

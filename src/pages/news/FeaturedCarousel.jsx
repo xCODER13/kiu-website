@@ -79,7 +79,7 @@ export default function FeaturedCarousel({ items }) {
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
               fontSize: 10, fontWeight: 700, letterSpacing: '.08em',
-              color: '#fff', textTransform: 'uppercase',
+              color: 'var(--color-on-brand)', textTransform: 'uppercase',
               background: catColor,
               padding: '4px 12px', borderRadius: 20,
             }}>
@@ -95,7 +95,7 @@ export default function FeaturedCarousel({ items }) {
         {/* Title */}
         <h2 style={{
           fontSize: 'clamp(1.4rem, 3.5vw, 2rem)',
-          fontWeight: 800, color: '#fff', lineHeight: 1.3,
+          fontWeight: 800, color: 'var(--color-on-brand)', lineHeight: 1.3,
           fontFamily: 'var(--font-body)', maxWidth: 700,
           textShadow: '0 2px 20px rgba(0,0,0,.5)',
         }} lang="uz">
@@ -126,7 +126,7 @@ export default function FeaturedCarousel({ items }) {
               padding: '7px 18px',
               background: 'rgba(255,255,255,.15)',
               border: '1px solid rgba(255,255,255,.3)',
-              borderRadius: 8, color: '#fff', cursor: 'pointer',
+              borderRadius: 8, color: 'var(--color-on-brand)', cursor: 'pointer',
               fontSize: 12, fontWeight: 600,
               backdropFilter: 'blur(8px)',
               fontFamily: 'var(--font-body)',
@@ -146,7 +146,7 @@ export default function FeaturedCarousel({ items }) {
           position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)',
           width: 42, height: 42, borderRadius: '50%',
           background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.2)',
-          color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'var(--color-on-brand)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
           backdropFilter: 'blur(8px)', transition: 'background .2s',
         }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -155,7 +155,7 @@ export default function FeaturedCarousel({ items }) {
           position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)',
           width: 42, height: 42, borderRadius: '50%',
           background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.2)',
-          color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'var(--color-on-brand)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
           backdropFilter: 'blur(8px)', transition: 'background .2s',
         }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>

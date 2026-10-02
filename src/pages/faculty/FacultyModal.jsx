@@ -247,7 +247,7 @@ export default function FacultyModal({ f: program, degree, onClose }) {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               padding: '11px 20px', borderRadius: 10,
               background: `linear-gradient(135deg, ${f.color}, ${f.color}cc)`,
-              color: '#fff', textDecoration: 'none',
+              color: 'var(--color-on-brand)', textDecoration: 'none',
               fontWeight: 700, fontSize: 12.5,
               boxShadow: `0 4px 16px ${f.color}55`,
             }}

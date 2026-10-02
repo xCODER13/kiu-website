@@ -50,8 +50,8 @@ export default function News() {
             <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
               padding: '12px 20px', background: 'none', border: 'none', cursor: 'pointer',
               fontSize: 13, fontWeight: 600,
-              color: activeTab === tab.key ? '#7c3aed' : 'var(--muted)',
-              borderBottom: activeTab === tab.key ? '2px solid #7c3aed' : '2px solid transparent',
+              color: activeTab === tab.key ? 'var(--color-brand)' : 'var(--muted)',
+              borderBottom: activeTab === tab.key ? '2px solid var(--color-brand)' : '2px solid transparent',
               marginBottom: -1, fontFamily: 'var(--font-body)', transition: 'all .2s',
             }}>
               {tab.label}

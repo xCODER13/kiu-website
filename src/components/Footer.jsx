@@ -9,7 +9,7 @@ export default function Footer() {
     <footer style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', padding: '2.5rem 0 0' }}>
       <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '2rem', paddingBottom: '1.5rem' }}>
         <div>
-          <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', marginBottom: 8 }}>{t('university.name')}</h3>
+          <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-on-brand)', marginBottom: 8 }}>{t('university.name')}</h3>
           <p style={{ fontSize: 13, color: '#9ca3af', lineHeight: 1.7, marginBottom: 16 }}>
             {t('footer.about', { year: config.university.founded })}
           </p>

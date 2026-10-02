@@ -140,9 +140,9 @@ export default function Navbar({ dark, setDark, onApply }) {
                   style={{
                     display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer',
                     fontFamily: 'inherit', fontSize: 11, padding: 0, paddingBottom: 3,
-                    color: isActive ? '#7c3aed' : (dark ? '#ffffff' : '#1a1a2e'),
+                    color: isActive ? 'var(--color-brand)' : (dark ? '#ffffff' : '#1a1a2e'),
                     fontWeight: isActive ? 600 : 400,
-                    borderBottom: isActive ? '2px solid #7c3aed' : '2px solid transparent',
+                    borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
                   }}
                   aria-haspopup="true"
                 >

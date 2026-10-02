@@ -59,7 +59,7 @@ export default function FacultyCard({ f: program, index, onClick }) {
         fontSize: 11, color: 'var(--muted)', marginBottom: 8,
         display: 'flex', alignItems: 'center', gap: 5,
       }}>
-        <span style={{ color: '#d97706', display: 'flex', alignItems: 'center' }}>{IC.sun(13)}</span>
+        <span style={{ color: 'var(--color-warning)', display: 'flex', alignItems: 'center' }}>{IC.sun(13)}</span>
         {f.studyFormLabel}
         <span style={{ opacity: .4 }}>·</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 3, color: 'var(--muted)' }}>

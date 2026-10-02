@@ -53,7 +53,7 @@ export default function QRCode() {
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: s.gradient }} />
 
                 {/* Icon */}
-                <div style={{ width: 52, height: 52, borderRadius: '50%', background: s.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff' }}>
+                <div style={{ width: 52, height: 52, borderRadius: '50%', background: s.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'var(--color-on-brand)' }}>
                   {s.icon}
                 </div>
 
@@ -79,7 +79,7 @@ export default function QRCode() {
                 {/* Xatolik: rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab
                     bloklamaydi — tabnabbing'dan himoya uchun noopener qo'shildi */}
                 <a href={s.url} target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: s.gradient, color: '#fff', fontSize: 12, fontWeight: 600, padding: '9px 18px', borderRadius: 9, textDecoration: 'none', transition: 'opacity .2s' }}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: s.gradient, color: 'var(--color-on-brand)', fontSize: 12, fontWeight: 600, padding: '9px 18px', borderRadius: 9, textDecoration: 'none', transition: 'opacity .2s' }}
                   onMouseEnter={e => e.currentTarget.style.opacity='.85'}
                   onMouseLeave={e => e.currentTarget.style.opacity='1'}>
                   {s.icon}
@@ -98,7 +98,7 @@ export default function QRCode() {
               </svg>
             </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#fff', marginBottom: 3 }}>{t('qrcode.howTitle')}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-on-brand)', marginBottom: 3 }}>{t('qrcode.howTitle')}</div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,.6)', lineHeight: 1.6 }}>
                 {t('qrcode.howText')}
               </div>

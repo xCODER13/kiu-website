@@ -47,21 +47,21 @@ export default function Faculty() {
                   onClick={() => setTab(tabKey)}
                   className="kiu-tab-btn"
                   style={{
-                    border: active ? 'none' : '1px solid rgba(124,58,237,.35)',
-                    background: active ? 'linear-gradient(135deg,#7c3aed,#6d28d9)' : 'transparent',
+                    border: active ? 'none' : '1px solid color-mix(in srgb, var(--color-brand) 35%, transparent)',
+                    background: active ? 'linear-gradient(135deg,var(--color-brand),#6d28d9)' : 'transparent',
                     color: active ? '#fff' : 'var(--text)',
-                    boxShadow: active ? '0 3px 10px rgba(124,58,237,.35)' : 'none',
+                    boxShadow: active ? '0 3px 10px color-mix(in srgb, var(--color-brand) 35%, transparent)' : 'none',
                   }}
                 >
-                  <span style={{ display: 'flex', alignItems: 'center', color: active ? '#fff' : '#7c3aed' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', color: active ? '#fff' : 'var(--color-brand)' }}>
                     {tabKey === 'bakalavr' ? IC.graduation(15) : IC.building(15)}
                   </span>
                   {t(`faculty.degrees.${tabKey}`)}
                   <span
                     className="kiu-tab-badge"
                     style={{
-                      background: active ? 'rgba(255,255,255,.2)' : 'rgba(124,58,237,.15)',
-                      color: active ? '#fff' : '#7c3aed',
+                      background: active ? 'rgba(255,255,255,.2)' : 'color-mix(in srgb, var(--color-brand) 15%, transparent)',
+                      color: active ? '#fff' : 'var(--color-brand)',
                     }}
                   >
                     {tabMeta[tabKey].count}
@@ -90,7 +90,7 @@ export default function Faculty() {
             { v: t('faculty.studyForms.fullTime'),                            l: t('faculty.stats.studyForm') },
           ].map(({ v, l }) => (
             <div key={l} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: '#7c3aed' }}>{v}</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--color-brand)' }}>{v}</div>
               <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 1 }}>{l}</div>
             </div>
           ))}

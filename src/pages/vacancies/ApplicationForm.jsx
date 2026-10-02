@@ -31,18 +31,18 @@ export default function ApplicationForm({
                 <div>
                   <label style={labelStyle}>{t('vacancies.form.fullName')}</label>
                   <input name="fullName" value={form.fullName} onChange={handleChange} placeholder={t('vacancies.form.fullNamePh')} style={errorBorder(fieldErrors.fullName, inputStyle)} />
-                  {fieldErrors.fullName && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.fullName}</div>}
+                  {fieldErrors.fullName && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 4 }}>{fieldErrors.fullName}</div>}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <div>
                     <label style={labelStyle}>{t('vacancies.form.phone')}</label>
                     <input name="phone" value={form.phone} onChange={handleChange} placeholder="+998 90 123 45 67" style={errorBorder(fieldErrors.phone, inputStyle)} />
-                    {fieldErrors.phone && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.phone}</div>}
+                    {fieldErrors.phone && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 4 }}>{fieldErrors.phone}</div>}
                   </div>
                   <div>
                     <label style={labelStyle}>Email</label>
                     <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="email@example.com" style={errorBorder(fieldErrors.email, inputStyle)} />
-                    {fieldErrors.email && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.email}</div>}
+                    {fieldErrors.email && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 4 }}>{fieldErrors.email}</div>}
                   </div>
                 </div>
               </div>
@@ -62,7 +62,7 @@ export default function ApplicationForm({
                       <option value="">{t('vacancies.form.select')}</option>
                       {POSITIONS.map(p => <option key={p.value} value={p.value}>{t(`vacancies.form.options.position.${p.key}`)}</option>)}
                     </select>
-                    {fieldErrors.position && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.position}</div>}
+                    {fieldErrors.position && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 4 }}>{fieldErrors.position}</div>}
                   </div>
                   <div>
                     <label style={labelStyle}>{t('vacancies.form.faculty')}</label>
@@ -70,7 +70,7 @@ export default function ApplicationForm({
                       <option value="">{t('vacancies.form.select')}</option>
                       {FACULTIES.map(f => <option key={f.value} value={f.value}>{t(`vacancies.form.options.faculty.${f.key}`)}</option>)}
                     </select>
-                    {fieldErrors.faculty && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.faculty}</div>}
+                    {fieldErrors.faculty && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 4 }}>{fieldErrors.faculty}</div>}
                   </div>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -80,7 +80,7 @@ export default function ApplicationForm({
                       <option value="">{t('vacancies.form.select')}</option>
                       {EDUCATION.map(o => <option key={o.value} value={o.value}>{t(`vacancies.form.options.education.${o.key}`)}</option>)}
                     </select>
-                    {fieldErrors.education && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.education}</div>}
+                    {fieldErrors.education && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 4 }}>{fieldErrors.education}</div>}
                   </div>
                   <div>
                     <label style={labelStyle}>{t('vacancies.form.experience')}</label>
@@ -88,7 +88,7 @@ export default function ApplicationForm({
                       <option value="">{t('vacancies.form.select')}</option>
                       {EXPERIENCE.map(o => <option key={o.value} value={o.value}>{t(`vacancies.form.options.experience.${o.key}`)}</option>)}
                     </select>
-                    {fieldErrors.experience && <div style={{ fontSize: 11.5, color: '#dc2626', marginTop: 4 }}>{fieldErrors.experience}</div>}
+                    {fieldErrors.experience && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 4 }}>{fieldErrors.experience}</div>}
                   </div>
                 </div>
               </div>
@@ -109,29 +109,29 @@ export default function ApplicationForm({
                 </div>
                 <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', fontSize: 13, color: 'var(--text)' }}>
                   <input type="checkbox" name="hasPortfolio" checked={form.hasPortfolio} onChange={handleChange}
-                    style={{ width: 16, height: 16, accentColor: '#7c3aed' }} />
+                    style={{ width: 16, height: 16, accentColor: 'var(--color-brand)' }} />
                   {t('vacancies.form.hasPortfolio')}
                 </label>
               </div>
             </div>
 
             {/* Docs reminder */}
-            <div style={{ padding: '1rem', background: 'rgba(124,58,237,.05)', borderRadius: 10, border: '1px solid rgba(124,58,237,.15)' }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#7c3aed', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ padding: '1rem', background: 'color-mix(in srgb, var(--color-brand) 5%, transparent)', borderRadius: 10, border: '1px solid color-mix(in srgb, var(--color-brand) 15%, transparent)' }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-brand)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
                 {t('vacancies.form.docsReminder', { email: config.contact.email })}
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {DOCS_NEEDED.map((d, i) => (
                   <span key={i} style={{ fontSize: 11, color: 'var(--muted)', background: 'var(--bg)', padding: '3px 10px', borderRadius: 20, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span style={{ color: '#7c3aed' }}>{d.icon}</span> {t(`vacancies.docs.${d.id}`)}
+                    <span style={{ color: 'var(--color-brand)' }}>{d.icon}</span> {t(`vacancies.docs.${d.id}`)}
                   </span>
                 ))}
               </div>
             </div>
 
             {error && (
-              <div style={{ fontSize: 12.5, color: '#dc2626', background: 'rgba(220,38,38,.08)', border: '1px solid rgba(220,38,38,.25)', borderRadius: 10, padding: '10px 14px' }}>
+              <div style={{ fontSize: 12.5, color: 'var(--color-danger)', background: 'rgba(220,38,38,.08)', border: '1px solid rgba(220,38,38,.25)', borderRadius: 10, padding: '10px 14px' }}>
                 {t('vacancies.form.error')}
               </div>
             )}
@@ -153,7 +153,7 @@ export default function ApplicationForm({
         </div>
       ) : (
         <div className="card" style={{ padding: '3rem', textAlign: 'center' }}>
-          <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg, var(--purple-pale), var(--purple-light))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#7c3aed' }}>
+          <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg, var(--purple-pale), var(--purple-light))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'var(--color-brand)' }}>
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
           <h2 style={{ fontSize: '1.4rem', color: 'var(--text)', marginBottom: '.75rem' }}>{t('vacancies.form.successTitle')}</h2>

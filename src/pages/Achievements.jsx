@@ -25,10 +25,10 @@ export default function Achievements() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
             {AWARDS.map((a, i) => (
               <div key={a.id} className={`card reveal reveal-delay-${(i % 4) + 1}`} style={{ textAlign: 'center' }}>
-                <div className="achieve-icon" style={{ width: 56, height: 56, borderRadius: 14, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#7c3aed' }}>
+                <div className="achieve-icon" style={{ width: 56, height: 56, borderRadius: 14, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'var(--color-brand)' }}>
                   {a.icon}
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 10px', borderRadius: 20, display: 'inline-block', marginBottom: 8 }}>{a.year}</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 10%, transparent)', padding: '2px 10px', borderRadius: 20, display: 'inline-block', marginBottom: 8 }}>{a.year}</span>
                 <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)' }}>{t(`achievements.awards.${a.id}.title`)}</h3>
                 <p style={{ fontSize: 11, color: 'var(--muted)' }}>{t(`achievements.awards.${a.id}.org`)}</p>
               </div>

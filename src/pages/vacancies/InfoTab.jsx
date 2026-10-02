@@ -11,7 +11,7 @@ export default function InfoTab({ setActiveTab }) {
     <div>
       {/* Banner */}
       <div style={{ background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, padding: '2.5rem', marginBottom: '2rem' }}>
-        <h2 style={{ color: '#fff', fontSize: '1.3rem', marginBottom: '1rem' }}>{t('vacancies.info.whyTitle')}</h2>
+        <h2 style={{ color: 'var(--color-on-brand)', fontSize: '1.3rem', marginBottom: '1rem' }}>{t('vacancies.info.whyTitle')}</h2>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.8 }}>
           {t('vacancies.info.whyText')}
         </p>
@@ -37,7 +37,7 @@ export default function InfoTab({ setActiveTab }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {REQUIREMENTS.map((r, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-              <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+              <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>{t(`vacancies.info.requirements.${r}`)}</p>
@@ -57,18 +57,18 @@ export default function InfoTab({ setActiveTab }) {
             {t('vacancies.info.byEmail')}
           </h3>
           <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.7, marginBottom: '1rem' }}>
-            <Trans i18nKey="vacancies.info.sendDocs" values={{ email: config.contact.email }} components={{ b: <strong style={{ color: '#7c3aed' }} /> }} />
+            <Trans i18nKey="vacancies.info.sendDocs" values={{ email: config.contact.email }} components={{ b: <strong style={{ color: 'var(--color-brand)' }} /> }} />
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {DOCS_NEEDED.map((d, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--muted)' }}>
-                <span style={{ color: '#7c3aed' }}>{d.icon}</span> {t(`vacancies.docs.${d.id}`)}
+                <span style={{ color: 'var(--color-brand)' }}>{d.icon}</span> {t(`vacancies.docs.${d.id}`)}
               </div>
             ))}
           </div>
-          <div style={{ marginTop: '1rem', padding: '10px 12px', background: 'rgba(124,58,237,.05)', borderRadius: 8, border: '1px solid rgba(124,58,237,.15)', fontSize: 12, color: 'var(--muted)' }}>
+          <div style={{ marginTop: '1rem', padding: '10px 12px', background: 'color-mix(in srgb, var(--color-brand) 5%, transparent)', borderRadius: 8, border: '1px solid color-mix(in srgb, var(--color-brand) 15%, transparent)', fontSize: 12, color: 'var(--muted)' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--muted)' }}>
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
   <Trans i18nKey="vacancies.info.reviewTime" components={{ b: <strong style={{ color: 'var(--text)' }} /> }} />
 </span>
           </div>
@@ -89,7 +89,7 @@ export default function InfoTab({ setActiveTab }) {
             ].map((c, i) => (
               <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <div style={{ fontSize: 11, color: 'var(--muted)' }}>{c.label}</div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed' }}>{c.value}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-brand)' }}>{c.value}</div>
               </div>
             ))}
           </div>

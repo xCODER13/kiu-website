@@ -44,7 +44,7 @@ export default function About() {
           </div>
 
           <div className="reveal" style={{ background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, padding: '2.5rem', marginBottom: '2rem' }}>
-            <h2 style={{ color: '#fff', fontSize: '1.3rem', marginBottom: '1rem' }}>{t('about.missionTitle')}</h2>
+            <h2 style={{ color: 'var(--color-on-brand)', fontSize: '1.3rem', marginBottom: '1rem' }}>{t('about.missionTitle')}</h2>
             <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.8 }}>
               {t('about.missionText')}
             </p>
@@ -87,7 +87,7 @@ export default function About() {
               },
             ].map((item, i) => (
               <div key={i} className={`card reveal reveal-delay-${(i % 4) + 1}`} style={{ textAlign: 'center', padding: '1.5rem' }}>
-                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: '#7c3aed' }}>
+                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: 'var(--color-brand)' }}>
                   {item.icon}
                 </div>
                 <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)' }}>{t(`about.advantages.${item.k}.title`)}</h3>
@@ -109,9 +109,9 @@ export default function About() {
               const initials = name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()
               return (
               <div key={i} className={`card reveal reveal-delay-${i + 1}`} style={{ textAlign: 'center', padding: '1.5rem' }}>
-                <div style={{ width: 60, height: 60, borderRadius: '50%', background: p.color, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: '#fff', fontSize: 18, fontWeight: 700 }}>{initials}</div>
+                <div style={{ width: 60, height: 60, borderRadius: '50%', background: p.color, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'var(--color-on-brand)', fontSize: 18, fontWeight: 700 }}>{initials}</div>
                 <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)', lineHeight: 1.4 }}>{name}</h3>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20, display: 'inline-block', marginBottom: 6 }}>{t(`about.leaders.${p.k}.role`)}</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 10%, transparent)', padding: '2px 8px', borderRadius: 20, display: 'inline-block', marginBottom: 6 }}>{t(`about.leaders.${p.k}.role`)}</div>
                 <p style={{ fontSize: 11, color: 'var(--muted)' }}>{p.hasInfo ? t(`about.leaders.${p.k}.info`) : undefined}</p>
               </div>
               )
@@ -142,7 +142,7 @@ export default function About() {
               },
             ].map((item, i) => (
               <div key={i} className={`card reveal reveal-delay-${i + 1}`} style={{ textAlign: 'center', padding: '1.5rem' }}>
-                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: '#7c3aed' }}>
+                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: 'var(--color-brand)' }}>
                   {item.icon}
                 </div>
                 <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)' }}>{t(`about.infra.${item.k}.title`)}</h3>

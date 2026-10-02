@@ -36,12 +36,12 @@ export default function Dashboard() {
         <div style={{ padding: collapsed ? '1rem 0' : '1.1rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'space-between', gap: 8 }}>
           {!collapsed && (
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', letterSpacing: '.01em' }}>KIU Admin</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-on-brand)', letterSpacing: '.01em' }}>KIU Admin</div>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,.35)', marginTop: 1 }}>Boshqaruv paneli</div>
             </div>
           )}
           <button onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Panelni ochish' : 'Panelni yig\'ish'}
-            style={{ background: 'rgba(255,255,255,.08)', border: 'none', borderRadius: 7, padding: '6px 8px', cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+            style={{ background: 'rgba(255,255,255,.08)', border: 'none', borderRadius: 7, padding: '6px 8px', cursor: 'pointer', color: 'var(--color-on-brand)', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             {collapsed ? Ic.menu : Ic.close}
           </button>
         </div>
@@ -52,7 +52,7 @@ export default function Dashboard() {
             <div style={{ position: 'relative' }}>
               <span style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,.3)', display: 'flex' }}>{Ic.search}</span>
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Bo'lim qidirish..."
-                style={{ width: '100%', padding: '7px 10px 7px 28px', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 8, fontSize: 12, color: '#fff', outline: 'none', fontFamily: 'inherit' }} />
+                style={{ width: '100%', padding: '7px 10px 7px 28px', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 8, fontSize: 12, color: 'var(--color-on-brand)', outline: 'none', fontFamily: 'inherit' }} />
             </div>
           </div>
         )}
@@ -103,7 +103,7 @@ export default function Dashboard() {
         {/* Topbar */}
         <div style={{ padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', background: 'var(--bg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <div style={{ fontSize: 12, color: 'var(--muted)' }}>
-            KIU Boshqaruv tizimi · <span style={{ color: '#7c3aed', fontWeight: 600 }}>admin</span>
+            KIU Boshqaruv tizimi · <span style={{ color: 'var(--color-brand)', fontWeight: 600 }}>admin</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {/* Search */}
