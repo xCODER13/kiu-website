@@ -201,6 +201,7 @@
     "helpText": "HEMIS tizimiga kirish bo'yicha muammolar uchun: {{phone}} yoki {{telegram}}"
   },
   "documents": {
+    "open": "Hujjatni ochish",
     "title": "Normativ hujjatlar",
     "subtitle": "Rasmiy hujjatlar va normativ bazalar",
     "items": {

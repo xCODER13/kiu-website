@@ -126,6 +126,8 @@
     --color-accent-text:   #8a600a;                          /* oltin ton MATN (oq fonda ≥ 5:1); `--color-accent` matn uchun emas */
     --color-accent-subtle: rgb(212 175 55 / 0.14);           /* oltin chip/qator foni */
     --color-accent-border: rgb(212 175 55 / 0.40);
+    --color-accent-on-dark:  #e6c04f;                                   /* oltin MATN to'q wine banner ustida (ikkala temada bir xil) */
+    --color-banner-text:     #ecd0e1;                                   /* banner ichidagi asosiy matn (Dark'da #c3b9be) */
     --color-banner-bg:     var(--wine-900);                  /* to'q wine banner / missiya bloki */
     --gradient-banner:     radial-gradient(70% 120% at 0% 0%, rgb(159 51 126 / 0.55), transparent 62%),
                            radial-gradient(55% 100% at 100% 100%, rgb(212 175 55 / 0.20), transparent 60%),
@@ -295,6 +297,7 @@
       --color-accent-text:    #e6c04f;
       --color-accent-subtle:  rgb(212 175 55 / 0.14);
       --color-accent-border:  rgb(212 175 55 / 0.40);
+      --color-banner-text:     #c3b9be;
       --color-banner-bg:      var(--dark-deep);
       --gradient-banner:      radial-gradient(60% 110% at 0% 0%, rgb(159 51 126 / 0.40), transparent 62%),
                               radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),
@@ -381,6 +384,7 @@
     --color-accent-text:    #e6c04f;
     --color-accent-subtle:  rgb(212 175 55 / 0.14);
     --color-accent-border:  rgb(212 175 55 / 0.40);
+    --color-banner-text:     #c3b9be;
     --color-banner-bg:      var(--dark-deep);
     --gradient-banner:      radial-gradient(60% 110% at 0% 0%, rgb(159 51 126 / 0.40), transparent 62%),
                             radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),

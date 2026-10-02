@@ -19,3 +19,23 @@ describe('International (smoke test)', () => {
     expect(screen.queryByText(/Germaniya/)).not.toBeInTheDocument()
   })
 })
+
+describe('International — qayta dizayn (Bosqich 6.11c1)', () => {
+  it("hero + wine banner (4 statistika) + 12 ustunli to'r: imkoniyatlar 3+2, hamkorlar 4+3; inline stil yo'q", () => {
+    const { container } = render(<International />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Xalqaro hamkorlik' }).closest('.inner-hero')).not.toBeNull()
+    expect(container.querySelectorAll('.wine-stat')).toHaveLength(4)
+    const [opps, partners] = container.querySelectorAll('.grid-12')
+    expect([...opps.children].map(c => c.className.match(/col-\d/)[0])).toEqual(['col-4', 'col-4', 'col-4', 'col-6', 'col-6'])
+    expect([...partners.children].map(c => c.className.match(/col-\d/)[0])).toEqual(['col-3', 'col-3', 'col-3', 'col-3', 'col-4', 'col-4', 'col-4'])
+    expect(container.querySelectorAll('.cards-2 .card')).toHaveLength(2)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+
+  it("hamkor kodi dekorativ (`aria-hidden`), tur — pill; barcha ikonkalar dekorativ", () => {
+    const { container } = render(<International />)
+    container.querySelectorAll('.partner-card__code').forEach(c => expect(c).toHaveAttribute('aria-hidden', 'true'))
+    expect(container.querySelectorAll('.partner-card .pill-brand')).toHaveLength(7)
+    container.querySelectorAll('svg').forEach(svg => expect(svg).toHaveAttribute('aria-hidden', 'true'))
+  })
+})

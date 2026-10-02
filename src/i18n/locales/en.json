@@ -190,6 +190,7 @@
     "helpText": "For problems signing in to HEMIS: {{phone}} or {{telegram}}"
   },
   "documents": {
+    "open": "Open document",
     "title": "Official documents",
     "subtitle": "Official documents and regulations",
     "items": {
