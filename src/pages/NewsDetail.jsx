@@ -2,18 +2,24 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import useNavigate from '../i18n/useLocalizedNavigate'
-import { getCategoryColor, getCategoryLabel } from '../utils/newsCategories'
+import { getCategoryToken, getCategoryLabel } from '../utils/newsCategories'
+import { parseImages } from './news/utils'
 import ContentLangNote from '../i18n/ContentLangNote'
+import config from '../config'
 
-function parseImages(imageField) {
-  if (!imageField) return []
-  try {
-    const parsed = JSON.parse(imageField)
-    if (Array.isArray(parsed)) return parsed
-  } catch { return [imageField] }
-  return [imageField]
-}
+const ChevronLeft = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="15 18 9 12 15 6"/>
+  </svg>
+)
+const ChevronRight = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="9 18 15 12 9 6"/>
+  </svg>
+)
 
+// Rasm galereyasi (6.11): bitta rasm — oddiy; ko'p rasm — o'qlar (SVG), hisoblagich, nuqtalar, svayp va ← → tugmalari.
+// Holatlar (`data-*`) CSS ga beriladi: inline stil yo'q (spec 7.5); yuklanmagan rasm — `data-broken`.
 function ImageCarousel({ imgs, title }) {
   const { t } = useTranslation()
   const [cur, setCur]   = useState(0)
@@ -50,50 +56,38 @@ function ImageCarousel({ imgs, title }) {
 
   if (!imgs.length) return null
   if (imgs.length === 1) return (
-    <div style={{ marginBottom: '2rem', borderRadius: 16, overflow: 'hidden' }}>
-      <img src={imgs[0]} alt={title} fetchpriority="high" style={{ width: '100%', maxHeight: 500, objectFit: 'cover', display: 'block' }} onError={e => e.target.parentElement.style.display='none'} />
+    <div className="gallery gallery--single">
+      <img src={imgs[0]} alt={title} fetchpriority="high" className="gallery-img"
+        onError={e => { e.currentTarget.closest('.gallery').dataset.broken = 'true' }} />
     </div>
   )
 
   return (
-    <div style={{ marginBottom: '2rem', borderRadius: 16, overflow: 'hidden', position: 'relative', background: '#000', userSelect: 'none' }}
-         onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+    <div className="gallery" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <img
+        key={cur}
+        src={imgs[cur]}
+        alt={`${title} ${cur + 1}`}
+        fetchpriority={cur === 0 ? 'high' : undefined}
+        className="gallery-img"
+        data-slide={anim ? (dir > 0 ? 'right' : 'left') : undefined}
+        onError={e => { e.currentTarget.dataset.broken = 'true' }}
+      />
 
-      <div style={{ position: 'relative', width: '100%', height: 'auto', overflow: 'hidden' }}>
-        <img
-          key={cur}
-          src={imgs[cur]}
-          alt={`${title} ${cur + 1}`}
-          fetchpriority={cur === 0 ? 'high' : undefined}
-          style={{
-            width: '100%', maxHeight: 520, objectFit: 'cover', display: 'block',
-            animation: anim ? `slide-${dir > 0 ? 'in-right' : 'in-left'} 0.28s ease` : 'none',
-          }}
-          onError={e => e.target.style.opacity = '0.3'}
-        />
+      <div className="gallery-counter">{cur + 1} / {imgs.length}</div>
 
-        {/* Counter */}
-        <div style={{ position: 'absolute', top: 12, right: 14, background: 'rgba(0,0,0,.45)', color: 'var(--color-on-brand)', fontSize: 12, fontWeight: 500, padding: '3px 10px', borderRadius: 20, backdropFilter: 'blur(4px)' }}>
-          {cur + 1} / {imgs.length}
-        </div>
+      <button type="button" onClick={prev} aria-label={t('news.prevImage')} className="gallery-arrow gallery-arrow--prev"><ChevronLeft /></button>
+      <button type="button" onClick={next} aria-label={t('news.nextImage')} className="gallery-arrow gallery-arrow--next"><ChevronRight /></button>
 
-        {/* Arrows */}
-        <button onClick={prev} aria-label={t('news.prevImage')} className="gallery-arrow gallery-arrow--prev">‹</button>
-        <button onClick={next} aria-label={t('news.nextImage')} className="gallery-arrow gallery-arrow--next">›</button>
-      </div>
-
-      {/* Dots */}
-      <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
+      <div className="gallery-dots">
         {imgs.map((_, i) => (
-          <button key={i} onClick={() => go(i)} aria-label={t('news.imageN', { n: i + 1 })}
-            style={{ width: i === cur ? 22 : 8, height: 8, borderRadius: 4, border: 'none', background: i === cur ? '#fff' : 'rgba(255,255,255,.45)', cursor: 'pointer', padding: 0, transition: 'all .25s' }} />
+          <button key={i} type="button" onClick={() => go(i)} aria-label={t('news.imageN', { n: i + 1 })}
+            aria-current={i === cur ? 'true' : undefined} className="gallery-dot" />
         ))}
       </div>
     </div>
   )
 }
-
-
 
 const API = import.meta.env.VITE_API_URL
 
@@ -127,78 +121,50 @@ export default function NewsDetail() {
   }, [id])
 
   if (loading) return (
-    <div style={{ textAlign: 'center', padding: '6rem 2rem', color: 'var(--muted)' }}>
-      <div style={{
-        width: 36, height: 36,
-        border: '3px solid var(--border)', borderTopColor: 'var(--color-brand)',
-        borderRadius: '50%', animation: 'spin 0.8s linear infinite',
-        margin: '0 auto 14px',
-      }} />
-      <p style={{ fontSize: 14 }}>{t('common.loading')}</p>
+    <div className="page-loading">
+      <div className="spinner" />
+      {t('common.loading')}
     </div>
   )
 
   if (error || !news) return (
-    <div style={{ textAlign: 'center', padding: '6rem 2rem', color: 'var(--muted)' }}>
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"
-        style={{ opacity: .3, marginBottom: 16 }}>
+    <div className="empty-state detail-missing">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
-      <p style={{ fontSize: 15, marginBottom: 20 }}>{t('news.notFound')}</p>
-      <button onClick={() => navigate('/news')} style={{
-        padding: '9px 22px', background: 'var(--gradient-brand)',
-        color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, cursor: 'pointer',
-        fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)',
-      }}>
+      <p className="empty-state-title">{t('news.notFound')}</p>
+      <p className="empty-state-hint">{t('news.notFoundHint')}</p>
+      <button type="button" onClick={() => navigate('/news')} className="btn btn-primary detail-missing__btn">
         {t('news.backArrow')}
       </button>
     </div>
   )
 
-  const catColor = getCategoryColor(news.category)
-
   return (
     <div className="fade-up">
 
-      {/* Hero */}
-      <section style={{
-        padding: '2.5rem 2rem 1.5rem',
-        background: 'var(--gradient-hero)',
-        borderBottom: '1px solid var(--border)',
-      }}>
-        <div className="container">
-          <button onClick={() => navigate('/news')} className="back-link">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <polyline points="15 18 9 12 15 6"/>
-            </svg>
+      {/* Hero: orqaga + meta + sarlavha (spec 6.11 — umumiy hero foni) */}
+      <section className="detail-hero">
+        <div className="container detail-wrap">
+          <button type="button" onClick={() => navigate('/news')} className="back-link">
+            <ChevronLeft />
             {t('news.back')}
           </button>
-          <ContentLangNote />
-        </div>
-      </section>
 
-      {/* Content */}
-      <section className="section">
-        <div className="container" style={{ maxWidth: 780 }}>
-
-          {/* Meta row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem', flexWrap: 'wrap' }}>
+          <div className="detail-meta">
             {news.category && (
-              <span style={{
-                fontSize: 11, fontWeight: 700, letterSpacing: '.06em',
-                color: catColor, background: `${catColor}18`,
-                padding: '4px 12px', borderRadius: 20, textTransform: 'uppercase',
-              }}>
+              <span className="news-card-cat detail-cat" style={{ '--cat': getCategoryToken(news.category) }}>
+                <span className="cat-dot" aria-hidden="true" />
                 {getCategoryLabel(news.category, t)}
               </span>
             )}
-            <span style={{ fontSize: 12, color: 'var(--muted)' }}>
+            <span className="detail-date">
               {new Date(news.createdAt).toLocaleDateString(t('meta.dateLocale'), {
                 year: 'numeric', month: 'long', day: 'numeric',
               })}
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--muted)' }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <span className="detail-views">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
               </svg>
@@ -206,47 +172,31 @@ export default function NewsDetail() {
             </span>
           </div>
 
-          {/* Title */}
-          <h1 lang="uz" style={{
-            fontSize: 'clamp(1.5rem, 4vw, 2.1rem)',
-            fontWeight: 800, color: 'var(--text)',
-            lineHeight: 1.3, marginBottom: '1.75rem',
-            fontFamily: 'var(--font-body)',
-          }}>
-            {news.title}
-          </h1>
+          <h1 lang="uz" className="detail-title">{news.title}</h1>
+          <ContentLangNote />
+        </div>
+      </section>
 
-          {/* Images */}
+      {/* Maqola */}
+      <section className="section detail-body">
+        <div className="container detail-wrap">
           <ImageCarousel imgs={parseImages(news.image)} title={news.title} />
 
-          {/* Body text */}
           {news.content ? (
-            <div lang="uz" style={{
-              fontSize: 15.5, color: 'var(--text)', lineHeight: 1.85,
-              fontFamily: 'var(--font-body)', whiteSpace: 'pre-wrap',
-            }}>
-              {news.content}
-            </div>
+            <div lang="uz" className="detail-content">{news.content}</div>
           ) : (
-            <p style={{ fontSize: 14, color: 'var(--muted)', fontStyle: 'italic' }}>
-              {t('news.noContent')}
-            </p>
+            <p className="detail-empty">{t('news.noContent')}</p>
           )}
 
-          {/* Footer */}
-          <div style={{
-            marginTop: '3rem', paddingTop: '1.5rem',
-            borderTop: '1px solid var(--border)',
-            display: 'flex', justifyContent: 'flex-start',
-          }}>
-            <button onClick={() => navigate('/news')} className="back-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <polyline points="15 18 9 12 15 6"/>
-              </svg>
+          <div className="detail-foot">
+            <button type="button" onClick={() => navigate('/news')} className="btn btn-primary back-btn">
+              <ChevronLeft />
               {t('news.back')}
             </button>
+            <a href={config.telegram.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
+              {config.telegram.username}
+            </a>
           </div>
-
         </div>
       </section>
 

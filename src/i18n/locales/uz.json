@@ -566,6 +566,7 @@
     "back": "Yangiliklarga qaytish",
     "backArrow": "← Yangiliklarga qaytish",
     "notFound": "Yangilik topilmadi",
+    "notFoundHint": "Havola eskirgan yoki yangilik o'chirilgan bo'lishi mumkin.",
     "views_one": "{{count}} ko'rish",
     "views_other": "{{count}} ko'rish",
     "noContent": "Matn kiritilmagan.",

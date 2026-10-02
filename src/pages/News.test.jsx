@@ -1,9 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import News from './News'
 import { mockApi } from '../test/helpers'
+import { getCategoryToken } from '../utils/newsCategories'
 
 const A1 = { _id: 'a1', title: 'Birinchi yangilik', content: 'Birinchi tavsif', category: "ta'lim", views: 10, createdAt: '2026-01-01' }
 const A2 = { _id: 'a2', title: 'Ikkinchi yangilik', content: 'Ikkinchi tavsif', category: 'sport', views: 5, createdAt: '2026-01-02' }
@@ -88,9 +89,10 @@ describe('News (public)', () => {
   })
 })
 
-// Bosqich 5b: inline stillar → klasslar. Inline faqat dinamik qiymat (toifa rangi, rasm manzili) uchun qoladi.
-describe('News — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () => {
-  const ALLOWED = /^(background|background-image|color|border-color)$/
+// Bosqich 5b: inline stillar → klasslar. Inline faqat dinamik qiymat uchun qoladi.
+// 6.11b: toifa rangi endi `--cat` o'zgaruvchisi (rang xossalari — `color`/`border-color`/`background` — inline emas), rasm — `background-image`.
+describe('News — inline stillar klassga ko\'chirilgan (Bosqich 5b, 6.11b)', () => {
+  const ALLOWED = /^(--cat|background-image)$/
 
   function inlineProps(container) {
     const props = []
@@ -102,7 +104,7 @@ describe('News — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () => {
     return props
   }
 
-  it("`<style>` teglari yo'q va inline faqat dinamik rang xossalari (news tab)", async () => {
+  it("`<style>` teglari yo'q va inline faqat dinamik qiymatlar: `--cat` (toifa) va `background-image` (news tab)", async () => {
     mockApi({ 'GET /news': [A1, A2] })
     const { container } = renderNews()
     await screen.findByRole('heading', { level: 3, name: 'Birinchi yangilik' })
@@ -111,22 +113,28 @@ describe('News — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () => {
     expect(bad).toEqual([])
   })
 
-  it("tablar: faol holat `data-active` da, bosilganda almashadi (rol `button` o'zgarmagan)", async () => {
+  // 6.11b: tablar hero ichidagi pill (`.kiu-tab-btn`, 6.11a bilan bir xil); eski `.tab` klassi o'rniga `aria-pressed` ham qo'shildi (a11y).
+  it("tablar: faol holat `data-active` va `aria-pressed` da, bosilganda almashadi (rol `button` o'zgarmagan)", async () => {
     mockApi({ 'GET /news': [A1, SHORT1] })
     const user = userEvent.setup()
     renderNews()
     await screen.findByRole('heading', { level: 3, name: 'Birinchi yangilik' })
     const newsTab = screen.getByRole('button', { name: /Yangiliklar/ })
     const videoTab = screen.getByRole('button', { name: /Video/ })
-    expect(newsTab).toHaveClass('tab')
+    expect(newsTab).toHaveClass('kiu-tab-btn')
     expect(newsTab).toHaveAttribute('data-active', 'true')
+    expect(newsTab).toHaveAttribute('aria-pressed', 'true')
     expect(videoTab).toHaveAttribute('data-active', 'false')
+    expect(videoTab).toHaveAttribute('aria-pressed', 'false')
     await user.click(videoTab)
     expect(videoTab).toHaveAttribute('data-active', 'true')
+    expect(videoTab).toHaveAttribute('aria-pressed', 'true')
     expect(newsTab).toHaveAttribute('data-active', 'false')
+    expect(newsTab).toHaveAttribute('aria-pressed', 'false')
   })
 
-  it("toifa tugmasi: faol bo'lganda inline rang (ma'lumotdan), faol bo'lmaganda inline yo'q", async () => {
+  // 6.11b: rang xossalari inline emas — har tugmada faqat `--cat` (faol/nofaol farqi `data-active` orqali CSS da).
+  it("toifa tugmasi: inline faqat `--cat` (palitra tokeni), faol holat `data-active` da", async () => {
     mockApi({ 'GET /news': [A1, A2] })
     const user = userEvent.setup()
     renderNews()
@@ -134,27 +142,56 @@ describe('News — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () => {
     const all = screen.getByRole('button', { name: /^Barchasi/ })
     const sport = screen.getByRole('button', { name: /Sport/ })
     expect(all).toHaveAttribute('data-active', 'true')
-    expect(all.getAttribute('style')).toMatch(/border-color/)
+    expect(all.style.getPropertyValue('--cat')).toBe('var(--color-brand)')
     expect(sport).toHaveAttribute('data-active', 'false')
-    expect(sport.style.length).toBe(0)
+    expect(sport.style.getPropertyValue('--cat')).toBe(getCategoryToken('sport'))
+    expect(sport.style.getPropertyValue('--cat')).toBe('var(--chart-3)')
+    expect(sport.style.length).toBe(1)
     await user.click(sport)
     expect(sport).toHaveAttribute('data-active', 'true')
-    expect(sport.getAttribute('style')).toMatch(/border-color/)
-    expect(all.style.length).toBe(0) // React xossalarni olib tashlagach atribut bo'sh qoladi
+    expect(all).toHaveAttribute('data-active', 'false')
+    expect(all.style.getPropertyValue('--cat')).toBe('var(--color-brand)') // rang holatga bog'liq emas
   })
 
-  it("karta hover'i JS'da emas: `onMouseEnter` inline transform/box-shadow qo'ymaydi", async () => {
+  it("karta: hover JS'da emas — `onMouseEnter` inline stilni o'zgartirmaydi; yagona inline `--cat` (toifa tokeni)", async () => {
     mockApi({ 'GET /news': [A1] })
     const user = userEvent.setup()
     const { container } = renderNews()
     await screen.findByRole('heading', { level: 3, name: 'Birinchi yangilik' })
     const card = container.querySelector('.news-card')
     expect(card).toHaveClass('card', 'card-link')
+    const before = card.getAttribute('style')
+    expect(before).toBe('--cat: var(--chart-2);') // "ta'lim" → 2-o'rin (spec, qaror 22)
     await user.hover(card)
-    expect(card.style.length).toBe(0)
+    expect(card.getAttribute('style')).toBe(before)
     const btn = card.querySelector('.news-card-btn')
+    expect(btn).toHaveClass('btn', 'btn-primary')
     await user.hover(btn)
     expect(btn.style.length).toBe(0)
+  })
+
+  it("karta: yuklanmagan rasm `data-broken` bilan yashiriladi (inline `display` yo'q); rasmsiz karta — gradient placeholder", async () => {
+    mockApi({ 'GET /news': [{ ...A1, image: 'https://example.com/x.jpg' }, A2] })
+    const { container } = renderNews()
+    await screen.findByRole('heading', { level: 3, name: 'Ikkinchi yangilik' })
+    const img = container.querySelector('.news-card-img')
+    fireEvent.error(img)
+    expect(img).toHaveAttribute('data-broken', 'true')
+    expect(img.style.length).toBe(0)
+    expect(container.querySelectorAll('.news-card-ph')).toHaveLength(1)
+    expect(container.querySelector('.news-card-ph').hasAttribute('style')).toBe(false)
+  })
+
+  it("toifa belgisi: nuqta (`.cat-dot`) dekorativ; karusel pill'i `--cat` oladi; noma'lum toifa — brand tokeni", async () => {
+    mockApi({ 'GET /news': [A1, { ...A2, category: 'boshqa-toifa' }] })
+    const { container } = renderNews()
+    await screen.findByRole('heading', { level: 2, name: 'Birinchi yangilik' })
+    expect(container.querySelector('.carousel-cat').style.getPropertyValue('--cat')).toBe('var(--chart-2)')
+    expect(container.querySelector('.carousel-cat-dot')).toHaveAttribute('aria-hidden', 'true')
+    const unknown = screen.getByRole('heading', { level: 3, name: 'Ikkinchi yangilik' }).closest('.news-card')
+    const known = screen.getByRole('heading', { level: 3, name: 'Birinchi yangilik' }).closest('.news-card')
+    expect(unknown.style.getPropertyValue('--cat')).toBe('var(--color-brand)')
+    expect(known.querySelector('.cat-dot')).toHaveAttribute('aria-hidden', 'true')
   })
 
   it("karusel: fon rasmi bo'lmasa inline `background-image` yo'q (CSS dagi gradient), kuzatilgan o'tish tugmasi va nuqtalar klass bilan", async () => {
