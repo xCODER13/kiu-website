@@ -2,6 +2,7 @@
 import { useTranslation } from 'react-i18next'
 import { NavLink } from '../i18n/router'
 import config from '../config'
+import Logo from './Logo'
 
 export default function Footer() {
   const { t } = useTranslation()
@@ -9,7 +10,8 @@ export default function Footer() {
     <footer style={{ background: 'var(--gradient-footer)', padding: '2.5rem 0 0' }}>
       <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '2rem', paddingBottom: '1.5rem' }}>
         <div>
-          <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-on-brand)', marginBottom: 8 }}>{t('university.name')}</h3>
+          <Logo height={44} decorative className="site-logo site-logo--footer" />
+          <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-on-brand)', margin: '12px 0 8px' }}>{t('university.name')}</h3>
           <p style={{ fontSize: 13, color: 'var(--color-on-dark-muted)', lineHeight: 1.7, marginBottom: 16 }}>
             {t('footer.about', { year: config.university.founded })}
           </p>

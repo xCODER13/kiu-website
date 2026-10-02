@@ -276,3 +276,4 @@ details[open] .details-arrow { transform: rotate(180deg); }
 
 /* Logotip (Logo.jsx): rang currentColor'dan — Light/Dark'da token almashadi */
 .site-logo { display: block; flex-shrink: 0; color: var(--color-brand); }
+.site-logo--footer { color: var(--color-footer-logo); }

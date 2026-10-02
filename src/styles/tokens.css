@@ -76,6 +76,7 @@
     --color-on-dark-muted:       var(--dark-muted);
     --color-brand-on-dark:       var(--wine-300);
     --color-brand-on-dark-hover: var(--wine-200);
+    --color-footer-logo:         var(--neutral-0);      /* footer logotipi (Dark'da pushti) */
     --color-media-bg:            var(--dark-bg);
 
     /* Holat ranglari (matn bilan birga ishlatiladi; faqat rangga tayanilmaydi) */
@@ -181,6 +182,7 @@
       --color-brand-fill:     var(--wine-600);
       --color-brand-hover:    var(--wine-700);
       --color-brand-strong:   var(--wine-200);
+      --color-footer-logo:    var(--wine-300);
       --color-brand-subtle:   var(--dark-wine-tint);
       --color-brand-subtle-2: var(--dark-wine-tint);
 
@@ -220,6 +222,7 @@
     --color-brand-fill:     var(--wine-600);
     --color-brand-hover:    var(--wine-700);
     --color-brand-strong:   var(--wine-200);
+    --color-footer-logo:    var(--wine-300);
     --color-brand-subtle:   var(--dark-wine-tint);
     --color-brand-subtle-2: var(--dark-wine-tint);
 

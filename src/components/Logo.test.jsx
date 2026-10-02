@@ -30,6 +30,14 @@ describe('Logo', () => {
     expect(container.querySelector('svg')).toHaveAttribute('height', '19')
   })
 
+  it('decorative: ekran o\'qiydigan dasturlardan yashirinadi (role/aria-label yo\'q)', () => {
+    const { container } = render(<Logo decorative />)
+    const svg = container.querySelector('svg')
+    expect(svg).toHaveAttribute('aria-hidden', 'true')
+    expect(svg).not.toHaveAttribute('role')
+    expect(svg).not.toHaveAttribute('aria-label')
+  })
+
   it('public/logo.svg bilan bir xil kontur (ikki nusxa chetga chiqmasin)', () => {
     const file = readFileSync(resolve(process.cwd(), 'public/logo.svg'), 'utf8')
     const fileD = file.match(/ d="([^"]+)"/)[1]
