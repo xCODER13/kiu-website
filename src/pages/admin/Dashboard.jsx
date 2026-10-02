@@ -27,105 +27,91 @@ export default function Dashboard() {
   const filteredNav = NAV.filter(n => search === '' || n.label.toLowerCase().includes(search.toLowerCase()))
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-2)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+    <div className="adm-shell" data-collapsed={collapsed}>
 
       {/* ── SIDEBAR ── */}
-      <div style={{ width: collapsed ? 60 : 230, background: 'var(--gradient-sidebar)', display: 'flex', flexDirection: 'column', flexShrink: 0, transition: 'width .25s', overflow: 'hidden' }}>
+      <div className="adm-sidebar">
 
         {/* Logo */}
-        <div style={{ padding: collapsed ? '1rem 0' : '1.1rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'space-between', gap: 8 }}>
+        <div className="adm-sidebar-head">
           {!collapsed && (
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-on-brand)', letterSpacing: '.01em' }}>KIU Admin</div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,.35)', marginTop: 1 }}>Boshqaruv paneli</div>
+              <div className="adm-brand-title">KIU Admin</div>
+              <div className="adm-brand-sub">Boshqaruv paneli</div>
             </div>
           )}
-          <button onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Panelni ochish' : 'Panelni yig\'ish'}
-            style={{ background: 'rgba(255,255,255,.08)', border: 'none', borderRadius: 7, padding: '6px 8px', cursor: 'pointer', color: 'var(--color-on-brand)', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+          <button className="adm-collapse-btn" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Panelni ochish' : 'Panelni yig\'ish'}>
             {collapsed ? Ic.menu : Ic.close}
           </button>
         </div>
 
         {/* Search */}
         {!collapsed && (
-          <div style={{ padding: '0.7rem 1rem', borderBottom: '1px solid rgba(255,255,255,.05)' }}>
-            <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,.3)', display: 'flex' }}>{Ic.search}</span>
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Bo'lim qidirish..."
-                style={{ width: '100%', padding: '7px 10px 7px 28px', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 8, fontSize: 12, color: 'var(--color-on-brand)', fontFamily: 'inherit' }} />
+          <div className="adm-side-search">
+            <div className="adm-side-search-field">
+              <span className="adm-side-search-icon">{Ic.search}</span>
+              <input className="adm-side-search-input" value={search} onChange={e => setSearch(e.target.value)} placeholder="Bo'lim qidirish..." />
             </div>
           </div>
         )}
 
         {/* Nav links */}
-        <nav style={{ flex: 1, padding: '0.4rem 0', overflowY: 'auto' }}>
+        <nav className="adm-nav">
           {filteredNav.map(item => (
-            <NavLink key={item.to} to={item.to} end={item.to === '/admin'}
-              style={({ isActive }) => ({
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: collapsed ? '11px 0' : '9px 1.25rem',
-                justifyContent: collapsed ? 'center' : 'flex-start',
-                fontSize: 12, fontWeight: isActive ? 600 : 400,
-                color: isActive ? '#fff' : 'rgba(255,255,255,.5)',
-                background: isActive ? 'color-mix(in srgb, var(--color-brand) 30%, transparent)' : 'none',
-                textDecoration: 'none', transition: 'all .15s',
-                borderLeft: isActive ? '3px solid var(--color-brand)' : '3px solid transparent',
-              })}>
-              <span style={{ flexShrink: 0 }}>{item.icon}</span>
-              {!collapsed && <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.label}</span>}
+            <NavLink key={item.to} to={item.to} end={item.to === '/admin'} className="adm-nav-link"
+              aria-label={item.label} title={collapsed ? item.label : undefined}>
+              <span className="adm-nav-icon">{item.icon}</span>
+              {!collapsed && <span className="adm-nav-label">{item.label}</span>}
             </NavLink>
           ))}
           {filteredNav.length === 0 && !collapsed && (
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,.3)', padding: '1rem 1.25rem', textAlign: 'center' }}>Topilmadi</p>
+            <p className="adm-nav-empty">Topilmadi</p>
           )}
         </nav>
 
         {/* Bottom */}
-        <div style={{ padding: collapsed ? '0.5rem 0' : '0.75rem 1.25rem', borderTop: '1px solid rgba(255,255,255,.07)', display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <button onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'rgba(255,255,255,.45)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0', justifyContent: collapsed ? 'center' : 'flex-start', fontFamily: 'inherit', width: '100%' }}>
+        <div className="adm-sidebar-foot">
+          <button className="adm-side-action" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}>
             {dark ? Ic.sun : Ic.moon}
             {!collapsed && (dark ? 'Yorug\' rejim' : 'Qorong\'u rejim')}
           </button>
-          <NavLink to="/" aria-label="Saytga qaytish" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'rgba(255,255,255,.4)', textDecoration: 'none', padding: '6px 0', justifyContent: collapsed ? 'center' : 'flex-start' }}>
+          <NavLink to="/" className="adm-side-action" aria-label="Saytga qaytish">
             {Ic.home}{!collapsed && 'Saytga qaytish'}
           </NavLink>
-          <button onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }} aria-label="Tizimdan chiqish"
-            style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 0', justifyContent: collapsed ? 'center' : 'flex-start', fontFamily: 'inherit', width: '100%' }}>
+          <button className="adm-side-action is-danger" onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }} aria-label="Tizimdan chiqish">
             {Ic.logout}{!collapsed && 'Chiqish'}
           </button>
         </div>
       </div>
 
       {/* ── MAIN ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <div className="adm-main">
 
         {/* Topbar */}
-        <div style={{ padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', background: 'var(--bg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          <div style={{ fontSize: 12, color: 'var(--muted)' }}>
-            KIU Boshqaruv tizimi · <span style={{ color: 'var(--color-brand)', fontWeight: 600 }}>admin</span>
+        <div className="adm-topbar">
+          <div className="adm-topbar-title">
+            KIU Boshqaruv tizimi · <span className="adm-topbar-accent">admin</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div className="adm-topbar-tools">
             {/* Search */}
-            <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', display: 'flex' }}>{Ic.search}</span>
+            <div className="adm-top-search">
+              <span className="adm-top-search-icon">{Ic.search}</span>
               <input
+                className="adm-top-search-input"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Bo'lim qidirish..."
-                style={{ padding: '7px 12px 7px 30px', border: '1px solid var(--color-border-strong)', borderRadius: 8, fontSize: 12, background: 'var(--bg)', color: 'var(--text)', width: 180, fontFamily: 'inherit' }}
               />
             </div>
             {/* Dark mode */}
-            <button onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}
-              style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 9px', cursor: 'pointer', color: 'var(--muted)', display: 'flex', alignItems: 'center' }}>
+            <button className="adm-theme-btn" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}>
               {dark ? Ic.sun : Ic.moon}
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <main style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
+        <main className="adm-content">
           <Routes>
             <Route index element={<Stats />} />
             <Route path="news"         element={<NewsAdmin />} />

@@ -1,0 +1,295 @@
+/*
+ * admin.css — admin panel (Bosqich 6a): Dashboard qobig'i (sidebar, topbar, kontent) va Login.
+ *
+ * Qoidalar (site.css / pages.css bilan bir xil):
+ *  - faqat token; ruxsat etilgan literal — `rgb(255 255 255 / a)` (to'q sidebar ustidagi chiziq/fon);
+ *  - hammasi `@layer components` ichida; components.css dan KEYIN ulanadi (main.jsx) — bir xil
+ *    qatlamda tartib hal qiladi, shuning uchun `.auth-input` `.input` ning ustidan yozadi;
+ *  - inline `style` o'rniga: yig'ilgan holat `data-collapsed` (faqat ildizda) orqali.
+ */
+@layer components {
+
+  /* ── Admin qobig'i ─────────────────────────────────────────────────── */
+  .adm-shell {
+    display: flex;
+    min-height: 100vh;
+    background: var(--color-surface-2);
+    font-family: var(--font-sans);
+  }
+
+  /* ── Sidebar ───────────────────────────────────────────────────────── */
+  .adm-sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 230px;
+    overflow: hidden;
+    background: var(--gradient-sidebar);
+    transition: width 0.25s;
+  }
+  .adm-shell[data-collapsed="true"] .adm-sidebar { width: 60px; }
+  /* Fokus halqasi to'q gradient ustida: global `--color-focus` (Light'da wine-700) bu yerda ~1.5:1 — ko'rinmaydi */
+  .adm-sidebar :focus-visible { outline-color: var(--color-brand-on-dark); }
+
+  .adm-sidebar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.07);
+  }
+  .adm-shell[data-collapsed="true"] .adm-sidebar-head {
+    justify-content: center;
+    padding: 1rem 0;
+  }
+  .adm-brand-title {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--color-on-brand);
+  }
+  /* Oldin rgba(255,255,255,.35) — to'q gradient ustida 3.0:1 (AA yiqildi) → token (≥ 6.4:1) */
+  .adm-brand-sub {
+    margin-top: 1px;
+    font-size: 0.625rem;
+    color: var(--color-on-dark-muted);
+  }
+  .adm-collapse-btn {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 7px;
+    background: rgb(255 255 255 / 0.08);
+    color: var(--color-on-brand);
+    cursor: pointer;
+  }
+
+  /* Sidebar qidiruvi (faqat ochiq holatda render qilinadi) */
+  .adm-side-search {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.05);
+  }
+  .adm-side-search-field { position: relative; }
+  .adm-side-search-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    display: flex;
+    transform: translateY(-50%);
+    color: var(--color-on-dark-muted);
+  }
+  .adm-side-search-input {
+    width: 100%;
+    padding: 7px 10px 7px 28px;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 8px;
+    background: rgb(255 255 255 / 0.07);
+    color: var(--color-on-brand);
+    font-family: inherit;
+    font-size: var(--text-xs);
+  }
+
+  /* Bo'limlar ro'yxati */
+  .adm-nav {
+    flex: 1;
+    padding: 0.4rem 0;
+    overflow-y: auto;
+  }
+  .adm-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 9px 1.25rem;
+    border-left: 3px solid transparent;
+    font-size: var(--text-xs);
+    font-weight: 400;
+    color: rgb(255 255 255 / 0.5);
+    text-decoration: none;
+    transition: all var(--duration-fast);
+  }
+  /* NavLink faol bo'lsa `active` klassini o'zi qo'shadi (isActive funksiyasi kerak emas) */
+  .adm-nav-link.active {
+    border-left-color: var(--color-brand);
+    background: color-mix(in srgb, var(--color-brand) 30%, transparent);
+    font-weight: 600;
+    color: var(--color-on-brand);
+  }
+  .adm-shell[data-collapsed="true"] .adm-nav-link {
+    justify-content: center;
+    padding: 11px 0;
+  }
+  .adm-nav-icon { flex-shrink: 0; }
+  .adm-nav-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .adm-nav-empty {
+    padding: 1rem 1.25rem;
+    font-size: var(--text-xs);
+    text-align: center;
+    color: var(--color-on-dark-muted);
+  }
+
+  /* Sidebar pastki qismi: tema, saytga qaytish, chiqish */
+  .adm-sidebar-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid rgb(255 255 255 / 0.07);
+  }
+  .adm-shell[data-collapsed="true"] .adm-sidebar-foot { padding: 0.5rem 0; }
+  .adm-side-action {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 0;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: var(--text-2xs);
+    color: var(--color-on-dark-muted);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .adm-shell[data-collapsed="true"] .adm-side-action { justify-content: center; }
+  .adm-side-action.is-danger { color: var(--color-danger-on-dark); }
+
+  /* ── Asosiy ustun ──────────────────────────────────────────────────── */
+  .adm-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .adm-topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0.85rem 2rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+  .adm-topbar-title {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+  .adm-topbar-accent {
+    font-weight: 600;
+    color: var(--color-brand);
+  }
+  .adm-topbar-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .adm-top-search { position: relative; }
+  .adm-top-search-icon {
+    position: absolute;
+    left: 9px;
+    top: 50%;
+    display: flex;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+  }
+  .adm-top-search-input {
+    width: 180px;
+    padding: 7px 12px 7px 30px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 8px;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: var(--text-xs);
+  }
+  .adm-theme-btn {
+    display: flex;
+    align-items: center;
+    padding: 7px 9px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  .adm-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+
+  /* ── Login ─────────────────────────────────────────────────────────── */
+  .auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--gradient-auth);
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    background: var(--color-surface-3);
+  }
+  .auth-head {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 12px;
+    border-radius: var(--radius-xl);
+    background: var(--gradient-brand);
+    color: var(--color-on-brand);
+  }
+  .auth-title {
+    margin-bottom: 4px;
+    font-size: 1.3rem;
+    color: var(--color-text);
+  }
+  .auth-sub {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .auth-input { font-size: var(--text-sm); }
+  .auth-input--pass { padding-right: 40px; }
+  .auth-pass { position: relative; }
+  .auth-eye {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    display: flex;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  .auth-error {
+    font-size: var(--text-xs);
+    text-align: center;
+    color: var(--color-danger);
+  }
+  .auth-submit { padding: 12px; }
+}

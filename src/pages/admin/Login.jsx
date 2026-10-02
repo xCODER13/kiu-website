@@ -37,33 +37,32 @@ export default function Login() {
   }
 
   return (
-    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--gradient-auth)' }}>
-      <div style={{ background: 'var(--color-surface-3)', borderRadius: 16, padding: '2.5rem', width: '100%', maxWidth: 400, border: '1px solid var(--border)' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ width: 56, height: 56, borderRadius: 14, background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'var(--color-on-brand)' }}>
+    <main className="auth-page">
+      <div className="auth-card">
+        <div className="auth-head">
+          <div className="auth-logo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
-          <h2 style={{ fontSize: '1.3rem', color: 'var(--color-text)', marginBottom: 4 }}>Admin Panel</h2> 
-          <p style={{ fontSize: 13, color: 'var(--muted)' }}>KIU boshqaruv tizimi</p>
+          <h2 className="auth-title">Admin Panel</h2>
+          <p className="auth-sub">KIU boshqaruv tizimi</p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <form className="auth-form" onSubmit={handleSubmit}>
           <input
+            className="input auth-input"
             placeholder="Login"
             value={form.username}
             onChange={e => setForm({ ...form, username: e.target.value })}
-            style={{ padding: '10px 14px', border: '1px solid var(--color-border-strong)', borderRadius: 10, fontSize: 13, background: 'var(--color-field-bg)', color: 'var(--color-text)' }}
           />
-          <div style={{ position: 'relative' }}>
+          <div className="auth-pass">
             <input
+             className="input auth-input auth-input--pass"
              type={showPass ? 'text' : 'password'}
              placeholder="Parol"
              value={form.password}
              onChange={e => setForm({ ...form, password: e.target.value })}
-             style={{ width: '100%', padding: '10px 40px 10px 14px', border: '1px solid var(--color-border-strong)', borderRadius: 10, fontSize: 13, background: 'var(--color-field-bg)', color: 'var(--color-text)', boxSizing: 'border-box' }}
              />
-             <button type="button" onClick={() => setShowPass(!showPass)} aria-label={showPass ? "Parolni berkitish" : "Parolni ko'rsatish"}
-              style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)', display: 'flex' }}>
+             <button type="button" className="auth-eye" onClick={() => setShowPass(!showPass)} aria-label={showPass ? "Parolni berkitish" : "Parolni ko'rsatish"}>
               {showPass ? (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
               ) : (
@@ -71,8 +70,8 @@ export default function Login() {
                )}
              </button>
            </div>
-          {error && <p style={{ fontSize: 12, color: 'var(--color-danger)', textAlign: 'center' }}>{error}</p>}
-          <button type="submit" className="btn btn-primary" style={{ justifyContent: 'center', padding: '12px' }} disabled={loading} aria-busy={loading}>
+          {error && <p className="auth-error">{error}</p>}
+          <button type="submit" className="btn btn-primary auth-submit" disabled={loading} aria-busy={loading}>
             {loading ? 'Kirmoqda...' : 'Kirish'}
           </button>
         </form>

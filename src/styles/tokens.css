@@ -92,6 +92,7 @@
     --color-on-dark-muted:       var(--dark-muted);
     --color-brand-on-dark:       var(--wine-300);
     --color-brand-on-dark-hover: var(--wine-200);
+    --color-danger-on-dark:      #f87171;              /* to'q sidebar ustidagi "Chiqish" (≥ 5.4:1) */
     --color-footer-logo:         var(--neutral-0);      /* footer logotipi (Dark'da pushti) */
     --color-media-bg:            var(--dark-bg);
 
