@@ -198,7 +198,7 @@
     "teachersTitle": "O'qituvchilar uchun",
     "teachersDesc": "Dars jadvali, baholar kiritish, hisobotlar va boshqa xizmatlar",
     "helpTitle": "Yordam kerakmi?",
-    "helpText": "HEMIS tizimiga kirish bo'yicha muammolar uchun: {{phone}} yoki {{telegram}}"
+    "helpText": "HEMIS tizimiga kirish bo'yicha muammolar uchun: <phone>{{phone}}</phone> yoki <tg>{{telegram}}</tg>"
   },
   "documents": {
     "open": "Hujjatni ochish",
@@ -815,6 +815,9 @@
   "notFound": {
     "title": "Sahifa topilmadi",
     "text": "Siz izlagan sahifa mavjud emas yoki boshqa manzilga ko'chirilgan.",
-    "home": "Bosh sahifaga qaytish"
+    "home": "Bosh sahifaga qaytish",
+    "back": "Orqaga",
+    "linksTitle": "Foydali havolalar",
+    "links": {"faculty": "Yo'nalishlar", "admission": "Qabul", "news": "Yangiliklar", "contact": "Bog'lanish"}
   }
 }

@@ -48,6 +48,10 @@
     --brand-telegram:      #0088cc;
     --brand-telegram-deep: #006aa3;
     --brand-telegram-end:  #0055aa;   /* Telegram gradienti oxiri (TelegramPanel); `-deep` dan boshqa qiymat */
+    --brand-youtube-end:   #cc0000;
+    --brand-facebook:      #1877f2;
+    --brand-facebook-end:  #0d5dbf;
+    --brand-instagram:     linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);   /* faqat QR kartasi ikonka doirasida */
 
     --dark-deep:      #0d080b;
     --dark-bg:        #120c10;
@@ -128,6 +132,10 @@
     --color-accent-border: rgb(212 175 55 / 0.40);
     --color-accent-on-dark:  #e6c04f;                                   /* oltin MATN to'q wine banner ustida (ikkala temada bir xil) */
     --color-banner-text:     #ecd0e1;                                   /* banner ichidagi asosiy matn (Dark'da #c3b9be) */
+    --color-accent-on-dark-border: rgb(230 192 79 / 0.35);              /* oltin chiziq to'q banner ustidagi plitkada (ikkala temada bir xil) */
+    --color-star:            #d4af37;                                   /* sharh yulduzlari (Dark'da #e6c04f) */
+    --color-qr-bg:           #ffffff;                                   /* QR plitkasi: HAR DOIM oq (Dark'da ham — skaner uchun) */
+    --color-qr-border:       var(--color-border);                       /* Dark'da: rgb(233 168 208 / .35) */
     --color-banner-bg:     var(--wine-900);                  /* to'q wine banner / missiya bloki */
     --gradient-banner:     radial-gradient(70% 120% at 0% 0%, rgb(159 51 126 / 0.55), transparent 62%),
                            radial-gradient(55% 100% at 100% 100%, rgb(212 175 55 / 0.20), transparent 60%),
@@ -298,6 +306,8 @@
       --color-accent-subtle:  rgb(212 175 55 / 0.14);
       --color-accent-border:  rgb(212 175 55 / 0.40);
       --color-banner-text:     #c3b9be;
+      --color-star:            #e6c04f;
+      --color-qr-border:       rgb(233 168 208 / 0.35);
       --color-banner-bg:      var(--dark-deep);
       --gradient-banner:      radial-gradient(60% 110% at 0% 0%, rgb(159 51 126 / 0.40), transparent 62%),
                               radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),
@@ -385,6 +395,8 @@
     --color-accent-subtle:  rgb(212 175 55 / 0.14);
     --color-accent-border:  rgb(212 175 55 / 0.40);
     --color-banner-text:     #c3b9be;
+    --color-star:            #e6c04f;
+    --color-qr-border:       rgb(233 168 208 / 0.35);
     --color-banner-bg:      var(--dark-deep);
     --gradient-banner:      radial-gradient(60% 110% at 0% 0%, rgb(159 51 126 / 0.40), transparent 62%),
                             radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),

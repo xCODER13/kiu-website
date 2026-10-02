@@ -27,3 +27,33 @@ describe('FAQ (smoke test)', () => {
     expect(screen.queryByText(/Germaniya/)).not.toBeInTheDocument()
   })
 })
+
+describe('FAQ — qayta dizayn (Bosqich 6.11c2)', () => {
+  it("har savol alohida karta; tugma `aria-expanded`/`aria-controls`, ochiq karta `data-open`; inline stil yo'q", async () => {
+    const user = userEvent.setup()
+    const { container } = render(<FAQ />)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    const cards = container.querySelectorAll('.faq-card')
+    expect(cards.length).toBeGreaterThan(3)
+    const first = screen.getByRole('button', { name: /Qabul qachon boshlanadi\?/ })
+    expect(first).toHaveAttribute('aria-expanded', 'false')
+    expect(first.closest('.faq-card')).toHaveAttribute('data-open', 'false')
+    await user.click(first)
+    expect(first).toHaveAttribute('aria-expanded', 'true')
+    expect(first.closest('.faq-card')).toHaveAttribute('data-open', 'true')
+    const panel = document.getElementById(first.getAttribute('aria-controls'))
+    expect(panel).toHaveTextContent(/Qabul har yili 1-iyuldan/)
+    expect(panel).toHaveAttribute('role', 'region')
+  })
+
+  it("bir vaqtda faqat bitta savol ochiq (mantiq o'zgarmagan); JSON-LD `FAQPage` saqlangan", async () => {
+    const user = userEvent.setup()
+    const { container } = render(<FAQ />)
+    const buttons = screen.getAllByRole('button')
+    await user.click(buttons[0])
+    await user.click(buttons[1])
+    expect(container.querySelectorAll('[aria-expanded="true"]')).toHaveLength(1)
+    expect(buttons[1]).toHaveAttribute('aria-expanded', 'true')
+    expect(document.getElementById('jsonld-faq')?.textContent).toContain('FAQPage')
+  })
+})

@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next'
+import PageHero from '../components/PageHero'
+import Icon from '../components/Icon'
 
 const REVIEWS = [
   { id: 1, name: "Aziza Karimova", year: 3, avatar: "AK" },
@@ -9,39 +11,44 @@ const REVIEWS = [
   { id: 6, name: "Sardor Mirzayev", year: 'graduate', avatar: "SM" },
 ]
 
-const StarIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" strokeWidth="1">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-  </svg>
-)
+const STARS = [1, 2, 3, 4, 5]
 
 export default function Testimonials() {
   const { t } = useTranslation()
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('testimonials.title')}</h1>
-        <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('testimonials.subtitle')}</p>
-      </section>
+      <PageHero title={t('testimonials.title')} sub={t('testimonials.subtitle')} />
 
       <section className="section">
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+          <div className="cards-3">
             {REVIEWS.map((r, i) => (
-              <div key={r.id} className={`card reveal reveal-delay-${(i % 4) + 1}`}>
-                <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
-                  {[1,2,3,4,5].map(s => <StarIcon key={s} />)}
-                </div>
-                <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.7, marginBottom: 16, fontStyle: 'italic' }}>"{t(`testimonials.reviews.${r.id}.text`)}"</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', fontSize: 13, fontWeight: 600, flexShrink: 0 }}>
-                    {r.avatar}
+              <div key={r.id} className={`rv-item reveal reveal-delay-${(i % 3) + 1}`}>
+                <figure className="card card--lift review-card">
+                  <div className="review-card__top">
+                    <div className="tile tile--46">
+                      <Icon size={22}><path d="M3 21c3 0 7-1 7-8V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h4" /><path d="M15 21c3 0 7-1 7-8V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h4" /></Icon>
+                    </div>
+                    {/* Yulduzlar — bezak: ekran o'quvchiga bitta "5 / 5" o'qiladi */}
+                    <div className="review-card__stars" role="img" aria-label="5 / 5">
+                      {STARS.map(s => (
+                        <svg key={s} width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      ))}
+                    </div>
                   </div>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{r.name}</div>
-                    <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t(`testimonials.reviews.${r.id}.faculty`)} · {r.year === 'graduate' ? t('testimonials.graduate') : t('testimonials.year', { n: r.year })}</div>
-                  </div>
-                </div>
+                  <blockquote className="review-card__text">{t(`testimonials.reviews.${r.id}.text`)}</blockquote>
+                  <figcaption className="review-card__author">
+                    <div className="avatar-wine" aria-hidden="true">{r.avatar}</div>
+                    <div>
+                      <div className="review-card__name">{r.name}</div>
+                      <div className="review-card__meta">
+                        {t(`testimonials.reviews.${r.id}.faculty`)} · {r.year === 'graduate' ? t('testimonials.graduate') : t('testimonials.year', { n: r.year })}
+                      </div>
+                    </div>
+                  </figcaption>
+                </figure>
               </div>
             ))}
           </div>
@@ -49,4 +56,4 @@ export default function Testimonials() {
       </section>
     </div>
   )
-} 
+}
