@@ -77,6 +77,7 @@
     }
   },
   "footer": {
+    "toTop": "Back to top",
     "about": "A center of international-standard education and research. Quality education in the Kashkadarya region since {{year}}.",
     "university": "University",
     "students": "Students",

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { NavLink } from '../../i18n/router'
+import Icon from '../../components/Icon'
 import ContentLangNote from '../../i18n/ContentLangNote'
 import HomeNewsCarousel from './NewsCarousel'
 import HomeNewsCard from './NewsCard'
@@ -9,11 +10,12 @@ import HomeNewsCard from './NewsCard'
 export default function NewsSection({ newsLoading, articles, newsError, featured, latest3 }) {
   const { t } = useTranslation()
   return (
-    <section className="section home-news">
-      <div className="container-wide">
+    <section className="home-news">
+      <span className="dots-shine" aria-hidden="true" />
+      <div className="container-wide home-news__inner">
         <div className="reveal home-news__head">
           <span className="section-badge">{t('home.news.badge')}</span>
-          <h2 className="section-title section-title--center">{t('home.news.title')}</h2>
+          <h2 className="home-h2">{t('home.news.title')}</h2>
           <p className="home-news__sub">{t('home.news.subtitle')}</p>
           <ContentLangNote />
         </div>
@@ -28,7 +30,7 @@ export default function NewsSection({ newsLoading, articles, newsError, featured
         ) : articles.length > 0 ? (
           <>
             <HomeNewsCarousel items={featured} />
-            <div className="cards-3 home-news__grid">
+            <div className="cards-3 home-news__cards">
               {latest3.map((n, i) => <HomeNewsCard key={n._id} item={n} index={i} />)}
             </div>
           </>
@@ -40,7 +42,7 @@ export default function NewsSection({ newsLoading, articles, newsError, featured
         )}
 
         <div className="reveal home-news__more">
-          <NavLink to="/news" className="btn btn-primary btn-lg">{t('home.news.all')}</NavLink>
+          <NavLink to="/news" className="btn btn-primary btn-cta">{t('home.news.all')} <Icon size={18} strokeWidth={1.8}><path d="M5 12h14M13 6l6 6-6 6" /></Icon></NavLink>
         </div>
       </div>
     </section>

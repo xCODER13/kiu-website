@@ -2075,156 +2075,270 @@
     .card.vac-success { padding: 40px 20px; }
   }
 
-  /* ══ Bosqich 6.11c5: Bosh sahifa (Hero, Biz haqimizda, Yangiliklar) — spec 6.10 ═══════════════
-     Faqat token (hex yo'q). Hero foni `.inner-hero` bilan umumiy (yuqorida). Yangilik karusel/kartasi Yangiliklar
-     sahifasi klasslarini qayta ishlatadi (`.carousel*`, `.card.news-card`). */
+  /* ══ Bosh sahifa (6.11c5; 6.12a — taxtaga to'liq moslangan) ═══════════════════════════════════════
+     Faqat token (hex yo'q). Taxta: hero (1.05 : .95, ora 56), "Biz haqimizda", afzalliklar (4 karta), yangiliklar (karusel 380 px
+     + 3 karta), kontent kengligi 1200 px. Fon qatlamlari — 3.10: hero va yangiliklar bandi o'z foni + nuqtalar + yaltirash. */
+
+  /* ── Bo'lim foni: nuqtali to'r (+ yaltirash) — hero va yangiliklar bandi ─ */
+  .home-hero,
+  .home-news { position: relative; isolation: isolate; background-color: var(--band-bg); }
+  .home-hero::before,
+  .home-news::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(circle, var(--hero-dot) 1px, transparent 1.4px);
+    background-size: 22px 22px;
+    pointer-events: none;
+  }
+  .dots-shine {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(circle, var(--dot-shine) 1px, transparent 1.5px) 0 0 / 22px 22px;
+    mask-image: linear-gradient(105deg, transparent 38%, rgb(0 0 0 / 1) 50%, transparent 62%);
+    mask-size: 260% 100%;
+    mask-repeat: no-repeat;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .home-hero::before,
+    .home-news::before { animation: kiuTwinkle 8s ease-in-out infinite; }
+    .dots-shine { animation: kiuShine 14s ease-in-out infinite; }
+  }
+  @media (prefers-reduced-motion: reduce) { .dots-shine { display: none; } }
+  @keyframes kiuTwinkle { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+  @keyframes kiuShine { 0% { mask-position: 0% 0; } 100% { mask-position: 100% 0; } }
 
   /* ── Hero ─────────────────────────────────────────────────────────── */
-  .home-hero {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    padding: 72px 0 64px;
-    background-image: var(--gradient-hero-glow);
-  }
+  .home-hero { overflow: hidden; padding: 80px 0 72px; background-image: var(--gradient-band-hero); }
+  /* Pastda sahifa foniga so'nadi (170 px) — qattiq chegara yo'q */
+  .home-hero::after { content: ""; position: absolute; inset: auto 0 0; height: 170px; z-index: -1; background: linear-gradient(0deg, var(--color-bg) 0, transparent 100%); }
   .home-hero__grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
   .home-hero__text,
   .home-hero__photo { min-width: 0; }
+  .home-hero__text { display: flex; flex-direction: column; gap: 22px; }
+  .home-hero .hero-badge { align-self: flex-start; margin: 0; padding: 8px 14px; line-height: 1; font-size: 12px; letter-spacing: 0.08em; background: var(--pill-bg); border-color: var(--pill-border); }
   .home-hero__title {
-    margin: 0 0 16px;
+    margin: 0;
     font-size: clamp(2.25rem, 1.2rem + 3.6vw, 3.5rem);
     font-weight: 800;
     line-height: 1.08;
     letter-spacing: -0.025em;
     color: var(--color-text);
   }
-  .home-hero__lead { max-width: 520px; margin: 0 0 28px; font-size: 1.125rem; line-height: 1.65; color: var(--color-text-muted); }
-  .home-hero__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
+  .home-hero__lead { max-width: 500px; margin: 0; font-size: 1.125rem; line-height: 1.7; color: var(--color-text-muted); }
+  .home-hero__cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; }
 
-  /* Statistika plitkalari: Light — oq fon, Dark — yarim shaffof to'q; sonlar Light'da `--color-text`, Dark'da `--color-brand` */
-  .home-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; max-width: 560px; }
+  /* Statistika plitkalari: sonlar — brend rangida, "2022" — oltin */
+  .home-stats { display: flex; gap: 12px; max-width: 520px; margin-top: 14px; }
   .stat-tile {
-    padding: 16px 10px;
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 16px 12px;
     text-align: center;
-    border: 1px solid var(--color-border);
-    border-radius: 16px;
+    border: 1px solid var(--stat-tile-border);
+    border-radius: 14px;
     background: var(--stat-tile-bg);
-    box-shadow: var(--shadow-card-inset);
+    box-shadow: var(--shadow-stat-tile);
   }
   .stat-tile__num {
-    font-size: 1.75rem;
+    font-size: 1.625rem;
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1;
     letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
     color: var(--stat-tile-num);
   }
   /* "2022" — oltin (spec qarori 16: Light'da kontrast 2.10 — qabul qilingan istisno; axe `.stat-2022` ni chiqarib tashlaydi) */
   .stat-tile[data-stat="founded"] .stat-tile__num { color: var(--color-accent); }
-  .stat-tile__label { margin-top: 4px; font-size: var(--text-sm); color: var(--color-text-muted); }
+  .stat-tile__label { margin-top: 6px; font-size: 12px; line-height: 14px; color: var(--color-text-muted); }
 
-  /* Kampus rasmi: orqasida yumshoq wine va oltin dog' (blur) */
-  .home-hero__photo { position: relative; isolation: isolate; }
+  /* Kampus rasmi: orqasida wine (yuqori-o'ng) va oltin (pastki-chap) yumshoq dog' (taxta: 220/160 px, blur 28/30) */
+  .home-hero__photo,
+  .home-about__photo { position: relative; isolation: isolate; }
   .home-hero__photo::before,
   .home-hero__photo::after,
   .home-about__photo::before,
-  .home-about__photo::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    pointer-events: none;
-  }
-  .home-hero__photo::before { top: -9%; right: -7%; width: 58%; background: var(--blob-wine); opacity: calc(0.22 * var(--blob-strength)); filter: blur(36px); }
-  .home-hero__photo::after { bottom: -10%; left: -8%; width: 44%; background: var(--blob-gold); opacity: calc(0.3 * var(--blob-strength)); filter: blur(36px); }
-  .home-hero__frame {
+  .home-about__photo::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; pointer-events: none; }
+  .home-hero__photo::before { top: -34px; right: -34px; width: 220px; height: 220px; background: var(--blob-wine); opacity: calc(0.22 * var(--blob-strength)); filter: blur(28px); }
+  .home-hero__photo::after { bottom: -30px; left: -30px; width: 160px; height: 160px; background: var(--blob-gold); opacity: calc(0.22 * var(--blob-strength)); filter: blur(30px); }
+  .home-hero__frame,
+  .home-about__frame {
     position: relative;
     overflow: hidden;
     aspect-ratio: 3 / 2;
-    border: 1px solid var(--color-border);
     border-radius: 22px;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-photo);
   }
+  .home-about__frame { border-radius: 20px; }
   .home-hero__frame img,
   .home-about__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .campus-label {
     position: absolute;
-    bottom: 14px;
-    left: 14px;
-    display: inline-flex;
+    bottom: 16px;
+    left: 16px;
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 12px;
+    gap: 7px;
+    padding: 9px 14px;
+    border-radius: 10px;
     background: var(--campus-label-bg);
     backdrop-filter: blur(6px);
     color: var(--color-on-brand);
-    font-size: var(--text-sm);
+    font-size: 12.5px;
     font-weight: 600;
+    line-height: 1;
   }
 
   /* ── Biz haqimizda ────────────────────────────────────────────────── */
-  .home-about { overflow-x: clip; }
+  .home-about { overflow-x: clip; padding: 88px 0 80px; }
   .home-about__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
   .home-about__grid > * { min-width: 0; }
-  .home-about__text { margin: 0 0 16px; font-size: 1rem; line-height: 1.8; color: var(--color-text-muted); }
-  .home-about__text + .home-about__text { margin-bottom: 28px; }
-  /* 2-kampus rasmi: ramkasiz, orqasida oltin (yuqori-o'ngda) va wine (pastki-chapda) yumshoq yorug'lik */
-  .home-about__photo { position: relative; isolation: isolate; }
-  .home-about__photo::before { top: -12%; right: -9%; width: 56%; background: var(--blob-gold); opacity: calc(0.55 * var(--blob-strength)); filter: blur(38px); }
-  .home-about__photo::after { bottom: -12%; left: -9%; width: 56%; background: var(--blob-wine); opacity: calc(0.5 * var(--blob-strength)); filter: blur(36px); }
-  .home-about__frame { position: relative; overflow: hidden; aspect-ratio: 3 / 2; border-radius: 20px; }
-  .home-features { margin-top: 56px; }
-  .card.home-feature { padding: 22px; border-radius: 20px; }
-  .home-feature .tile { margin-bottom: 14px; }
-  .home-feature__title { margin: 0 0 6px; font-size: 1rem; font-weight: 700; line-height: 1.35; color: var(--color-text); }
-  .home-feature__desc { margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted); }
-  /* Hover'da "faol" ko'rinish: wine chegara + gradient fon + `--shadow-card-active` (Dark'da rangli soya o'rniga chegara + yengil glow — tokenda).
+  .home-about__text-col { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+  .home-about .section-badge,
+  .home-news .section-badge {
+    margin: 0;
+    padding: 8px 14px;
+    line-height: 1;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border-radius: var(--radius-pill);
+    background: var(--pill-bg);
+    border-color: var(--pill-border);
+  }
+  .home-h2 { margin: 0; font-size: 2.25rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; color: var(--color-text); }
+  .home-about__text { margin: 0; font-size: 0.96875rem; line-height: 1.8; color: var(--color-text-muted); }
+  .home-about__more { margin-top: 8px; }
+  /* 2-kampus rasmi: orqasida oltin (yuqori-o'ngda) va wine (pastki-chapda) yumshoq yorug'lik */
+  .home-about__photo::before,
+  .home-about__photo::after { inset: -46px; }
+  .home-about__photo::before { background: radial-gradient(closest-side, var(--blob-gold), transparent); opacity: calc(0.55 * var(--blob-strength)); filter: blur(36px); transform: translate(16%, -12%) scale(0.7); }
+  .home-about__photo::after { background: radial-gradient(closest-side, var(--blob-wine), transparent); opacity: calc(0.5 * var(--blob-strength)); filter: blur(38px); transform: translate(-18%, 16%) scale(0.74); }
+
+  /* Afzalliklar: markazlashgan karta; tile 48 px */
+  .home-features { margin-top: 48px; }
+  .card.home-feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 26px 22px;
+    text-align: center;
+    border-radius: 16px;
+    box-shadow: var(--shadow-card-board);
+  }
+  .home-feature .tile { width: 48px; height: 48px; border-radius: 12px; transition: background-color var(--duration-base), color var(--duration-base), box-shadow var(--duration-base); }
+  .home-feature__title { margin: 0; font-size: 0.96875rem; font-weight: 700; line-height: 1.2; color: var(--color-text); }
+  .home-feature__desc { margin: 0; font-size: 13px; line-height: 1.5; color: var(--color-text-muted); }
+  /* Hover'da "faol" ko'rinish: wine chegara + gradient fon + halqa va soya; tile to'ldiriladi.
      Doimiy belgilangan karta yo'q: kursor tegmaguncha barcha 4 karta bir xil. */
   .card.home-feature:hover {
-    border-color: var(--color-brand);
+    border-color: var(--border-card-active);
     background: var(--gradient-card-active);
     box-shadow: var(--shadow-card-active);
   }
+  .card.home-feature:hover .tile { background: var(--color-brand-fill); color: var(--color-on-brand); box-shadow: var(--shadow-tile-active); }
 
   /* ── Yangiliklar ──────────────────────────────────────────────────── */
-  .section-title--center { text-align: center; }
-  .section-title--center::after { left: 50%; transform: translateX(-50%); }
-  .home-news { background: var(--color-surface-2); }
-  .home-news__head { margin-bottom: 32px; text-align: center; }
-  .home-news__head .section-title { margin-bottom: 14px; }
-  .home-news__sub { margin: 0; font-size: 1rem; color: var(--color-text-muted); }
-  .home-news .carousel { height: 440px; margin: 0 0 24px; }
-  .card.home-news-card { text-decoration: none; color: var(--color-text); }
+  .home-news { padding: 88px 0; background-image: var(--gradient-band-news); }
+  .home-news__inner { display: flex; flex-direction: column; gap: 32px; }
+  .home-news__head { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+  .home-news__sub { margin: 0; font-size: 0.96875rem; line-height: 18px; color: var(--color-text-muted); }
+  .home-news .carousel { height: 380px; margin: 0; border-radius: 22px; box-shadow: var(--shadow-photo); }
+  .home-news__cards { gap: 20px; }
+  .home-news__more { margin-top: 8px; text-align: center; }
+
+  /* Karusel (Home varianti): pastki qoplama ichida toifa (oltin) + sarlavha + sana; 44 px o'qlar; nuqtalar — 8 px, faol 22 px oltin */
+  .carousel--home .carousel-shade,
+  .carousel--home .carousel-tint { display: none; }
+  .carousel--home .carousel-bg:not([style]) { background-image: var(--gradient-board-ph); }
+  .carousel-ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--color-brand); opacity: 0.5; pointer-events: none; }
+  .carousel--home .carousel-content {
+    gap: 12px;
+    align-items: flex-start;
+    padding: 90px 36px 30px;
+    background: var(--carousel-scrim);
+  }
+  .carousel--home .carousel-cat {
+    padding: 6px 12px;
+    border: 0;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1;
+    text-transform: none;
+  }
+  .carousel--home .carousel-title { max-width: 760px; font-size: 1.75rem; line-height: 1.25; letter-spacing: -0.01em; text-shadow: none; }
+  /* Butun slayd — bitta havola (sarlavha ustidan cho'zilgan); o'q va nuqtalar uning ustida */
+  .carousel-title__link { color: inherit; }
+  .carousel-title__link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+  .carousel--home .carousel-date { font-size: 13px; line-height: 15px; color: var(--carousel-date); }
+  .carousel--home .carousel-nav { z-index: 2; left: auto; right: auto; background: var(--color-scrim-ctrl); }
+  .carousel--home .carousel-nav--prev { left: 18px; }
+  .carousel--home .carousel-nav--next { right: 18px; }
+  .carousel--home .carousel-dots { z-index: 2; right: 36px; bottom: 34px; align-items: center; }
+  .carousel--home .carousel-dot { width: 14px; }
+  .carousel--home .carousel-dot::before { width: 8px; height: 8px; background: var(--color-border-strong); }
+  .carousel--home .carousel-dot[aria-current="true"] { width: 28px; }
+  .carousel--home .carousel-dot[aria-current="true"]::before { width: 22px; background: var(--color-accent); }
+
+  /* Yangilik kartasi (Home): rasm 150 px; toifa pill + sarlavha + sana ustun bo'ylab */
+  .card.home-news-card { text-decoration: none; color: var(--color-text); border-radius: 16px; box-shadow: var(--shadow-card-board); }
+  .home-news-card .news-card-img,
+  .home-news-card .news-card-ph { aspect-ratio: auto; height: 150px; }
+  .home-news-card .news-card-ph { color: var(--color-brand); background: var(--gradient-board-ph); }
+  .home-news-card .news-card-ph svg { opacity: 0.9; }
+  .home-news-card .news-card-body { gap: 10px; padding: 18px 20px 20px; }
+  .home-news-card .news-card-cat {
+    align-self: flex-start;
+    padding: 5px 10px;
+    border: 1px solid var(--pill-border);
+    background: var(--pill-bg);
+    color: var(--color-brand);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .home-news-card .news-card-title { margin: 0; font-size: 0.96875rem; line-height: 1.45; }
+  .home-news-card .news-card-date { font-size: 12.5px; line-height: 15px; }
   @media (prefers-reduced-motion: no-preference) {
     .home-news-card { animation: homeSectionFadeIn 0.4s ease calc(var(--i, 0) * 0.06s) both; }
   }
-  .home-news__more { margin-top: 36px; text-align: center; }
   /* Yuklanish skeleti (dekorativ) */
   .home-skel {
     border-radius: var(--radius-2xl);
     background: linear-gradient(90deg, var(--color-border) 25%, var(--color-surface-3) 50%, var(--color-border) 75%);
     background-size: 200% 100%;
   }
-  .home-skel--hero { height: 440px; margin-bottom: 24px; border-radius: 20px; }
+  .home-skel--hero { height: 380px; margin-bottom: 32px; border-radius: 22px; }
   .home-skel--card { height: 250px; }
   @media (prefers-reduced-motion: no-preference) {
     .home-skel { animation: homeSkelShimmer 1.4s ease-in-out infinite calc(var(--i, 0) * 0.1s); }
   }
 
   @media (max-width: 1080px) {
-    .home-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 360px; }
+    .home-stats { flex-wrap: wrap; max-width: 360px; }
+    .stat-tile { flex: 1 1 calc(50% - 6px); }
   }
   @media (max-width: 860px) {
     .home-hero { padding: 48px 0 40px; }
+    .home-about { padding: 56px 0 48px; }
     .home-hero__grid,
     .home-about__grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
     .home-hero__photo { order: -1; }
   }
   @media (max-width: 640px) {
+    .home-news { padding: 56px 0; }
     .home-news .carousel { height: 440px; }
+    .carousel--home .carousel-content { padding: 90px 20px 56px; }
     .home-features { margin-top: 40px; }
+    .home-h2 { font-size: 1.75rem; }
   }
 
   /* ══ Bosqich 6.11d: Sehrli shlyapa (hero + Intro / Register / Quiz / Result) ═════════════════════════

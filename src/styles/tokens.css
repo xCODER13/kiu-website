@@ -141,7 +141,7 @@
                            radial-gradient(55% 100% at 100% 100%, rgb(212 175 55 / 0.20), transparent 60%),
                            var(--wine-900);
     --gradient-hairline:   linear-gradient(90deg, transparent, var(--gold-500), transparent);   /* tepadagi 3 px oltin chiziq */
-    --hero-dot:            rgb(127 32 99 / 0.16);            /* hero nuqtali qatlam */
+    --hero-dot:            rgb(127 32 99 / 0.13);            /* hero nuqtali qatlam */
     --gradient-hero-glow:  radial-gradient(60% 90% at 12% 0%, rgb(127 32 99 / 0.10), transparent 70%),
                            radial-gradient(50% 80% at 92% 8%, rgb(212 175 55 / 0.16), transparent 70%);
     --gradient-card:       linear-gradient(180deg, var(--color-surface-3), var(--color-surface-3));
@@ -171,13 +171,35 @@
 
     /* 6.11c5: bosh sahifa — statistika plitkasi, kampus yorlig'i, rasm orqasidagi yumshoq yorug'lik, faol feature karta */
     --stat-tile-bg:          var(--color-surface-3);
-    --stat-tile-num:         var(--color-text);
+    --stat-tile-num:         var(--color-brand);
     --campus-label-bg:       rgb(70 19 54 / 0.78);
     --blob-wine:             rgb(127 32 99);                  /* rasm orqasidagi dog' (shaffoflik CSS da) */
     --blob-gold:             rgb(212 175 55);
     --blob-strength:         1;                               /* dog'lar shaffofligi ko'paytuvchisi (Dark'da kamayadi) */
     --shadow-card-active:    0 0 0 4px rgb(127 32 99 / 0.10), 0 18px 38px rgb(127 32 99 / 0.20);
     --gradient-card-active:  linear-gradient(180deg, var(--neutral-0), var(--wine-50));
+    --border-card-active:    var(--color-brand);
+    --shadow-tile-active:    0 6px 16px rgb(127 32 99 / 0.4);
+    --shadow-card-board:     0 1px 2px rgb(28 22 26 / 0.05), 0 10px 26px rgb(28 22 26 / 0.06);
+    --shadow-photo:          0 24px 52px rgb(127 32 99 / 0.22), 0 0 0 1px rgb(127 32 99 / 0.12);
+    --shadow-stat-tile:      0 1px 2px rgb(28 22 26 / 0.05), 0 8px 20px rgb(127 32 99 / 0.08);
+    --stat-tile-border:      var(--color-border);
+    --pill-bg:               rgb(127 32 99 / 0.08);
+    --pill-border:           rgb(127 32 99 / 0.22);
+    --carousel-date:         #e3d6dd;
+    --carousel-scrim:        linear-gradient(180deg, rgb(18 12 16 / 0), rgb(18 12 16 / 0.82));
+    --band-bg:               #fbf4f8;                              /* hero va yangiliklar bandi asosi */
+    --dot-shine:             rgb(212 175 55 / 0.32);
+    --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, #fae4f1 0%, #fdf2f8 70%);   /* rasm yo'q joyda (karusel, karta) */
+    --gradient-band-hero:    radial-gradient(60% 110% at 8% -10%, rgb(127 32 99 / 0.13) 0%, rgb(127 32 99 / 0) 70%),
+                             radial-gradient(45% 90% at 100% 110%, rgb(212 175 55 / 0.16) 0%, rgb(212 175 55 / 0) 70%);
+    --gradient-band-news:    linear-gradient(0deg, rgb(70 19 54 / 0.40) 0, rgb(70 19 54 / 0) 200px),
+                             linear-gradient(180deg, rgb(255 255 255) 0, rgb(255 255 255 / 0) 180px),
+                             radial-gradient(60% 110% at 8% -10%, rgb(127 32 99 / 0.13) 0%, rgb(127 32 99 / 0) 70%),
+                             radial-gradient(45% 90% at 100% 110%, rgb(212 175 55 / 0.16) 0%, rgb(212 175 55 / 0) 70%);
+    --gradient-page:         radial-gradient(660px 500px at 105% 900px, rgb(127 32 99 / 0.12), rgb(127 32 99 / 0) 72%),
+                             radial-gradient(600px 440px at -5% 1500px, rgb(212 175 55 / 0.17), rgb(212 175 55 / 0) 72%),
+                             radial-gradient(600px 420px at 100% 2250px, rgb(127 32 99 / 0.09), rgb(127 32 99 / 0) 72%);
 
     /* Tugma yorug'ligi (glow) */
     --glow-brand:         rgb(127 32 99 / 0.30);
@@ -192,7 +214,29 @@
     --gradient-dark:      linear-gradient(135deg, var(--neutral-900), var(--wine-900));
     --gradient-brand:     linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-hover));
     --gradient-brand-text: linear-gradient(135deg, var(--color-brand), var(--color-brand-hover));   /* gradient matn (background-clip) */
-    --gradient-footer:    linear-gradient(135deg, var(--neutral-900), var(--wine-900));
+    --gradient-footer:    radial-gradient(60% 130% at 0% 0%, rgb(159 51 126 / 0.38) 0%, rgb(159 51 126 / 0) 70%), var(--wine-900);
+    /* Navbar / til almashtirgich / footer (6.12a) — taxta qiymatlari */
+    --shadow-nav:         0 8px 24px rgb(127 32 99 / 0.07);
+    --dropdown-bg:        var(--color-bg);
+    --shadow-dropdown:    0 18px 48px rgb(70 19 54 / 0.16), 0 2px 6px rgb(70 19 54 / 0.06);
+    --lang-active-fg:     var(--color-brand);
+    --footer-gold-bg:       rgb(212 175 55 / 0.14);
+    --footer-gold-bg-hover: rgb(212 175 55 / 0.24);
+    --footer-gold-border:   rgb(230 192 79 / 0.5);
+    --nav-bg:             color-mix(in srgb, var(--color-bg) 96%, transparent);
+    --lang-active-bg:     var(--neutral-0);
+    --lang-active-shadow: 0 1px 2px rgb(28 22 26 / 0.12), 0 2px 8px rgb(127 32 99 / 0.12);
+    --footer-hairline-h:  3px;
+    --footer-text:        #e3bfd6;
+    --footer-link:        #f5cbe4;
+    --footer-bottom:      #d9b3cb;
+    --footer-line:        rgb(245 203 228 / 0.2);
+    --footer-social-bg:     rgb(255 255 255 / 0.07);
+    --footer-social-border: rgb(245 203 228 / 0.3);
+    --footer-social-fg:     #f5cbe4;
+    --footer-tile-bg:     rgb(255 255 255 / 0.08);
+    --footer-tile-border: rgb(245 203 228 / 0.22);
+    --footer-tile-fg:     #f5cbe4;
     --gradient-sidebar:   linear-gradient(180deg, var(--neutral-900) 0%, var(--wine-900) 100%);
     --gradient-media:     linear-gradient(135deg, var(--wine-900), var(--dark-bg) 60%, var(--dark-deep));
 
@@ -314,7 +358,31 @@
       --chart-6:        #008300;
 
       --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
-      --gradient-footer:      linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
+      --gradient-footer:      radial-gradient(75% 150% at 0% 0%, rgb(159 51 126 / 0.55) 0%, rgb(127 32 99 / 0.20) 45%, rgb(127 32 99 / 0) 75%),
+                                radial-gradient(55% 120% at 100% 100%, rgb(127 32 99 / 0.38) 0%, rgb(127 32 99 / 0) 70%),
+                                radial-gradient(35% 90% at 62% 115%, rgb(212 175 55 / 0.12) 0%, rgb(212 175 55 / 0) 70%),
+                                var(--dark-deep);
+      --shadow-nav:           0 10px 30px rgb(0 0 0 / 0.35);
+      --dropdown-bg:          var(--color-surface-3);
+      --shadow-dropdown:      0 22px 56px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.06);
+      --lang-active-fg:       var(--color-text);
+      --footer-gold-bg:       rgb(212 175 55 / 0.14);
+      --footer-gold-bg-hover: rgb(212 175 55 / 0.24);
+      --footer-gold-border:   rgb(230 192 79 / 0.5);
+      --nav-bg:               var(--color-bg);
+      --lang-active-bg:       var(--color-surface-3);
+      --lang-active-shadow:   inset 0 1px 0 rgb(255 255 255 / 0.08), 0 2px 6px rgb(0 0 0 / 0.4);
+      --footer-hairline-h:    2px;
+      --footer-text:          #b1a8ad;
+      --footer-link:          #d9cfd5;
+      --footer-bottom:        #8a8085;
+      --footer-line:          var(--color-border);
+      --footer-social-bg:     var(--color-surface-2);
+      --footer-social-border: var(--color-border-strong);
+      --footer-social-fg:     #d9cfd5;
+      --footer-tile-bg:       var(--color-brand-subtle);
+      --footer-tile-border:   rgb(233 168 208 / 0.25);
+      --footer-tile-fg:       var(--color-brand);
       --gradient-auth:        linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
       --gradient-brand-text:  linear-gradient(135deg, var(--wine-300), var(--wine-200));
 
@@ -335,7 +403,7 @@
                               radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),
                               radial-gradient(40% 80% at 60% 0%, rgb(127 32 99 / 0.22), transparent 70%),
                               var(--dark-deep);
-      --hero-dot:             rgb(255 255 255 / 0.07);
+      --hero-dot:             rgb(233 168 208 / 0.10);
       --gradient-hero-glow:   radial-gradient(60% 90% at 12% 0%, rgb(159 51 126 / 0.28), transparent 70%),
                               radial-gradient(50% 80% at 92% 8%, rgb(212 175 55 / 0.10), transparent 70%);
       --gradient-card:        linear-gradient(180deg, var(--dark-surface-4), var(--dark-surface-3));
@@ -353,9 +421,29 @@
       --stat-tile-num:         var(--color-brand);
       --campus-label-bg:       rgb(18 12 16 / 0.72);
       --blob-wine:             rgb(159 51 126);
-      --blob-strength:         0.6;
-      --shadow-card-active:    0 0 0 1px var(--color-border), 0 12px 32px var(--glow-brand);
-      --gradient-card-active:  var(--gradient-card);
+      --blob-strength:         1;
+      --shadow-card-active:    inset 0 1px 0 rgb(255 255 255 / 0.09), 0 0 0 4px rgb(159 51 126 / 0.18), 0 18px 40px rgb(127 32 99 / 0.4);
+      --gradient-card-active:  linear-gradient(180deg, #33242f 0%, #2a1f27 60%);
+      --border-card-active:    rgb(233 168 208 / 0.55);
+      --shadow-tile-active:    0 6px 16px rgb(127 32 99 / 0.4);
+      --shadow-card-board:     inset 0 1px 0 rgb(255 255 255 / 0.06), 0 10px 28px rgb(0 0 0 / 0.35);
+      --shadow-photo:          0 24px 56px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(233 168 208 / 0.18);
+      --shadow-stat-tile:      inset 0 1px 0 rgb(255 255 255 / 0.07);
+      --stat-tile-border:      var(--color-border-strong);
+      --pill-bg:               rgb(233 168 208 / 0.10);
+      --pill-border:           rgb(233 168 208 / 0.3);
+      --carousel-date:         #e3d6dd;
+      --carousel-scrim:        linear-gradient(180deg, rgb(18 12 16 / 0), rgb(18 12 16 / 0.82));
+      --band-bg:               var(--dark-surface-2);
+      --dot-shine:             rgb(255 226 140 / 0.28);
+      --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, rgb(159 51 126 / 0.55), rgb(56 19 45) 70%);
+      --gradient-band-hero:    radial-gradient(70% 120% at 12% -10%, rgb(159 51 126 / 0.42) 0%, rgb(127 32 99 / 0.14) 45%, rgb(18 12 16 / 0) 75%);
+      --gradient-band-news:    linear-gradient(0deg, rgb(13 8 11 / 0.85) 0, rgb(13 8 11 / 0) 200px),
+                               linear-gradient(180deg, rgb(18 12 16) 0, rgb(18 12 16 / 0) 180px),
+                               radial-gradient(70% 100% at 12% 45%, rgb(159 51 126 / 0.24) 0%, rgb(127 32 99 / 0.09) 45%, rgb(18 12 16 / 0) 75%);
+      --gradient-page:         radial-gradient(700px 520px at 105% 900px, rgb(159 51 126 / 0.22), rgb(159 51 126 / 0) 72%),
+                               radial-gradient(620px 460px at -5% 1500px, rgb(212 175 55 / 0.10), rgb(212 175 55 / 0) 72%),
+                               radial-gradient(640px 440px at 100% 2250px, rgb(127 32 99 / 0.18), rgb(127 32 99 / 0) 72%);
 
       --cat-chip-mix:         18%;
       --cat-ph-1:             22%;
@@ -417,7 +505,31 @@
     --chart-6:        #008300;
 
     --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
-    --gradient-footer:      linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
+    --gradient-footer:      radial-gradient(75% 150% at 0% 0%, rgb(159 51 126 / 0.55) 0%, rgb(127 32 99 / 0.20) 45%, rgb(127 32 99 / 0) 75%),
+                              radial-gradient(55% 120% at 100% 100%, rgb(127 32 99 / 0.38) 0%, rgb(127 32 99 / 0) 70%),
+                              radial-gradient(35% 90% at 62% 115%, rgb(212 175 55 / 0.12) 0%, rgb(212 175 55 / 0) 70%),
+                              var(--dark-deep);
+    --shadow-nav:           0 10px 30px rgb(0 0 0 / 0.35);
+    --dropdown-bg:          var(--color-surface-3);
+    --shadow-dropdown:      0 22px 56px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.06);
+    --lang-active-fg:       var(--color-text);
+    --footer-gold-bg:       rgb(212 175 55 / 0.14);
+    --footer-gold-bg-hover: rgb(212 175 55 / 0.24);
+    --footer-gold-border:   rgb(230 192 79 / 0.5);
+    --nav-bg:               var(--color-bg);
+    --lang-active-bg:       var(--color-surface-3);
+    --lang-active-shadow:   inset 0 1px 0 rgb(255 255 255 / 0.08), 0 2px 6px rgb(0 0 0 / 0.4);
+    --footer-hairline-h:    2px;
+    --footer-text:          #b1a8ad;
+    --footer-link:          #d9cfd5;
+    --footer-bottom:        #8a8085;
+    --footer-line:          var(--color-border);
+    --footer-social-bg:     var(--color-surface-2);
+    --footer-social-border: var(--color-border-strong);
+    --footer-social-fg:     #d9cfd5;
+    --footer-tile-bg:       var(--color-brand-subtle);
+    --footer-tile-border:   rgb(233 168 208 / 0.25);
+    --footer-tile-fg:       var(--color-brand);
     --gradient-auth:        linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
     --gradient-brand-text:  linear-gradient(135deg, var(--wine-300), var(--wine-200));
 
@@ -438,7 +550,7 @@
                             radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),
                             radial-gradient(40% 80% at 60% 0%, rgb(127 32 99 / 0.22), transparent 70%),
                             var(--dark-deep);
-    --hero-dot:             rgb(255 255 255 / 0.07);
+    --hero-dot:             rgb(233 168 208 / 0.10);
     --gradient-hero-glow:   radial-gradient(60% 90% at 12% 0%, rgb(159 51 126 / 0.28), transparent 70%),
                             radial-gradient(50% 80% at 92% 8%, rgb(212 175 55 / 0.10), transparent 70%);
     --gradient-card:        linear-gradient(180deg, var(--dark-surface-4), var(--dark-surface-3));
@@ -456,9 +568,29 @@
     --stat-tile-num:         var(--color-brand);
     --campus-label-bg:       rgb(18 12 16 / 0.72);
     --blob-wine:             rgb(159 51 126);
-    --blob-strength:         0.6;
-    --shadow-card-active:    0 0 0 1px var(--color-border), 0 12px 32px var(--glow-brand);
-    --gradient-card-active:  var(--gradient-card);
+    --blob-strength:         1;
+    --shadow-card-active:    inset 0 1px 0 rgb(255 255 255 / 0.09), 0 0 0 4px rgb(159 51 126 / 0.18), 0 18px 40px rgb(127 32 99 / 0.4);
+    --gradient-card-active:  linear-gradient(180deg, #33242f 0%, #2a1f27 60%);
+    --border-card-active:    rgb(233 168 208 / 0.55);
+    --shadow-tile-active:    0 6px 16px rgb(127 32 99 / 0.4);
+    --shadow-card-board:     inset 0 1px 0 rgb(255 255 255 / 0.06), 0 10px 28px rgb(0 0 0 / 0.35);
+    --shadow-photo:          0 24px 56px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(233 168 208 / 0.18);
+    --shadow-stat-tile:      inset 0 1px 0 rgb(255 255 255 / 0.07);
+    --stat-tile-border:      var(--color-border-strong);
+    --pill-bg:               rgb(233 168 208 / 0.10);
+    --pill-border:           rgb(233 168 208 / 0.3);
+    --carousel-date:         #e3d6dd;
+    --carousel-scrim:        linear-gradient(180deg, rgb(18 12 16 / 0), rgb(18 12 16 / 0.82));
+    --band-bg:               var(--dark-surface-2);
+    --dot-shine:             rgb(255 226 140 / 0.28);
+    --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, rgb(159 51 126 / 0.55), rgb(56 19 45) 70%);
+    --gradient-band-hero:    radial-gradient(70% 120% at 12% -10%, rgb(159 51 126 / 0.42) 0%, rgb(127 32 99 / 0.14) 45%, rgb(18 12 16 / 0) 75%);
+    --gradient-band-news:    linear-gradient(0deg, rgb(13 8 11 / 0.85) 0, rgb(13 8 11 / 0) 200px),
+                             linear-gradient(180deg, rgb(18 12 16) 0, rgb(18 12 16 / 0) 180px),
+                             radial-gradient(70% 100% at 12% 45%, rgb(159 51 126 / 0.24) 0%, rgb(127 32 99 / 0.09) 45%, rgb(18 12 16 / 0) 75%);
+    --gradient-page:         radial-gradient(700px 520px at 105% 900px, rgb(159 51 126 / 0.22), rgb(159 51 126 / 0) 72%),
+                             radial-gradient(620px 460px at -5% 1500px, rgb(212 175 55 / 0.10), rgb(212 175 55 / 0) 72%),
+                             radial-gradient(640px 440px at 100% 2250px, rgb(127 32 99 / 0.18), rgb(127 32 99 / 0) 72%);
 
     --cat-chip-mix:         18%;
     --cat-ph-1:             22%;

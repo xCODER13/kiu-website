@@ -25,8 +25,8 @@ describe('site.css', () => {
   })
 
   it('footer havolalari hover — CSS da (oldin JS onMouseEnter edi)', () => {
-    expect(code).toMatch(/\.footer-link:hover \{ color: var\(--color-brand-on-dark\); \}/)
-    expect(code).toMatch(/\.footer-media-link:hover \{ color: var\(--color-brand-on-dark-hover\); \}/)
+    expect(code).toMatch(/\.footer-link:hover \{ color: var\(--color-on-brand\); \}/)
+    expect(code).toMatch(/\.footer-media-link:hover \{ color: var\(--color-on-brand\); \}/)
   })
 
   it("faol holat: NavLink `active` klassi va trigger `data-active` bo'yicha", () => {

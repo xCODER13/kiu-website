@@ -28,7 +28,9 @@
   body {
     font-family: var(--font-body);
     color: var(--text);
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image: var(--gradient-page); /* taxta 3.10: sahifa bo'ylab statik yorug'lik dog'lari */
+    background-repeat: no-repeat;
     -webkit-font-smoothing: antialiased;
     font-size: 15px;
     line-height: 1.6;
@@ -73,16 +75,11 @@
 .desktop-nav { display: flex !important; }
 .mobile-nav  { display: none !important; }
 
-/* Til almashtirgich (UZ | EN) */
-.lang-switch { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.lang-switch-item { font-size: 11px; font-weight: 600; letter-spacing: .04em; padding: 6px 9px; color: var(--muted); line-height: 1.2; transition: background .2s, color .2s; }
-a.lang-switch-item:hover { color: var(--color-brand); background: color-mix(in srgb, var(--color-brand) 8%, transparent); }
-.lang-switch-item.active { background: var(--color-brand-fill); color: var(--color-on-brand); }
-.lang-switch--menu { align-self: flex-start; margin-bottom: .5rem; }
-.lang-switch--menu .lang-switch-item { font-size: 13px; padding: 8px 16px; }
+/* Til almashtirgich (UZ | RU | EN) — site.css (6.12a) */
 
 /* Responsive */
-@media (max-width: 768px) {
+/* Desktop navbar 1180 px dan pastda hamburger menyuga almashadi (spec 6.6: 1024 px; 1180 — yangi 14 px/600 havolalar sig'ishi uchun) */
+@media (max-width: 1180px) {
   .desktop-nav { display: none !important; }
   .mobile-nav  { display: flex !important; }
 }
@@ -94,73 +91,7 @@ a.lang-switch-item:hover { color: var(--color-brand); background: color-mix(in s
 details[open] .details-arrow { transform: rotate(180deg); }
 .details-arrow { transition: transform .2s; }
 
-/* Navbar dropdown guruhlari — hover bilan ochiladi/yopiladi */
-.nav-group {
-  position: relative;
-}
-.nav-group-panel {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  padding-top: 14px; /* kursor panelga o'tguncha "bo'shliq"da yopilib qolmasligi uchun */
-  min-width: 210px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-6px);
-  transition: opacity .15s ease, transform .15s ease;
-  pointer-events: none;
-  z-index: 101;
-}
-.nav-group:hover .nav-group-panel,
-.nav-group:focus-within .nav-group-panel {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-/* SPA navigatsiyasidan keyin sichqoncha joyidan qimirlamasa, :hover haligacha
-   "true" bo'lib qolishi mumkin — item bosilganda Navbar.jsx shu klassni
-   qo'shib panelni majburan yopadi (sichqoncha chetga chiqqanda avtomatik olib
-   tashlanadi, oddiy hover ishlashda davom etadi) */
-.nav-group.force-closed .nav-group-panel {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-.nav-group-panel-inner {
-  background: var(--color-surface-3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  padding: 6px;
-}
-.nav-group-item {
-  display: block;
-  padding: 9px 12px 9px 9px;
-  border-left: 3px solid transparent;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text);
-  transition: background .15s, color .15s, border-color .15s;
-}
-/* Joriy sahifa (active) — kursor hover qilinmagan holatda ham "siz shu
-   yerdasiz" degan belgi, lekin hover bilan chalkashmasligi uchun sezilmas —
-   to'liq to'ldirilgan emas, faqat chap chiziqcha + och fon */
-.nav-group-item.active {
-  background: var(--purple-light);
-  color: var(--purple);
-  border-left-color: var(--purple);
-  font-weight: 600;
-}
-/* Hover — "shu yerga bosaman" degan aniq signal, har doim ustunlik qiladi:
-   joriy sahifa ustidan hover qilinsa ham to'liq purple ko'rinadi */
-.nav-group-item:hover {
-  background: var(--color-brand-fill);
-  color: var(--color-on-brand);
-  border-left-color: var(--purple);
-  font-weight: 600;
-}
+/* Navbar dropdown guruhlari — site.css (6.12a) */
 
 /* Dekorativ rasm/placeholder xiraligi — qiymat tokenda (Dark'da pasayadi) */
 .teacher-avatar { opacity: var(--opacity-avatar); }

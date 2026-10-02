@@ -115,7 +115,7 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
     expect(read('src/pages/Home.jsx')).not.toMatch(/!important/)
     expect(global).not.toMatch(/\.hero-grid|\.stats-grid|\.stat-item|\.hero-photo-wrap|\.grid-2|\.grid-3|\.grid-auto|\.section-header/)
     expect(code).toMatch(/\.home-hero__grid \{[^}]*grid-template-columns: 1\.05fr 0\.95fr;/)
-    expect(code).toMatch(/@media \(max-width: 1080px\) \{\s*\.home-stats \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); max-width: 360px; \}/)
+    expect(code).toMatch(/@media \(max-width: 1080px\) \{\s*\.home-stats \{ flex-wrap: wrap; max-width: 360px; \}/)
     expect(code).toMatch(/@media \(max-width: 860px\)[\s\S]*\.home-hero__grid,\s*\.home-about__grid \{ grid-template-columns: minmax\(0, 1fr\);/)
     expect(read('src/pages/home/HeroSection.jsx')).not.toMatch(/gridTemplateColumns|maxWidth: 480|style=/)
   })
@@ -549,47 +549,54 @@ describe('Bosqich 6.11c4: Vakansiyalar', () => {
   })
 })
 
-describe('Bosqich 6.11c5: Bosh sahifa', () => {
+describe('Bosqich 6.11c5 + 6.12a: Bosh sahifa (taxta bo\'yicha)', () => {
   const tokens = read('src/styles/tokens.css')
   const inline = f => (read(f).match(/style=\{/g) ?? []).length
 
   it("yangi tokenlar: statistika plitkasi, kampus yorlig'i, dog'lar, faol karta (Light + ikkala Dark blok)", () => {
     expect(tokens).toMatch(/--stat-tile-bg:\s*var\(--color-surface-3\)/)
-    expect(tokens).toMatch(/--stat-tile-num:\s*var\(--color-text\)/)
+    expect(tokens).toMatch(/--stat-tile-num:\s*var\(--color-brand\)/)
     expect(tokens).toMatch(/--campus-label-bg:\s*rgb\(70 19 54 \/ 0\.78\)/)
     expect(tokens).toMatch(/--shadow-card-active:\s*0 0 0 4px rgb\(127 32 99 \/ 0\.10\), 0 18px 38px rgb\(127 32 99 \/ 0\.20\)/)
+    expect((tokens.match(/--shadow-card-active:\s*inset 0 1px 0 rgb\(255 255 255 \/ 0\.09\), 0 0 0 4px rgb\(159 51 126 \/ 0\.18\), 0 18px 40px rgb\(127 32 99 \/ 0\.4\)/g) ?? []).length).toBe(2)
+    expect((tokens.match(/--carousel-scrim:/g) ?? []).length).toBe(3)
+    expect((tokens.match(/--gradient-page:/g) ?? []).length).toBe(3)
     expect(tokens).toMatch(/--gradient-card-active:\s*linear-gradient\(180deg, var\(--neutral-0\), var\(--wine-50\)\)/)
     expect((tokens.match(/--stat-tile-bg:\s*rgb\(39 31 36 \/ 0\.72\)/g) ?? []).length).toBe(2)
-    expect((tokens.match(/--stat-tile-num:\s*var\(--color-brand\)/g) ?? []).length).toBe(2)
+    expect((tokens.match(/--stat-tile-num:\s*var\(--color-brand\)/g) ?? []).length).toBe(3)
     expect((tokens.match(/--campus-label-bg:\s*rgb\(18 12 16 \/ 0\.72\)/g) ?? []).length).toBe(2)
-    expect((tokens.match(/--shadow-card-active:\s*0 0 0 1px var\(--color-border\), 0 12px 32px var\(--glow-brand\)/g) ?? []).length).toBe(2)
     expect((tokens.match(/--blob-strength:/g) ?? []).length).toBe(3)
   })
 
-  it("Hero: `.inner-hero` bilan umumiy fon qatlamlari, 2 ustun 1.05fr/.95fr, plitka fon/son tokenlardan, \"2022\" — oltin", () => {
-    expect(code).toMatch(/\.home-hero \{[^}]*background-image: var\(--gradient-hero-glow\);/)
+  it("Hero: taxta fon qatlamlari (`--gradient-band-hero` + nuqtalar + yaltirash), 2 ustun 1.05fr/.95fr, plitka fon/son tokenlardan, \"2022\" — oltin", () => {
+    expect(code).toMatch(/\.home-hero \{[^}]*padding: 80px 0 72px;[^}]*background-image: var\(--gradient-band-hero\);/)
+    expect(code).toMatch(/\.home-news \{[^}]*background-image: var\(--gradient-band-news\);/)
+    expect(code).toMatch(/\.dots-shine \{/)
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{[^}]*\.home-hero::before,\s*\.home-news::before \{ animation: kiuTwinkle 8s/)
     expect(code).toMatch(/\.stat-tile \{[^}]*background: var\(--stat-tile-bg\);/)
     expect(code).toMatch(/\.stat-tile__num \{[^}]*color: var\(--stat-tile-num\);/)
     expect(code).toMatch(/\.stat-tile\[data-stat="founded"\] \.stat-tile__num \{ color: var\(--color-accent\); \}/)
+    expect(read('src/pages/home/HeroSection.jsx')).toMatch(/className="hl-brand"/)
     expect(code).toMatch(/\.campus-label \{[^}]*background: var\(--campus-label-bg\);/)
   })
 
   it("Rasm orqasidagi dog'lar: Hero — wine .22 / oltin; Haqida — oltin .55 / wine .50, blur 36–38 px, rasmga ramka yo'q", () => {
-    expect(code).toMatch(/\.home-hero__photo::before \{[^}]*var\(--blob-wine\); opacity: calc\(0\.22 \* var\(--blob-strength\)\); filter: blur\(36px\);/)
-    expect(code).toMatch(/\.home-about__photo::before \{[^}]*var\(--blob-gold\); opacity: calc\(0\.55 \* var\(--blob-strength\)\); filter: blur\(38px\);/)
-    expect(code).toMatch(/\.home-about__photo::after \{[^}]*var\(--blob-wine\); opacity: calc\(0\.5 \* var\(--blob-strength\)\); filter: blur\(36px\);/)
+    expect(code).toMatch(/\.home-hero__photo::before \{[^}]*var\(--blob-wine\); opacity: calc\(0\.22 \* var\(--blob-strength\)\); filter: blur\(28px\);/)
+    expect(code).toMatch(/\.home-about__photo::before \{[^}]*var\(--blob-gold\), transparent\); opacity: calc\(0\.55 \* var\(--blob-strength\)\); filter: blur\(36px\);/)
+    expect(code).toMatch(/\.home-about__photo::after \{[^}]*var\(--blob-wine\), transparent\); opacity: calc\(0\.5 \* var\(--blob-strength\)\); filter: blur\(38px\);/)
     expect(code).toMatch(/\.home-about__frame \{[^}]*border-radius: 20px;\s*\}/)
     expect(code).not.toMatch(/\.home-about__frame \{[^}]*border:/)
   })
 
   it("Feature karta \"faol\" ko'rinishi faqat `:hover` da (`--shadow-card-active`, brend chegara, `--gradient-card-active`); doimiy `data-featured` yo'q", () => {
-    expect(code).toMatch(/\.card\.home-feature:hover \{[^}]*var\(--color-brand\);[^}]*var\(--gradient-card-active\);[^}]*var\(--shadow-card-active\);/)
+    expect(code).toMatch(/\.card\.home-feature:hover \{[^}]*var\(--border-card-active\);[^}]*var\(--gradient-card-active\);[^}]*var\(--shadow-card-active\);/)
     expect(code).not.toMatch(/data-featured/)
     expect(read('src/pages/home/AboutSection.jsx')).not.toMatch(/data-featured=/)
   })
 
   it("Yangiliklar: karusel/karta Yangiliklar sahifasi klasslarini ishlatadi; skeleton animatsiyasi faqat `no-preference` da", () => {
-    expect(code).toMatch(/\.home-news \.carousel \{ height: 440px; margin: 0 0 24px; \}/)
+    expect(code).toMatch(/\.home-news \.carousel \{ height: 380px; margin: 0; border-radius: 22px;/)
+    expect(code).toMatch(/@media \(max-width: 640px\) \{[\s\S]*?\.home-news \.carousel \{ height: 440px; \}/)
     expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.home-skel \{ animation: homeSkelShimmer/)
     expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.home-news-card \{ animation: homeSectionFadeIn/)
     expect(code).not.toMatch(/@keyframes homeCarouselFade/)
@@ -606,14 +613,30 @@ describe('Bosqich 6.11c5: Bosh sahifa', () => {
   })
 
   it("Home JSX: hex/rgba yo'q, inline faqat dinamik (Hero 0, About 0, Section 1, Card 1, Carousel 2), ichma-ich `<button>` yo'q", () => {
-    const counts = { HeroSection: 0, AboutSection: 0, NewsSection: 1, NewsCard: 1, NewsCarousel: 2 }
+    const counts = { HeroSection: 0, AboutSection: 0, NewsSection: 1, NewsCard: 1, NewsCarousel: 1 }
     for (const [f, n] of Object.entries(counts)) {
       const path = `src/pages/home/${f}.jsx`
       expect(inline(path), f).toBe(n)
       expect(read(path), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|var\(--(muted|text|border|bg-2)\)/i)
       expect(read(path), f).not.toMatch(/<NavLink[^>]*>\s*<button/)
     }
-    expect(read('src/pages/home/HeroSection.jsx')).toMatch(/btn btn-accent btn-lg/)
+    expect(read('src/pages/home/HeroSection.jsx')).toMatch(/btn btn-accent btn-cta btn-glow/)
+  })
+
+  // 6.12a: taxtada bo'lmagan elementlar olib tashlandi (foydalanuvchi qarori); butun slayd — havola
+  it("karusel: hisoblagich va \"Batafsil\" tugmasi yo'q (butun slayd havola); Home h2 da oltin chiziq yo'q; kartada toifa nuqtasi yo'q", () => {
+    const car = read('src/pages/home/NewsCarousel.jsx')
+    expect(car).not.toMatch(/carousel-counter|carousel-more|home\.news\.more|carousel-cat-dot/)
+    expect(car).toMatch(/carousel-title__link/)
+    expect(read('src/pages/home/NewsCard.jsx')).not.toMatch(/cat-dot/)
+    expect(code).toMatch(/\.carousel-title__link::after \{ content: ""; position: absolute; inset: 0;/)
+    expect(code).not.toMatch(/\.home-h2::after/)
+    expect(read('src/pages/home/AboutSection.jsx')).toMatch(/home-h2/)
+  })
+
+  it("`.container-wide` — taxta bo'yicha 1200 px kontent (1264 − 2×32); body'da sahifa foni `--gradient-page`", () => {
+    expect(read('src/styles/components.css')).toMatch(/\.container-wide \{ max-width: 1264px;/)
+    expect(read('src/styles/global.css')).toMatch(/background-image: var\(--gradient-page\);/)
   })
 })
 
