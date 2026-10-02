@@ -98,7 +98,7 @@ export default function Navbar({ dark, setDark, onApply }) {
 
   return (
     <>
-      <nav ref={navRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
+      <nav ref={navRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.85rem 2rem', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'color-mix(in srgb, var(--color-bg) 97%, transparent)', backdropFilter: 'blur(10px)', zIndex: 100 }}>
 
         {/* Logo */}
         {/* Xatolik: mobil menyu ochiq holda logotipga bosilsa, sahifa
@@ -106,7 +106,7 @@ export default function Navbar({ dark, setDark, onApply }) {
         <NavLink to="/" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <img src="/logo.png" alt={t('nav.logoAlt')} className="nav-logo-img" style={{ width: 38, height: 38, objectFit: 'contain', }} />
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: dark ? '#ffffff' : 'var(--color-text)' }}>{t('university.name')}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text)' }}>{t('university.name')}</div>
             <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t('nav.subtitle', { website: config.university.website })}</div>
           </div>
         </NavLink>
@@ -117,7 +117,7 @@ export default function Navbar({ dark, setDark, onApply }) {
             <NavLink key={l.to} to={l.to} end
               style={({ isActive }) => ({
                 fontSize: 11,
-                color: isActive ? 'var(--color-brand)' : (dark ? '#ffffff' : 'var(--color-text)'),
+                color: isActive ? 'var(--color-brand)' : 'var(--color-text)',
                 borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
                 paddingBottom: 3,
                 fontWeight: isActive ? 600 : 400,
@@ -140,7 +140,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                   style={{
                     display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer',
                     fontFamily: 'inherit', fontSize: 11, padding: 0, paddingBottom: 3,
-                    color: isActive ? 'var(--color-brand)' : (dark ? '#ffffff' : 'var(--color-text)'),
+                    color: isActive ? 'var(--color-brand)' : 'var(--color-text)',
                     fontWeight: isActive ? 600 : 400,
                     borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
                   }}
@@ -169,7 +169,7 @@ export default function Navbar({ dark, setDark, onApply }) {
             <NavLink key={l.to} to={l.to} end
               style={({ isActive }) => ({
                 fontSize: 11,
-                color: isActive ? 'var(--color-brand)' : (dark ? '#ffffff' : 'var(--color-text)'),
+                color: isActive ? 'var(--color-brand)' : 'var(--color-text)',
                 borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
                 paddingBottom: 3,
                 fontWeight: isActive ? 600 : 400,

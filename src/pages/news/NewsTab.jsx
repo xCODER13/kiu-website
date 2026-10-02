@@ -122,7 +122,7 @@ export default function NewsTab({
                 <div style={{ textAlign: 'center' }}>
                   <button onClick={() => setVisibleCount(v => v + 6)} style={{
                     padding: '10px 28px',
-                    background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))',
+                    background: 'var(--gradient-brand)',
                     color: 'var(--color-on-brand)', border: 'none', borderRadius: 10,
                     fontSize: 13, fontWeight: 600, cursor: 'pointer',
                     fontFamily: 'var(--font-body)',

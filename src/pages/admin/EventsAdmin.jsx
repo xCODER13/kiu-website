@@ -157,7 +157,7 @@ export default function EventsAdmin() {
                   onError={ev => { ev.target.style.opacity = '0.2' }}
                 />
               ) : (
-                <div style={{ width: 46, height: 46, borderRadius: 10, background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0 }}>
+                <div style={{ width: 46, height: 46, borderRadius: 10, background: 'var(--gradient-brand)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1 }}>{dayMonthBadge(e.eventDate).day}</div>
                   <div style={{ fontSize: 9, opacity: .75 }}>{dayMonthBadge(e.eventDate).month}</div>
                 </div>

@@ -85,7 +85,7 @@ export default function International() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12, marginBottom: '2.5rem' }}>
             {PARTNERS.map((p, i) => (
               <div key={i} className={`card reveal reveal-delay-${(i % 4) + 1}`} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                <div style={{ width: 44, height: 44, borderRadius: 10, background: 'linear-gradient(135deg, var(--color-brand), var(--color-brand-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{p.code}</div>
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{p.code}</div>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>{t(`international.partners.${p.id}.name`)}</div>
                   <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 4 }}>{t(`international.partners.${p.id}.country`)}</div>

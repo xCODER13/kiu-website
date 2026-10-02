@@ -87,11 +87,28 @@ describe('SEO', () => {
 })
 
 describe('tema', () => {
-  it('standart — light, localStorage ga yoziladi', async () => {
+  it('standart — tizim sozlamasi (light); tanlov toggle\'gacha saqlanmaydi', async () => {
     renderAt('/')
     await screen.findByText('HOME')
     expect(document.documentElement.getAttribute('data-theme')).toBe('light')
-    expect(localStorage.getItem('theme')).toBe('light')
+    expect(localStorage.getItem('theme')).toBeNull()
+  })
+  it('tizim dark bo\'lsa va tanlov yo\'q — dark', async () => {
+    const original = window.matchMedia
+    window.matchMedia = (query) => ({ matches: query.includes('dark'), media: query, addEventListener() {}, removeEventListener() {} })
+    try {
+      renderAt('/')
+      await screen.findByText('HOME')
+      expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+    } finally {
+      window.matchMedia = original
+    }
+  })
+  it('theme-init.js qo\'ygan atribut saqlangan tanlovdan oldin o\'qiladi', async () => {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    renderAt('/')
+    await screen.findByText('HOME')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
   })
   it('saqlangan dark tema qayta tiklanadi', async () => {
     localStorage.setItem('theme', 'dark')

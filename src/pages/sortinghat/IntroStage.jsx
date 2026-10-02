@@ -41,7 +41,7 @@ export default function IntroStage({ onStart }) {
           { n: '4', t: t('sortingHat.intro.steps.4.title'), d: t('sortingHat.intro.steps.4.desc') },
         ].map((s, i) => (
           <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: i < 3 ? '0.7rem' : 0 }}>
-            <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{s.n}</div>
+            <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{s.n}</div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{s.t}</div>
               <div style={{ fontSize: 11, color: 'var(--muted)' }}>{s.d}</div>
@@ -52,7 +52,7 @@ export default function IntroStage({ onStart }) {
 
       <div style={{ textAlign: 'center' }}>
         <button onClick={onStart}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 36px', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', color: 'var(--color-on-brand)', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)', boxShadow: '0 4px 20px color-mix(in srgb, var(--color-brand) 40%, transparent)', transition: 'transform .2s' }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 36px', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)', boxShadow: '0 4px 20px color-mix(in srgb, var(--color-brand) 40%, transparent)', transition: 'transform .2s' }}
           onMouseEnter={e => e.currentTarget.style.transform='translateY(-2px)'}
           onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}>
           <IcPlay s={18} /> {t('sortingHat.intro.start')}

@@ -37,7 +37,7 @@ export default function InfoTab({ setActiveTab }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {REQUIREMENTS.map((r, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-              <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+              <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>{t(`vacancies.info.requirements.${r}`)}</p>

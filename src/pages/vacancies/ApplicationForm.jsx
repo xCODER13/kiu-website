@@ -153,7 +153,7 @@ export default function ApplicationForm({
         </div>
       ) : (
         <div className="card" style={{ padding: '3rem', textAlign: 'center' }}>
-          <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg, var(--purple-pale), var(--purple-light))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'var(--color-brand)' }}>
+          <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'var(--color-brand)' }}>
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
           <h2 style={{ fontSize: '1.4rem', color: 'var(--text)', marginBottom: '.75rem' }}>{t('vacancies.form.successTitle')}</h2>

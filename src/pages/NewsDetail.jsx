@@ -154,7 +154,7 @@ export default function NewsDetail() {
       </svg>
       <p style={{ fontSize: 15, marginBottom: 20 }}>{t('news.notFound')}</p>
       <button onClick={() => navigate('/news')} style={{
-        padding: '9px 22px', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))',
+        padding: '9px 22px', background: 'var(--gradient-brand)',
         color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, cursor: 'pointer',
         fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)',
       }}>
@@ -262,7 +262,7 @@ export default function NewsDetail() {
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '10px 22px', borderRadius: 10,
-                background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))',
+                background: 'var(--gradient-brand)',
                 color: 'var(--color-on-brand)', border: 'none', cursor: 'pointer',
                 fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)',
                 transition: 'opacity .2s',

@@ -53,7 +53,7 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           {[['all','Barchasi'],['new','Yangi'],['reviewed',"Ko'rildi"],['accepted','Qabul'],['rejected','Rad']].map(([val, lbl]) => (
             <button key={val} onClick={() => setFilt(val)}
-              style={{ padding: '5px 10px', borderRadius: 6, border: `1px solid ${filter === val ? 'var(--color-brand)' : 'var(--border)'}`, background: filter === val ? 'var(--color-brand)' : 'var(--bg)', color: filter === val ? '#fff' : 'var(--muted)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>
+              style={{ padding: '5px 10px', borderRadius: 6, border: `1px solid ${filter === val ? 'var(--color-brand)' : 'var(--border)'}`, background: filter === val ? 'var(--color-brand-fill)' : 'var(--bg)', color: filter === val ? '#fff' : 'var(--muted)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>
               {lbl} ({val === 'all' ? apps.length : apps.filter(a => a.status === val).length})
             </button>
           ))}
@@ -93,7 +93,7 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
                   {type === 'vacancy' && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
                       {a.position && <span style={{ fontSize: 11, background: 'color-mix(in srgb, var(--color-brand) 8%, transparent)', color: 'var(--color-brand)', padding: '2px 8px', borderRadius: 20 }}>{a.position}</span>}
-                      {a.faculty && <span style={{ fontSize: 11, background: 'color-mix(in srgb, var(--color-brand-hover) 8%, transparent)', color: 'var(--color-brand-hover)', padding: '2px 8px', borderRadius: 20 }}>{a.faculty}</span>}
+                      {a.faculty && <span style={{ fontSize: 11, background: 'color-mix(in srgb, var(--color-brand-strong) 8%, transparent)', color: 'var(--color-brand-strong)', padding: '2px 8px', borderRadius: 20 }}>{a.faculty}</span>}
                       {a.education && <span style={{ fontSize: 11, background: 'rgba(5,150,105,.08)', color: 'var(--color-success)', padding: '2px 8px', borderRadius: 20 }}>{a.education}</span>}
                       {a.experience && <span style={{ fontSize: 11, background: 'rgba(217,119,6,.08)', color: 'var(--color-warning)', padding: '2px 8px', borderRadius: 20 }}>{a.experience}</span>}
                     </div>

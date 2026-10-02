@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import ApplyModal from './components/ApplyModal'
 import { isTokenValid } from './utils/auth'
 import useAnalytics from './hooks/useAnalytics'
+import useTheme from './hooks/useTheme'
 import LocaleProvider from './i18n/LocaleProvider'
 import { DEFAULT_LANG, PREFIXED_LANGS, isTranslated, translatedLangs, localizePath, stripLangPrefix } from './i18n/locale'
 
@@ -271,13 +272,8 @@ function AppContent() {
   useSeo()
   useAnalytics()
 
-  const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark')
+  const [dark, setDark] = useTheme()
   const [applyOpen, setApplyOpen] = useState(false)
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
-    localStorage.setItem('theme', dark ? 'dark' : 'light')
-  }, [dark])
 
   const openApplyModal = () => setApplyOpen(true)
   const closeApplyModal = () => setApplyOpen(false)
