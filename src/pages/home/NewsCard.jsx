@@ -1,38 +1,39 @@
 import { useTranslation } from 'react-i18next'
 import { NavLink } from '../../i18n/router'
-import { getCategoryColor, getCategoryLabel } from '../../utils/newsCategories'
+import { getCategoryToken, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 
-// Home uchun ixcham yangilik kartasi — Home.jsx'dan o'zgarishsiz ko'chirilgan.
+// Home uchun ixcham yangilik kartasi (6.11c5): butun karta — bitta havola; tashqi ko'rinish Yangiliklar sahifasi kartasi
+// bilan umumiy (`.card.news-card`, `.cat-dot`). Dinamik qiymatlar: toifa rangi `--cat` (4.4 palitrasi tokeni) va
+// kirish animatsiyasi kechikishi `--i`; qolgani CSS da.
 export default function HomeNewsCard({ item, index }) {
   const { t } = useTranslation()
-  const catColor = getCategoryColor(item.category)
   const img = parseImages(item.image)[0]
   return (
-    <NavLink to={`/news/${item._id}`} style={{ textDecoration: 'none' }}>
-      <div
-        className="card"
-        style={{ padding: 0, overflow: 'hidden', height: '100%', animation: `homeSectionFadeIn .4s ease ${index * 0.06}s both` }}
-      >
-        {img
-          ? <img src={img} alt={item.title} loading="lazy" style={{ width: '100%', height: 140, objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />
-          : <div style={{ width: '100%', height: 140, background: `linear-gradient(135deg, ${catColor}22, ${catColor}11)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={`${catColor}66`} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </div>
-        }
-        <div style={{ padding: '0.85rem 1rem' }}>
+    <NavLink
+      to={`/news/${item._id}`}
+      className="card card-link news-card home-news-card"
+      style={{ '--cat': getCategoryToken(item.category), '--i': index }}
+    >
+      {img
+        // Rasm sarlavha bilan bir havola ichida — `alt=""` (dekorativ): havola nomi ikki marta o'qilmasin.
+        // Yuklanmagan rasm yashiriladi: `data-broken` (CSS)
+        ? <img src={img} alt="" loading="lazy" className="news-card-img" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
+        : <div className="news-card-ph">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+      }
+      <div className="news-card-body">
+        <div className="news-card-meta">
           {item.category && (
-            <span style={{ fontSize: 10, fontWeight: 600, color: catColor, background: `${catColor}18`, padding: '2px 8px', borderRadius: 20 }}>
+            <span className="news-card-cat">
+              <span className="cat-dot" aria-hidden="true" />
               {getCategoryLabel(item.category, t)}
             </span>
           )}
-          <h4 lang="uz" style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text)', lineHeight: 1.5, marginTop: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-            {item.title}
-          </h4>
-          <div style={{ fontSize: 10.5, color: 'var(--muted)', marginTop: 6 }}>
-            {new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}
-          </div>
+          <span className="news-card-date">{new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}</span>
         </div>
+        <h3 lang="uz" className="news-card-title">{item.title}</h3>
       </div>
     </NavLink>
   )

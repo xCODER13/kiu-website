@@ -168,6 +168,16 @@
     --ring-field:            rgb(127 32 99 / 0.14);
     --ring-field-danger:     rgb(200 30 30 / 0.10);
 
+    /* 6.11c5: bosh sahifa — statistika plitkasi, kampus yorlig'i, rasm orqasidagi yumshoq yorug'lik, faol feature karta */
+    --stat-tile-bg:          var(--color-surface-3);
+    --stat-tile-num:         var(--color-text);
+    --campus-label-bg:       rgb(70 19 54 / 0.78);
+    --blob-wine:             rgb(127 32 99);                  /* rasm orqasidagi dog' (shaffoflik CSS da) */
+    --blob-gold:             rgb(212 175 55);
+    --blob-strength:         1;                               /* dog'lar shaffofligi ko'paytuvchisi (Dark'da kamayadi) */
+    --shadow-card-active:    0 0 0 4px rgb(127 32 99 / 0.10), 0 18px 38px rgb(127 32 99 / 0.20);
+    --gradient-card-active:  linear-gradient(180deg, var(--neutral-0), var(--wine-50));
+
     /* Tugma yorug'ligi (glow) */
     --glow-brand:         rgb(127 32 99 / 0.30);
     --glow-brand-strong:  rgb(127 32 99 / 0.55);
@@ -337,6 +347,13 @@
       --gallery-badge-border:  rgb(233 168 208 / 0.3);
       --ring-field:            rgb(233 168 208 / 0.18);
       --ring-field-danger:     rgb(242 106 106 / 0.14);
+      --stat-tile-bg:          rgb(39 31 36 / 0.72);
+      --stat-tile-num:         var(--color-brand);
+      --campus-label-bg:       rgb(18 12 16 / 0.72);
+      --blob-wine:             rgb(159 51 126);
+      --blob-strength:         0.6;
+      --shadow-card-active:    0 0 0 1px var(--color-border), 0 12px 32px var(--glow-brand);
+      --gradient-card-active:  var(--gradient-card);
 
       --cat-chip-mix:         18%;
       --cat-ph-1:             22%;
@@ -432,6 +449,13 @@
     --gallery-badge-border:  rgb(233 168 208 / 0.3);
     --ring-field:            rgb(233 168 208 / 0.18);
     --ring-field-danger:     rgb(242 106 106 / 0.14);
+    --stat-tile-bg:          rgb(39 31 36 / 0.72);
+    --stat-tile-num:         var(--color-brand);
+    --campus-label-bg:       rgb(18 12 16 / 0.72);
+    --blob-wine:             rgb(159 51 126);
+    --blob-strength:         0.6;
+    --shadow-card-active:    0 0 0 1px var(--color-border), 0 12px 32px var(--glow-brand);
+    --gradient-card-active:  var(--gradient-card);
 
     --cat-chip-mix:         18%;
     --cat-ph-1:             22%;

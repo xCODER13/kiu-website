@@ -102,22 +102,22 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
     expect(read('src/pages/Faculty.jsx')).not.toMatch(/faculty-styles/)
   })
 
+  // 6.11c5: `homeCarouselFade` olib tashlandi — Home karuseli Yangiliklar bilan umumiy `carouselFadeIn` ishlatadi
   it('keyframes pages.css ga ko\'chgan (Home, NewsDetail, Faculty); `spin` va `pulse` global.css da qolgan', () => {
-    for (const k of ['homeCarouselFade', 'homeSkelShimmer', 'homeSectionFadeIn', 'slide-in-right', 'slide-in-left', 'cardFadeIn'])
+    for (const k of ['homeSkelShimmer', 'homeSectionFadeIn', 'carouselFadeIn', 'slide-in-right', 'slide-in-left', 'cardFadeIn'])
       expect(code, k).toMatch(new RegExp(`@keyframes ${k} \\{`))
     expect(global).toMatch(/@keyframes spin \{/)
     expect(global).toMatch(/@keyframes pulse \{/)
   })
 
-  it("Home hero qoidalari `!important`siz; qatlamsiz (global.css) bo'lgani uchun `.stats-grid` ni bosib o'tadi", () => {
+  // 6.11c5: Home hero qoidalari qatlamsiz `global.css` dan `pages.css` (`@layer components`) ga ko'chdi (`.hero-grid/.stats-grid/.stat-item` o'rniga `.home-hero*`, `.home-stats`, `.stat-tile`)
+  it("Home hero/statistika qoidalari `!important`siz, `pages.css` da; global.css da eski `.hero-grid`/`.stats-grid` yo'q", () => {
     expect(read('src/pages/Home.jsx')).not.toMatch(/!important/)
-    const hero = global.slice(global.indexOf('.hero-grid {'))
-    expect(hero).not.toMatch(/!important/)
-    expect(hero).toMatch(/\.hero-grid \.stats-grid \{ margin: 0; max-width: 480px; \}/)
-    expect(hero).toMatch(/@media \(max-width: 1080px\)[\s\S]*\.hero-grid \.stats-grid \{ grid-template-columns: repeat\(2, 1fr\); max-width: 320px; \}/)
-    expect(hero).toMatch(/@media \(max-width: 860px\)[\s\S]*\.hero-grid \{ grid-template-columns: 1fr; \}/)
-    // HeroSection'da bu qiymatlar inline emas
-    expect(read('src/pages/home/HeroSection.jsx')).not.toMatch(/gridTemplateColumns|maxWidth: 480/)
+    expect(global).not.toMatch(/\.hero-grid|\.stats-grid|\.stat-item|\.hero-photo-wrap|\.grid-2|\.grid-3|\.grid-auto|\.section-header/)
+    expect(code).toMatch(/\.home-hero__grid \{[^}]*grid-template-columns: 1\.05fr 0\.95fr;/)
+    expect(code).toMatch(/@media \(max-width: 1080px\) \{\s*\.home-stats \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); max-width: 360px; \}/)
+    expect(code).toMatch(/@media \(max-width: 860px\)[\s\S]*\.home-hero__grid,\s*\.home-about__grid \{ grid-template-columns: minmax\(0, 1fr\);/)
+    expect(read('src/pages/home/HeroSection.jsx')).not.toMatch(/gridTemplateColumns|maxWidth: 480|style=/)
   })
 
   // 6.11a: `--card` (e'lon qilinmagan token) va `transparent` fon endi yo'q — tab pill'i `--color-surface-3` ustida (spec 6.11).
@@ -184,8 +184,9 @@ describe('Bosqich 6.11a: umumiy ichki hero, Qabul, Yo\'nalishlar', () => {
 
   it("hero `.inner-hero`: nuqtali qatlam (`::before`), pastda so'nish (`::after`), h1 `clamp` ≤ 3rem/800, ta'rif 1.125rem", () => {
     expect(code).toMatch(/\.inner-hero \{[^}]*background-image: var\(--gradient-hero-glow\);/)
-    expect(code).toMatch(/\.inner-hero::before \{[^}]*var\(--hero-dot\)/)
-    expect(code).toMatch(/\.inner-hero::after \{[^}]*var\(--color-bg\)/)
+    // 6.11c5: qatlamlar Home hero (`.home-hero`) bilan umumiy selektor ro'yxatida
+    expect(code).toMatch(/\.inner-hero::before,\s*\.home-hero::before \{[^}]*var\(--hero-dot\)/)
+    expect(code).toMatch(/\.inner-hero::after,\s*\.home-hero::after \{[^}]*var\(--color-bg\)/)
     expect(code).toMatch(/\.inner-hero__title \{[^}]*font-size: clamp\(2rem, [^)]*3rem\);[^}]*font-weight: 800;[^}]*letter-spacing: -0\.025em;/)
     expect(code).toMatch(/\.inner-hero__sub \{[^}]*font-size: 1\.125rem;/)
   })
@@ -543,5 +544,73 @@ describe('Bosqich 6.11c4: Vakansiyalar', () => {
       const form = JSON.parse(read(`src/i18n/locales/${l}.json`)).vacancies.form
       for (const k of ['fullName', 'phone', 'position', 'faculty', 'education', 'experience']) expect(form[k], `${l}.${k}`).not.toMatch(/\*\s*$/)
     }
+  })
+})
+
+describe('Bosqich 6.11c5: Bosh sahifa', () => {
+  const tokens = read('src/styles/tokens.css')
+  const inline = f => (read(f).match(/style=\{/g) ?? []).length
+
+  it("yangi tokenlar: statistika plitkasi, kampus yorlig'i, dog'lar, faol karta (Light + ikkala Dark blok)", () => {
+    expect(tokens).toMatch(/--stat-tile-bg:\s*var\(--color-surface-3\)/)
+    expect(tokens).toMatch(/--stat-tile-num:\s*var\(--color-text\)/)
+    expect(tokens).toMatch(/--campus-label-bg:\s*rgb\(70 19 54 \/ 0\.78\)/)
+    expect(tokens).toMatch(/--shadow-card-active:\s*0 0 0 4px rgb\(127 32 99 \/ 0\.10\), 0 18px 38px rgb\(127 32 99 \/ 0\.20\)/)
+    expect(tokens).toMatch(/--gradient-card-active:\s*linear-gradient\(180deg, var\(--neutral-0\), var\(--wine-50\)\)/)
+    expect((tokens.match(/--stat-tile-bg:\s*rgb\(39 31 36 \/ 0\.72\)/g) ?? []).length).toBe(2)
+    expect((tokens.match(/--stat-tile-num:\s*var\(--color-brand\)/g) ?? []).length).toBe(2)
+    expect((tokens.match(/--campus-label-bg:\s*rgb\(18 12 16 \/ 0\.72\)/g) ?? []).length).toBe(2)
+    expect((tokens.match(/--shadow-card-active:\s*0 0 0 1px var\(--color-border\), 0 12px 32px var\(--glow-brand\)/g) ?? []).length).toBe(2)
+    expect((tokens.match(/--blob-strength:/g) ?? []).length).toBe(3)
+  })
+
+  it("Hero: `.inner-hero` bilan umumiy fon qatlamlari, 2 ustun 1.05fr/.95fr, plitka fon/son tokenlardan, \"2022\" — oltin", () => {
+    expect(code).toMatch(/\.home-hero \{[^}]*background-image: var\(--gradient-hero-glow\);/)
+    expect(code).toMatch(/\.stat-tile \{[^}]*background: var\(--stat-tile-bg\);/)
+    expect(code).toMatch(/\.stat-tile__num \{[^}]*color: var\(--stat-tile-num\);/)
+    expect(code).toMatch(/\.stat-tile\[data-stat="founded"\] \.stat-tile__num \{ color: var\(--color-accent\); \}/)
+    expect(code).toMatch(/\.campus-label \{[^}]*background: var\(--campus-label-bg\);/)
+  })
+
+  it("Rasm orqasidagi dog'lar: Hero — wine .22 / oltin; Haqida — oltin .55 / wine .50, blur 36–38 px, rasmga ramka yo'q", () => {
+    expect(code).toMatch(/\.home-hero__photo::before \{[^}]*var\(--blob-wine\); opacity: calc\(0\.22 \* var\(--blob-strength\)\); filter: blur\(36px\);/)
+    expect(code).toMatch(/\.home-about__photo::before \{[^}]*var\(--blob-gold\); opacity: calc\(0\.55 \* var\(--blob-strength\)\); filter: blur\(38px\);/)
+    expect(code).toMatch(/\.home-about__photo::after \{[^}]*var\(--blob-wine\); opacity: calc\(0\.5 \* var\(--blob-strength\)\); filter: blur\(36px\);/)
+    expect(code).toMatch(/\.home-about__frame \{[^}]*border-radius: 20px;\s*\}/)
+    expect(code).not.toMatch(/\.home-about__frame \{[^}]*border:/)
+  })
+
+  it("Feature karta \"faol\" ko'rinishi faqat `:hover` da (`--shadow-card-active`, brend chegara, `--gradient-card-active`); doimiy `data-featured` yo'q", () => {
+    expect(code).toMatch(/\.card\.home-feature:hover \{[^}]*var\(--color-brand\);[^}]*var\(--gradient-card-active\);[^}]*var\(--shadow-card-active\);/)
+    expect(code).not.toMatch(/data-featured/)
+    expect(read('src/pages/home/AboutSection.jsx')).not.toMatch(/data-featured=/)
+  })
+
+  it("Yangiliklar: karusel/karta Yangiliklar sahifasi klasslarini ishlatadi; skeleton animatsiyasi faqat `no-preference` da", () => {
+    expect(code).toMatch(/\.home-news \.carousel \{ height: 440px; margin: 0 0 24px; \}/)
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.home-skel \{ animation: homeSkelShimmer/)
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.home-news-card \{ animation: homeSectionFadeIn/)
+    expect(code).not.toMatch(/@keyframes homeCarouselFade/)
+    expect(read('src/pages/home/NewsCarousel.jsx')).toMatch(/className="carousel carousel--home"/)
+    expect(read('src/pages/home/NewsCard.jsx')).toMatch(/card card-link news-card home-news-card/)
+  })
+
+  it("`newsCategories.js`: hex, `color`, `DEFAULT_CATEGORY_COLOR`, `getCategoryColor` olib tashlangan; faqat token", () => {
+    const src = read('src/utils/newsCategories.js').replace(/\/\/.*$/gm, '')
+    expect(src).not.toMatch(/#[0-9a-f]{3,8}\b|color:|DEFAULT_CATEGORY_COLOR|getCategoryColor/i)
+    expect(src).toMatch(/token: 'var\(--chart-1\)'/)
+    expect(src).toMatch(/DEFAULT_CATEGORY_TOKEN = 'var\(--color-brand\)'/)
+    expect(read('src/pages/home/utils.js')).not.toMatch(/navBtnStyle|rgba?\(|#[0-9a-f]{3,8}\b/i)
+  })
+
+  it("Home JSX: hex/rgba yo'q, inline faqat dinamik (Hero 0, About 0, Section 1, Card 1, Carousel 2), ichma-ich `<button>` yo'q", () => {
+    const counts = { HeroSection: 0, AboutSection: 0, NewsSection: 1, NewsCard: 1, NewsCarousel: 2 }
+    for (const [f, n] of Object.entries(counts)) {
+      const path = `src/pages/home/${f}.jsx`
+      expect(inline(path), f).toBe(n)
+      expect(read(path), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|var\(--(muted|text|border|bg-2)\)/i)
+      expect(read(path), f).not.toMatch(/<NavLink[^>]*>\s*<button/)
+    }
+    expect(read('src/pages/home/HeroSection.jsx')).toMatch(/btn btn-accent btn-lg/)
   })
 })
