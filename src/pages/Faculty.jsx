@@ -48,7 +48,7 @@ export default function Faculty() {
                   className="kiu-tab-btn"
                   style={{
                     border: active ? 'none' : '1px solid color-mix(in srgb, var(--color-brand) 35%, transparent)',
-                    background: active ? 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))' : 'transparent',
+                    background: active ? 'var(--gradient-brand)' : 'transparent',
                     color: active ? '#fff' : 'var(--text)',
                     boxShadow: active ? '0 3px 10px color-mix(in srgb, var(--color-brand) 35%, transparent)' : 'none',
                   }}

@@ -1,9 +1,10 @@
 /*
- * Design token'lar.
+ * Design token'lar (wine palitra, Light + Dark).
  *
- * Bosqich 2b: Light tema WINE palitrasiga o'tdi. Dark tema va `data-palette="purple"`
- * zaxirasi ESKI (purple) qiymatlarni saqlaydi — Dark Bosqich 3 da qayta quriladi.
- * Palitra almashishi faqat shu fayldagi qiymatlarni o'zgartiradi, komponentlarga tegilmaydi.
+ * Komponentlar `[data-theme]` ni bilmaydi — faqat shu fayldagi semantik token'larni o'qiydi.
+ * Dark qiymatlar ikki blokda: tizim sozlamasi (saqlangan tanlov yo'q) va foydalanuvchi tanlovi
+ * (`data-theme="dark"`). Ikkala blok BIR XIL bo'lishi shart — `check-tokens` testi tekshiradi.
+ * Ongli takrorlash: `light-dark()` eski iOS'da yo'q (Safari 17.5+).
  *
  * Tuzilma (3 qatlam):
  *   1. Xom (primitive)  — --wine-700, --neutral-600 ...   faqat shu faylda
@@ -18,7 +19,9 @@
 
 @layer tokens {
   :root {
-    /* ── 1a. Xom qiymatlar: wine + neytral (yangi palitra) ─────────── */
+    color-scheme: light;
+
+    /* ── 1. Xom qiymatlar: wine + neytral ──────────────────────────── */
     --wine-50:  #fdf2f8;
     --wine-100: #fae4f1;
     --wine-200: #f5cbe4;
@@ -37,44 +40,30 @@
     --neutral-600: #645b60;
     --neutral-900: #1c161a;
 
-    --gold-500:  #d4af37;
-    --dark-bg:   #120c10;   /* Dark sahifa foni — to'q media yuzalari uchun ham */
-    --dark-deep: #0d080b;
+    --gold-500: #d4af37;
 
-    /* ── 1b. ESKI (purple) xom qiymatlar — Dark va zaxira palitra uchun; Bosqich 3 da Dark yangilanadi ── */
-    --white:      #ffffff;
-    --violet-600: #7c3aed;
-    --violet-100: #ede9fe;
-    --violet-50:  #faf5ff;
-    --indigo-600: #4f46e5;
-    --lavender-100: #f0eeff;
-    --gold-600:   #c8960c;
-    --ink-900:    #1a1a2e;
-    --gray-500:   #6b7280;
-    --gray-400:   #9ca3af;
-    --night-950:  #0f0f1a;
-    --night-900:  #1a1a2e;
-    --mist-100:   #e8e8f0;
-    --violet-950: #1e1b4b;
-    --violet-900: #2d1b69;
-    --violet-400: #a78bfa;
-    --violet-200: #e9d5ff;
-    --indigo-100: #e0e7ff;
-    --navy-800:   #16213e;
-    --plum-900:   #1e1545;
-    --plum-950:   #13102b;
-    --plum-1000:  #0d0b1e;
-    --gray-100:   #f3f4f6;
+    --dark-deep:      #0d080b;
+    --dark-bg:        #120c10;
+    --dark-surface-2: #1c1519;
+    --dark-surface-3: #271f24;
+    --dark-border:    #393035;
+    --dark-text:      #f1ebee;
+    --dark-muted:     #b1a8ad;
+    --dark-wine-tint: #38132d;
 
-    /* ── 2. Semantik rang (Light, wine) ───────────────────────────── */
+    /* ── 2. Semantik rang (Light) ──────────────────────────────────── */
     --color-bg:            var(--neutral-0);
     --color-surface-2:     var(--neutral-50);
+    --color-surface-3:     var(--neutral-0);      /* karta foni */
+    --color-field-bg:      var(--neutral-0);      /* input foni */
     --color-text:          var(--neutral-900);
     --color-text-muted:    var(--neutral-600);
     --color-border:        var(--neutral-200);
 
-    --color-brand:         var(--wine-700);
+    --color-brand:         var(--wine-700);       /* matn, chiziq, ikonka */
+    --color-brand-fill:    var(--wine-700);       /* to'ldirilgan fon (ustida --color-on-brand) */
     --color-brand-hover:   var(--wine-800);
+    --color-brand-strong:  var(--wine-800);       /* kuchaytirilgan brend MATN (hover emas) */
     --color-brand-subtle:  var(--wine-50);
     --color-brand-subtle-2: var(--wine-100);
     --color-on-brand:      var(--neutral-0);
@@ -84,19 +73,10 @@
 
     /* Doim to'q yuzalar (footer, to'q hero, karusel) ustidagi ranglar — tema bilan almashmaydi */
     --color-on-dark:             var(--neutral-100);
-    --color-on-dark-muted:       #b1a8ad;
+    --color-on-dark-muted:       var(--dark-muted);
     --color-brand-on-dark:       var(--wine-300);
     --color-brand-on-dark-hover: var(--wine-200);
     --color-media-bg:            var(--dark-bg);
-
-    /* Gradientlar */
-    --gradient-hero:      linear-gradient(135deg, var(--wine-50) 0%, var(--wine-100) 40%, var(--wine-200) 100%);
-    --gradient-hero-soft: linear-gradient(135deg, var(--wine-50), var(--wine-100));
-    --gradient-dark:      linear-gradient(135deg, var(--neutral-900), var(--wine-900));
-    --gradient-brand:     linear-gradient(135deg, var(--color-brand), var(--color-brand-hover));
-    --gradient-footer:    linear-gradient(135deg, var(--neutral-900), var(--wine-900));
-    --gradient-sidebar:   linear-gradient(180deg, var(--neutral-900) 0%, var(--wine-900) 100%);
-    --gradient-media:     linear-gradient(135deg, var(--wine-900), var(--dark-bg) 60%, var(--dark-deep));
 
     /* Holat ranglari (matn bilan birga ishlatiladi; faqat rangga tayanilmaydi) */
     --color-success:       #21763c;
@@ -107,6 +87,21 @@
     --color-danger-bg:     #fbeaea;
     --color-info:          #026a9d;
     --color-info-bg:       #e6f0f5;
+
+    /* Gradientlar */
+    --gradient-hero:      linear-gradient(135deg, var(--wine-50) 0%, var(--wine-100) 40%, var(--wine-200) 100%);
+    --gradient-hero-soft: linear-gradient(135deg, var(--color-brand-subtle), var(--color-brand-subtle-2));
+    --gradient-auth:      var(--gradient-hero-soft);   /* admin login sahifa foni */
+    --gradient-dark:      linear-gradient(135deg, var(--neutral-900), var(--wine-900));
+    --gradient-brand:     linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-hover));
+    --gradient-brand-text: linear-gradient(135deg, var(--color-brand), var(--color-brand-hover));   /* gradient matn (background-clip) */
+    --gradient-footer:    linear-gradient(135deg, var(--neutral-900), var(--wine-900));
+    --gradient-sidebar:   linear-gradient(180deg, var(--neutral-900) 0%, var(--wine-900) 100%);
+    --gradient-media:     linear-gradient(135deg, var(--wine-900), var(--dark-bg) 60%, var(--dark-deep));
+
+    /* Dekorativ rasm/placeholder xiraligi (Dark'da biroz pasayadi) */
+    --opacity-avatar:      1;
+    --opacity-placeholder: 1;
 
     /* ── Tipografiya ──────────────────────────────────────────────── */
     /* Hozirgi stek saqlandi (vizual farq 0); system-ui zaxirasi Bosqich 2 da. */
@@ -170,63 +165,81 @@
     --ease-out:      cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* ── ESKI (purple) qiymatlar ───────────────────────────────────────
-     Dark tema Bosqich 3 gacha o'zgarmaydi, shuning uchun brend/aksent/holat/gradient
-     qiymatlari bu yerda eskicha. `data-palette="purple"` (index.html) bilan Light ham
-     shu qiymatlarga qaytadi — revert'siz, bir atribut bilan. */
-  :root[data-palette="purple"],
-  [data-theme="dark"] {
-    --color-brand:         var(--violet-600);
-    --color-brand-hover:   var(--indigo-600);
-    --color-on-brand:      var(--white);
-    --color-accent:        var(--gold-600);
-    --color-on-accent:     var(--white);
+  /* ── Dark (tizim sozlamasi): saqlangan tanlov yo'q ── */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --color-bg:             var(--dark-bg);
+      --color-surface-2:      var(--dark-surface-2);
+      --color-surface-3:      var(--dark-surface-3);
+      --color-field-bg:       var(--dark-surface-2);
+      --color-text:           var(--dark-text);
+      --color-text-muted:     var(--dark-muted);
+      --color-border:         var(--dark-border);
 
-    --color-on-dark:             var(--gray-100);
-    --color-on-dark-muted:       var(--gray-400);
-    --color-brand-on-dark:       var(--violet-400);
-    --color-brand-on-dark-hover: var(--violet-200);
-    --color-media-bg:            var(--plum-950);
+      --color-brand:          var(--wine-300);
+      --color-brand-fill:     var(--wine-600);
+      --color-brand-hover:    var(--wine-700);
+      --color-brand-strong:   var(--wine-200);
+      --color-brand-subtle:   var(--dark-wine-tint);
+      --color-brand-subtle-2: var(--dark-wine-tint);
 
-    --gradient-hero:      linear-gradient(135deg, var(--violet-50) 0%, var(--violet-100) 40%, var(--indigo-100) 100%);
-    --gradient-hero-soft: linear-gradient(135deg, var(--violet-50), var(--violet-100));
-    --gradient-dark:      linear-gradient(135deg, var(--ink-900), var(--violet-900));
-    --gradient-footer:    linear-gradient(135deg, var(--ink-900), var(--navy-800));
-    --gradient-sidebar:   linear-gradient(180deg, var(--ink-900) 0%, var(--navy-800) 100%);
-    --gradient-media:     linear-gradient(135deg, var(--plum-900), var(--plum-950) 60%, var(--plum-1000));
+      --color-success:        #6fd087;
+      --color-success-bg:     #212b23;
+      --color-warning:        #f5b75b;
+      --color-warning-bg:     #36271c;
+      --color-danger:         #f26a6a;
+      --color-danger-bg:      #3a1b1c;
+      --color-info:           #73baea;
+      --color-info-bg:        #222833;
 
-    --color-success:       #059669;
-    --color-success-bg:    #ecfdf5;
-    --color-warning:       #d97706;
-    --color-warning-bg:    #fffbeb;
-    --color-danger:        #dc2626;
-    --color-danger-bg:     #fef2f2;
-    --color-info:          #2563eb;
-    --color-info-bg:       #eff6ff;
+      --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
+      --gradient-footer:      linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
+      --gradient-auth:        linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
+      --gradient-brand-text:  linear-gradient(135deg, var(--wine-300), var(--wine-200));
 
-    --shadow-brand: 0 4px 15px rgb(124 58 237 / 0.3);
+      --shadow-brand:         0 4px 15px rgb(159 51 126 / 0.4);
+
+      --opacity-avatar:       0.9;
+      --opacity-placeholder:  0.7;
+    }
   }
 
-  /* Eski Light neytral va tint'lar (faqat zaxira palitra) */
-  :root[data-palette="purple"] {
-    --color-bg:             var(--white);
-    --color-surface-2:      var(--violet-50);
-    --color-text:           var(--ink-900);
-    --color-text-muted:     var(--gray-500);
-    --color-border:         var(--lavender-100);
-    --color-brand-subtle:   var(--violet-50);
-    --color-brand-subtle-2: var(--violet-100);
-  }
+  /* ── Dark (foydalanuvchi tanlovi): har ikki tomonga ustun ── */
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --color-bg:             var(--dark-bg);
+    --color-surface-2:      var(--dark-surface-2);
+    --color-surface-3:      var(--dark-surface-3);
+    --color-field-bg:       var(--dark-surface-2);
+    --color-text:           var(--dark-text);
+    --color-text-muted:     var(--dark-muted);
+    --color-border:         var(--dark-border);
 
-  /* Eski Dark neytral va tint'lar (Bosqich 3 gacha) */
-  [data-theme="dark"],
-  :root[data-palette="purple"][data-theme="dark"] {
-    --color-bg:             var(--night-950);
-    --color-surface-2:      var(--night-900);
-    --color-text:           var(--mist-100);
-    --color-text-muted:     var(--gray-400);
-    --color-border:         rgb(124 58 237 / 0.25);
-    --color-brand-subtle:   var(--violet-950);
-    --color-brand-subtle-2: var(--violet-900);
+    --color-brand:          var(--wine-300);
+    --color-brand-fill:     var(--wine-600);
+    --color-brand-hover:    var(--wine-700);
+    --color-brand-strong:   var(--wine-200);
+    --color-brand-subtle:   var(--dark-wine-tint);
+    --color-brand-subtle-2: var(--dark-wine-tint);
+
+    --color-success:        #6fd087;
+    --color-success-bg:     #212b23;
+    --color-warning:        #f5b75b;
+    --color-warning-bg:     #36271c;
+    --color-danger:         #f26a6a;
+    --color-danger-bg:      #3a1b1c;
+    --color-info:           #73baea;
+    --color-info-bg:        #222833;
+
+    --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
+    --gradient-footer:      linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
+    --gradient-auth:        linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
+    --gradient-brand-text:  linear-gradient(135deg, var(--wine-300), var(--wine-200));
+
+    --shadow-brand:         0 4px 15px rgb(159 51 126 / 0.4);
+
+    --opacity-avatar:       0.9;
+    --opacity-placeholder:  0.7;
   }
 }

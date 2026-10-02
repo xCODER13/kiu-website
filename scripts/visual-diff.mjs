@@ -4,7 +4,7 @@
 // Foydalanish:
 //   VITE_API_URL=http://api.test npx vite build --outDir /tmp/dist-old   # eski commit'da
 //   VITE_API_URL=http://api.test npx vite build --outDir /tmp/dist-new   # yangi commit'da
-//   node scripts/visual-diff.mjs /tmp/dist-old /tmp/dist-new [--quick]
+//   node scripts/visual-diff.mjs /tmp/dist-old /tmp/dist-new [--quick] [--theme=light|dark]
 //
 // 19 sahifa × 3 kenglik × 2 tema × 2 til = 228 ta to'liq sahifa surati (--quick: 3 sahifa).
 // Tashqi so'rovlar (shrift, xarita, rasm) to'sib qo'yiladi, API javobi bo'sh `[]` — natija
@@ -35,7 +35,8 @@ const ROUTES = QUICK
      '/map', '/sorting-hat']
 const LANGS = ['', '/ru']
 const WIDTHS = [390, 768, 1280]
-const THEMES = ['light', 'dark']
+const THEME_ARG = process.argv.find((a) => a.startsWith('--theme='))?.slice(8)
+const THEMES = THEME_ARG ? [THEME_ARG] : ['light', 'dark']
 const RETRIES = 2
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',

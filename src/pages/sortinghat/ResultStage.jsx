@@ -86,17 +86,17 @@ export default function ResultStage({ result, onRestart }) {
         </p>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
           <NavLink to="/faculty" style={{ textDecoration: 'none' }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
               <IcGrad s={15} /> {t('sortingHat.result.viewPrograms')}
             </button>
           </NavLink>
           <NavLink to="/admission" style={{ textDecoration: 'none' }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
               <IcFile s={15} /> {t('sortingHat.result.apply')}
             </button>
           </NavLink>
           <button onClick={onRestart}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
             <IcRefresh s={14} /> {t('sortingHat.result.restart')}
           </button>
         </div>

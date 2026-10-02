@@ -54,7 +54,7 @@ function KafedraBtn({ label, count, active, onClick }) {
   return (
     <button
       onClick={onClick}
-      style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', marginBottom: 4, background: active ? 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))' : 'transparent', color: active ? '#fff' : 'var(--text)', fontSize: 12, fontWeight: 500, textAlign: 'left', lineHeight: 1.4 }}
+      style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', borderRadius: 8, border: 'none', cursor: 'pointer', marginBottom: 4, background: active ? 'var(--gradient-brand)' : 'transparent', color: active ? '#fff' : 'var(--text)', fontSize: 12, fontWeight: 500, textAlign: 'left', lineHeight: 1.4 }}
     >
       <span style={{ flex: 1, textAlign: 'left' }}>{label}</span>
       <span style={{ fontSize: 11, fontWeight: 700, flexShrink: 0, marginLeft: 6, background: active ? 'rgba(255,255,255,.25)' : 'color-mix(in srgb, var(--color-brand) 10%, transparent)', color: active ? '#fff' : 'var(--color-brand)', padding: '1px 7px', borderRadius: 20 }}>{count}</span>

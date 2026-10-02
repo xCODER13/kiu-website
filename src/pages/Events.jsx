@@ -205,7 +205,7 @@ export default function Events() {
                         onError={ev => { ev.target.style.display = 'none' }}
                       />
                     ) : (
-                      <div style={{ width: 56, height: 56, borderRadius: 12, background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0 }}>
+                      <div style={{ width: 56, height: 56, borderRadius: 12, background: 'var(--gradient-brand)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0 }}>
                         <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>{fd.day}</div>
                         <div style={{ fontSize: 10, opacity: .8 }}>{fd.monthShort}</div>
                       </div>

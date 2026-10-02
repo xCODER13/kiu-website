@@ -34,7 +34,7 @@ export default function HeroSection() {
             <div className="stats-grid reveal reveal-delay-4" style={{ margin: 0, maxWidth: 480 }}>
               {config.stats.map((s, i) => (
                 <div key={STAT_KEYS[i]} className="stat-item">
-                  <div id={`stat-${i}`} style={{ fontSize: '1.5rem', fontWeight: 700, background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>0</div>
+                  <div id={`stat-${i}`} style={{ fontSize: '1.5rem', fontWeight: 700, background: 'var(--gradient-brand-text)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>0</div>
                   <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>{t(`home.stats.${STAT_KEYS[i]}`)}</div>
                 </div>
               ))}

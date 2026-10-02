@@ -64,12 +64,12 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 }
 .btn:hover { opacity: 0.88; transform: translateY(-1px); }
 .btn-primary {
-  background: linear-gradient(135deg, var(--purple), var(--purple-2));
+  background: var(--gradient-brand);
   color: var(--color-on-brand);
-  box-shadow: 0 4px 15px color-mix(in srgb, var(--color-brand) 30%, transparent);
+  box-shadow: var(--shadow-brand);
 }
 .btn-secondary {
-  background: var(--color-bg);
+  background: var(--color-surface-3);
   color: var(--purple);
   border: 1.5px solid var(--purple);
 }
@@ -80,7 +80,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.25rem;
-  background: var(--bg);
+  background: var(--color-surface-3);
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 .card:hover {
@@ -118,7 +118,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
   grid-template-columns: repeat(4, 1fr);
   max-width: 560px;
   margin: 2.5rem auto 0;
-  background: var(--color-bg);
+  background: var(--color-surface-3);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 30px color-mix(in srgb, var(--color-brand) 12%, transparent);
@@ -158,12 +158,9 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 .lang-switch { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .lang-switch-item { font-size: 11px; font-weight: 600; letter-spacing: .04em; padding: 6px 9px; color: var(--muted); line-height: 1.2; transition: background .2s, color .2s; }
 a.lang-switch-item:hover { color: var(--color-brand); background: color-mix(in srgb, var(--color-brand) 8%, transparent); }
-.lang-switch-item.active { background: var(--color-brand); color: var(--color-on-brand); }
+.lang-switch-item.active { background: var(--color-brand-fill); color: var(--color-on-brand); }
 .lang-switch--menu { align-self: flex-start; margin-bottom: .5rem; }
 .lang-switch--menu .lang-switch-item { font-size: 13px; padding: 8px 16px; }
-
-/* Dark mode */
-
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -180,219 +177,10 @@ a.lang-switch-item:hover { color: var(--color-brand); background: color-mix(in s
   .stat-item:nth-child(2) { border-right: none; }
   .stat-item:nth-child(1),
   .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
-}
-/* Dark mode (eski nomlar; Bosqich 3 da token'larga o'tadi) */
-[data-theme="dark"] {
-  --bg:           #0f0f1a;
-  --bg-2:         #1a1a2e;
-  --text:         #e8e8f0;
-  --muted:        #9ca3af;
-  --border:       color-mix(in srgb, var(--color-brand) 25%, transparent);
-  --purple-pale:  #1e1b4b;
-  --purple-light: #2d1b69;
-}
-
-[data-theme="dark"] body { background: #0f0f1a; color: #e8e8f0; }
-
-[data-theme="dark"] h1,
-[data-theme="dark"] h2,
-[data-theme="dark"] h3 { color: #e8e8f0 !important; }
-
-[data-theme="dark"] p { color: #9ca3af; }
-
-[data-theme="dark"] nav {
-  background: rgba(15,15,26,0.97) !important;
-  border-bottom-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-}
-
-[data-theme="dark"] .card {
-  background: #1a1a2e !important;
-  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  color: #e8e8f0;
-}
-
-[data-theme="dark"] .card h3,
-[data-theme="dark"] .card h4,
-[data-theme="dark"] .card p { color: #e8e8f0 !important; }
-
-[data-theme="dark"] .btn-secondary {
-  background: transparent !important;
-  color: #a78bfa !important;
-  border-color: #a78bfa !important;
-}
-
-[data-theme="dark"] section {
-  background: linear-gradient(135deg, #1a1a2e 0%, #2d1b69 40%, #1e1b4b 100%) !important;
-}
-
-[data-theme="dark"] .section-header h2 { color: #e8e8f0 !important; }
-[data-theme="dark"] .section-header p  { color: #9ca3af !important; }
-
-[data-theme="dark"] footer {
-  background: linear-gradient(135deg, #0a0a14, #0f0f1a) !important;
-}
-
-[data-theme="dark"] .tg-box {
-  background: #1a1a2e !important;
-  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-}
-
-[data-theme="dark"] .tg-box p,
-[data-theme="dark"] .tg-box div { color: #e8e8f0 !important; }
-
-[data-theme="dark"] .stats-grid {
-  background: #1a1a2e !important;
-  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-}
-
-[data-theme="dark"] .stat-item { border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important; }
-[data-theme="dark"] .stat-l { color: #9ca3af !important; }
-[data-theme="dark"] .fac-icon,
-[data-theme="dark"] .cc-icon,
-[data-theme="dark"] .step-icon {
-  background: linear-gradient(135deg, #2d1b69, #1e1b4b) !important;
-  border-color: color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
-}
-
-[data-theme="dark"] .tg-head {
-  background: linear-gradient(135deg, #1e1b4b, #2d1b69) !important;
-  border-bottom-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-}
-
-[data-theme="dark"] .tg-msg {
-  background: #2d1b69 !important;
-  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-}
-
-[data-theme="dark"] .tg-msg p { color: #e8e8f0 !important; }
-
-[data-theme="dark"] .tg-foot {
-  border-top-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  background: #1a1a2e !important;
-}
-[data-theme="dark"] .tg-msg-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  border-color: color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .tg-msg {
-  background: color-mix(in srgb, var(--color-brand) 15%, transparent) !important;
-  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-}
-
-[data-theme="dark"] .tg-msg p { color: #e8e8f0 !important; }
-[data-theme="dark"] .tg-msg time { color: #9ca3af !important; }
-
-[data-theme="dark"] .tg-head {
-  background: linear-gradient(135deg, #1e1b4b, #2d1b69) !important;
-}
-
-[data-theme="dark"] .tg-head div { color: #e8e8f0 !important; }
-[data-theme="dark"] .tg-head span { color: #9ca3af !important; }
-[data-theme="dark"] .fac-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .cc-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .step-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
-  color: #a78bfa !important;
-}
-[data-theme="dark"] .fac-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .cc-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .step-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .nav-logo-mark,
-[data-theme="dark"] img[alt="KIU logo"] {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  border-radius: 8px;
-}
-[data-theme="dark"] .nav-logo-img {
-  background: color-mix(in srgb, var(--color-brand) 15%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
-}
-[data-theme="dark"] .nav-logo-img {
-  background: transparent !important;
-  border: none !important;
-}
-
-[data-theme="dark"] .hero-badge {
-  background: rgba(167, 139, 250, 0.15) !important;
-  border-color: rgba(167, 139, 250, 0.4) !important;
-  color: #c4b5fd !important;
-}
-
-[data-theme="dark"] .hero-badge span {
-  background: #c4b5fd !important;
-}
-[data-theme="dark"] .achieve-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .vacancy-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .about-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .hemis-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .doc-icon {
-  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-  color: #a78bfa !important;
-}
-
-[data-theme="dark"] .partner-flag {
-  background: color-mix(in srgb, var(--color-brand) 15%, transparent) !important;
-  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
-}
-
-[data-theme="dark"] .teacher-avatar {
-  opacity: 0.9;
-}
-
-[data-theme="dark"] .gallery-placeholder {
-  opacity: 0.7;
-}
-.vacancies-content .reveal {
+}.vacancies-content .reveal {
   opacity: 1 !important;
   transform: translateY(0) !important;
-}
-[data-theme="dark"] .section-badge {
-  background: rgba(167, 139, 250, 0.15) !important;
-  border-color: rgba(167, 139, 250, 0.5) !important;
-  color: #c4b5fd !important;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+}@keyframes spin { to { transform: rotate(360deg); } }
 
 /* Teachers page responsive */
 @media (max-width: 640px) {
@@ -440,7 +228,7 @@ details[open] .details-arrow { transform: rotate(180deg); }
   pointer-events: none !important;
 }
 .nav-group-panel-inner {
-  background: var(--bg);
+  background: var(--color-surface-3);
   border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
@@ -468,7 +256,7 @@ details[open] .details-arrow { transform: rotate(180deg); }
 /* Hover — "shu yerga bosaman" degan aniq signal, har doim ustunlik qiladi:
    joriy sahifa ustidan hover qilinsa ham to'liq purple ko'rinadi */
 .nav-group-item:hover {
-  background: var(--purple);
+  background: var(--color-brand-fill);
   color: var(--color-on-brand);
   border-left-color: var(--purple);
   font-weight: 600;
@@ -481,3 +269,7 @@ details[open] .details-arrow { transform: rotate(180deg); }
 @media (max-width: 768px) {
   .container-wide { padding: 0 1.25rem; }
 }
+
+/* Dekorativ rasm/placeholder xiraligi — qiymat tokenda (Dark'da pasayadi) */
+.teacher-avatar { opacity: var(--opacity-avatar); }
+.gallery-placeholder { opacity: var(--opacity-placeholder); }

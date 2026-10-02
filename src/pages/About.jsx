@@ -28,7 +28,7 @@ export default function About() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 {[
                   { n: '6875', k: 'students', color: 'var(--color-brand)' },
-                  { n: '151', k: 'teachers', color: 'var(--color-brand-hover)' },
+                  { n: '151', k: 'teachers', color: 'var(--color-brand-strong)' },
                   { n: '10', k: 'programs', color: '#0088cc' },
                   { n: '8', k: 'awards', color: '#059669' },
                   { n: '2', k: 'grants', color: '#d97706' },

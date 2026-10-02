@@ -19,12 +19,12 @@ export default function QuizStage({ current, selected, busy, onPick }) {
           <span style={{ fontWeight: 600, color: 'var(--color-brand)' }}>{Math.round(pct)}%</span>
         </div>
         <div style={{ height: 7, background: 'var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg,var(--color-brand),var(--color-brand-hover))', borderRadius: 10, transition: 'width .4s ease' }} />
+          <div style={{ height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, var(--color-brand-fill), var(--color-brand-hover))', borderRadius: 10, transition: 'width .4s ease' }} />
         </div>
         {/* step dots */}
         <div style={{ display: 'flex', gap: 5, marginTop: 8, justifyContent: 'center' }}>
           {QUESTIONS.map((_, i) => (
-            <div key={i} style={{ width: i === current ? 18 : 7, height: 7, borderRadius: 10, background: i < current ? 'var(--color-brand)' : i === current ? 'linear-gradient(90deg,var(--color-brand),var(--color-brand-hover))' : 'var(--border)', transition: 'all .3s' }} />
+            <div key={i} style={{ width: i === current ? 18 : 7, height: 7, borderRadius: 10, background: i < current ? 'var(--color-brand)' : i === current ? 'linear-gradient(90deg, var(--color-brand-fill), var(--color-brand-hover))' : 'var(--border)', transition: 'all .3s' }} />
           ))}
         </div>
       </div>
@@ -58,7 +58,7 @@ export default function QuizStage({ current, selected, busy, onPick }) {
               onMouseEnter={e => { if (!isSel && !busy) { e.currentTarget.style.borderColor = 'var(--color-brand)'; e.currentTarget.style.background = 'color-mix(in srgb, var(--color-brand) 5%, transparent)' }}}
               onMouseLeave={e => { if (!isSel) { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--bg)' }}}>
               {/* letter/check */}
-              <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .18s', background: isSel ? 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))' : 'var(--bg-2)', border: `2px solid ${isSel ? 'var(--color-brand)' : 'var(--border)'}`, color: isSel ? '#fff' : 'var(--muted)', fontSize: 12, fontWeight: 700 }}>
+              <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .18s', background: isSel ? 'var(--gradient-brand)' : 'var(--bg-2)', border: `2px solid ${isSel ? 'var(--color-brand)' : 'var(--border)'}`, color: isSel ? '#fff' : 'var(--muted)', fontSize: 12, fontWeight: 700 }}>
                 {isSel ? <IcCheck s={13} c="#fff" /> : ['A','B','C','D'][i]}
               </div>
               <span style={{ lineHeight: 1.5 }}>{t(`sortingHat.questions.${QUESTIONS[current].id}.opts.${opt.id}`)}</span>

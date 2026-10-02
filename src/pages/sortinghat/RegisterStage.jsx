@@ -11,7 +11,7 @@ export default function RegisterStage({ userInfo, setUserInfo, fieldErrors, onBa
     <div>
       <div className="card" style={{ marginBottom: '1.25rem', textAlign: 'center', padding: '1.75rem', borderColor: 'color-mix(in srgb, var(--color-brand) 20%, transparent)' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
             </svg>
@@ -43,12 +43,12 @@ export default function RegisterStage({ userInfo, setUserInfo, fieldErrors, onBa
       </div>
       <div style={{ display: 'flex', gap: 10 }}>
         <button onClick={onBack}
-          style={{ padding: '12px 20px', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', color: 'var(--color-on-brand)', border: 'none', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 6 }}>
+          style={{ padding: '12px 20px', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 6 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
           {t('sortingHat.register.back')}
         </button>
         <button onClick={onSubmit} disabled={!userInfo.name.trim() || !userInfo.phone.trim()}
-          style={{ flex: 1, padding: '12px 20px', background: !userInfo.name.trim() || !userInfo.phone.trim() ? 'var(--border)' : 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', color: 'var(--color-on-brand)', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: !userInfo.name.trim() || !userInfo.phone.trim() ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', transition: 'all .2s' }}>
+          style={{ flex: 1, padding: '12px 20px', background: !userInfo.name.trim() || !userInfo.phone.trim() ? 'var(--border)' : 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: !userInfo.name.trim() || !userInfo.phone.trim() ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', transition: 'all .2s' }}>
           {t('sortingHat.register.start')}
         </button>
       </div>

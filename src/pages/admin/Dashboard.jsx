@@ -3,6 +3,7 @@ import { useNavigate, NavLink, Routes, Route } from 'react-router-dom'
 import { Ic } from './shared/Icons.jsx'
 import { NAV } from './shared/constants'
 import { installUnauthorizedHandler } from './shared/api'
+import useTheme from '../../hooks/useTheme'
 import Stats from './Stats.jsx'
 import NewsAdmin from './NewsAdmin.jsx'
 import EventsAdmin from './EventsAdmin.jsx'
@@ -15,14 +16,13 @@ import ProfileAdmin from './ProfileAdmin.jsx'
 export default function Dashboard() {
   const navigate    = useNavigate()
   const [collapsed, setCollapsed] = useState(false)
-  const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark')
+  const [dark, setDark] = useTheme()
   const [search, setSearch] = useState('')
   const tk = localStorage.getItem('kiu_token')
 
   useEffect(() => { if (!tk) navigate('/admin/login') }, [tk, navigate])
   // Sessiya tugasa (401) — loginga qaytaramiz
   useEffect(() => installUnauthorizedHandler(() => navigate('/admin/login')), [navigate])
-  useEffect(() => { document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light'); localStorage.setItem('theme', dark ? 'dark' : 'light') }, [dark])
 
   const filteredNav = NAV.filter(n => search === '' || n.label.toLowerCase().includes(search.toLowerCase()))
 

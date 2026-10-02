@@ -66,7 +66,7 @@ export default function TelegramPanel() {
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text)' }}>{config.telegram.username}</div>
           <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t('telegram.channel')}</div>
         </div>
-        <span style={{ marginLeft: 'auto', background: 'linear-gradient(135deg, var(--color-brand), var(--color-brand-hover))', color: 'var(--color-on-brand)', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20 }}>LIVE</span>
+        <span style={{ marginLeft: 'auto', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20 }}>LIVE</span>
       </div>
 
       {/* Messages */}

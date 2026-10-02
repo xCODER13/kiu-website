@@ -113,7 +113,7 @@ export default function ApplyModal({ onClose }) {
           </>
         ) : (
           <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'linear-gradient(135deg, var(--purple-pale), var(--purple-light))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--color-brand)' }}>
+            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--color-brand)' }}>
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <h2 style={{ fontSize: '1.3rem', color: 'var(--text)', marginBottom: '.5rem' }}>{t('applyModal.successTitle')}</h2>
