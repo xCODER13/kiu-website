@@ -31,7 +31,7 @@ export default function Faculty() {
 
   return (
     <div className="fade-up">
-      <PageHero title={t('faculty.title')} sub={t('faculty.subtitle')}>
+      <PageHero title={t('faculty.title')} sub={t('faculty.subtitle')} className="fac-hero">
         {/* Tab almashtirgich (pill): faol holat `data-active`, `aria-pressed` ekran o'quvchiga holatni aytadi */}
         <div className="kiu-tab-wrap">
           {['bakalavr', 'magistratura'].map(tabKey => (
@@ -53,7 +53,7 @@ export default function Faculty() {
         </div>
       </PageHero>
 
-      <section className="page-body">
+      <section className="page-body fac-page">
         <div className="container-wide">
           {/* Statistika: bitta karta ichida 4 katak */}
           <div className="card fac-stats">

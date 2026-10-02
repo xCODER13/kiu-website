@@ -62,10 +62,9 @@ describe('Faculty (EN)', () => {
 })
 
 describe('FAQ (EN)', () => {
-  it("savollar inglizcha, JSON-LD (FAQPage) ham inglizcha", async () => {
-    const user = userEvent.setup()
+  it("savollar inglizcha, JSON-LD (FAQPage) ham inglizcha", () => {
     at('/en/faq', <FAQ />)
-    await user.click(screen.getByText('When does admission start?'))
+    // 6.12b: birinchi savol dastlab ochiq (taxta)
     expect(screen.getByText(/Admission runs every year from July 1 to August 20/)).toBeInTheDocument()
     const ld = JSON.parse(document.head.querySelector('script#jsonld-faq').textContent)
     expect(ld['@type']).toBe('FAQPage')

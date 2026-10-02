@@ -37,7 +37,7 @@ export default function Achievements() {
                 <div className="card card--lift info-card award-card">
                   <div className="tile tile--64"><Icon size={30}>{ICONS[a.icon]}</Icon></div>
                   <span className="pill-brand">{a.year}</span>
-                  <h3 className="info-card__title">{t(`achievements.awards.${a.id}.title`)}</h3>
+                  <h2 className="info-card__title">{t(`achievements.awards.${a.id}.title`)}</h2>
                   <p className="info-card__desc">{t(`achievements.awards.${a.id}.org`)}</p>
                 </div>
               </div>

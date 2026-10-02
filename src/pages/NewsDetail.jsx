@@ -6,6 +6,7 @@ import { getCategoryToken, getCategoryLabel } from '../utils/newsCategories'
 import { parseImages } from './news/utils'
 import ContentLangNote from '../i18n/ContentLangNote'
 import config from '../config'
+import { formatDateLong } from '../utils/formatDate'
 
 const ChevronLeft = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -128,29 +129,39 @@ export default function NewsDetail() {
   )
 
   if (error || !news) return (
-    <div className="empty-state detail-missing">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true">
-        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      <p className="empty-state-title">{t('news.notFound')}</p>
-      <p className="empty-state-hint">{t('news.notFoundHint')}</p>
-      <button type="button" onClick={() => navigate('/news')} className="btn btn-primary detail-missing__btn">
-        {t('news.backArrow')}
-      </button>
-    </div>
+    <section className="page-body detail-missing">
+      <div className="container">
+        <div className="detail-missing__tile" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h1 className="detail-missing__title">{t('news.notFound')}</h1>
+        <p className="detail-missing__hint">{t('news.notFoundHint')}</p>
+        <button type="button" onClick={() => navigate('/news')} className="btn btn-primary detail-missing__btn">
+          <ChevronLeft />
+          {t('news.back')}
+        </button>
+      </div>
+    </section>
   )
 
   return (
     <div className="fade-up">
 
-      {/* Hero: orqaga + meta + sarlavha (spec 6.11 — umumiy hero foni) */}
-      <section className="detail-hero">
+      {/* Hero: faqat "orqaga" havolasi (taxta) — meta, sarlavha va matn pastdagi tanada */}
+      <section className="inner-hero detail-hero">
         <div className="container detail-wrap">
           <button type="button" onClick={() => navigate('/news')} className="back-link">
             <ChevronLeft />
             {t('news.back')}
           </button>
+        </div>
+      </section>
 
+      {/* Maqola */}
+      <section className="page-body detail-body">
+        <div className="container detail-wrap detail-flow">
           <div className="detail-meta">
             {news.category && (
               <span className="news-card-cat detail-cat" style={{ '--cat': getCategoryToken(news.category) }}>
@@ -159,12 +170,13 @@ export default function NewsDetail() {
               </span>
             )}
             <span className="detail-date">
-              {new Date(news.createdAt).toLocaleDateString(t('meta.dateLocale'), {
-                year: 'numeric', month: 'long', day: 'numeric',
-              })}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              {formatDateLong(news.createdAt, t)}
             </span>
             <span className="detail-views">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
               </svg>
@@ -174,16 +186,13 @@ export default function NewsDetail() {
 
           <h1 lang="uz" className="detail-title">{news.title}</h1>
           <ContentLangNote />
-        </div>
-      </section>
 
-      {/* Maqola */}
-      <section className="section detail-body">
-        <div className="container detail-wrap">
           <ImageCarousel imgs={parseImages(news.image)} title={news.title} />
 
           {news.content ? (
-            <div lang="uz" className="detail-content">{news.content}</div>
+            <div lang="uz" className="detail-content">
+              {news.content.split(/\n{2,}/).map((para, i) => <p key={i}>{para}</p>)}
+            </div>
           ) : (
             <p className="detail-empty">{t('news.noContent')}</p>
           )}
@@ -193,7 +202,10 @@ export default function NewsDetail() {
               <ChevronLeft />
               {t('news.back')}
             </button>
-            <a href={config.telegram.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
+            <a href={config.telegram.url} target="_blank" rel="noopener noreferrer" className="detail-tg">
+              <span className="detail-tg__icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+              </span>
               {config.telegram.username}
             </a>
           </div>

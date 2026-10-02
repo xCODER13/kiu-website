@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink } from '../../i18n/router'
 import { getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
+import { formatDate } from '../../utils/formatDate'
 
 // Home uchun ixchamlashtirilgan yangiliklar karuseli (6.11c5): ko'rinish Yangiliklar sahifasi karuseli bilan umumiy
 // (`.carousel*` klasslari, pages.css). Mantiq o'zgarmagan: 5 s avtoaylanish, sichqoncha ustida pauza.
@@ -48,7 +49,7 @@ export default function HomeNewsCarousel({ items }) {
         <h3 lang="uz" className="carousel-title">
           <NavLink to={`/news/${item._id}`} className="carousel-title__link">{item.title}</NavLink>
         </h3>
-        <time className="carousel-date" dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}</time>
+        <time className="carousel-date" dateTime={item.createdAt}>{formatDate(item.createdAt)}</time>
       </div>
 
       {items.length > 1 && (

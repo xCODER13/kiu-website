@@ -89,7 +89,7 @@ export default function TelegramPanel({ single = false }) {
       <div className="tg-foot">
         {/* rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab bloklamaydi —
             noopener ham qo'shildi (tabnabbing'dan himoya, Documents.jsx'dagi bilan bir xil tuzatish) */}
-        <a href={config.telegram.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary tg-subscribe">
+        <a href={config.telegram.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-cta tg-subscribe">
           <TgIcon />
           {t('telegram.subscribe')}
         </a>

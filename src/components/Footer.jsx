@@ -34,7 +34,7 @@ export default function Footer() {
           <div className="footer-brandline">
             <Logo height={44} decorative className="site-logo site-logo--footer" />
             <span className="footer-brandline__sep" aria-hidden="true" />
-            <h3 className="footer-title">{t('university.name')}</h3>
+            <h2 className="footer-title">{t('university.name')}</h2>
           </div>
           <p className="footer-about">
             {t('footer.about', { year: config.university.founded })}
@@ -52,7 +52,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="footer-heading">{t('footer.university')}</h4>
+          <h3 className="footer-heading">{t('footer.university')}</h3>
           <div className="footer-links">
             {[
               ['/about', 'about'],
@@ -68,7 +68,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="footer-heading">{t('footer.students')}</h4>
+          <h3 className="footer-heading">{t('footer.students')}</h3>
           <div className="footer-links">
             {[
               ['/faculty', 'faculty'],
@@ -85,7 +85,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-contact">
-          <h4 className="footer-heading">{t('footer.contact')}</h4>
+          <h3 className="footer-heading">{t('footer.contact')}</h3>
           <div className="footer-rows">
             <p className="footer-row">
               <span className="footer-tile"><Icon size={18}><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></Icon></span>

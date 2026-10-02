@@ -28,7 +28,7 @@ export default function FacultyCard({ f: program, index, onClick }) {
     >
       <div className="fac-icon">{IC[f.icon](24)}</div>
 
-      <h3 className="fac-name">{f.name}</h3>
+      <h2 className="fac-name">{f.name}</h2>
 
       <div className="fac-meta">
         <span className="fac-meta__sun">{IC.sun(14)}</span>

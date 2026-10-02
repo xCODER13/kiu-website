@@ -35,8 +35,8 @@ export default function Hemis() {
     <div className="fade-up">
       <PageHero title={t('hemis.title')} sub={t('hemis.subtitle')} />
 
-      <section className="section">
-        <div className="container container--820">
+      <section className="page-body">
+        <div className="container container--820 hemis-flow">
           <div className="cards-2">
             {PORTALS.map((p, i) => (
               <div key={p.key} className={`rv-item reveal${i ? ` reveal-delay-${i}` : ''}`}>
@@ -46,7 +46,7 @@ export default function Hemis() {
                   <p className="hemis-card__desc">{t(`hemis.${p.key}Desc`)}</p>
                   {/* rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab bloklamaydi —
                       tabnabbing'dan himoya uchun noopener ham kerak */}
-                  <a href={p.href} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-block hemis-card__btn">
+                  <a href={p.href} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-cta btn-block hemis-card__btn">
                     {p.label}
                     <ExternalIcon />
                   </a>
@@ -55,7 +55,7 @@ export default function Hemis() {
             ))}
           </div>
 
-          <div className="rv-item reveal hemis-help-wrap">
+          <div className="rv-item reveal">
             <div className="card hemis-help">
               <div className="tile"><Icon><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></Icon></div>
               <div>

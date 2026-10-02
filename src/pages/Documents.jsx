@@ -36,7 +36,7 @@ export default function Documents() {
                     <div className="tile tile--56"><Icon size={24}>{DOC_ICON[doc.icon]}</Icon></div>
                     <span className="pill-brand" aria-hidden="true">PDF</span>
                   </div>
-                  <h3 className="doc-card__title">{t(`documents.items.${doc.id}.title`)}</h3>
+                  <h2 className="doc-card__title">{t(`documents.items.${doc.id}.title`)}</h2>
                   <p className="doc-card__desc">{t(`documents.items.${doc.id}.desc`)}</p>
                   <span className="doc-card__open">
                     {t('documents.open')}

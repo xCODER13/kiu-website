@@ -92,8 +92,8 @@ export default function Gallery() {
     <div className="fade-up">
       <PageHero title={t('gallery.title')} sub={t('gallery.subtitle')} note={<ContentLangNote />} />
 
-      <section className="section">
-        <div className="container container-wide">
+      <section className={`page-body${!loading && error ? ' page-body--error' : ''}${!loading && !error && photos.length === 0 ? ' page-body--empty' : ''}`}>
+        <div className={`container ${!loading && error ? 'container--920' : 'container-wide'}`}>
           {loading && (
             <div className="page-loading">
               <div className="spinner" />
@@ -138,7 +138,7 @@ export default function Gallery() {
                       </span>
                     </div>
                     <div className="photo-card__body">
-                      <h3 className="photo-card__title" lang="uz">{p.title}</h3>
+                      <h2 className="photo-card__title" lang="uz">{p.title}</h2>
                       <p className="photo-card__desc" lang="uz">{p.desc}</p>
                     </div>
                   </div>

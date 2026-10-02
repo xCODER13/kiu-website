@@ -14,7 +14,7 @@ export default function Map() {
   return (
     <div className="fade-up">
       <PageHero title={t('map.title')} sub={t('map.subtitle')} />
-      <section className="section">
+      <section className="page-body">
         <div className="container">
           <div className="map-grid">
             {CAMPUSES.map((c, i) => {

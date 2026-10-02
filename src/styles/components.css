@@ -22,7 +22,7 @@
   /* ── Konteyner (global.css dan ko'chirildi, 5a) ─────────────────────
      Qatlamsiz bo'lsa, `.container` + `.footer-grid` kabi juftlikda uning `padding`i
      qatlamli klassdagi `padding-bottom`ni bosib o'tardi. */
-  .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+  .container { max-width: 1264px; margin: 0 auto; padding: 0 2rem; }   /* 6.12a: taxta — kontent 1200 px (1264 − 2×32) */
   .container-wide { max-width: 1264px; margin: 0 auto; padding: 0 2rem; }
   @media (max-width: 768px) {
     .container { padding: 0 1.25rem; }

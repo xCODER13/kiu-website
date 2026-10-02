@@ -22,7 +22,7 @@ export default function NotFound() {
   const canGoBack = key !== 'default'
 
   return (
-    <section className="section fade-up">
+    <section className="page-body notfound-body fade-up">
       <div className="container notfound">
         <div className="notfound__code" role="img" aria-label="404">
           <span className="notfound__digit" aria-hidden="true">4</span>

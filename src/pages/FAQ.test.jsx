@@ -4,19 +4,22 @@ import userEvent from '@testing-library/user-event'
 import FAQ from './FAQ'
 
 describe('FAQ (smoke test)', () => {
-  it("qulamasdan render bo'ladi, barcha savollar ko'rsatiladi, javoblar dastlab yopiq", () => {
+  it("qulamasdan render bo'ladi, barcha savollar ko'rsatiladi; taxta bo'yicha faqat birinchi javob dastlab ochiq", () => {
     render(<FAQ />)
     expect(screen.getByText('Qabul qachon boshlanadi?')).toBeInTheDocument()
-    expect(screen.queryByText(/Qabul har yili 1-iyuldan/)).not.toBeInTheDocument()
+    expect(screen.getByText(/Qabul har yili 1-iyuldan/)).toBeInTheDocument()
+    expect(screen.queryByText(/Qanday hujjatlar kerak\? javob/)).not.toBeInTheDocument()
+    expect(document.querySelectorAll('[aria-expanded="true"]')).toHaveLength(1)
   })
 
   it("savolga bosilganda javob ochiladi, qayta bosilganda yopiladi", async () => {
     const user = userEvent.setup()
     render(<FAQ />)
-    await user.click(screen.getByText('Qabul qachon boshlanadi?'))
     expect(screen.getByText(/Qabul har yili 1-iyuldan/)).toBeInTheDocument()
     await user.click(screen.getByText('Qabul qachon boshlanadi?'))
     expect(screen.queryByText(/Qabul har yili 1-iyuldan/)).not.toBeInTheDocument()
+    await user.click(screen.getByText('Qabul qachon boshlanadi?'))
+    expect(screen.getByText(/Qabul har yili 1-iyuldan/)).toBeInTheDocument()
   })
 
   it("xorijiy hamkorlik javobi International sahifasidagi davlatlarga mos (Germaniya yo'q)", async () => {
@@ -36,8 +39,13 @@ describe('FAQ — qayta dizayn (Bosqich 6.11c2)', () => {
     const cards = container.querySelectorAll('.faq-card')
     expect(cards.length).toBeGreaterThan(3)
     const first = screen.getByRole('button', { name: /Qabul qachon boshlanadi\?/ })
-    expect(first).toHaveAttribute('aria-expanded', 'false')
-    expect(first.closest('.faq-card')).toHaveAttribute('data-open', 'false')
+    const second = screen.getByRole('button', { name: /Qanday hujjatlar kerak\?/ })
+    // taxta: birinchi karta dastlab ochiq, qolganlari yopiq
+    expect(first).toHaveAttribute('aria-expanded', 'true')
+    expect(first.closest('.faq-card')).toHaveAttribute('data-open', 'true')
+    expect(second).toHaveAttribute('aria-expanded', 'false')
+    expect(second.closest('.faq-card')).toHaveAttribute('data-open', 'false')
+    await user.click(second)
     await user.click(first)
     expect(first).toHaveAttribute('aria-expanded', 'true')
     expect(first.closest('.faq-card')).toHaveAttribute('data-open', 'true')
@@ -50,7 +58,7 @@ describe('FAQ — qayta dizayn (Bosqich 6.11c2)', () => {
     const user = userEvent.setup()
     const { container } = render(<FAQ />)
     const buttons = screen.getAllByRole('button')
-    await user.click(buttons[0])
+    await user.click(buttons[2])
     await user.click(buttons[1])
     expect(container.querySelectorAll('[aria-expanded="true"]')).toHaveLength(1)
     expect(buttons[1]).toHaveAttribute('aria-expanded', 'true')

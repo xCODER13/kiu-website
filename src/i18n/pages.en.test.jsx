@@ -103,7 +103,7 @@ describe('Home (EN)', () => {
     expect(screen.getAllByText('General').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Education').length).toBeGreaterThan(0)
     // sana inglizcha (en-GB: kun/oy/yil)
-    expect(screen.getAllByText('02/01/2026').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('02.01.2026').length).toBeGreaterThan(0)
     const detailLinks = screen.getAllByRole('link').filter(a => a.getAttribute('href')?.includes('/news/'))
     expect(detailLinks.length).toBeGreaterThan(0)
     detailLinks.forEach(a => expect(a.getAttribute('href')).toMatch(/^\/en\/news\/n[12]$/))

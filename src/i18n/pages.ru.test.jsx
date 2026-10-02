@@ -160,10 +160,9 @@ describe('Faculty (RU)', () => {
 })
 
 describe('FAQ (RU)', () => {
-  it('savollar ruscha, JSON-LD (FAQPage) ham ruscha', async () => {
-    const user = userEvent.setup()
+  it('savollar ruscha, JSON-LD (FAQPage) ham ruscha', () => {
     at('/ru/faq', <FAQ />)
-    await user.click(screen.getByText('Когда начинается приём?'))
+    // 6.12b: birinchi savol dastlab ochiq (taxta)
     expect(screen.getByText(/Приём ежегодно проходит с 1 июля по 20 августа/)).toBeInTheDocument()
     const ld = JSON.parse(document.head.querySelector('script#jsonld-faq').textContent)
     expect(ld['@type']).toBe('FAQPage')

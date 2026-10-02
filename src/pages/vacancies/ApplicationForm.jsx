@@ -54,7 +54,7 @@ export default function ApplicationForm({
   )
 
   return (
-    <div className="vac-form-wrap">
+    <div className={`vac-form-wrap${sent ? ' vac-form-wrap--sent' : ''}`}>
       {!sent ? (
         <div className="card vac-form-card">
           <h2 className="vac-form-title">{t('vacancies.form.title')}</h2>
@@ -175,10 +175,10 @@ export default function ApplicationForm({
             <Trans i18nKey="vacancies.form.successText" values={{ name: form.fullName }} components={{ b: <strong className="vac-strong" /> }} />
           </p>
           <div className="vac-success__actions">
-            <button type="button" onClick={onNewApplication} className="btn btn-primary">
+            <button type="button" onClick={onNewApplication} className="btn btn-primary btn-cta">
               {t('vacancies.form.newApplication')}
             </button>
-            <button type="button" onClick={() => setActiveTab('info')} className="btn btn-primary">
+            <button type="button" onClick={() => setActiveTab('info')} className="btn btn-primary btn-cta">
               {t('vacancies.form.backToInfo')}
             </button>
           </div>

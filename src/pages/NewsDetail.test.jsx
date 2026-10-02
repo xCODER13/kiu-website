@@ -86,11 +86,12 @@ describe('NewsDetail — JS hover va <style> CSS ga ko\'chirilgan (Bosqich 5c)',
 describe('NewsDetail — qayta dizayn (Bosqich 6.11b)', () => {
   const stub = article => vi.stubGlobal('fetch', vi.fn(url => Promise.resolve({ ok: true, json: () => Promise.resolve(String(url).endsWith('/view') ? {} : article) })))
 
-  it("hero: orqaga, toifa belgisi (`--cat` — yagona inline qiymat), sana, ko'rishlar va h1; maqola matni", async () => {
+  it("hero: faqat orqaga; tana: toifa belgisi (`--cat` — yagona inline qiymat), sana, ko'rishlar va h1; maqola matni", async () => {
     stub(ARTICLE)
     const { container } = renderDetail()
     const h1 = await screen.findByRole('heading', { level: 1, name: ARTICLE.title })
-    expect(container.querySelector('.detail-hero')).toContainElement(h1)
+    expect(container.querySelector('.detail-body')).toContainElement(h1)
+    expect(container.querySelector('.detail-hero .back-link')).toBeInTheDocument()
     const cat = container.querySelector('.detail-cat')
     expect(cat).toHaveClass('news-card-cat')
     expect(cat.getAttribute('style')).toBe('--cat: var(--chart-1);')
@@ -116,7 +117,7 @@ describe('NewsDetail — qayta dizayn (Bosqich 6.11b)', () => {
     expect(tg).toHaveAttribute('href', 'https://t.me/kiu_uz')
     expect(tg).toHaveAttribute('target', '_blank')
     expect(tg).toHaveAttribute('rel', 'noopener noreferrer')
-    expect(tg).toHaveClass('btn', 'btn-secondary')
+    expect(tg).toHaveClass('detail-tg')
   })
 
   it("bitta rasm: `.gallery--single`, yuklanmasa galereya `data-broken` bilan yashiriladi (inline `display` yo'q)", async () => {
@@ -162,8 +163,8 @@ describe('NewsDetail — qayta dizayn (Bosqich 6.11b)', () => {
     unmount()
     vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false })))
     const r = renderDetail()
-    expect(await screen.findByText('Yangilik topilmadi')).toHaveClass('empty-state-title')
-    expect(screen.getByText(/Havola eskirgan/)).toHaveClass('empty-state-hint')
+    expect(await screen.findByText('Yangilik topilmadi')).toHaveClass('detail-missing__title')
+    expect(screen.getByText(/o'chirilgan/)).toHaveClass('detail-missing__hint')
     expect(screen.getByRole('button', { name: /Yangiliklarga qaytish/ })).toHaveClass('btn', 'btn-primary')
     expect(r.container.querySelectorAll('[style]')).toHaveLength(0)
   })
