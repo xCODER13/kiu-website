@@ -106,8 +106,7 @@
 
   /* ═══ Bosqich 5c ═══════════════════════════════════════════════════ */
 
-  /* ── Home: animatsiyalar (avval Home.jsx ichidagi <style> da edi) ── */
-  @keyframes homeCarouselFade { from { opacity: 0; transform: scale(1.02); } to { opacity: 1; transform: scale(1); } }
+  /* ── Home: animatsiyalar (avval Home.jsx ichidagi <style> da edi; `homeCarouselFade` 6.11c5 da olib tashlandi — karusel `carouselFadeIn` ishlatadi) ── */
   @keyframes homeSkelShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   @keyframes homeSectionFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -218,7 +217,8 @@
     background-image: var(--gradient-hero-glow);
   }
   /* Nuqtali qatlam */
-  .inner-hero::before {
+  .inner-hero::before,
+  .home-hero::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -227,7 +227,8 @@
     background-size: 22px 22px;
   }
   /* Pastda sahifa foniga so'nadi */
-  .inner-hero::after {
+  .inner-hero::after,
+  .home-hero::after {
     content: "";
     position: absolute;
     inset: auto 0 0;
@@ -2141,5 +2142,156 @@
     .panel { padding: 18px 16px; }
     .vac-row { grid-template-columns: minmax(0, 1fr); }
     .card.vac-success { padding: 40px 20px; }
+  }
+
+  /* ══ Bosqich 6.11c5: Bosh sahifa (Hero, Biz haqimizda, Yangiliklar) — spec 6.10 ═══════════════
+     Faqat token (hex yo'q). Hero foni `.inner-hero` bilan umumiy (yuqorida). Yangilik karusel/kartasi Yangiliklar
+     sahifasi klasslarini qayta ishlatadi (`.carousel*`, `.card.news-card`). */
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .home-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 72px 0 64px;
+    background-image: var(--gradient-hero-glow);
+  }
+  .home-hero__grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+  .home-hero__text,
+  .home-hero__photo { min-width: 0; }
+  .home-hero__title {
+    margin: 0 0 16px;
+    font-size: clamp(2.25rem, 1.2rem + 3.6vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--color-text);
+  }
+  .home-hero__lead { max-width: 520px; margin: 0 0 28px; font-size: 1.125rem; line-height: 1.65; color: var(--color-text-muted); }
+  .home-hero__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
+
+  /* Statistika plitkalari: Light — oq fon, Dark — yarim shaffof to'q; sonlar Light'da `--color-text`, Dark'da `--color-brand` */
+  .home-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; max-width: 560px; }
+  .stat-tile {
+    padding: 16px 10px;
+    text-align: center;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--stat-tile-bg);
+    box-shadow: var(--shadow-card-inset);
+  }
+  .stat-tile__num {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--stat-tile-num);
+  }
+  /* "2022" — oltin (spec qarori 16: Light'da kontrast 2.10 — qabul qilingan istisno; axe `.stat-2022` ni chiqarib tashlaydi) */
+  .stat-tile[data-stat="founded"] .stat-tile__num { color: var(--color-accent); }
+  .stat-tile__label { margin-top: 4px; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+  /* Kampus rasmi: orqasida yumshoq wine va oltin dog' (blur) */
+  .home-hero__photo { position: relative; isolation: isolate; }
+  .home-hero__photo::before,
+  .home-hero__photo::after,
+  .home-about__photo::before,
+  .home-about__photo::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .home-hero__photo::before { top: -9%; right: -7%; width: 58%; background: var(--blob-wine); opacity: calc(0.22 * var(--blob-strength)); filter: blur(36px); }
+  .home-hero__photo::after { bottom: -10%; left: -8%; width: 44%; background: var(--blob-gold); opacity: calc(0.3 * var(--blob-strength)); filter: blur(36px); }
+  .home-hero__frame {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    border: 1px solid var(--color-border);
+    border-radius: 22px;
+    box-shadow: var(--shadow-lg);
+  }
+  .home-hero__frame img,
+  .home-about__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .campus-label {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 12px;
+    background: var(--campus-label-bg);
+    backdrop-filter: blur(6px);
+    color: var(--color-on-brand);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  /* ── Biz haqimizda ────────────────────────────────────────────────── */
+  .home-about { overflow-x: clip; }
+  .home-about__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .home-about__grid > * { min-width: 0; }
+  .home-about__text { margin: 0 0 16px; font-size: 1rem; line-height: 1.8; color: var(--color-text-muted); }
+  .home-about__text + .home-about__text { margin-bottom: 28px; }
+  /* 2-kampus rasmi: ramkasiz, orqasida oltin (yuqori-o'ngda) va wine (pastki-chapda) yumshoq yorug'lik */
+  .home-about__photo { position: relative; isolation: isolate; }
+  .home-about__photo::before { top: -12%; right: -9%; width: 56%; background: var(--blob-gold); opacity: calc(0.55 * var(--blob-strength)); filter: blur(38px); }
+  .home-about__photo::after { bottom: -12%; left: -9%; width: 56%; background: var(--blob-wine); opacity: calc(0.5 * var(--blob-strength)); filter: blur(36px); }
+  .home-about__frame { position: relative; overflow: hidden; aspect-ratio: 3 / 2; border-radius: 20px; }
+  .home-features { margin-top: 56px; }
+  .card.home-feature { padding: 22px; border-radius: 20px; }
+  .home-feature .tile { margin-bottom: 14px; }
+  .home-feature__title { margin: 0 0 6px; font-size: 1rem; font-weight: 700; line-height: 1.35; color: var(--color-text); }
+  .home-feature__desc { margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted); }
+  /* Birinchi karta — "faol" urg'u (Dark'da rangli soya o'rniga chegara + yengil glow — tokenda) */
+  .card.home-feature[data-featured="true"] {
+    border-color: var(--color-brand);
+    background: var(--gradient-card-active);
+    box-shadow: var(--shadow-card-active);
+  }
+
+  /* ── Yangiliklar ──────────────────────────────────────────────────── */
+  .section-title--center { text-align: center; }
+  .section-title--center::after { left: 50%; transform: translateX(-50%); }
+  .home-news { background: var(--color-surface-2); }
+  .home-news__head { margin-bottom: 32px; text-align: center; }
+  .home-news__head .section-title { margin-bottom: 14px; }
+  .home-news__sub { margin: 0; font-size: 1rem; color: var(--color-text-muted); }
+  .home-news .carousel { height: 440px; margin: 0 0 24px; }
+  .card.home-news-card { text-decoration: none; color: var(--color-text); }
+  @media (prefers-reduced-motion: no-preference) {
+    .home-news-card { animation: homeSectionFadeIn 0.4s ease calc(var(--i, 0) * 0.06s) both; }
+  }
+  .home-news__more { margin-top: 36px; text-align: center; }
+  /* Yuklanish skeleti (dekorativ) */
+  .home-skel {
+    border-radius: var(--radius-2xl);
+    background: linear-gradient(90deg, var(--color-border) 25%, var(--color-surface-3) 50%, var(--color-border) 75%);
+    background-size: 200% 100%;
+  }
+  .home-skel--hero { height: 440px; margin-bottom: 24px; border-radius: 20px; }
+  .home-skel--card { height: 250px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .home-skel { animation: homeSkelShimmer 1.4s ease-in-out infinite calc(var(--i, 0) * 0.1s); }
+  }
+
+  @media (max-width: 1080px) {
+    .home-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 360px; }
+  }
+  @media (max-width: 860px) {
+    .home-hero { padding: 48px 0 40px; }
+    .home-hero__grid,
+    .home-about__grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+    .home-hero__photo { order: -1; }
+  }
+  @media (max-width: 640px) {
+    .home-news .carousel { height: 440px; }
+    .home-features { margin-top: 40px; }
   }
 }
