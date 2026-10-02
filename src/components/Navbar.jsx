@@ -5,6 +5,7 @@ import useLocale from '../i18n/useLocale'
 import LanguageSwitcher from '../i18n/LanguageSwitcher'
 import config from '../config'
 import Search from './Search'
+import Logo from './Logo'
 
 // Guruhga kirmaydigan, doim ko'rinadigan linklar — eng boshida.
 // Matnlar endi i18n'da (nav.*): bu yerda faqat yo'l va kalit turadi.
@@ -104,7 +105,7 @@ export default function Navbar({ dark, setDark, onApply }) {
         {/* Xatolik: mobil menyu ochiq holda logotipga bosilsa, sahifa
             almashsa ham menyu ochiq qolib qolar edi — onClick qo'shildi */}
         <NavLink to="/" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <img src="/logo.png" alt={t('nav.logoAlt')} className="nav-logo-img" style={{ width: 38, height: 38, objectFit: 'contain', }} />
+          <Logo height={36} />
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text)' }}>{t('university.name')}</div>
             <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t('nav.subtitle', { website: config.university.website })}</div>

@@ -273,3 +273,6 @@ details[open] .details-arrow { transform: rotate(180deg); }
 /* Dekorativ rasm/placeholder xiraligi — qiymat tokenda (Dark'da pasayadi) */
 .teacher-avatar { opacity: var(--opacity-avatar); }
 .gallery-placeholder { opacity: var(--opacity-placeholder); }
+
+/* Logotip (Logo.jsx): rang currentColor'dan — Light/Dark'da token almashadi */
+.site-logo { display: block; flex-shrink: 0; color: var(--color-brand); }
