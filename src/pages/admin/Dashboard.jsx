@@ -93,16 +93,6 @@ export default function Dashboard() {
             KIU Boshqaruv tizimi · <span className="adm-topbar-accent">admin</span>
           </div>
           <div className="adm-topbar-tools">
-            {/* Search */}
-            <div className="adm-top-search">
-              <span className="adm-top-search-icon">{Ic.search}</span>
-              <input
-                className="adm-top-search-input"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Bo'lim qidirish..."
-              />
-            </div>
             {/* Dark mode */}
             <button className="adm-theme-btn" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}>
               {dark ? Ic.sun : Ic.moon}

@@ -192,25 +192,6 @@
     align-items: center;
     gap: 8px;
   }
-  .adm-top-search { position: relative; }
-  .adm-top-search-icon {
-    position: absolute;
-    left: 9px;
-    top: 50%;
-    display: flex;
-    transform: translateY(-50%);
-    color: var(--color-text-muted);
-  }
-  .adm-top-search-input {
-    width: 180px;
-    padding: 7px 12px 7px 30px;
-    border: 1px solid var(--color-border-strong);
-    border-radius: 8px;
-    background: var(--color-bg);
-    color: var(--color-text);
-    font-family: inherit;
-    font-size: var(--text-xs);
-  }
   .adm-theme-btn {
     display: flex;
     align-items: center;

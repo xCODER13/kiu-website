@@ -92,4 +92,13 @@ describe('Dashboard sessiya boshqaruvi', () => {
     await userEvent.type(input, 'zzz')
     expect(screen.getByText('Topilmadi')).toHaveClass('adm-nav-empty')
   })
+
+  it("yuqori panelda qidiruv yo'q (xCODER qarori 2026-10-02); bo'lim qidiruvi faqat sidebar'da", async () => {
+    localStorage.setItem('kiu_token', 'ok')
+    const { container } = setup()
+    await screen.findAllByText('Statistika')
+    expect(container.querySelector('.adm-topbar input')).toBeNull()
+    expect(screen.getAllByPlaceholderText("Bo'lim qidirish...")).toHaveLength(1)
+    expect(container.querySelector('.adm-topbar .adm-theme-btn')).not.toBeNull()
+  })
 })
