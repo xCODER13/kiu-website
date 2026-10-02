@@ -1,57 +1,50 @@
 import { useTranslation } from 'react-i18next'
+import PageHero from '../components/PageHero'
+import Icon from '../components/Icon'
+
+// Google xaritasi so'rovi (`q`) — manzil matni i18n'dagi `university.addressN` bilan bir xil joy.
+const CAMPUSES = [
+  { n: 1, q: "Qarshi+sh+Bahodir+Sherqulov+ko'chasi+7", address: 'university.address1' },
+  { n: 2, q: "Qarshi+sh+Mustaqillik+ko'chasi+71", address: 'university.address2' },
+]
 
 export default function Map() {
   const { t } = useTranslation()
-  const campus1 = "Qarshi+sh+Bahodir+Sherqulov+ko'chasi+7"
-  const campus2 = "Qarshi+sh+Mustaqillik+ko'chasi+71"
 
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('map.title')}</h1>
-        <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('map.subtitle')}</p>
-      </section>
+      <PageHero title={t('map.title')} sub={t('map.subtitle')} />
       <section className="section">
         <div className="container">
-          <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
-            <div className="card reveal" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0, fontSize: 16, fontWeight: 700 }}>1</div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>{t('map.campus', { n: 1 })}</div>
-                <div style={{ fontSize: 12, color: 'var(--muted)' }}>{t('university.address1')}</div>
-              </div>
-            </div>
-            <div className="card reveal reveal-delay-1" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, var(--color-brand-hover), #0088cc)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0, fontSize: 16, fontWeight: 700 }}>2</div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>{t('map.campus', { n: 2 })}</div>
-                <div style={{ fontSize: 12, color: 'var(--muted)' }}>{t('university.address2')}</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="reveal" style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid var(--border)', marginBottom: '1rem' }}>
-            <iframe
-              title={t('map.campus', { n: 1 })}
-              src={`https://maps.google.com/maps?q=${campus1}&output=embed&z=15`}
-              width="100%"
-              height="350"
-              style={{ border: 'none', display: 'block' }}
-              allowFullScreen
-              loading="lazy"
-            />
-          </div>
-
-          <div className="reveal" style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid var(--border)' }}>
-            <iframe
-              title={t('map.campus', { n: 2 })}
-              src={`https://maps.google.com/maps?q=${campus2}&output=embed&z=15`}
-              width="100%"
-              height="350"
-              style={{ border: 'none', display: 'block' }}
-              allowFullScreen
-              loading="lazy"
-            />
+          <div className="map-grid">
+            {CAMPUSES.map((c, i) => {
+              const name = t('map.campus', { n: c.n })
+              return (
+                <div key={c.n} className={`rv-item reveal${i ? ` reveal-delay-${i}` : ''}`}>
+                  <div className="card card--lift map-card">
+                    <div className="map-card__head">
+                      <div className="map-card__num" aria-hidden="true">{c.n}</div>
+                      <div className="map-card__info">
+                        <h2 className="map-card__name">{name}</h2>
+                        <p className="map-card__address">
+                          <Icon size={16}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></Icon>
+                          <span>{t(c.address)}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="map-card__frame" role="region" aria-label={name}>
+                      <iframe
+                        title={name}
+                        src={`https://maps.google.com/maps?q=${c.q}&output=embed&z=15`}
+                        referrerPolicy="no-referrer-when-downgrade"
+                        allowFullScreen
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>

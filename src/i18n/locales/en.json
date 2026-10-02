@@ -187,7 +187,7 @@
     "teachersTitle": "For teachers",
     "teachersDesc": "Class schedule, grade entry, reports and other services",
     "helpTitle": "Need help?",
-    "helpText": "For problems signing in to HEMIS: {{phone}} or {{telegram}}"
+    "helpText": "For problems signing in to HEMIS: <phone>{{phone}}</phone> or <tg>{{telegram}}</tg>"
   },
   "documents": {
     "open": "Open document",
@@ -813,6 +813,9 @@
   "notFound": {
     "title": "Page not found",
     "text": "The page you are looking for does not exist or has been moved.",
-    "home": "Back to home"
+    "home": "Back to home",
+    "back": "Go back",
+    "linksTitle": "Useful links",
+    "links": {"faculty": "Programs", "admission": "Admission", "news": "News", "contact": "Contact"}
   }
 }

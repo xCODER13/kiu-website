@@ -141,10 +141,10 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
   })
 
   // 6.11b: o'qlar hover'i `--color-brand-fill`, "Orqaga" tepada pill (`.back-link`), pastda `.btn-primary` (alohida `.back-btn:hover` kerak emas).
-  it("hover'lar CSS da: galereya o'qlari, tepadagi orqaga havolasi, ijtimoiy havola", () => {
+  it("hover'lar CSS da: galereya o'qlari, tepadagi orqaga havolasi (ijtimoiy havola 6.11c2 da `.btn-primary` ga o'tdi)", () => {
     expect(code).toMatch(/\.gallery-arrow:hover \{ background: var\(--color-brand-fill\); \}/)
     expect(code).toMatch(/\.back-link:hover \{[^}]*border-color: var\(--color-brand\);[^}]*background: var\(--color-brand-subtle\);/)
-    expect(code).toMatch(/\.social-link:hover \{ opacity: 0\.85; \}/)
+    expect(code).not.toMatch(/\.social-link/)
   })
 
   it("`onMouseEnter/Leave/Focus/Blur` stil uchun ishlatilmaydi (Home news karuseli — faqat pauza mantig'i)", () => {
@@ -352,3 +352,76 @@ describe('Bosqich 6.11c1: umumiy primitivlar + About, Xalqaro, Hujjatlar, Yutuql
   })
 })
 
+
+describe('Bosqich 6.11c2: Hemis, FAQ, Sharhlar, Aloqa, Xarita, QR kodlar, 404', () => {
+  const tokens = read('src/styles/tokens.css')
+  const inline = f => (read(f).match(/style=\{/g) ?? []).length
+
+  it("yangi tokenlar: sharh yulduzi Light `#d4af37` / Dark `#e6c04f` (ikkala Dark blokda); QR plitkasi doim oq, Dark chegarasi alohida", () => {
+    expect(tokens).toMatch(/--color-star:\s*#d4af37/)
+    expect((tokens.match(/--color-star:\s*#e6c04f/g) ?? []).length).toBe(2)
+    expect(tokens).toMatch(/--color-qr-bg:\s*#ffffff/)
+    expect((tokens.match(/--color-qr-bg:/g) ?? []).length).toBe(1)   // Dark'da qayta aniqlanmaydi — har doim oq
+    expect((tokens.match(/--color-qr-border:\s*rgb\(233 168 208 \/ 0\.35\)/g) ?? []).length).toBe(2)
+    expect(tokens).toMatch(/--brand-facebook:\s*#1877f2/)
+    expect(tokens).toMatch(/--brand-youtube-end:\s*#cc0000/)
+  })
+
+  it("FAQ: savol 17.5 px/700, chevron 36 px doira; ochiq — brand chegara + glow, 180° aylanish (`reduce` da animatsiyasiz)", () => {
+    expect(code).toMatch(/\.faq-card__q \{[^}]*font-size: 1\.09375rem;[^}]*font-weight: 700;/)
+    expect(code).toMatch(/\.faq-card__chev \{[^}]*width: 36px;[^}]*height: 36px;[^}]*border-radius: 50%;/)
+    expect(code).toMatch(/\.card\.faq-card\[data-open="true"\] \{[^}]*border-color: var\(--color-brand\);[^}]*var\(--shadow-card-hover\)/)
+    expect(code).toMatch(/\.faq-card__q\[aria-expanded="true"\] \.faq-card__chev \{[^}]*transform: rotate\(180deg\)/)
+    expect(code).toMatch(/prefers-reduced-motion: reduce\) \{ \.faq-card__chev \{ transition: none; \} \}/)
+    expect(code).toMatch(/\.faq-card__a \{[^}]*max-width: 680px;[^}]*line-height: 1\.8;/)
+  })
+
+  it("sharh: yulduz rangi `--color-star`; matn 16.5 px kursivsiz; muallif pastda `margin-top: auto` + ajratgich", () => {
+    expect(code).toMatch(/\.review-card__stars \{[^}]*color: var\(--color-star\);/)
+    expect(code).toMatch(/\.review-card__text \{[^}]*font-size: 1\.03125rem;[^}]*line-height: 1\.75;/)
+    expect(code).not.toMatch(/\.review-card__text \{[^}]*font-style: italic/)
+    expect(code).toMatch(/\.review-card__author \{[^}]*margin-top: auto;[^}]*border-top: 1px solid var\(--color-border\);/)
+  })
+
+  it("Aloqa: 2 ustun, kartalar teng balandlikda; havola cho'zilgan (`::after`), hover — underline + strelka to'ldiriladi, ko'tarilish -2px faqat `no-preference`", () => {
+    expect(code).toMatch(/\.contact-grid \{[^}]*repeat\(2, minmax\(0, 1fr\)\);[^}]*align-items: stretch;/)
+    expect(code).toMatch(/\.contact-list \{[^}]*grid-template-rows: repeat\(5, minmax\(0, 1fr\)\);/)
+    expect(code).toMatch(/\.contact-card__link::after \{[^}]*position: absolute;[^}]*inset: 0;/)
+    expect(code).toMatch(/\.contact-card:hover \.contact-card__link,[^{]*\{ text-decoration: underline; text-underline-offset: 4px; \}/)
+    expect(code).toMatch(/\.contact-card__go \{[^}]*width: 36px;[^}]*height: 36px;/)
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.card\.card--lift\.contact-card:hover,\s*\.card\.card--lift\.contact-card:focus-within \{ transform: translateY\(-2px\); \}/)
+  })
+
+  it("Xarita: 2 ustun (gap 24), xarita 400 px radius 14, Dark'da `invert` yo'q", () => {
+    expect(code).toMatch(/\.map-grid \{[^}]*repeat\(2, minmax\(0, 1fr\)\);[^}]*gap: 24px;/)
+    expect(code).toMatch(/\.map-card__frame \{[^}]*height: 400px;[^}]*border-radius: 14px;/)
+    expect(code).toMatch(/\.map-card__num \{[^}]*width: 52px;[^}]*linear-gradient\(135deg, var\(--color-brand-fill\), var\(--color-brand-hover\)\)/)
+    expect(code).not.toMatch(/invert\(/)
+  })
+
+  it("QR: 4 ustun (`.cards-4`), plitka 176 px doim oq fonda; brend gradientlari faqat ikonka doirasida (tokendan)", () => {
+    expect(code).toMatch(/\.qr-card__code \{[^}]*width: 176px;[^}]*height: 176px;[^}]*background: var\(--color-qr-bg\);/)
+    expect(code).toMatch(/\.qr-card__icon \{[^}]*width: 56px;[^}]*height: 56px;[^}]*border-radius: 50%;/)
+    for (const k of ['telegram', 'instagram', 'youtube', 'facebook']) expect(code).toMatch(new RegExp(`\\.qr-card__icon--${k} \\{ background: `))
+    expect(code).toMatch(/\.qr-card__icon--instagram \{ background: var\(--brand-instagram\); \}/)
+    expect(code).toMatch(/\.qr-card__link \{[^}]*min-height: 46px;[^}]*padding-inline: 12px;/)
+    expect(code).toMatch(/\.wine-banner__tile \{[^}]*var\(--color-accent-on-dark-border\)[^}]*var\(--color-accent-on-dark\)/)
+  })
+
+  it("404: raqam 132 px/800 brand, plitka 116 px radius 34, oltin hairline 72×3, havola pill'i 44 px", () => {
+    expect(code).toMatch(/\.notfound__digit \{[^}]*font-size: 8\.25rem;[^}]*font-weight: 800;[^}]*color: var\(--color-brand\);/)
+    expect(code).toMatch(/\.notfound__tile \{[^}]*width: 116px;[^}]*height: 116px;[^}]*border-radius: 34px;/)
+    expect(code).toMatch(/\.notfound__rule \{ width: 72px; height: 3px;[^}]*var\(--color-accent\);/)
+    expect(code).toMatch(/\.pill-link \{[^}]*min-height: 44px;/)
+    expect(code).toMatch(/\.pill-link:hover \{ background: var\(--color-brand-fill\); color: var\(--color-on-brand\); \}/)
+  })
+
+  it("Hemis, FAQ, Testimonials, Contact, Map, QRCode, NotFound: inline style yo'q, hex/rgba yo'q, eski klasslar (`achieve-icon`, `cc-icon`, `social-link`) yo'q", () => {
+    for (const f of ['Hemis', 'FAQ', 'Testimonials', 'Contact', 'Map', 'QRCode', 'NotFound']) {
+      const path = `src/pages/${f}.jsx`
+      expect(inline(path), f).toBe(0)
+      expect(read(path), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|achieve-icon|cc-icon|social-link|gradient-dark/i)
+    }
+    for (const f of ['Hemis', 'FAQ', 'Testimonials', 'Contact', 'Map', 'QRCode']) expect(read(`src/pages/${f}.jsx`), f).toMatch(/PageHero/)
+  })
+})

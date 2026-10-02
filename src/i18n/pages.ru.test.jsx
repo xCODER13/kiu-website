@@ -239,7 +239,10 @@ describe('Hemis + Documents (RU)', () => {
     expect(screen.getByText('Вход в информационную систему HEMIS')).toBeInTheDocument()
     expect(screen.getByText('Для студентов')).toBeInTheDocument()
     expect(screen.getByText('Для преподавателей')).toBeInTheDocument()
-    expect(screen.getByText(new RegExp(`${config.contact.phone.replace(/[+]/g, '\\+')}.*${config.telegram.username}`))).toBeInTheDocument()
+    // 6.11c2: telefon va Telegram endi havola — matn bitta abzatsda qoladi, alohida havolalar `tel:` va t.me ga
+    const help = screen.getByRole('link', { name: config.contact.phone }).closest('p')
+    expect(help.textContent).toMatch(new RegExp(`${config.contact.phone.replace(/[+]/g, '\\+')}.*${config.telegram.username}`))
+    expect(screen.getByRole('link', { name: config.telegram.username })).toHaveAttribute('href', config.telegram.url)
     expect(screen.queryByText(/Talabalar uchun/)).not.toBeInTheDocument()
   })
 
