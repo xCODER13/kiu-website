@@ -38,8 +38,8 @@ describe('Navbar (EN)', () => {
     at('/en/faculty', <Navbar {...props} />)
     const students = screen.getByRole('button', { name: /For students/ })
     const other = screen.getByRole('button', { name: /Media/ })
-    expect(students.style.fontWeight).toBe('600')
-    expect(other.style.fontWeight).toBe('400')
+    expect(students).toHaveAttribute('data-active', 'true')
+    expect(other).toHaveAttribute('data-active', 'false')
   })
 
   it("mobil menyu: til almashtirgich bor va EN da UZ havolasi prefikssiz; bosilganda menyu yopiladi", async () => {

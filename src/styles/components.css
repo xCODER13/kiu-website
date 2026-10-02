@@ -19,6 +19,16 @@
 }
 
 @layer components {
+  /* ── Konteyner (global.css dan ko'chirildi, 5a) ─────────────────────
+     Qatlamsiz bo'lsa, `.container` + `.footer-grid` kabi juftlikda uning `padding`i
+     qatlamli klassdagi `padding-bottom`ni bosib o'tardi. */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+  .container-wide { max-width: 1220px; margin: 0 auto; padding: 0 2rem; }
+  @media (max-width: 768px) {
+    .container { padding: 0 1.25rem; }
+    .container-wide { padding: 0 1.25rem; }
+  }
+
   /* ── Tugma (6.2) ─────────────────────────────────────────────────── */
   .btn {
     display: inline-flex;
@@ -44,6 +54,8 @@
   @media (pointer: coarse) {
     .btn, .btn-sm, .btn-lg { min-height: 44px; }
   }
+
+  .btn-block { width: 100%; justify-content: center; }
 
   .btn-primary {
     background: var(--color-brand-fill);

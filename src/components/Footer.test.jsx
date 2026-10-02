@@ -52,4 +52,11 @@ describe('Footer', () => {
       expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'))
     })
   })
+
+  it("Bosqich 5a: inline style va JS hover yo'q — hover CSS `:hover` da", () => {
+    const { container } = renderFooter()
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    const links = container.querySelectorAll('a.footer-link, a.footer-media-link')
+    expect(links.length).toBeGreaterThan(10)
+  })
 })

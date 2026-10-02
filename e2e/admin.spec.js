@@ -9,11 +9,15 @@ import { loginAsAdmin } from './helpers.js'
 const TINY_PNG_BASE64 =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
 
+// Sidebar havolasi va Dashboard'dagi "N Yangiliklar" KPI kartasi ikkalasi ham /admin/news'ga
+// olib boruvchi link. /Yangiliklar/ regex'i Stats yuklangach IKKALASIGA mos keladi (strict mode
+// violation) — ya'ni test faqat KPI kartalari chiqishidan oldin bosilsagina o'tardi (poyga).
+// Sidebar havolasining nomi aynan "Yangiliklar"; kartaniki "<son> Yangiliklar" — shuning uchun exact: true.
 test.describe('Admin: yangiliklar boshqaruvi', () => {
   test("login → yangilik qo'shish → o'chirish", async ({ page }) => {
     await loginAsAdmin(page)
 
-    await page.getByRole('link', { name: /Yangiliklar/ }).click()
+    await page.getByRole('link', { name: 'Yangiliklar', exact: true }).click()
     await expect(page).toHaveURL(/\/admin\/news$/)
 
     const title = `E2E sinov yangiligi ${Date.now()}`
@@ -56,7 +60,7 @@ test.describe('Admin: yangiliklar boshqaruvi', () => {
     )
 
     await loginAsAdmin(page)
-    await page.getByRole('link', { name: /Yangiliklar/ }).click()
+    await page.getByRole('link', { name: 'Yangiliklar', exact: true }).click()
 
     const title = `E2E rasm sinovi ${Date.now()}`
     const imgPath = path.join(os.tmpdir(), `e2e-tiny-${Date.now()}.png`)

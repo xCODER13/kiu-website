@@ -122,4 +122,28 @@ describe('Search (qidiruv)', () => {
     await user.keyboard('{ArrowDown}{Enter}')
     expect(screen.getByTestId('location')).toHaveTextContent('/admission')
   })
+
+  it("Bosqich 5a: inline style yo'q (ochiq panel, natijalar va 'topilmadi' holati)", async () => {
+    const user = userEvent.setup()
+    const { container } = renderSearch()
+    await openSearch(user)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    await user.type(screen.getByRole('combobox'), 'qabul')
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    await user.clear(screen.getByRole('combobox'))
+    await user.type(screen.getByRole('combobox'), 'zzzzqq')
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+
+  it("tanlangan natija `aria-selected=\"true\"` (CSS shu atribut bo'yicha bo'yaydi)", async () => {
+    const user = userEvent.setup()
+    renderSearch()
+    await openSearch(user)
+    await user.type(screen.getByRole('combobox'), 'qabul')
+    const options = screen.getAllByRole('option')
+    expect(options[0]).toHaveAttribute('aria-selected', 'true')
+    await user.keyboard('{ArrowDown}')
+    expect(options[1]).toHaveAttribute('aria-selected', 'true')
+    expect(options[0]).toHaveAttribute('aria-selected', 'false')
+  })
 })

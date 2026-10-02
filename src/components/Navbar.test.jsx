@@ -107,4 +107,21 @@ describe('Navbar', () => {
     expect(screen.getByTestId('location')).toHaveTextContent('/')
     expect(screen.queryByRole('button', { name: 'Menyuni yopish' })).not.toBeInTheDocument()
   })
+
+  it("Bosqich 5a: inline style yo'q — faqat mobil menyuning dinamik `top` qiymati", async () => {
+    const user = userEvent.setup()
+    const { container } = renderNavbar()
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    await user.click(screen.getByRole('button', { name: 'Menyuni ochish' }))
+    const styled = [...container.querySelectorAll('[style]')]
+    expect(styled).toHaveLength(1)
+    expect(styled[0]).toHaveClass('mobile-menu')
+    expect(styled[0].getAttribute('style')).toMatch(/^top:\s*\d+px;?$/)
+  })
+
+  it('faol havola NavLink `active` klassi bilan belgilanadi (inline fontWeight/rang emas)', () => {
+    renderNavbar({})
+    const faculty = screen.getAllByRole('link', { name: "Yo'nalishlar" })
+    expect(faculty.some(a => a.classList.contains('nav-group-item') && a.classList.contains('active'))).toBe(true)
+  })
 })

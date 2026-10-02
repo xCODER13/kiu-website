@@ -48,7 +48,6 @@
   h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 }
 
-.container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
 .section { padding: 4rem 0; }
 .section-header { margin-bottom: 2rem; }
 .section-header p { font-size: 0.875rem; color: var(--muted); margin-top: 0.3rem; }
@@ -132,7 +131,6 @@ a.lang-switch-item:hover { color: var(--color-brand); background: color-mix(in s
   .mobile-nav  { display: flex !important; }
   .grid-2 { grid-template-columns: 1fr; }
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
-  .container { padding: 0 1.25rem; }
 }
 
 @media (max-width: 480px) {
@@ -224,14 +222,6 @@ details[open] .details-arrow { transform: rotate(180deg); }
   color: var(--color-on-brand);
   border-left-color: var(--purple);
   font-weight: 600;
-}
-.container-wide {
-  max-width: 1220px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-@media (max-width: 768px) {
-  .container-wide { padding: 0 1.25rem; }
 }
 
 /* Dekorativ rasm/placeholder xiraligi — qiymat tokenda (Dark'da pasayadi) */
