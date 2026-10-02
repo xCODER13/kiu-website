@@ -106,4 +106,15 @@ describe('Login', () => {
     await user.click(screen.getByRole('button', { name: 'Kirish' }))
     expect(await screen.findByText("Server bilan bog'lanib bo'lmadi")).toBeInTheDocument()
   })
+
+  it('inline stilsiz: maydonlar `.input`, tugma `.btn-primary`, xato `.auth-error`', async () => {
+    respond({ error: 'xato' })
+    const user = userEvent.setup()
+    const { container } = setup(); await fill(user)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    expect(screen.getByPlaceholderText('Login')).toHaveClass('input', 'auth-input')
+    expect(screen.getByPlaceholderText('Parol')).toHaveClass('input', 'auth-input--pass')
+    await user.click(screen.getByRole('button', { name: 'Kirish' }))
+    expect(await screen.findByText('xato')).toHaveClass('auth-error')
+  })
 })
