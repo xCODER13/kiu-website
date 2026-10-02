@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { API, H, errorMessage } from './shared/api'
-import { card, bD } from './shared/styles'
-import { STATUS_COLORS, STATUS_LABELS } from './shared/constants'
+import { STATUS_BADGE, STATUS_LABELS } from './shared/constants'
 import { Ic } from './shared/Icons.jsx'
 
 export default function ApplicationsAdmin({ type = 'admission' }) {
@@ -46,74 +45,72 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: 10 }}>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>
+      <div className="adm-page-head">
+        <h2 className="adm-page-title">
           {type === 'vacancy' ? 'Vakansiya arizalari' : 'Qabul arizalari'} ({apps.length})
         </h2>
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+        <div className="adm-filters">
           {[['all','Barchasi'],['new','Yangi'],['reviewed',"Ko'rildi"],['accepted','Qabul'],['rejected','Rad']].map(([val, lbl]) => (
-            <button key={val} onClick={() => setFilt(val)}
-              style={{ padding: '5px 10px', borderRadius: 6, border: `1px solid ${filter === val ? 'var(--color-brand)' : 'var(--border)'}`, background: filter === val ? 'var(--color-brand-fill)' : 'var(--bg)', color: filter === val ? '#fff' : 'var(--muted)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <button key={val} onClick={() => setFilt(val)} className="adm-chip" data-active={filter === val}>
               {lbl} ({val === 'all' ? apps.length : apps.filter(a => a.status === val).length})
             </button>
           ))}
         </div>
       </div>
 
-      {loading && <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)', fontSize: 13 }}>Yuklanmoqda...</div>}
+      {loading && <div className="adm-state">Yuklanmoqda...</div>}
 
       {!loading && filtered.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)', fontSize: 13, border: '1px dashed var(--border)', borderRadius: 12 }}>
+        <div className="adm-state adm-state--dashed">
           Ariza yo'q
         </div>
       )}
 
       {!loading && filtered.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div className="adm-list">
           {filtered.map(a => (
-            <div key={a._id} style={card}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>{a.name}</span>
-                    <span style={{ fontSize: 10, fontWeight: 600, color: STATUS_COLORS[a.status], background: `${STATUS_COLORS[a.status]}18`, padding: '2px 9px', borderRadius: 20 }}>{STATUS_LABELS[a.status]}</span>
+            <div key={a._id} className="adm-card">
+              <div className="adm-app-row">
+                <div className="adm-app-main">
+                  <div className="adm-app-head">
+                    <span className="adm-app-name">{a.name}</span>
+                    <span className={`badge ${STATUS_BADGE[a.status] ?? ""}`}>{STATUS_LABELS[a.status]}</span>
                   </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, fontSize: 12, color: 'var(--muted)', marginBottom: 4 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <div className="adm-app-meta">
+                    <span className="adm-app-meta-item">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5"/></svg>
                       {a.phone}
                     </span>
                     {a.email && <span>{a.email}</span>}
                   </div>
                   {type === 'admission' && a.faculty && (
-                    <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 4 }}>
-                      Yo'nalish: <strong style={{ color: 'var(--text)' }}>{a.faculty}</strong>
+                    <div className="adm-app-line">
+                      Yo'nalish: <strong>{a.faculty}</strong>
                     </div>
                   )}
                   {type === 'vacancy' && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
-                      {a.position && <span style={{ fontSize: 11, background: 'color-mix(in srgb, var(--color-brand) 8%, transparent)', color: 'var(--color-brand)', padding: '2px 8px', borderRadius: 20 }}>{a.position}</span>}
-                      {a.faculty && <span style={{ fontSize: 11, background: 'color-mix(in srgb, var(--color-brand-strong) 8%, transparent)', color: 'var(--color-brand-strong)', padding: '2px 8px', borderRadius: 20 }}>{a.faculty}</span>}
-                      {a.education && <span style={{ fontSize: 11, background: 'rgba(5,150,105,.08)', color: 'var(--color-success)', padding: '2px 8px', borderRadius: 20 }}>{a.education}</span>}
-                      {a.experience && <span style={{ fontSize: 11, background: 'rgba(217,119,6,.08)', color: 'var(--color-warning)', padding: '2px 8px', borderRadius: 20 }}>{a.experience}</span>}
+                    <div className="adm-tags">
+                      {a.position && <span className="adm-tag adm-tag--brand">{a.position}</span>}
+                      {a.faculty && <span className="adm-tag adm-tag--strong">{a.faculty}</span>}
+                      {a.education && <span className="adm-tag adm-tag--success">{a.education}</span>}
+                      {a.experience && <span className="adm-tag adm-tag--warning">{a.experience}</span>}
                     </div>
                   )}
                   {a.message && (
-                    <div style={{ fontSize: 11, color: 'var(--muted)', padding: '6px 10px', background: 'var(--bg-2)', borderRadius: 6, borderLeft: '2px solid var(--border)', marginTop: 4 }}>
+                    <div className="adm-app-msg">
                       "{a.message?.slice(0, 120)}{a.message?.length > 120 ? '...' : ''}"
                     </div>
                   )}
-                  <div style={{ fontSize: 10, color: 'var(--color-text-muted)', marginTop: 6 }}>{new Date(a.createdAt).toLocaleString('uz-UZ')}</div>
+                  <div className="adm-app-date">{new Date(a.createdAt).toLocaleString('uz-UZ')}</div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0, alignItems: 'flex-end' }}>
-                  <select value={a.status} onChange={e => updateStatus(a._id, e.target.value)}
-                    style={{ fontSize: 11, padding: '6px 8px', borderRadius: 7, border: `1px solid ${STATUS_COLORS[a.status]}`, background: 'var(--bg)', color: STATUS_COLORS[a.status], cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600 }}>
+                <div className="adm-app-actions">
+                  <select className="adm-status-select" data-status={a.status} value={a.status} aria-label={`${a.name}: ariza holati`} onChange={e => updateStatus(a._id, e.target.value)}>
                     <option value="new">Yangi</option>
                     <option value="reviewed">Ko'rildi</option>
                     <option value="accepted">Qabul</option>
                     <option value="rejected">Rad</option>
                   </select>
-                  <button style={bD} onClick={() => del(a._id)}>{Ic.del} O'chir</button>
+                  <button className="adm-btn adm-btn--danger" onClick={() => del(a._id)}>{Ic.del} O'chir</button>
                 </div>
               </div>
             </div>

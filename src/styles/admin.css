@@ -273,4 +273,363 @@
     color: var(--color-danger);
   }
   .auth-submit { padding: 12px; }
+
+  /* ══ 6b: statistika, grafiklar, arizalar ═══════════════════════════════ */
+
+  /* ── Bo'lim ranglari (4.4): `data-tone` → `--kpi-c`. Inline `style` kerak emas ── */
+  [data-tone="blue"]    { --kpi-c: var(--stat-blue); }
+  [data-tone="orange"]  { --kpi-c: var(--stat-orange); }
+  [data-tone="emerald"] { --kpi-c: var(--stat-emerald); }
+  [data-tone="indigo"]  { --kpi-c: var(--stat-indigo); }
+  [data-tone="amber"]   { --kpi-c: var(--stat-amber); }
+  [data-tone="cyan"]    { --kpi-c: var(--stat-cyan); }
+  [data-tone="lime"]    { --kpi-c: var(--stat-lime); }
+  [data-tone="violet"]  { --kpi-c: var(--stat-violet); }
+
+  /* ── Umumiy admin elementlari (shared/styles.js ning klass ko'rinishi; 6c da qolgan sahifalar shularga o'tadi) ── */
+  .adm-card {
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-bg);
+  }
+  .adm-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+    background: none;
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-size: var(--text-2xs);
+    cursor: pointer;
+  }
+  .adm-btn--primary {
+    gap: 6px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: var(--gradient-brand);
+    color: var(--color-on-brand);
+    font-size: var(--text-xs);
+    font-weight: 600;
+  }
+  .adm-btn--danger {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+  }
+  .adm-page-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .adm-page-title--spaced { margin-bottom: 1.5rem; }
+  .adm-subtitle {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .adm-loading {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+  .adm-error {
+    font-size: var(--text-sm);
+    color: var(--color-danger);
+  }
+  .adm-empty {
+    padding: 1.5rem 0;
+    text-align: center;
+  }
+  .adm-card-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .adm-card-title-icon { color: var(--kpi-c, var(--color-brand)); }
+
+  /* ── KPI kartalari ─────────────────────────────────────────────────── */
+  .adm-kpi-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .adm-kpi-link {
+    display: flex;
+    flex: 1 1 132px;
+    max-width: 220px;
+    text-decoration: none;
+  }
+  .adm-kpi {
+    flex: 1;
+    min-width: 0;
+    border-left: 3px solid var(--kpi-c);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .adm-kpi:hover { transform: translateY(-2px); }
+  .adm-kpi-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  /* Qiymat — matn rangida (4.4: matn seriya rangida emas); rang faqat chiziq va ikonkada */
+  .adm-kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .adm-kpi-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--kpi-c) 10%, transparent);
+    color: var(--kpi-c);
+  }
+  .adm-kpi-label {
+    font-size: var(--text-2xs);
+    color: var(--color-text-muted);
+  }
+
+  /* ── Trend va reyting kartalari ────────────────────────────────────── */
+  .adm-trend-card { margin-bottom: 12px; }
+  .adm-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .adm-seg {
+    display: flex;
+    gap: 6px;
+  }
+  .adm-legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+    font-size: var(--text-2xs);
+    color: var(--color-text-muted);
+  }
+  .adm-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .adm-legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--kpi-c);
+  }
+  /* 2 qator x 2 ustun: keng ekranda doim 2 ustun; tor ekranda (ustun 260px dan kichraymasligi uchun) 1 ustunga tushadi */
+  .adm-rank-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(max(260px, calc(50% - 8px)), 1fr));
+    gap: 12px;
+  }
+  .adm-chart-total {
+    margin-top: 8px;
+    font-size: var(--text-2xs);
+    color: var(--color-text-muted);
+  }
+
+  /* ── Grafiklar (charts/*) — geometriya (top/width/height) komponentda hisoblanadi, ko'rinish shu yerda ── */
+  .adm-chart-frame { width: 100%; }
+  .adm-chart-empty {
+    padding: 1.5rem 0;
+    font-size: var(--text-xs);
+    text-align: center;
+    color: var(--color-text-muted);
+  }
+  .adm-chart-box { position: relative; }
+  .adm-chart-svg { display: block; }
+  .adm-chart-svg--visible { overflow: visible; }
+  .adm-bar-label {
+    position: absolute;
+    overflow: hidden;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--color-text);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .adm-tooltip {
+    position: absolute;
+    padding: 8px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.12);
+    font-size: var(--text-2xs);
+    line-height: 1em;
+    color: var(--color-text);
+    pointer-events: none;
+  }
+  .adm-tooltip-title {
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .adm-tooltip-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .adm-tooltip-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  /* ── Arizalar ──────────────────────────────────────────────────────── */
+  .adm-page-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .adm-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .adm-chip {
+    padding: 5px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-size: var(--text-2xs);
+    cursor: pointer;
+  }
+  .adm-chip[data-active="true"] {
+    border-color: var(--color-brand);
+    background: var(--color-brand-fill);
+    color: var(--color-on-brand);
+  }
+  .adm-state {
+    padding: 3rem;
+    font-size: var(--text-sm);
+    text-align: center;
+    color: var(--color-text-muted);
+  }
+  .adm-state--dashed {
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+  }
+  .adm-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .adm-app-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .adm-app-main { flex: 1; }
+  .adm-app-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .adm-app-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .adm-app-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 4px;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+  .adm-app-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .adm-app-line {
+    margin-bottom: 4px;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+  }
+  .adm-app-line strong { color: var(--color-text); }
+  .adm-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .adm-tag {
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: var(--text-2xs);
+  }
+  .adm-tag--brand   { background: color-mix(in srgb, var(--color-brand) 8%, transparent);        color: var(--color-brand); }
+  .adm-tag--strong  { background: color-mix(in srgb, var(--color-brand-strong) 8%, transparent); color: var(--color-brand-strong); }
+  .adm-tag--success { background: color-mix(in srgb, var(--color-success) 8%, transparent);      color: var(--color-success); }
+  .adm-tag--warning { background: color-mix(in srgb, var(--color-warning) 8%, transparent);      color: var(--color-warning); }
+  .adm-app-msg {
+    margin-top: 4px;
+    padding: 6px 10px;
+    border-left: 2px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface-2);
+    font-size: var(--text-2xs);
+    color: var(--color-text-muted);
+  }
+  .adm-app-date {
+    margin-top: 6px;
+    font-size: 0.625rem;
+    color: var(--color-text-muted);
+  }
+  .adm-app-actions {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  /* Holat tanlagichi: rang `data-status` bo'yicha (holat → status tokeni, 4.4) */
+  .adm-status-select {
+    padding: 6px 8px;
+    border: 1px solid var(--st);
+    border-radius: 7px;
+    background: var(--color-bg);
+    color: var(--st);
+    font-family: inherit;
+    font-size: var(--text-2xs);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  [data-status="new"]      { --st: var(--color-info); }
+  [data-status="reviewed"] { --st: var(--color-warning); }
+  [data-status="accepted"] { --st: var(--color-success); }
+  [data-status="rejected"] { --st: var(--color-danger); }
 }

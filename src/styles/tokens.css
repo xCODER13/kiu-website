@@ -105,6 +105,21 @@
     --color-danger-bg:     #fbeaea;
     --color-info:          #026a9d;
     --color-info-bg:       #e6f0f5;
+    /* Admin statistika (4.4): KPI/reyting/trend — `--stat-*` (grafik elementi ≥ 3:1, matn har doim --color-text); kategoriya — `--chart-1…6` */
+    --stat-blue:      #2a78d6;
+    --stat-orange:    #d9531e;
+    --stat-emerald:   #12966a;
+    --stat-indigo:    #5050d2;
+    --stat-amber:     #bd7b00;
+    --stat-cyan:      #0e8ea4;
+    --stat-lime:      #5b8c10;
+    --stat-violet:    #9a3fd0;
+    --chart-1:        #9f337e;
+    --chart-2:        #2a78d6;
+    --chart-3:        #eb6834;
+    --chart-4:        #1baf7a;
+    --chart-5:        #eda100;
+    --chart-6:        #008300;
 
     /* Tugma yorug'ligi (glow) */
     --glow-brand:         rgb(127 32 99 / 0.30);
@@ -224,6 +239,21 @@
       --color-danger-bg:      #3a1b1c;
       --color-info:           #73baea;
       --color-info-bg:        #222833;
+      /* Admin statistika, Dark */
+      --stat-blue:      #4a93ea;
+      --stat-orange:    #ee7a4a;
+      --stat-emerald:   #22b586;
+      --stat-indigo:    #8484ec;
+      --stat-amber:     #e8a40f;
+      --stat-cyan:      #2ab5c9;
+      --stat-lime:      #86bb2a;
+      --stat-violet:    #bf8cf0;
+      --chart-1:        #be539a;
+      --chart-2:        #3987e5;
+      --chart-3:        #d95926;
+      --chart-4:        #199e70;
+      --chart-5:        #c98500;
+      --chart-6:        #008300;
 
       --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
       --gradient-footer:      linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
@@ -275,6 +305,21 @@
     --color-danger-bg:      #3a1b1c;
     --color-info:           #73baea;
     --color-info-bg:        #222833;
+    /* Admin statistika, Dark */
+    --stat-blue:      #4a93ea;
+    --stat-orange:    #ee7a4a;
+    --stat-emerald:   #22b586;
+    --stat-indigo:    #8484ec;
+    --stat-amber:     #e8a40f;
+    --stat-cyan:      #2ab5c9;
+    --stat-lime:      #86bb2a;
+    --stat-violet:    #bf8cf0;
+    --chart-1:        #be539a;
+    --chart-2:        #3987e5;
+    --chart-3:        #d95926;
+    --chart-4:        #199e70;
+    --chart-5:        #c98500;
+    --chart-6:        #008300;
 
     --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
     --gradient-footer:      linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
