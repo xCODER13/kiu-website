@@ -127,15 +127,7 @@ a.lang-switch-item:hover { color: var(--color-brand); background: color-mix(in s
 }@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* Teachers page responsive */
-@media (max-width: 640px) {
-  .teachers-layout {
-    grid-template-columns: 1fr !important;
-  }
-  .teachers-layout > div:first-child {
-    position: static !important;
-  }
-}
+/* Teachers sahifasi responsive qoidalari — pages.css (6.11c3) */
 details[open] .details-arrow { transform: rotate(180deg); }
 .details-arrow { transition: transform .2s; }
 

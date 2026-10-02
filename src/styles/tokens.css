@@ -157,6 +157,13 @@
     --color-scrim-pill:    rgb(18 8 14 / 0.62);               /* rasm ustidagi pill (kategoriya) */
     --color-scrim-ctrl:    rgb(18 8 14 / 0.52);               /* rasm ustidagi hisoblagich/strelka/nuqta foni */
 
+    /* 6.11c3: galereya kartasi (hover qoplama, "KIU" nishoni) va katta rasm oynasi foni */
+    --gallery-hover-overlay: rgb(100 24 78 / 0.55);           /* kartaga hover — rasm ustida wine qoplama (Dark'da neytral to'q) */
+    --gallery-badge-bg:      rgb(255 255 255 / 0.92);         /* "KIU" nishoni foni */
+    --gallery-badge-text:    var(--color-brand);
+    --gallery-badge-border:  transparent;
+    --color-lightbox-bg:     rgb(10 6 9 / 0.88);              /* katta rasm oynasi foni (ikkala temada bir xil) */
+
     /* Tugma yorug'ligi (glow) */
     --glow-brand:         rgb(127 32 99 / 0.30);
     --glow-brand-strong:  rgb(127 32 99 / 0.55);
@@ -320,6 +327,10 @@
       --shadow-card-inset:    inset 0 1px 0 rgb(255 255 255 / 0.06);
       --shadow-card-hover:    0 14px 34px rgb(159 51 126 / 0.38);
       --color-modal-overlay:  rgb(10 6 9 / 0.74);
+      --gallery-hover-overlay: rgb(18 8 14 / 0.5);
+      --gallery-badge-bg:      rgb(18 8 14 / 0.62);
+      --gallery-badge-text:    #f3c5df;
+      --gallery-badge-border:  rgb(233 168 208 / 0.3);
 
       --cat-chip-mix:         18%;
       --cat-ph-1:             22%;
@@ -409,6 +420,10 @@
     --shadow-card-inset:    inset 0 1px 0 rgb(255 255 255 / 0.06);
     --shadow-card-hover:    0 14px 34px rgb(159 51 126 / 0.38);
     --color-modal-overlay:  rgb(10 6 9 / 0.74);
+    --gallery-hover-overlay: rgb(18 8 14 / 0.5);
+    --gallery-badge-bg:      rgb(18 8 14 / 0.62);
+    --gallery-badge-text:    #f3c5df;
+    --gallery-badge-border:  rgb(233 168 208 / 0.3);
 
     --cat-chip-mix:         18%;
     --cat-ph-1:             22%;

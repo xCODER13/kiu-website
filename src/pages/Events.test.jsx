@@ -116,4 +116,65 @@ describe('Events (public)', () => {
       expect(await screen.findByRole('dialog')).toBeInTheDocument()
     })
   })
+
+  // ── 6.11c3 ──────────────────────────────────────────────────────────────
+  it("tur chip'i `data-type` bilan beriladi (rang CSS da); noma'lum tur → general", async () => {
+    mockApi({ 'GET /events': [E1, E2, { ...E1, _id: 'e3', title: 'Boshqa', type: 'nomalum-tur' }] })
+    render(<Events />)
+    await screen.findByText('Ochiq eshiklar')
+    const types = [...document.querySelectorAll('.ev-card .ev-chip')].map(c => c.dataset.type)
+    expect(types).toEqual(['open', 'sport', 'general'])
+    expect(document.querySelectorAll('.ev-chip .cat-dot[aria-hidden="true"]')).toHaveLength(3)
+  })
+
+  it("karta: kun/oy nishonchasi aria-hidden, to'liq sana matni va rasm bor; inline style yo'q", async () => {
+    mockApi({ 'GET /events': [E2] })
+    render(<Events />)
+    await screen.findByText('Sport kuni')
+    const date = document.querySelector('.ev-date')
+    expect(date).toHaveAttribute('aria-hidden', 'true')
+    expect(date.querySelector('.ev-date__day')).toHaveTextContent('10')
+    expect(document.querySelector('.ev-when')).toHaveTextContent('10')
+    expect(document.body.querySelector('[style]')).toBeNull()
+  })
+
+  it("rasmsiz va sanasiz tadbir — sana plitkasida taqvim ikonkasi, `.ev-when` yo'q", async () => {
+    mockApi({ 'GET /events': [{ _id: 'e9', title: 'Sanasiz', desc: 'x', type: 'culture' }] })
+    render(<Events />)
+    await screen.findByText('Sanasiz')
+    expect(document.querySelector('.ev-date svg')).not.toBeNull()
+    expect(document.querySelector('.ev-date__day')).toBeNull()
+    expect(document.querySelector('.ev-when')).toBeNull()
+  })
+
+  it("modal: role=dialog, aria-labelledby sarlavhaga, yopish tugmasi fokusda; rasm bo'lsa `data-over-image`; Esc yopadi", async () => {
+    mockApi({ 'GET /events': [E2] })
+    const user = userEvent.setup()
+    render(<Events />)
+    await user.click(await screen.findByText('Sport kuni'))
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(dialog).toHaveAttribute('aria-labelledby', 'event-modal-title')
+    expect(document.getElementById('event-modal-title')).toHaveTextContent('Sport kuni')
+    const close = screen.getByRole('button', { name: 'Modalni yopish' })
+    expect(close).toHaveAttribute('data-over-image', 'true')
+    expect(close).toHaveFocus()
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it("modal: rasmsiz tadbirda yopish tugmasi `data-over-image` olmaydi", async () => {
+    mockApi({ 'GET /events': [E1] })
+    const user = userEvent.setup()
+    render(<Events />)
+    await user.click(await screen.findByText('Ochiq eshiklar'))
+    expect(screen.getByRole('button', { name: 'Modalni yopish' })).not.toHaveAttribute('data-over-image')
+  })
+
+  it("server xatosi — `.notice-banner` (role=status) ko'rsatiladi", async () => {
+    mockApi({ 'GET /events': { status: 500, body: {} } })
+    render(<Events />)
+    const banner = await screen.findByRole('status')
+    expect(banner).toHaveClass('notice-banner')
+  })
 })

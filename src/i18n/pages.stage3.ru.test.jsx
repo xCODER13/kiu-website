@@ -103,9 +103,10 @@ describe("Bazadan keladigan sahifalar (RU): interfeys ruscha, kontent o'zbekcha"
     expect(screen.getByText(NOTE)).toBeInTheDocument()
     expect(screen.queryByText('Ochiq kun')).not.toBeInTheDocument()
     expect(screen.queryByText(/Mart|mart$/)).not.toBeInTheDocument()
-    // modalda to'liq sana genitivda
+    // 6.11c3: to'liq sana (genitiv) endi kartada ham ko'rinadi; modal ochilganda ikkinchi nusxa paydo bo'ladi
+    expect(screen.getAllByText('5 марта 2026')).toHaveLength(1)
     await userEvent.setup().click(screen.getByText('Ochiq eshiklar'))
-    expect(await screen.findByText('5 марта 2026')).toBeInTheDocument()
+    expect(await screen.findAllByText('5 марта 2026')).toHaveLength(2)
   })
 
   it("News: kategoriya ruscha, sarlavha lang=uz, izoh bor; batafsil tugmasi /ru/news/:id ga olib boradi", async () => {

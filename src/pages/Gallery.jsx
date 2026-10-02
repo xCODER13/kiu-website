@@ -1,16 +1,55 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import ContentLangNote from '../i18n/ContentLangNote'
+import PageHero from '../components/PageHero'
+import Icon from '../components/Icon'
+import useModalA11y from '../hooks/useModalA11y'
 
 const API = import.meta.env.VITE_API_URL
-const COLORS = ['#7c3aed', '#4f46e5', '#0088cc', '#059669', '#d97706', '#db2777']
+
+// Katta rasm oynasi: fokus tuzog'i, Esc, scroll qulfi va fokusni qaytarish — `useModalA11y` (ApplyModal bilan bir xil).
+// Strelka tugmalari va ← → klaviaturasi Gallery'da (window'da) boshqariladi.
+function Lightbox({ photo, index, total, onClose, onPrev, onNext }) {
+  const { t } = useTranslation()
+  const ref = useRef(null)
+  useModalA11y(ref, onClose)
+
+  // Portal: sahifa ildizi (`.fade-up`) `transform` animatsiyasi `position: fixed` ni o'z ichiga qamab qo'yadi
+  // (oyna butun sahifa balandligiga cho'zilib, rasm viewport markazida turmaydi) — shuning uchun `document.body` ga chiqariladi.
+  return createPortal(
+    <div className="photo-lightbox" onClick={onClose}>
+      <div ref={ref} className="photo-lightbox__dialog" role="dialog" aria-modal="true" aria-label={photo.title}>
+        <button type="button" className="photo-lightbox__btn photo-lightbox__btn--close" onClick={onClose} aria-label={t('gallery.close')}>
+          <Icon size={20}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>
+        </button>
+        <button type="button" className="photo-lightbox__btn photo-lightbox__btn--prev" onClick={e => { e.stopPropagation(); onPrev() }} aria-label={t('gallery.prev')}>
+          <Icon size={26}><polyline points="15 18 9 12 15 6" /></Icon>
+        </button>
+        <button type="button" className="photo-lightbox__btn photo-lightbox__btn--next" onClick={e => { e.stopPropagation(); onNext() }} aria-label={t('gallery.next')}>
+          <Icon size={26}><polyline points="9 18 15 12 9 6" /></Icon>
+        </button>
+
+        <div className="photo-lightbox__content" onClick={e => e.stopPropagation()}>
+          <img className="photo-lightbox__img" src={photo.img} alt={photo.title} />
+          <div className="photo-lightbox__caption">
+            <div className="photo-lightbox__title" lang="uz">{photo.title}</div>
+            {photo.desc && <div className="photo-lightbox__desc" lang="uz">{photo.desc}</div>}
+            <div className="photo-lightbox__count">{index + 1} / {total}</div>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body
+  )
+}
 
 export default function Gallery() {
   const { t } = useTranslation()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  const [lightbox, setLightbox] = useState(null)
+  const [openIndex, setOpenIndex] = useState(null)   // lightbox'da ko'rsatilayotgan rasm tartib raqami
 
   useEffect(() => {
     fetch(`${API}/api/gallery`)
@@ -32,106 +71,86 @@ export default function Gallery() {
     }))
   ), [items])
 
+  const total = photos.length
+  const prev = () => setOpenIndex(i => (i - 1 + total) % total)
+  const next = () => setOpenIndex(i => (i + 1) % total)
+
   useEffect(() => {
-    if (!lightbox) return
+    if (openIndex === null) return
     const onKey = e => {
-      const all = photos
-      if (e.key === 'Escape') setLightbox(null)
-      if (e.key === 'ArrowRight') setLightbox(lb => { const i = (lb.index + 1) % all.length; return { ...all[i], index: i } })
-      if (e.key === 'ArrowLeft')  setLightbox(lb => { const i = (lb.index - 1 + all.length) % all.length; return { ...all[i], index: i } })
+      if (e.key === 'Escape') setOpenIndex(null)
+      if (e.key === 'ArrowRight') setOpenIndex(i => (i + 1) % total)
+      if (e.key === 'ArrowLeft') setOpenIndex(i => (i - 1 + total) % total)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [lightbox, photos])
+  }, [openIndex, total])
 
-  function prev() {
-    setLightbox(lb => {
-      const all = photos
-      const i = (lb.index - 1 + all.length) % all.length
-      return { ...all[i], index: i }
-    })
-  }
-
-  function next() {
-    setLightbox(lb => {
-      const all = photos
-      const i = (lb.index + 1) % all.length
-      return { ...all[i], index: i }
-    })
-  }
+  const open = i => setOpenIndex(i)
 
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('gallery.title')}</h1>
-        <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('gallery.subtitle')}</p>
-        <ContentLangNote />
-      </section>
+      <PageHero title={t('gallery.title')} sub={t('gallery.subtitle')} note={<ContentLangNote />} />
 
       <section className="section">
-        <div className="container">
-          {loading && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center' }}>{t('common.loading')}</p>}
+        <div className="container container-wide">
+          {loading && (
+            <div className="page-loading">
+              <div className="spinner" />
+              {t('common.loading')}
+            </div>
+          )}
 
           {!loading && error && (
-            <p style={{ fontSize: 13, color: 'var(--color-danger)', textAlign: 'center' }}>{t('gallery.error')}</p>
+            <div className="notice-banner" data-tone="danger" role="alert">
+              <Icon size={20}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></Icon>
+              <span>{t('gallery.error')}</span>
+            </div>
           )}
 
           {!loading && !error && photos.length === 0 && (
-            <div className="reveal" style={{ textAlign: 'center', padding: '2rem', border: '1px dashed var(--border)', borderRadius: 14 }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto 8px', display: 'block', opacity: 0.5 }}>
-                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-              </svg>
-              <p style={{ fontSize: 13, color: 'var(--muted)' }}>{t('gallery.empty')}</p>
+            <div className="photo-empty reveal">
+              <div className="tile tile--64">
+                <Icon size={30}><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></Icon>
+              </div>
+              <p>{t('gallery.empty')}</p>
             </div>
           )}
 
           {!loading && !error && photos.length > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
-              {photos.map((p, i) => {
-                const color = COLORS[i % COLORS.length]
-                return (
+            <div className="cards-3">
+              {photos.map((p, i) => (
+                <div key={p.id} className={`rv-item reveal reveal-delay-${(i % 3) + 1}`}>
+                  {/* Kartalar klaviatura bilan ochiladi (Enter/Space) */}
                   <div
-                    key={p.id}
-                    className={`card reveal reveal-delay-${(i % 4) + 1}`}
-                    style={{ padding: 0, overflow: 'hidden', cursor: 'pointer' }}
-                    onClick={() => setLightbox({ ...p, index: i })}
+                    className="card card--lift photo-card"
+                    data-slot={i % 6}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => open(i)}
+                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i) } }}
                   >
-                    <div style={{ height: 160, background: `linear-gradient(135deg, ${color}22, ${color}44)`, position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <img src={p.img} alt={p.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={e => { e.target.style.display = 'none' }} />
-                      <div style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(255,255,255,0.9)', borderRadius: 6, padding: '3px 8px', fontSize: 10, color, fontWeight: 600 }}>KIU</div>
+                    <div className="photo-card__media">
+                      <img src={p.img} alt={p.title} loading="lazy" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
+                      <span className="photo-card__badge" aria-hidden="true">KIU</span>
+                      <span className="photo-card__zoom" aria-hidden="true">
+                        <Icon size={22}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" /></Icon>
+                      </span>
                     </div>
-                    <div style={{ padding: '1rem' }}>
-                      <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3, fontFamily: 'var(--font-body)' }} lang="uz">{p.title}</h3>
-                      <p style={{ fontSize: 11, color: 'var(--muted)' }} lang="uz">{p.desc}</p>
+                    <div className="photo-card__body">
+                      <h3 className="photo-card__title" lang="uz">{p.title}</h3>
+                      <p className="photo-card__desc" lang="uz">{p.desc}</p>
                     </div>
                   </div>
-                )
-              })}
+                </div>
+              ))}
             </div>
           )}
         </div>
       </section>
 
-      {lightbox && (
-        <div
-          onClick={() => setLightbox(null)}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
-        >
-          {/* Close */}
-          <button onClick={() => setLightbox(null)} aria-label={t('gallery.close')} style={{ position: 'fixed', top: 16, right: 16, background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--color-on-brand)', width: 40, height: 40, borderRadius: '50%', cursor: 'pointer', fontSize: 20, lineHeight: 1 }}>✕</button>
-          {/* Prev */}
-          <button onClick={e => { e.stopPropagation(); prev() }} aria-label={t('gallery.prev')} style={{ position: 'fixed', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--color-on-brand)', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>‹</button>
-          {/* Next */}
-          <button onClick={e => { e.stopPropagation(); next() }} aria-label={t('gallery.next')} style={{ position: 'fixed', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'var(--color-on-brand)', width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', fontSize: 26, lineHeight: 1 }}>›</button>
-
-          <div onClick={e => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, maxWidth: '90vw', maxHeight: '90vh' }}>
-            <img src={lightbox.img} alt={lightbox.title} style={{ maxWidth: '85vw', maxHeight: '75vh', objectFit: 'contain', borderRadius: 12, boxShadow: '0 8px 40px rgba(0,0,0,0.6)' }} />
-            <div style={{ color: 'var(--color-on-brand)', textAlign: 'center' }}>
-              <div style={{ fontWeight: 600, fontSize: 15 }} lang="uz">{lightbox.title}</div>
-              {lightbox.desc && <div style={{ fontSize: 12, opacity: 0.65, marginTop: 4 }} lang="uz">{lightbox.desc}</div>}
-            </div>
-          </div>
-        </div>
+      {openIndex !== null && photos[openIndex] && (
+        <Lightbox photo={photos[openIndex]} index={openIndex} total={total} onClose={() => setOpenIndex(null)} onPrev={prev} onNext={next} />
       )}
     </div>
   )
