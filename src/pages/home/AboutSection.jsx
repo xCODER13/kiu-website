@@ -11,7 +11,7 @@ const FEATURES = [
 ]
 
 // "Biz haqimizda" bo'limi (spec 6.10): matn + 2-kampus rasmi (ramkasiz yumshoq yorug'lik) + 4 ta afzallik kartasi.
-// Birinchi karta "faol" ko'rinishda (`data-featured`) — faqat vizual urg'u, o'zaro ta'sir emas.
+// Karta "faol" ko'rinishi (wine chegara + `--shadow-card-active`) faqat hover'da chiqadi — doimiy belgilangan karta yo'q.
 export default function AboutSection() {
   const { t } = useTranslation()
   return (
@@ -45,7 +45,7 @@ export default function AboutSection() {
         <div className="cards-4 home-features">
           {FEATURES.map((f, i) => (
             <div key={f.k} className={`rv-item reveal reveal-delay-${Math.min(i + 1, 4)}`}>
-              <div className="card card--lift home-feature" data-featured={i === 0 ? 'true' : undefined}>
+              <div className="card card--lift home-feature">
                 <div className="tile tile--46"><Icon size={22}>{f.icon}</Icon></div>
                 <h3 className="home-feature__title">{t(`home.about.features.${f.k}.title`)}</h3>
                 <p className="home-feature__desc">{t(`home.about.features.${f.k}.desc`)}</p>

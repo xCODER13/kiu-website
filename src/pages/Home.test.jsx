@@ -99,13 +99,12 @@ describe('Home — qayta dizayn (Bosqich 6.11c5)', () => {
     expect(container.querySelector('.hero-badge__dot')).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it("Biz haqimizda: 4 ta afzallik kartasi, faqat birinchisi `data-featured`; ikonkalar dekorativ", () => {
+  it("Biz haqimizda: 4 ta afzallik kartasi, hech biri doimiy \"faol\" belgilanmagan (`data-featured` yo'q); ikonkalar dekorativ", () => {
     mockApi({ 'GET /news': [] })
     const { container } = renderHome()
     const cards = container.querySelectorAll('.home-feature')
     expect(cards).toHaveLength(4)
-    expect(cards[0]).toHaveAttribute('data-featured', 'true')
-    expect(container.querySelectorAll('.home-feature[data-featured]')).toHaveLength(1)
+    expect(container.querySelectorAll('[data-featured]')).toHaveLength(0)
     container.querySelectorAll('.home-feature svg').forEach(svg => expect(svg).toHaveAttribute('aria-hidden', 'true'))
     expect(container.querySelector('.home-about__frame img')).toHaveAttribute('loading', 'lazy')
   })

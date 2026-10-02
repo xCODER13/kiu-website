@@ -580,8 +580,10 @@ describe('Bosqich 6.11c5: Bosh sahifa', () => {
     expect(code).not.toMatch(/\.home-about__frame \{[^}]*border:/)
   })
 
-  it("Faol feature karta: `--shadow-card-active`, brend chegara, `--gradient-card-active`", () => {
-    expect(code).toMatch(/\.card\.home-feature\[data-featured="true"\] \{[^}]*var\(--color-brand\);[^}]*var\(--gradient-card-active\);[^}]*var\(--shadow-card-active\);/)
+  it("Feature karta \"faol\" ko'rinishi faqat `:hover` da (`--shadow-card-active`, brend chegara, `--gradient-card-active`); doimiy `data-featured` yo'q", () => {
+    expect(code).toMatch(/\.card\.home-feature:hover \{[^}]*var\(--color-brand\);[^}]*var\(--gradient-card-active\);[^}]*var\(--shadow-card-active\);/)
+    expect(code).not.toMatch(/data-featured/)
+    expect(read('src/pages/home/AboutSection.jsx')).not.toMatch(/data-featured=/)
   })
 
   it("Yangiliklar: karusel/karta Yangiliklar sahifasi klasslarini ishlatadi; skeleton animatsiyasi faqat `no-preference` da", () => {

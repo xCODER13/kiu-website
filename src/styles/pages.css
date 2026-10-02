@@ -2249,8 +2249,9 @@
   .home-feature .tile { margin-bottom: 14px; }
   .home-feature__title { margin: 0 0 6px; font-size: 1rem; font-weight: 700; line-height: 1.35; color: var(--color-text); }
   .home-feature__desc { margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted); }
-  /* Birinchi karta — "faol" urg'u (Dark'da rangli soya o'rniga chegara + yengil glow — tokenda) */
-  .card.home-feature[data-featured="true"] {
+  /* Hover'da "faol" ko'rinish: wine chegara + gradient fon + `--shadow-card-active` (Dark'da rangli soya o'rniga chegara + yengil glow — tokenda).
+     Doimiy belgilangan karta yo'q: kursor tegmaguncha barcha 4 karta bir xil. */
+  .card.home-feature:hover {
     border-color: var(--color-brand);
     background: var(--gradient-card-active);
     box-shadow: var(--shadow-card-active);
