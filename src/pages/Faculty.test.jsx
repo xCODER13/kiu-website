@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import Faculty from './Faculty'
 import { BAKALAVR, MAGISTRATURA } from './faculty/data'
+import uz from '../i18n/locales/uz.json'
 
 function renderFaculty() {
   return render(
@@ -101,16 +102,16 @@ describe('Faculty — <style> inject va JS hover CSS ga ko\'chirilgan (Bosqich 5
     expect(document.querySelectorAll('style')).toHaveLength(0)
   })
 
-  it("karta: faqat dinamik qiymatlar inline (`--accent`, animation-delay); hover inline stilni o'zgartirmaydi", async () => {
+  // 6.11a: `--accent` (har yo'nalishning o'z rangi) bekor qilindi — endi faqat animation-delay dinamik.
+  it("karta: faqat animation-delay inline (rang yo'q); hover inline stilni o'zgartirmaydi", async () => {
     const user = userEvent.setup()
     renderFaculty()
     const card = screen.getByText("Maktabgacha ta'lim").closest('.faculty-card')
     expect(card).toHaveClass('card', 'faculty-card')
     expect(card).toHaveAttribute('role', 'button')
     const before = card.getAttribute('style')
-    expect(before).toMatch(/--accent:/)
     const props = before.split(';').map(d => d.split(':')[0].trim()).filter(Boolean)
-    expect(props).toEqual(['--accent', 'animation-delay'])
+    expect(props).toEqual(['animation-delay'])
     await user.hover(card)
     expect(card.getAttribute('style')).toBe(before)
     await user.unhover(card)
@@ -122,5 +123,74 @@ describe('Faculty — <style> inject va JS hover CSS ga ko\'chirilgan (Bosqich 5
     expect(container.querySelector('.kiu-tab-wrap')).toBeInTheDocument()
     expect(container.querySelectorAll('.kiu-tab-btn')).toHaveLength(2)
     expect(container.querySelectorAll('.kiu-tab-badge')).toHaveLength(2)
+  })
+})
+
+describe("Faculty — qayta dizayn (Bosqich 6.11a)", () => {
+  it("umumiy ichki hero: h1 va ta'rif `.inner-hero` ichida; tab almashtirgich hero ichida", () => {
+    const { container } = renderFaculty()
+    const hero = container.querySelector('.inner-hero')
+    expect(hero).toBeInTheDocument()
+    expect(within(hero).getByRole('heading', { level: 1, name: "Yo'nalishlar" })).toBeInTheDocument()
+    expect(hero.querySelector('.kiu-tab-wrap')).toBeInTheDocument()
+  })
+
+  it("tab: faol tab `data-active` va `aria-pressed`; almashtirilganda holat ko'chadi", async () => {
+    const user = userEvent.setup()
+    renderFaculty()
+    const bak = screen.getByRole('button', { name: /Bakalavr/ })
+    const mag = screen.getByRole('button', { name: /Magistratura/ })
+    expect(bak).toHaveAttribute('aria-pressed', 'true')
+    expect(bak).toHaveAttribute('data-active', 'true')
+    expect(mag).toHaveAttribute('aria-pressed', 'false')
+    await user.click(mag)
+    expect(mag).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: /Bakalavr/ })).toHaveAttribute('data-active', 'false')
+  })
+
+  it("statistika: bitta karta ichida 4 katak (yo'nalish soni, davomiylik, eng past narx, o'qish shakli)", () => {
+    const { container } = renderFaculty()
+    const stats = container.querySelector('.fac-stats')
+    expect(stats).toHaveClass('card')
+    expect(stats.querySelectorAll('.fac-stat')).toHaveLength(4)
+    expect(within(stats).getByText(String(BAKALAVR.length))).toBeInTheDocument()
+    expect(within(stats).getByText('Kunduzgi')).toBeInTheDocument()
+    expect(within(stats).getByText("12 850 000 so'm")).toBeInTheDocument()
+  })
+
+  it("regressiya: hamma kartada `style` dagi qiymatlar rangsiz (data.js dagi `color` stilga qo'yilmaydi)", () => {
+    const { container } = renderFaculty()
+    const cards = container.querySelectorAll('.faculty-card')
+    expect(cards).toHaveLength(BAKALAVR.length)
+    for (const c of cards) expect(c.outerHTML).not.toMatch(/#[0-9a-f]{3,8}\b|rgb/i)
+  })
+
+  it("modal: hamma element klass bilan (inline style yo'q); asosiy tugma `.btn-primary` /admission ga, telefon `.btn-secondary` `tel:` havolasi", async () => {
+    const user = userEvent.setup()
+    renderFaculty()
+    await user.click(screen.getByText("Maktabgacha ta'lim"))
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveClass('fac-modal')
+    expect(dialog.parentElement).toHaveClass('fac-modal-overlay')
+    expect(dialog.querySelectorAll('[style]')).toHaveLength(0)
+    const apply = within(dialog).getByRole('link', { name: /Ariza topshirish/ })
+    expect(apply).toHaveClass('btn', 'btn-primary')
+    expect(apply).toHaveAttribute('href', '/admission')
+    const phone = within(dialog).getByRole('link', { name: /\+998 55 500 99 44/ })
+    expect(phone).toHaveClass('btn', 'btn-secondary')
+    expect(phone).toHaveAttribute('href', 'tel:+998555009944')
+    expect(dialog.querySelector('.fac-deadline')).toHaveTextContent('Qabul muddati')
+  })
+
+  it("modal: izoh (note) faqat `hasNote` bo'lgan yo'nalishda ko'rinadi", async () => {
+    const user = userEvent.setup()
+    renderFaculty()
+    const withNote = BAKALAVR.find(p => p.hasNote)
+    const withoutNote = BAKALAVR.find(p => !p.hasNote)
+    await user.click(screen.getByText(uz.faculty.programs[withoutNote.id].name))
+    expect(screen.getByRole('dialog').querySelector('.fac-note')).toBeNull()
+    await user.keyboard('{Escape}')
+    await user.click(screen.getByText(uz.faculty.programs[withNote.id].name))
+    expect(screen.getByRole('dialog').querySelector('.fac-note')).toHaveTextContent(uz.faculty.programs[withNote.id].note)
   })
 })

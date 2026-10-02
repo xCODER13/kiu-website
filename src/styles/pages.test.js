@@ -119,14 +119,17 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
     expect(read('src/pages/home/HeroSection.jsx')).not.toMatch(/gridTemplateColumns|maxWidth: 480/)
   })
 
-  it("Faculty tab mobil qoidalari `!important`siz; `--card` (e'lon qilinmagan) o'rniga `transparent` (vizual farq 0)", () => {
+  // 6.11a: `--card` (e'lon qilinmagan token) va `transparent` fon endi yo'q — tab pill'i `--color-surface-3` ustida (spec 6.11).
+  it("Faculty tab: mobil qoidalar `!important`siz, `--card` ishlatilmaydi; pill `--color-surface-3` fonida", () => {
     expect(code).not.toMatch(/!important/)
-    expect(code).toMatch(/\.kiu-tab-wrap \{[^}]*background: transparent;/)
     expect(code).not.toMatch(/var\(--card\)/)
+    expect(code).toMatch(/\.kiu-tab-wrap \{[^}]*background: var\(--color-surface-3\);/)
   })
 
-  it("karta hover'i CSS da: `.card.faculty-card:hover` (3 klass — `.card:is([role=button]):hover` ga teng, tartib hal qiladi)", () => {
-    expect(code).toMatch(/\.card\.faculty-card:hover \{[^}]*border-color: var\(--accent\);/)
+  // 6.11a: hover chegarasi `var(--accent)` (har yo'nalishning o'z rangi) edi; endi hamma karta bitta brand rangida.
+  it("karta hover'i va fokusi CSS da: `.card.faculty-card:hover/:focus-visible` — brand chegara, `--accent` yo'q", () => {
+    expect(code).toMatch(/\.card\.faculty-card:hover,\s*\.card\.faculty-card:focus-visible \{[^}]*border-color: var\(--color-brand\);/)
+    expect(code).not.toMatch(/var\(--accent\)/)
   })
 
   it("SortingHat: tanlangan variant `data-selected`, hover `:not(:disabled, [data-selected])`; input fokusi `:focus`", () => {
@@ -169,5 +172,65 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
     expect(site).toMatch(/\.tg-subscribe \{[^}]*linear-gradient\(135deg, var\(--brand-telegram\), var\(--brand-telegram-end\)\)/)
     expect(tokens).toMatch(/--brand-telegram-end:\s*#0055aa/)
     expect(tokens).toMatch(/--brand-telegram-deep:\s*#006aa3/)
+  })
+})
+
+describe('Bosqich 6.11a: umumiy ichki hero, Qabul, Yo\'nalishlar', () => {
+  const tokens = read('src/styles/tokens.css')
+  const global = read('src/styles/global.css').replace(/\/\*[\s\S]*?\*\//g, '')
+  const inline = f => (read(f).match(/style=\{\{/g) ?? []).length
+
+  it("hero `.inner-hero`: nuqtali qatlam (`::before`), pastda so'nish (`::after`), h1 `clamp` ≤ 3rem/800, ta'rif 1.125rem", () => {
+    expect(code).toMatch(/\.inner-hero \{[^}]*background-image: var\(--gradient-hero-glow\);/)
+    expect(code).toMatch(/\.inner-hero::before \{[^}]*var\(--hero-dot\)/)
+    expect(code).toMatch(/\.inner-hero::after \{[^}]*var\(--color-bg\)/)
+    expect(code).toMatch(/\.inner-hero__title \{[^}]*font-size: clamp\(2rem, [^)]*3rem\);[^}]*font-weight: 800;[^}]*letter-spacing: -0\.025em;/)
+    expect(code).toMatch(/\.inner-hero__sub \{[^}]*font-size: 1\.125rem;/)
+  })
+
+  it("badge nuqtasi oltin; pulsatsiya faqat `prefers-reduced-motion: no-preference` da", () => {
+    expect(code).toMatch(/\.hero-badge__dot \{[^}]*background: var\(--color-accent\);/)
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.hero-badge__dot \{ animation: pulse/)
+  })
+
+  it("yangi tokenlar Light'da e'lon qilingan; Dark'da `--color-accent-text` = #e6c04f (oltin matn ikkala temada o'qiladi)", () => {
+    for (const n of ['--color-accent-text', '--color-accent-subtle', '--color-accent-border', '--color-banner-bg', '--gradient-banner',
+      '--gradient-hairline', '--hero-dot', '--gradient-hero-glow', '--gradient-card', '--shadow-card-inset', '--shadow-card-hover', '--color-modal-overlay'])
+      expect(tokens, n).toMatch(new RegExp(`${n}:`))
+    expect(tokens).toMatch(/--color-accent-text:\s*#8a600a/)
+    expect(tokens).toMatch(/--color-accent-text:\s*#e6c04f/)
+    expect(tokens).toMatch(/--color-modal-overlay:\s*rgb\(28 12 22 \/ 0\.66\)/)
+    expect(tokens).toMatch(/--color-modal-overlay:\s*rgb\(10 6 9 \/ 0\.74\)/)
+  })
+
+  it("Qabul banneri: to'q wine gradient + tepada oltin hairline; muddat chipi oltin tonda", () => {
+    expect(code).toMatch(/\.apply-banner \{[^}]*background: var\(--gradient-banner\);/)
+    expect(code).toMatch(/\.apply-banner::before \{[^}]*var\(--gradient-hairline\)/)
+    expect(code).toMatch(/\.deadline-chip \{[^}]*var\(--color-accent-subtle\)/)
+  })
+
+  it("Yo'nalish kartasi: hover/fokus faqat brand + wine glow; `translateY(-3px)` faqat `no-preference` da", () => {
+    expect(code).toMatch(/box-shadow: var\(--shadow-card-inset\), var\(--shadow-card-hover\);/)
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.card\.faculty-card:hover,\s*\.card\.faculty-card:focus-visible \{ transform: translateY\(-3px\); \}/)
+  })
+
+  it("tab: faol holat `data-active`, faol fon `--color-brand-fill` + `--glow-brand`, badge `rgb(255 255 255 / .22)`", () => {
+    expect(code).toMatch(/\.kiu-tab-btn\[data-active="true"\] \{[^}]*var\(--color-brand-fill\);[^}]*var\(--glow-brand\)/)
+    expect(code).toMatch(/\.kiu-tab-btn\[data-active="true"\] \.kiu-tab-badge \{[^}]*rgb\(255 255 255 \/ 0\.22\)/)
+  })
+
+  it("`.faculty-grid-*` qoidalari global.css dan (qatlamsiz — gap'ni bosib o'tardi) pages.css ga ko'chgan", () => {
+    expect(global).not.toMatch(/faculty-grid/)
+    expect(code).toMatch(/\.faculty-grid-bakalavr \{[^}]*repeat\(5, minmax\(0, 1fr\)\)/)
+    expect(code).toMatch(/\.faculty-grid \{ gap: 16px; \}/)
+  })
+
+  it("Admission, Faculty, FacultyModal: inline style yo'q; FacultyCard — faqat animation-delay (1 ta); hex/rgba yo'q", () => {
+    expect(inline('src/pages/Admission.jsx')).toBe(0)
+    expect(inline('src/pages/Faculty.jsx')).toBe(0)
+    expect(inline('src/pages/faculty/FacultyModal.jsx')).toBe(0)
+    expect(inline('src/pages/faculty/FacultyCard.jsx')).toBe(1)
+    for (const f of ['src/pages/Admission.jsx', 'src/pages/Faculty.jsx', 'src/pages/faculty/FacultyCard.jsx', 'src/pages/faculty/FacultyModal.jsx', 'src/components/PageHero.jsx'])
+      expect(read(f), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|\bf\.color\b/i)
   })
 })

@@ -41,247 +41,103 @@ export default function FacultyModal({ f: program, degree, onClose }) {
   }, [])
 
   const infoItems = [
-    { label: t('faculty.modal.duration'), value: f.duration,       iconFn: () => IC.clock(20)  },
-    { label: t('faculty.modal.language'), value: f.lang,           iconFn: () => IC.globe(20)  },
-    { label: t('faculty.modal.studyForm'), value: f.studyFormLabel, iconFn: () => IC.sun(20)   },
+    { label: t('faculty.modal.duration'), value: f.duration,       icon: IC.clock(20)  },
+    { label: t('faculty.modal.language'), value: f.lang,           icon: IC.globe(20)  },
+    { label: t('faculty.modal.studyForm'), value: f.studyFormLabel, icon: IC.sun(20)   },
   ]
 
   const modalContent = (
-    <div
-      onClick={onClose}
-      style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        background: 'rgba(10,10,30,.75)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '0.75rem 1rem',
-        overflowY: 'auto',
-      }}
-    >
+    <div className="fac-modal-overlay" onClick={onClose}>
       <div
+        className="fac-modal"
         onClick={e => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="faculty-modal-title"
-        style={{
-          background: 'var(--bg)',
-          borderRadius: 18,
-          padding: '1.4rem 1.5rem',
-          maxWidth: 580,
-          width: '100%',
-          maxHeight: 'calc(100vh - 1.5rem)',
-          overflowY: 'auto',
-          boxShadow: '0 30px 80px rgba(0,0,0,.35)',
-          position: 'relative',
-          border: `1px solid ${f.color}30`,
-        }}
       >
-        {/* Close button */}
         <button
           ref={closeBtnRef}
+          type="button"
           onClick={onClose}
           title={t('faculty.modal.close')}
           aria-label={t('faculty.modal.closeLabel')}
-          style={{
-            position: 'absolute', top: 14, right: 14,
-            width: 34, height: 34, borderRadius: '50%',
-            border: '1px solid var(--border)',
-            background: 'var(--bg)',
-            cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--muted)',
-            transition: 'background .15s',
-          }}
+          className="fac-modal__close"
         >
           {IC.close(16)}
         </button>
 
-        {/* Degree badge */}
-        <div style={{ marginBottom: 10 }}>
-          <span style={{
-            fontSize: 11, fontWeight: 600,
-            padding: '4px 12px', borderRadius: 20,
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            background: `${f.color}18`,
-            color: f.color,
-            border: `1px solid ${f.color}40`,
-          }}>
-            {degree === 'bakalavr' ? IC.graduation(13) : IC.building(13)}
-            {t(`faculty.degrees.${degree}`)}
-          </span>
+        {/* Daraja belgisi */}
+        <span className="fac-chip fac-chip--degree">
+          {degree === 'bakalavr' ? IC.graduation(14) : IC.building(14)}
+          {t(`faculty.degrees.${degree}`)}
+        </span>
+
+        {/* Sarlavha */}
+        <div className="fac-modal__title-row">
+          <div className="fac-icon fac-icon--lg">{IC[f.icon](24)}</div>
+          <h2 id="faculty-modal-title" className="fac-modal__title">{f.name}</h2>
         </div>
 
-        {/* Title row */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: '1rem' }}>
-          <div style={{
-            width: 46, height: 46, borderRadius: 12,
-            background: `${f.color}15`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: f.color, flexShrink: 0,
-          }}>
-            {IC[f.icon](22)}
-          </div>
-          <h2 id="faculty-modal-title" style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1.35, paddingTop: 6 }}>
-            {f.name}
-          </h2>
-        </div>
-
-        {/* Info strip */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8,
-          padding: '0.75rem', background: 'var(--card)',
-          borderRadius: 12, marginBottom: '1rem',
-          border: `1px solid ${f.color}25`,
-        }}>
-          {infoItems.map(({ label, value, iconFn }) => (
-            <div key={label} style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'flex', justifyContent: 'center', alignItems: 'center',
-                marginBottom: 6, color: f.color,
-              }}>
-                {iconFn()}
-              </div>
-              <div style={{ fontSize: 10, color: 'var(--muted)', marginBottom: 3 }}>{label}</div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text)' }}>{value}</div>
+        {/* Ma'lumot qatori */}
+        <div className="fac-info">
+          {infoItems.map(({ label, value, icon }) => (
+            <div key={label} className="fac-info__item">
+              <div className="fac-info__icon">{icon}</div>
+              <div className="fac-info__label">{label}</div>
+              <div className="fac-info__value">{value}</div>
             </div>
           ))}
         </div>
 
-        {/* Price block */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 12,
-          padding: '0.75rem 1rem',
-          background: `${f.color}0d`,
-          borderRadius: 12, marginBottom: '1rem',
-          border: `1px solid ${f.color}30`,
-        }}>
-          <div style={{ color: f.color, display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-            {IC.tag(28)}
-          </div>
+        {/* Narx */}
+        <div className="fac-fee">
+          <div className="fac-fee__icon">{IC.tag(28)}</div>
           <div>
-            <div style={{ fontSize: 10.5, color: f.color, marginBottom: 2, fontWeight: 500, opacity: 0.8 }}>
-              {t('faculty.modal.fee')}
-            </div>
-            <div style={{ fontSize: 19, fontWeight: 800, color: f.color, letterSpacing: '-0.5px' }}>
-              {t('faculty.price', { price: fmt(f.price, t('meta.thousandsSep')) })}
-            </div>
+            <div className="fac-fee__label">{t('faculty.modal.fee')}</div>
+            <div className="fac-fee__value">{t('faculty.price', { price: fmt(f.price, t('meta.thousandsSep')) })}</div>
           </div>
         </div>
 
-        {/* Description */}
-        <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.65, marginBottom: '1rem' }}>
-          {f.desc}
-        </p>
+        <p className="fac-modal__desc">{f.desc}</p>
 
-        {/* Note */}
         {f.note && (
-          <div style={{
-            padding: '8px 14px',
-            background: `${f.color}08`,
-            borderRadius: 10,
-            fontSize: 12, color: f.color,
-            marginBottom: '1rem',
-            fontWeight: 500,
-            display: 'flex', alignItems: 'flex-start', gap: 7,
-          }}>
-            <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center', marginTop: 1 }}>
-              {IC.info(14)}
-            </span>
+          <div className="fac-note">
+            <span className="fac-note__icon">{IC.info(15)}</span>
             {f.note}
           </div>
         )}
 
-        {/* Subjects + Career */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+        {/* Fanlar + karyera */}
+        <div className="fac-cols">
           <div>
-            <h4 style={{
-              fontSize: 12, fontWeight: 700, color: 'var(--text)',
-              marginBottom: 12,
-              display: 'flex', alignItems: 'center', gap: 6,
-            }}>
-              <span style={{ color: f.color, display: 'flex', alignItems: 'center' }}>{IC.bookOpen(14)}</span>
-              {t('faculty.modal.subjects')}
-            </h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {f.subjects.map(s => (
-                <span key={s} style={{
-                  fontSize: 11, padding: '4px 10px', borderRadius: 20,
-                  background: `${f.color}0e`,
-                  color: f.color,
-                  border: `1px solid ${f.color}22`,
-                  fontWeight: 500,
-                }}>{s}</span>
-              ))}
+            <h4 className="fac-h4"><span className="fac-h4__icon">{IC.bookOpen(15)}</span>{t('faculty.modal.subjects')}</h4>
+            <div className="fac-chips">
+              {f.subjects.map(s => <span key={s} className="fac-chip">{s}</span>)}
             </div>
           </div>
           <div>
-            <h4 style={{
-              fontSize: 12, fontWeight: 700, color: 'var(--text)',
-              marginBottom: 12,
-              display: 'flex', alignItems: 'center', gap: 6,
-            }}>
-              <span style={{ color: f.color, display: 'flex', alignItems: 'center' }}>{IC.briefcase(14)}</span>
-              {t('faculty.modal.career')}
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-              {f.career.map(c => (
-                <div key={c} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12, color: 'var(--muted)' }}>
-                  <div style={{
-                    width: 7, height: 7, borderRadius: '50%',
-                    background: f.color, flexShrink: 0, marginTop: 4,
-                  }} />
-                  {c}
-                </div>
-              ))}
-            </div>
+            <h4 className="fac-h4"><span className="fac-h4__icon">{IC.briefcase(15)}</span>{t('faculty.modal.career')}</h4>
+            <ul className="fac-career">
+              {f.career.map(c => <li key={c}>{c}</li>)}
+            </ul>
           </div>
         </div>
 
-        {/* CTA buttons */}
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <Link
-            to="/admission"
-            style={{
-              flex: 1, minWidth: 160,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              padding: '11px 20px', borderRadius: 10,
-              background: `linear-gradient(135deg, ${f.color}, ${f.color}cc)`,
-              color: 'var(--color-on-brand)', textDecoration: 'none',
-              fontWeight: 700, fontSize: 12.5,
-              boxShadow: `0 4px 16px ${f.color}55`,
-            }}
-          >
-            {IC.pen(14)}
+        {/* Tugmalar */}
+        <div className="fac-modal__actions">
+          <Link to="/admission" className="btn btn-primary fac-modal__apply">
+            {IC.pen(16)}
             {t('faculty.modal.apply')}
           </Link>
-          <a
-            href="tel:+998555009944"
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-              padding: '11px 16px', borderRadius: 10,
-              border: `1.5px solid ${f.color}40`,
-              background: `${f.color}08`,
-              color: f.color,
-              textDecoration: 'none',
-              fontWeight: 600, fontSize: 12.5,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {IC.phone(15)}
+          <a href="tel:+998555009944" className="btn btn-secondary">
+            {IC.phone(16)}
             +998 55 500 99 44
           </a>
         </div>
 
-        {/* Deadline note */}
-        <div style={{
-          marginTop: '0.75rem', padding: '7px 12px',
-          background: 'rgba(255,183,0,.1)', borderRadius: 10,
-          border: '1px solid rgba(255,183,0,.3)',
-          fontSize: 11, color: '#92400e', fontWeight: 500,
-          display: 'flex', alignItems: 'center', gap: 7,
-        }}>
-          <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{IC.calendar(14)}</span>
+        {/* Qabul muddati */}
+        <div className="fac-deadline">
+          {IC.calendar(15)}
           {t('faculty.modal.deadline')}
         </div>
       </div>
