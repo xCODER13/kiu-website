@@ -1,4 +1,4 @@
-/* Sahifa klasslari: umumiy bloklar + Vacancies va News (Bosqich 5b).
+/* Sahifa klasslari: umumiy bloklar + Vacancies va News (Bosqich 5b) + Home/NewsDetail/Faculty/SortingHat/QR qoldiqlari (5c).
    Inline `style={{}}` va `onMouseEnter` o'rniga — qiymatlar ataylab o'zgarmagan (vizual farq 0).
    Istisnolar (hammasi 5b hujjatida): xato holati (`--color-danger` tokeni) va input placeholder (`.input` dan).
    Qatlam: `components`. Fayl components.css va site.css DAN KEYIN import qilinadi (main.jsx):
@@ -114,6 +114,7 @@
         Eski o'lcham (13 px, fon `--color-bg`) saqlangan; 6.11 da asosiy variantga qo'shiladi ── */
   .input--form { font-size: 13px; background: var(--color-bg); }
   .input--area { resize: none; line-height: 1.6; }
+  .input--noresize { resize: none; }
   .label--form { font-size: 12px; font-weight: 400; color: var(--color-text-muted); margin-bottom: 4px; }
   .field-error--form { display: block; margin-top: 4px; font-size: 11.5px; }
 
@@ -546,4 +547,218 @@
     overflow: hidden;
   }
   .tg-banner-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+  /* ═══ Bosqich 5c ═══════════════════════════════════════════════════ */
+
+  /* ── Home: animatsiyalar (avval Home.jsx ichidagi <style> da edi) ── */
+  @keyframes homeCarouselFade { from { opacity: 0; transform: scale(1.02); } to { opacity: 1; transform: scale(1); } }
+  @keyframes homeSkelShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  @keyframes homeSectionFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── NewsDetail: rasm galereyasi ──────────────────────────────────── */
+  @keyframes slide-in-right { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes slide-in-left { from { transform: translateX(-60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgb(0 0 0 / 0.45);
+    color: var(--color-on-brand);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: background 0.15s;
+  }
+  .gallery-arrow:hover { background: rgb(0 0 0 / 0.7); }
+  .gallery-arrow--prev { left: 12px; }
+  .gallery-arrow--next { right: 12px; }
+
+  /* ── NewsDetail: "Orqaga" tugmalari ───────────────────────────────── */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-brand);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0;
+    font-family: var(--font-sans);
+    transition: opacity 0.2s;
+  }
+  .back-link:hover { opacity: 0.7; }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 22px;
+    border-radius: 10px;
+    background: var(--gradient-brand);
+    color: var(--color-on-brand);
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    transition: opacity 0.2s;
+  }
+  .back-btn:hover { opacity: 0.85; }
+
+  /* ── Faculty: darajalar tabi + karta (avval faculty-styles.js orqali <style> inject qilinardi) ── */
+  @keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  /* DIQQAT: avvalgi `background: var(--card)` — `--card` tokeni hech qayerda e'lon qilinmagan, ya'ni fon aslida
+     shaffof edi. Vizual farq 0 uchun `transparent` qoldirildi; niyat qilingan rang (`--color-surface-3`) — 6.11 da. */
+  .kiu-tab-wrap {
+    display: inline-flex;
+    gap: 6px;
+    background: transparent;
+    padding: 5px;
+    border-radius: 40px;
+    border: 2px solid var(--color-border);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-brand) 25%, transparent);
+    max-width: 100%;
+  }
+  .kiu-tab-btn {
+    padding: 9px 22px;
+    border-radius: 35px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .kiu-tab-badge { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 20px; }
+  @media (max-width: 480px) {
+    .kiu-tab-btn { padding: 8px 13px; font-size: 11.5px; gap: 5px; }
+    .kiu-tab-badge { padding: 1px 5px; font-size: 9px; }
+  }
+  /* Karta rangi ma'lumotdan keladi → `--accent` o'zgaruvchisi (inline), hover qoidasi shu yerda */
+  .card.faculty-card {
+    cursor: pointer;
+    padding: 1.25rem;
+    animation: cardFadeIn 0.35s ease both;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  .card.faculty-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+    border-color: var(--accent);
+  }
+
+  /* ── SortingHat ───────────────────────────────────────────────────── */
+  .sh-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 36px;
+    background: var(--gradient-brand);
+    color: var(--color-on-brand);
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    box-shadow: 0 4px 20px color-mix(in srgb, var(--color-brand) 40%, transparent);
+    transition: transform 0.2s;
+  }
+  .sh-start:hover { transform: translateY(-2px); }
+
+  .sh-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 0.9rem 1.1rem;
+    text-align: left;
+    cursor: pointer;
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    font-size: 13.5px;
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    transition: all 0.18s;
+    transform: scale(1);
+  }
+  .sh-opt:disabled { cursor: default; }
+  .sh-opt:hover:not(:disabled, [data-selected="true"]) {
+    border-color: var(--color-brand);
+    background: color-mix(in srgb, var(--color-brand) 5%, transparent);
+  }
+  .sh-opt[data-selected="true"] {
+    border-color: var(--color-brand);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-brand) 12%, transparent), color-mix(in srgb, var(--color-brand-hover) 12%, transparent));
+    transform: scale(1.01);
+  }
+  .sh-opt-letter {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s;
+    background: var(--color-surface-2);
+    border: 2px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .sh-opt[data-selected="true"] .sh-opt-letter {
+    background: var(--gradient-brand);
+    border-color: var(--color-brand);
+    color: var(--color-on-brand);
+  }
+  .sh-opt-text { line-height: 1.5; }
+  .sh-opt-arrow { margin-left: auto; flex-shrink: 0; color: var(--color-brand); }
+
+  /* Katta input: `.input` ustiga. Fokus — brend rangli ramka; xato (`aria-invalid`) `.input` dan keladi */
+  .input--lg {
+    padding: 12px 14px;
+    border-width: 2px;
+    border-radius: 12px;
+    font-size: 14px;
+    background: var(--color-bg);
+    font-family: var(--font-sans);
+    transition: border-color 0.2s;
+  }
+  .input--lg:focus { border-color: var(--color-brand); }
+  .label--lg { font-size: 12px; color: var(--color-text-muted); }
+  .field-error--lg { display: block; margin-top: 5px; font-size: 11.5px; }
+
+  /* ── QRCode: ijtimoiy tarmoq havolasi (fon — ma'lumotdan, inline) ─── */
+  .social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--color-on-brand);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: 9px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .social-link:hover { opacity: 0.85; }
 }

@@ -53,3 +53,14 @@ describe('Home (smoke test)', () => {
     expect(await screen.findByText("Hozircha yangiliklar yo'q.")).toBeInTheDocument()
   })
 })
+
+describe('Home — <style> va `!important` CSS ga ko\'chirilgan (Bosqich 5c)', () => {
+  it("`<style>` yo'q; hero tarmog'i va statistika inline stilsiz (qiymatlar global.css da)", () => {
+    mockApi({ 'GET /news': [] })
+    const { container } = renderHome()
+    expect(document.querySelectorAll('style')).toHaveLength(0)
+    expect(container.querySelector('.hero-grid').hasAttribute('style')).toBe(false)
+    expect(container.querySelector('.hero-grid .stats-grid').hasAttribute('style')).toBe(false)
+    expect(container.querySelector('.hero-photo-wrap').hasAttribute('style')).toBe(false)
+  })
+})

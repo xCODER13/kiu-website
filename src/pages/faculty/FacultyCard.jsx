@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IC } from './Icons.jsx'
 import { fmt, localizeProgram } from './utils'
@@ -7,14 +6,13 @@ import { fmt, localizeProgram } from './utils'
 export default function FacultyCard({ f: program, index, onClick }) {
   const { t } = useTranslation()
   const f = localizeProgram(program, t)
-  const [hover, setHover] = useState(false)
 
   // Xatolik: karta faqat sichqoncha uchun ochiladigan div edi — klaviatura
   // (Tab + Enter/Space) yoki screen reader orqali fokus qilib bo'lmas va
   // modalni ochib bo'lmas edi. role/tabIndex/onKeyDown qo'shildi.
   return (
     <div
-      className="card"
+      className="card faculty-card"
       role="button"
       tabIndex={0}
       onClick={onClick}
@@ -24,19 +22,8 @@ export default function FacultyCard({ f: program, index, onClick }) {
           onClick()
         }
       }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        cursor: 'pointer',
-        padding: '1.25rem',
-        animation: 'cardFadeIn .35s ease both',
-        animationDelay: `${index * 0.05}s`,
-        transition: 'transform .2s, box-shadow .2s, border-color .2s',
-        transform: hover ? 'translateY(-3px)' : 'none',
-        boxShadow: hover ? '0 8px 24px rgba(0,0,0,.12)' : undefined,
-        borderColor: hover ? f.color : undefined,
-        display: 'flex', flexDirection: 'column',
-      }}
+      // Faqat dinamik qiymatlar: karta rangi (hover'da ramka) va kirish animatsiyasi kechikishi
+      style={{ '--accent': f.color, animationDelay: `${index * 0.05}s` }}
     >
       <div style={{
         width: 46, height: 46, borderRadius: 12,

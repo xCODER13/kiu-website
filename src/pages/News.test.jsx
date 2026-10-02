@@ -95,8 +95,6 @@ describe('News — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () => {
   function inlineProps(container) {
     const props = []
     container.querySelectorAll('[style]').forEach(el => {
-      // TelegramPanel (umumiy komponent, 5b doirasidan tashqarida) — o'z inline'lari bilan qoladi
-      if (el.closest('.news-telegram-box')) return
       // jsdom `background` stenografiyasini bo'laklarga ajratadi → xossa nomlarini atribut matnidan olamiz
       const names = (el.getAttribute('style') || '').split(';').map(d => d.split(':')[0].trim()).filter(Boolean)
       for (const name of names) props.push([el.className, name])
@@ -185,7 +183,7 @@ describe('News — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () => {
     await user.click(screen.getByRole('button', { name: /Video/ }))
     expect(container.querySelectorAll('.shorts-card').length).toBe(1)
     expect(document.querySelectorAll('style')).toHaveLength(0)
-    expect(Array.from(container.querySelectorAll('[style]')).filter(e => !e.closest('.news-telegram-box'))).toEqual([])
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
   })
 
   it("yuklanish holati: `.spinner` klassi va `<style>` yo'q", () => {

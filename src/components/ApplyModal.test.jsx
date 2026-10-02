@@ -177,3 +177,48 @@ describe('ApplyModal', () => {
     opener.remove()
   })
 })
+
+describe('ApplyModal — inline stillar klassga ko\'chirilgan (Bosqich 5c)', () => {
+  it("modal butunlay klass bilan: `[style]` yo'q, `<style>` yo'q", () => {
+    const { container } = render(<ApplyModal onClose={() => {}} />)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    expect(document.querySelectorAll('style')).toHaveLength(0)
+    expect(container.firstChild).toHaveClass('modal-overlay')
+    expect(screen.getByRole('dialog')).toHaveClass('modal-dialog')
+  })
+
+  it("xato holati `aria-invalid` orqali (oldin inline `borderColor`): faqat xatoli maydon belgilanadi", async () => {
+    okFetch()
+    const user = userEvent.setup()
+    const { container } = render(<ApplyModal onClose={() => {}} />)
+    const name = screen.getByPlaceholderText('Ism Familiya')
+    const phone = screen.getByPlaceholderText('+998 90 123 45 67')
+    expect(name).not.toHaveAttribute('aria-invalid')
+    await user.click(screen.getByRole('button', { name: 'Yuborish' }))
+    expect(name).toHaveAttribute('aria-invalid', 'true')
+    expect(phone).toHaveAttribute('aria-invalid', 'true')
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    expect(container.querySelectorAll('.field-error')).toHaveLength(2)
+
+    await user.type(name, 'Ali Valiyev')
+    await user.click(screen.getByRole('button', { name: 'Yuborish' }))
+    expect(name).not.toHaveAttribute('aria-invalid')
+    expect(phone).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  it("server xatosi va muvaffaqiyat ekrani ham klass bilan", async () => {
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false })))
+    const user = userEvent.setup()
+    const { container } = render(<ApplyModal onClose={() => {}} />)
+    await fillValid(user)
+    await user.click(screen.getByRole('button', { name: 'Yuborish' }))
+    expect(await screen.findByText(/xatolik yuz berdi/)).toHaveClass('modal-alert')
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+
+    okFetch()
+    await user.click(screen.getByRole('button', { name: 'Yuborish' }))
+    await screen.findByText('Ariza yuborildi!')
+    expect(container.querySelector('.modal-success')).toBeInTheDocument()
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+})

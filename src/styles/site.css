@@ -1,4 +1,4 @@
-/* Sayt "ramkasi": Navbar, Footer, Qidiruv (Bosqich 5a).
+/* Sayt "ramkasi": Navbar, Footer, Qidiruv (Bosqich 5a) + ApplyModal va TelegramPanel (Bosqich 5c).
    Inline `style={{}}` va `onMouseEnter` o'rniga — qiymatlar ataylab o'zgarmagan (vizual farq 0).
    Qatlam: `components`. Bu fayl components.css DAN KEYIN import qilinadi (main.jsx):
    bir xil qatlamda tartib hal qiladi, shuning uchun `.footer-grid` padding'i `.container` ni bosib o'tadi.
@@ -323,5 +323,143 @@
       max-height: calc(100vh - 90px);
       overflow-y: auto;
     }
+  }
+
+  /* ── Ariza modali: ApplyModal (5c) ────────────────────────────────── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--color-overlay);
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .modal-dialog {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    padding: 2rem;
+    border-radius: 16px;
+    background: var(--color-bg);
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--color-text-muted);
+  }
+  .modal-title { font-size: 1.4rem; margin-bottom: 0.35rem; color: var(--color-text); }
+  .modal-sub { font-size: 13px; color: var(--color-text-muted); margin-bottom: 1.5rem; }
+  .modal-form { display: flex; flex-direction: column; gap: 12px; }
+  .modal-alert {
+    font-size: 12.5px;
+    color: var(--color-danger);
+    background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-danger) 25%, transparent);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .modal-submit { width: 100%; justify-content: center; padding: 12px; margin-top: 4px; }
+  .modal-success { text-align: center; padding: 2rem 0; }
+  .modal-success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--gradient-hero-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: var(--color-brand);
+  }
+  .modal-success-title { font-size: 1.3rem; color: var(--color-text); margin-bottom: 0.5rem; }
+  .modal-success-text { font-size: 13px; color: var(--color-text-muted); margin-bottom: 1.5rem; }
+  .modal-success .btn { margin: 0 auto; }
+
+  /* ── Telegram paneli: TelegramPanel (5c) ──────────────────────────── */
+  .tg-box {
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--color-bg);
+  }
+  .tg-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.9rem 1.1rem;
+    background: var(--gradient-hero-soft);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .tg-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-telegram), var(--brand-telegram-end));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-on-brand);
+    flex-shrink: 0;
+  }
+  .tg-name { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .tg-channel { font-size: 11px; color: var(--color-text-muted); }
+  .tg-live {
+    margin-left: auto;
+    background: var(--gradient-brand);
+    color: var(--color-on-brand);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .tg-msgs { padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 9px; }
+  .tg-msg {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    background: var(--color-brand-subtle);
+    border-radius: 12px 12px 12px 4px;
+    padding: 9px 11px;
+    border: 1px solid var(--color-border);
+  }
+  .tg-msg-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--gradient-hero-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-brand);
+    flex-shrink: 0;
+    border: 1px solid var(--color-border);
+  }
+  .tg-msg-body { flex: 1; }
+  .tg-msg-text { font-size: 12px; line-height: 1.6; color: var(--color-text); }
+  .tg-msg-date { display: block; text-align: right; margin-top: 3px; font-size: 10px; color: var(--color-text-muted); }
+  .tg-foot {
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem 1.1rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .tg-subscribe {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, var(--brand-telegram), var(--brand-telegram-end));
+    color: var(--color-on-brand);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 8px;
+    text-decoration: none;
   }
 }

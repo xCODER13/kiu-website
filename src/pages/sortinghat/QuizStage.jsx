@@ -45,24 +45,13 @@ export default function QuizStage({ current, selected, busy, onPick }) {
           const isSel = selected === opt
           return (
             <button key={i} onClick={() => onPick(opt)} disabled={busy}
-              style={{
-                width: '100%', padding: '0.9rem 1.1rem', textAlign: 'left',
-                cursor: busy ? 'default' : 'pointer',
-                background: isSel ? 'linear-gradient(135deg,color-mix(in srgb, var(--color-brand) 12%, transparent),color-mix(in srgb, var(--color-brand-hover) 12%, transparent))' : 'var(--bg)',
-                border: `2px solid ${isSel ? 'var(--color-brand)' : 'var(--border)'}`,
-                borderRadius: 12, fontSize: 13.5, color: 'var(--text)',
-                fontFamily: 'var(--font-body)', transition: 'all .18s',
-                display: 'flex', alignItems: 'center', gap: 12,
-                transform: isSel ? 'scale(1.01)' : 'scale(1)',
-              }}
-              onMouseEnter={e => { if (!isSel && !busy) { e.currentTarget.style.borderColor = 'var(--color-brand)'; e.currentTarget.style.background = 'color-mix(in srgb, var(--color-brand) 5%, transparent)' }}}
-              onMouseLeave={e => { if (!isSel) { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--bg)' }}}>
+              className="sh-opt" data-selected={isSel}>
               {/* letter/check */}
-              <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .18s', background: isSel ? 'var(--gradient-brand)' : 'var(--bg-2)', border: `2px solid ${isSel ? 'var(--color-brand)' : 'var(--border)'}`, color: isSel ? '#fff' : 'var(--muted)', fontSize: 12, fontWeight: 700 }}>
+              <div className="sh-opt-letter">
                 {isSel ? <IcCheck s={13} c="#fff" /> : ['A','B','C','D'][i]}
               </div>
-              <span style={{ lineHeight: 1.5 }}>{t(`sortingHat.questions.${QUESTIONS[current].id}.opts.${opt.id}`)}</span>
-              {isSel && <span style={{ marginLeft: 'auto', flexShrink: 0, color: 'var(--color-brand)' }}><IcArrow /></span>}
+              <span className="sh-opt-text">{t(`sortingHat.questions.${QUESTIONS[current].id}.opts.${opt.id}`)}</span>
+              {isSel && <span className="sh-opt-arrow"><IcArrow /></span>}
             </button>
           )
         })}

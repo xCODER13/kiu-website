@@ -55,41 +55,40 @@ export default function TelegramPanel() {
   const [posts] = useState(DEMO_POSTS)
 
   return (
-    <div className="tg-box" style={{ border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden', background: 'var(--bg)' }}>
+    <div className="tg-box">
 
       {/* Head */}
-      <div className="tg-head" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '.9rem 1.1rem', background: 'var(--gradient-hero-soft)', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #0088cc, #0055aa)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0 }}>
+      <div className="tg-head">
+        <div className="tg-avatar">
           <TgIcon />
         </div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text)' }}>{config.telegram.username}</div>
-          <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t('telegram.channel')}</div>
+          <div className="tg-name">{config.telegram.username}</div>
+          <div className="tg-channel">{t('telegram.channel')}</div>
         </div>
-        <span style={{ marginLeft: 'auto', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20 }}>LIVE</span>
+        <span className="tg-live">LIVE</span>
       </div>
 
       {/* Messages */}
-      <div style={{ padding: '1rem 1.1rem', display: 'flex', flexDirection: 'column', gap: 9 }}>
+      <div className="tg-msgs">
         {posts.map(p => (
-          <div key={p.id} className="tg-msg" style={{ background: 'var(--color-brand-subtle)', borderRadius: '12px 12px 12px 4px', padding: '9px 11px', border: '1px solid var(--border)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <div className="tg-msg-icon" style={{ width: 28, height: 28, borderRadius: 8, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-brand)', flexShrink: 0, border: '1px solid var(--border)' }}>
+          <div key={p.id} className="tg-msg">
+            <div className="tg-msg-icon">
               <PostIcon type={p.type} />
             </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 12, lineHeight: 1.6, color: 'var(--color-text)' }}>{t(`telegram.posts.${p.id}.text`)}</p>
-              <time style={{ fontSize: 10, color: 'var(--muted)', display: 'block', textAlign: 'right', marginTop: 3 }}>{t(`telegram.posts.${p.id}.date`)}</time>
+            <div className="tg-msg-body">
+              <p className="tg-msg-text">{t(`telegram.posts.${p.id}.text`)}</p>
+              <time className="tg-msg-date">{t(`telegram.posts.${p.id}.date`)}</time>
             </div>
           </div>
         ))}
       </div>
 
       {/* Footer */}
-      <div className="tg-foot" style={{ padding: '.75rem 1.1rem', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'center' }}>
+      <div className="tg-foot">
         {/* rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab bloklamaydi —
             noopener ham qo'shildi (tabnabbing'dan himoya, Documents.jsx'dagi bilan bir xil tuzatish) */}
-        <a href={config.telegram.url} target="_blank" rel="noopener noreferrer"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'linear-gradient(135deg, #0088cc, #0055aa)', color: 'var(--color-on-brand)', fontSize: 12, fontWeight: 600, padding: '8px 18px', borderRadius: 8, textDecoration: 'none' }}>
+        <a href={config.telegram.url} target="_blank" rel="noopener noreferrer" className="tg-subscribe">
           <TgIcon />
           {t('telegram.subscribe')}
         </a>
