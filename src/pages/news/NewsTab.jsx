@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import TelegramPanel from '../../components/TelegramPanel'
-import { getCategoryColor, getCategoryLabel, categoryMatches } from '../../utils/newsCategories'
+import { getCategoryToken, getCategoryLabel, categoryMatches } from '../../utils/newsCategories'
 import FeaturedCarousel from './FeaturedCarousel'
 import NewsCard from './NewsCard'
+import config from '../../config'
 
 // "NEWS TAB" bo'limi — News.jsx'dan o'zgarishsiz ko'chirilgan, faqat kerakli
 // qiymatlar endi orkestrator (News.jsx)dan prop sifatida keladi.
@@ -45,7 +46,7 @@ export default function NewsTab({
         <div className="news-telegram-box">
           <TelegramPanel />
         </div>
-        <a href="https://t.me/kiu_uz" target="_blank" rel="noreferrer" className="news-all-link">
+        <a href={config.telegram.url} target="_blank" rel="noopener noreferrer" className="news-all-link">
           {t('news.allNews')}
         </a>
       </div>
@@ -61,8 +62,8 @@ export default function NewsTab({
 
           {/* Search */}
           <div className="news-search">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-              className="news-search-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+              className="news-search-icon" aria-hidden="true">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
             <input value={search} onChange={e => { setSearch(e.target.value); setVisibleCount(6) }}
@@ -75,13 +76,13 @@ export default function NewsTab({
           {categories.length > 1 && (
             <div className="news-cats">
               {categories.map(cat => {
-                const color = cat === 'all' ? '#7c3aed' : getCategoryColor(cat)
                 const isActive = activeCategory === cat
                 return (
-                  // Toifa rangi ma'lumotdan keladi → faol holatdagina inline (qolgani `.news-cat` da)
-                  <button key={cat} onClick={() => { setActiveCategory(cat); setVisibleCount(6) }}
+                  // Toifa rangi ma'lumotdan keladi → faqat `--cat` o'zgaruvchisi (inline); faol holat `data-active` (CSS)
+                  <button key={cat} type="button" onClick={() => { setActiveCategory(cat); setVisibleCount(6) }}
                     className="news-cat" data-active={isActive}
-                    style={isActive ? { borderColor: color, background: `${color}18`, color } : undefined}>
+                    style={{ '--cat': cat === 'all' ? 'var(--color-brand)' : getCategoryToken(cat) }}>
+                    <span className="news-cat-dot" aria-hidden="true" />
                     {cat === 'all' ? t('news.all') : getCategoryLabel(cat, t)}
                     <span className="news-cat-count">
                       {cat === 'all' ? articles.length : articles.filter(n => categoryMatches(n.category, cat)).length}
@@ -106,7 +107,7 @@ export default function NewsTab({
               </div>
               {visibleCount < filtered.length && (
                 <div className="news-more">
-                  <button onClick={() => setVisibleCount(v => v + 6)} className="news-load-more">
+                  <button type="button" onClick={() => setVisibleCount(v => v + 6)} className="btn btn-secondary news-load-more">
                     {t('news.loadMore', { count: filtered.length - visibleCount })}
                   </button>
                 </div>

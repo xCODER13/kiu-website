@@ -382,24 +382,27 @@
   .modal-success-text { font-size: 13px; color: var(--color-text-muted); margin-bottom: 1.5rem; }
   .modal-success .btn { margin: 0 auto; }
 
-  /* ── Telegram paneli: TelegramPanel (5c) ──────────────────────────── */
+  /* ── Telegram paneli: TelegramPanel (5c; 6.11b qayta dizayn) ───────────
+     Sarlavha — brand-subtle; LIVE — wine to'ldirma + oltin nuqta; xabarlar — 2×2 to'r (tor joyda `data-layout="single"` — 1 ustun).
+     Avatar Telegram brend gradientida qoladi (kanal belgisi); "Obuna" tugmasi — umumiy `.btn-primary`. */
   .tg-box {
     border: 1px solid var(--color-border);
-    border-radius: 14px;
+    border-radius: var(--radius-2xl);
     overflow: hidden;
-    background: var(--color-bg);
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-card-inset);
   }
   .tg-head {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 0.9rem 1.1rem;
-    background: var(--gradient-hero-soft);
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--color-brand-subtle);
     border-bottom: 1px solid var(--color-border);
   }
   .tg-avatar {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--brand-telegram), var(--brand-telegram-end));
     display: flex;
@@ -408,58 +411,63 @@
     color: var(--color-on-brand);
     flex-shrink: 0;
   }
-  .tg-name { font-size: 13px; font-weight: 600; color: var(--color-text); }
-  .tg-channel { font-size: 11px; color: var(--color-text-muted); }
+  .tg-name { font-size: var(--text-base); font-weight: 700; color: var(--color-text); }
+  .tg-channel { font-size: var(--text-xs); color: var(--color-text-muted); }
   .tg-live {
-    margin-left: auto;
-    background: var(--gradient-brand);
-    color: var(--color-on-brand);
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-  }
-  .tg-msgs { padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 9px; }
-  .tg-msg {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    background: var(--color-brand-subtle);
-    border-radius: 12px 12px 12px 4px;
-    padding: 9px 11px;
-    border: 1px solid var(--color-border);
-  }
-  .tg-msg-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: var(--gradient-hero-soft);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-brand);
-    flex-shrink: 0;
-    border: 1px solid var(--color-border);
-  }
-  .tg-msg-body { flex: 1; }
-  .tg-msg-text { font-size: 12px; line-height: 1.6; color: var(--color-text); }
-  .tg-msg-date { display: block; text-align: right; margin-top: 3px; font-size: 10px; color: var(--color-text-muted); }
-  .tg-foot {
-    display: flex;
-    justify-content: center;
-    padding: 0.75rem 1.1rem;
-    border-top: 1px solid var(--color-border);
-  }
-  .tg-subscribe {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: linear-gradient(135deg, var(--brand-telegram), var(--brand-telegram-end));
+    margin-left: auto;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-brand-fill);
     color: var(--color-on-brand);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 8px 18px;
-    border-radius: 8px;
-    text-decoration: none;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .tg-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .tg-live-dot { animation: pulse 2s infinite; }
+  }
+  .tg-msgs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 16px 18px;
+  }
+  .tg-box[data-layout="single"] .tg-msgs { grid-template-columns: minmax(0, 1fr); }
+  @media (max-width: 640px) {
+    .tg-msgs { grid-template-columns: minmax(0, 1fr); }
+  }
+  .tg-msg {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 14px 14px 14px 4px;
+    background: var(--color-brand-subtle);
+  }
+  .tg-msg-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-3);
+    color: var(--color-brand);
+  }
+  .tg-msg-body { flex: 1; min-width: 0; }
+  .tg-msg-text { margin: 0; font-size: var(--text-sm); line-height: 1.55; color: var(--color-text); }
+  .tg-msg-date { display: block; margin-top: 4px; text-align: right; font-size: var(--text-xs); color: var(--color-text-muted); }
+  .tg-foot {
+    display: flex;
+    justify-content: center;
+    padding: 14px 18px;
+    border-top: 1px solid var(--color-border);
   }
 }

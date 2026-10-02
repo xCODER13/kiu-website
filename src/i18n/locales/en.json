@@ -564,6 +564,7 @@
     "back": "Back to news",
     "backArrow": "← Back to news",
     "notFound": "News not found",
+    "notFoundHint": "The link may be outdated or the article may have been removed.",
     "views_one": "{{count}} view",
     "views_other": "{{count}} views",
     "noContent": "No text provided.",

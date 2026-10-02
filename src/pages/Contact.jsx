@@ -35,7 +35,7 @@ export default function Contact() {
               ))}
             </div>
             <div className="reveal reveal-delay-2">
-              <TelegramPanel />
+              <TelegramPanel single />
             </div>
           </div>
         </div>

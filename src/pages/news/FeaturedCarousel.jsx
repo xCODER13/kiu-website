@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import useNavigate from '../../i18n/useLocalizedNavigate'
-import { getCategoryColor, getCategoryLabel } from '../../utils/newsCategories'
+import { getCategoryToken, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 
-// ── FEATURED CAROUSEL ── (News.jsx'dan o'zgarishsiz ko'chirilgan)
+// ── FEATURED CAROUSEL ── (6.11: rasm ustida wine qoplama; kategoriya — pill ichida rangli nuqta)
 export default function FeaturedCarousel({ items }) {
   const { t } = useTranslation()
   const [idx, setIdx] = useState(0)
@@ -23,7 +23,6 @@ export default function FeaturedCarousel({ items }) {
 
   if (!items.length) return null
   const item = items[idx]
-  const catColor = getCategoryColor(item.category)
 
   const image = parseImages(item.image)[0]
 
@@ -40,9 +39,9 @@ export default function FeaturedCarousel({ items }) {
         style={image ? { backgroundImage: `url(${image})` } : undefined}
       />
 
-      {/* Overlay gradients: toifa rangi ma'lumotdan keladi (inline) */}
+      {/* Qoplamalar: pastdan qora gradient + chapdan wine (toifa rangidan mustaqil, spec 6.11) */}
       <div className="carousel-shade" />
-      <div className="carousel-tint" style={{ background: `linear-gradient(to right, ${catColor}40, transparent 65%)` }} />
+      <div className="carousel-tint" />
 
       {/* Slide counter top-right */}
       <div className="carousel-counter">
@@ -54,8 +53,8 @@ export default function FeaturedCarousel({ items }) {
         {/* Category badge */}
         {item.category && (
           <div className="carousel-meta">
-            <span className="carousel-cat" style={{ background: catColor }}>
-              <span className="carousel-cat-dot" />
+            <span className="carousel-cat" style={{ '--cat': getCategoryToken(item.category) }}>
+              <span className="carousel-cat-dot" aria-hidden="true" />
               {getCategoryLabel(item.category, t)}
             </span>
             <span className="carousel-date">
@@ -79,10 +78,10 @@ export default function FeaturedCarousel({ items }) {
         {/* Bottom row */}
         <div className="carousel-foot">
           <span className="carousel-views">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             {item.views}
           </span>
-          <button onClick={() => navigate(`/news/${item._id}`)} className="carousel-more">
+          <button type="button" onClick={() => navigate(`/news/${item._id}`)} className="btn btn-primary carousel-more">
             {t('news.more')}
           </button>
         </div>
@@ -90,17 +89,17 @@ export default function FeaturedCarousel({ items }) {
 
       {/* Prev / Next buttons */}
       {items.length > 1 && (<>
-        <button onClick={prev} aria-label={t('news.prevNews')} className="carousel-nav carousel-nav--prev">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        <button type="button" onClick={prev} aria-label={t('news.prevNews')} className="carousel-nav carousel-nav--prev">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button onClick={next} aria-label={t('news.nextNews')} className="carousel-nav carousel-nav--next">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <button type="button" onClick={next} aria-label={t('news.nextNews')} className="carousel-nav carousel-nav--next">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
 
         {/* Dots */}
         <div className="carousel-dots">
           {items.map((_, i) => (
-            <button key={i} onClick={() => setIdx(i)} aria-label={t('news.goSlide', { n: i + 1 })} aria-current={i === idx ? 'true' : undefined} className="carousel-dot" />
+            <button key={i} type="button" onClick={() => setIdx(i)} aria-label={t('news.goSlide', { n: i + 1 })} aria-current={i === idx ? 'true' : undefined} className="carousel-dot" />
           ))}
         </div>
       </>)}

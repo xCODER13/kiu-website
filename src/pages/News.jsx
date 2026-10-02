@@ -5,6 +5,7 @@ import { collectCategoryKeys, categoryMatches } from '../utils/newsCategories'
 import NewsTab from './news/NewsTab'
 import ShortsTab from './news/ShortsTab'
 import ContentLangNote from '../i18n/ContentLangNote'
+import PageHero from '../components/PageHero.jsx'
 
 const API = import.meta.env.VITE_API_URL
 
@@ -32,24 +33,30 @@ export default function News() {
 
   return (
     <div className="fade-up">
-      {/* Hero header */}
-      <section className="page-hero">
-        <h1 className="page-hero-title">{t('news.title')}</h1>
-        <p className="page-hero-sub">{t('news.subtitle')}</p>
-        <ContentLangNote />
-      </section>
-
-      {/* Tabs */}
-      <div className="tabs-bar">
-        <div className="container tabs">
-          {[{ key: 'news', label: `${t('news.tabs.news')}${articles.length ? ` (${articles.length})` : ''}` }, { key: 'shorts', label: `${t('news.tabs.video')}${shorts.length ? ` (${shorts.length})` : ''}` }].map(tab => (
-            <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-              className="tab" data-active={activeTab === tab.key}>
+      {/* Hero: ichida pill almashtirgich (Yangiliklar / Video) — 6.11 */}
+      <PageHero title={t('news.title')} sub={t('news.subtitle')} note={<ContentLangNote />}>
+        <div className="kiu-tab-wrap">
+          {[
+            { key: 'news', label: t('news.tabs.news'), count: articles.length, icon: <path d="M4 4h13a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2zM19 8h2v10a2 2 0 0 1-2 2M8 8h7M8 12h7M8 16h4" /> },
+            { key: 'shorts', label: t('news.tabs.video'), count: shorts.length, icon: <><rect x="3" y="5" width="18" height="14" rx="2" /><polygon points="10 9 15 12 10 15 10 9" /></> },
+          ].map(tab => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveTab(tab.key)}
+              className="kiu-tab-btn"
+              data-active={activeTab === tab.key}
+              aria-pressed={activeTab === tab.key}
+            >
+              <span className="kiu-tab-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{tab.icon}</svg>
+              </span>
               {tab.label}
+              {tab.count > 0 && <span className="kiu-tab-badge">{tab.count}</span>}
             </button>
           ))}
         </div>
-      </div>
+      </PageHero>
 
       {activeTab === 'news' && (
         <NewsTab

@@ -139,6 +139,14 @@
     --shadow-card-hover:   0 14px 34px rgb(127 32 99 / 0.22);   /* wine glow, bosiladigan karta hover */
     --color-modal-overlay: rgb(28 12 22 / 0.66);
 
+    /* 6.11b: yangiliklar kategoriyasi (rang — `--cat` o'zgaruvchisi, 4.4 palitrasi), karusel/galereya yuzalari */
+    --cat-chip-mix:        12%;                               /* kategoriya chip foni (Dark 18%) */
+    --cat-ph-1:            16%;                               /* rasmsiz karta gradienti (Dark 22 / 10%) */
+    --cat-ph-2:            7%;
+    --carousel-tint:       rgb(127 32 99 / 0.38);             /* karusel rasmi ustida chapdan wine qoplama */
+    --color-scrim-pill:    rgb(18 8 14 / 0.62);               /* rasm ustidagi pill (kategoriya) */
+    --color-scrim-ctrl:    rgb(18 8 14 / 0.52);               /* rasm ustidagi hisoblagich/strelka/nuqta foni */
+
     /* Tugma yorug'ligi (glow) */
     --glow-brand:         rgb(127 32 99 / 0.30);
     --glow-brand-strong:  rgb(127 32 99 / 0.55);
@@ -300,6 +308,10 @@
       --shadow-card-hover:    0 14px 34px rgb(159 51 126 / 0.38);
       --color-modal-overlay:  rgb(10 6 9 / 0.74);
 
+      --cat-chip-mix:         18%;
+      --cat-ph-1:             22%;
+      --cat-ph-2:             10%;
+
       --opacity-avatar:       0.9;
       --opacity-placeholder:  0.7;
     }
@@ -381,6 +393,10 @@
     --shadow-card-inset:    inset 0 1px 0 rgb(255 255 255 / 0.06);
     --shadow-card-hover:    0 14px 34px rgb(159 51 126 / 0.38);
     --color-modal-overlay:  rgb(10 6 9 / 0.74);
+
+    --cat-chip-mix:         18%;
+    --cat-ph-1:             22%;
+    --cat-ph-2:             10%;
 
     --opacity-avatar:       0.9;
     --opacity-placeholder:  0.7;
