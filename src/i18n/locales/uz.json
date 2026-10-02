@@ -141,7 +141,8 @@
     }
   },
   "admission": {
-    "title": "Qabul — {{year}}",
+    "title": "Qabul — <brand>{{year}}</brand>",
+    "badge": "Hujjat topshirish",
     "subtitle": "Hujjat topshirish tartibi va shartlar",
     "banner": "Hujjatlar qabul qilinmoqda",
     "deadline": "1 iyul — 20 avgust 2026 gacha",

@@ -59,6 +59,7 @@
     --dark-subtle:    #8a8085;
     --dark-border-strong: #6a6066;
     --dark-wine-tint: #38132d;
+    --dark-surface-4: #2c2429;   /* Dark karta gradienti boshi (6.11) */
 
     /* ── 2. Semantik rang (Light) ──────────────────────────────────── */
     --color-bg:            var(--neutral-0);
@@ -120,6 +121,23 @@
     --chart-4:        #1baf7a;
     --chart-5:        #eda100;
     --chart-6:        #008300;
+
+    /* ── 6.11: ichki sahifa hero, banner, karta, modal ─────────────── */
+    --color-accent-text:   #8a600a;                          /* oltin ton MATN (oq fonda ≥ 5:1); `--color-accent` matn uchun emas */
+    --color-accent-subtle: rgb(212 175 55 / 0.14);           /* oltin chip/qator foni */
+    --color-accent-border: rgb(212 175 55 / 0.40);
+    --color-banner-bg:     var(--wine-900);                  /* to'q wine banner / missiya bloki */
+    --gradient-banner:     radial-gradient(70% 120% at 0% 0%, rgb(159 51 126 / 0.55), transparent 62%),
+                           radial-gradient(55% 100% at 100% 100%, rgb(212 175 55 / 0.20), transparent 60%),
+                           var(--wine-900);
+    --gradient-hairline:   linear-gradient(90deg, transparent, var(--gold-500), transparent);   /* tepadagi 3 px oltin chiziq */
+    --hero-dot:            rgb(127 32 99 / 0.16);            /* hero nuqtali qatlam */
+    --gradient-hero-glow:  radial-gradient(60% 90% at 12% 0%, rgb(127 32 99 / 0.10), transparent 70%),
+                           radial-gradient(50% 80% at 92% 8%, rgb(212 175 55 / 0.16), transparent 70%);
+    --gradient-card:       linear-gradient(180deg, var(--color-surface-3), var(--color-surface-3));
+    --shadow-card-inset:   inset 0 1px 0 rgb(255 255 255 / 0);
+    --shadow-card-hover:   0 14px 34px rgb(127 32 99 / 0.22);   /* wine glow, bosiladigan karta hover */
+    --color-modal-overlay: rgb(28 12 22 / 0.66);
 
     /* Tugma yorug'ligi (glow) */
     --glow-brand:         rgb(127 32 99 / 0.30);
@@ -266,6 +284,22 @@
       --glow-accent:          rgb(212 175 55 / 0.25);
       --glow-accent-strong:   rgb(212 175 55 / 0.55);
 
+      --color-accent-text:    #e6c04f;
+      --color-accent-subtle:  rgb(212 175 55 / 0.14);
+      --color-accent-border:  rgb(212 175 55 / 0.40);
+      --color-banner-bg:      var(--dark-deep);
+      --gradient-banner:      radial-gradient(60% 110% at 0% 0%, rgb(159 51 126 / 0.40), transparent 62%),
+                              radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),
+                              radial-gradient(40% 80% at 60% 0%, rgb(127 32 99 / 0.22), transparent 70%),
+                              var(--dark-deep);
+      --hero-dot:             rgb(255 255 255 / 0.07);
+      --gradient-hero-glow:   radial-gradient(60% 90% at 12% 0%, rgb(159 51 126 / 0.28), transparent 70%),
+                              radial-gradient(50% 80% at 92% 8%, rgb(212 175 55 / 0.10), transparent 70%);
+      --gradient-card:        linear-gradient(180deg, var(--dark-surface-4), var(--dark-surface-3));
+      --shadow-card-inset:    inset 0 1px 0 rgb(255 255 255 / 0.06);
+      --shadow-card-hover:    0 14px 34px rgb(159 51 126 / 0.38);
+      --color-modal-overlay:  rgb(10 6 9 / 0.74);
+
       --opacity-avatar:       0.9;
       --opacity-placeholder:  0.7;
     }
@@ -331,6 +365,22 @@
     --glow-brand-strong:    rgb(159 51 126 / 0.80);
     --glow-accent:          rgb(212 175 55 / 0.25);
     --glow-accent-strong:   rgb(212 175 55 / 0.55);
+
+    --color-accent-text:    #e6c04f;
+    --color-accent-subtle:  rgb(212 175 55 / 0.14);
+    --color-accent-border:  rgb(212 175 55 / 0.40);
+    --color-banner-bg:      var(--dark-deep);
+    --gradient-banner:      radial-gradient(60% 110% at 0% 0%, rgb(159 51 126 / 0.40), transparent 62%),
+                            radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),
+                            radial-gradient(40% 80% at 60% 0%, rgb(127 32 99 / 0.22), transparent 70%),
+                            var(--dark-deep);
+    --hero-dot:             rgb(255 255 255 / 0.07);
+    --gradient-hero-glow:   radial-gradient(60% 90% at 12% 0%, rgb(159 51 126 / 0.28), transparent 70%),
+                            radial-gradient(50% 80% at 92% 8%, rgb(212 175 55 / 0.10), transparent 70%);
+    --gradient-card:        linear-gradient(180deg, var(--dark-surface-4), var(--dark-surface-3));
+    --shadow-card-inset:    inset 0 1px 0 rgb(255 255 255 / 0.06);
+    --shadow-card-hover:    0 14px 34px rgb(159 51 126 / 0.38);
+    --color-modal-overlay:  rgb(10 6 9 / 0.74);
 
     --opacity-avatar:       0.9;
     --opacity-placeholder:  0.7;
