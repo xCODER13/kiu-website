@@ -5,6 +5,8 @@ import useApi from '../hooks/useApi'
 import useJsonLd from '../hooks/useJsonLd'
 import config from '../config'
 import ContentLangNote from '../i18n/ContentLangNote'
+import PageHero from '../components/PageHero'
+import Icon from '../components/Icon'
 
 const API = import.meta.env.VITE_API_URL
 const SITE_URL = 'https://kiu-university.vercel.app'
@@ -26,20 +28,26 @@ function formatEventDate(iso, t) {
   return { day: String(day), month, monthShort, year: String(year), full: t('events.dateFull', { day, month, year }) }
 }
 
-// Nomi (label) tarjima faylidan: events.types.<tur>
-const typeColors = {
-  open:       { bg: 'rgba(220,38,38,0.1)', color: '#dc2626' },
-  culture:    { bg: 'rgba(251,191,36,0.1)', color: '#d97706' },
-  science:    { bg: 'rgba(59,130,246,0.1)', color: '#2563eb' },
-  sport:      { bg: 'rgba(16,185,129,0.1)', color: '#059669' },
-  graduation: { bg: 'rgba(236,72,153,0.1)', color: '#db2777' },
-  admission:  { bg: 'rgba(161,98,7,0.1)', color: '#a16207' },
-  general:    { bg: 'rgba(15,118,110,0.1)', color: '#0f766e' },
-}
+// Tur chip'i: nomi (label) tarjima faylidan (events.types.<tur>), rangi CSS da (`.ev-chip[data-type]` → `--chart-N`,
+// qotirilgan 4.4 palitrasi). Noma'lum tur → `general`.
+const EVENT_TYPES = ['general', 'graduation', 'sport', 'culture', 'open', 'admission', 'science']
 
 function getTypeInfo(type, t) {
-  const key = typeColors[type] ? type : 'general'
-  return { ...typeColors[key], label: t(`events.types.${key}`) }
+  const key = EVENT_TYPES.includes(type) ? type : 'general'
+  return { key, label: t(`events.types.${key}`) }
+}
+
+const CalendarIcon = ({ size = 16 }) => (
+  <Icon size={size}><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></Icon>
+)
+
+function TypeChip({ typeInfo }) {
+  return (
+    <span className="ev-chip" data-type={typeInfo.key}>
+      <span className="cat-dot" aria-hidden="true" />
+      {typeInfo.label}
+    </span>
+  )
 }
 
 // Band 6 (admin statistika — "tadbirlar ko'rilishi"): Events sahifasida avval
@@ -77,39 +85,38 @@ function EventModal({ event, typeInfo, dateInfo, onClose }) {
   }, [])
 
   return createPortal(
-    <div
-      onClick={onClose}
-      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(10,10,30,.75)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.75rem 1rem', overflowY: 'auto' }}
-    >
+    <div className="ev-modal-overlay" onClick={onClose}>
       <div
+        className="ev-modal"
         onClick={e => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="event-modal-title"
-        style={{ background: 'var(--bg)', borderRadius: 18, padding: '1.5rem', maxWidth: 480, width: '100%', maxHeight: 'calc(100vh - 1.5rem)', overflowY: 'auto', boxShadow: '0 30px 80px rgba(0,0,0,.35)', position: 'relative' }}
       >
         <button
           ref={closeBtnRef}
+          type="button"
+          className="ev-modal__close"
+          data-over-image={event.image ? 'true' : undefined}
           onClick={onClose}
           title={t('events.closeHint')}
           aria-label={t('events.closeLabel')}
-          style={{ position: 'absolute', top: 14, right: 14, width: 34, height: 34, borderRadius: '50%', border: '1px solid var(--border)', background: 'var(--bg)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <Icon size={18}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>
         </button>
 
         {event.image && (
           <img
+            className="ev-modal__img"
             src={event.image}
             alt={event.title}
-            style={{ width: '100%', height: 180, objectFit: 'cover', borderRadius: 12, marginBottom: 16 }}
-            onError={ev => { ev.target.style.display = 'none' }}
+            onError={ev => { ev.currentTarget.dataset.broken = 'true' }}
           />
         )}
-        <span style={{ fontSize: 11, fontWeight: 600, color: typeInfo.color, background: typeInfo.bg, padding: '3px 10px', borderRadius: 20 }}>{typeInfo.label}</span>
-        <h3 id="event-modal-title" style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: '10px 0 4px', fontFamily: 'var(--font-body)' }}>{event.title}</h3>
-        {dateInfo.full && <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 12 }}>{dateInfo.full}</div>}
-        <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.7 }}>{event.desc}</p>
+        <TypeChip typeInfo={typeInfo} />
+        <h2 id="event-modal-title" className="ev-modal__title" lang="uz">{event.title}</h2>
+        {dateInfo.full && <div className="ev-when ev-when--lg"><CalendarIcon />{dateInfo.full}</div>}
+        <p className="ev-modal__desc" lang="uz">{event.desc}</p>
       </div>
     </div>,
     document.body
@@ -161,64 +168,63 @@ export default function Events() {
 
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('events.title')}</h1>
-        <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('events.subtitle')}</p>
-        <ContentLangNote />
-      </section>
+      <PageHero title={t('events.title')} sub={t('events.subtitle')} note={<ContentLangNote />} />
       <section className="section">
-        <div className="container">
+        <div className="container container--920">
           {loading && (
-            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)' }}>
-              <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--color-brand)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+            <div className="page-loading">
+              <div className="spinner" />
               {t('common.loading')}
             </div>
           )}
           {error && (
-            <div style={{ textAlign: 'center', padding: '0.75rem', marginBottom: '1rem', background: 'color-mix(in srgb, var(--color-brand) 6%, transparent)', borderRadius: 10, fontSize: 13, color: 'var(--muted)', border: '1px solid var(--border)' }}>
-              {t('events.offline')}
+            <div className="notice-banner" role="status">
+              <Icon size={20}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></Icon>
+              <span>{t('events.offline')}</span>
             </div>
           )}
           {!loading && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div className="ev-list">
               {/* useApi noto'g'ri shakldagi (array bo'lmagan) javob bersa ham
                   ".map is not a function" bilan qulamasin */}
               {(Array.isArray(events) ? events : []).map((e) => {
-                const tc = getTypeInfo(e.type, t)
+                const ti = getTypeInfo(e.type, t)
                 const fd = formatEventDate(e.eventDate, t)
                 return (
-                  <div
-                    key={e._id}
-                    className="card"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => openEvent(e)}
-                    onKeyDown={ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openEvent(e) } }}
-                    style={{ display: 'flex', gap: 16, alignItems: 'flex-start', cursor: 'pointer' }}
-                  >
-                    {e.image ? (
-                      <img
-                        src={e.image}
-                        alt={e.title}
-                        loading="lazy"
-                        style={{ width: 56, height: 56, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
-                        onError={ev => { ev.target.style.display = 'none' }}
-                      />
-                    ) : (
-                      <div style={{ width: 56, height: 56, borderRadius: 12, background: 'var(--gradient-brand)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0 }}>
-                        <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>{fd.day}</div>
-                        <div style={{ fontSize: 10, opacity: .8 }}>{fd.monthShort}</div>
+                  <div key={e._id} className="rv-item reveal">
+                    <div
+                      className="card card--lift ev-card"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => openEvent(e)}
+                      onKeyDown={ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openEvent(e) } }}
+                    >
+                      {/* Sana plitkasi har doim chapda (rasm bo'lsa ham) */}
+                      <div className="ev-date" aria-hidden="true">
+                        {fd.day ? (
+                          <>
+                            <div className="ev-date__day">{fd.day}</div>
+                            <div className="ev-date__month">{fd.monthShort}</div>
+                          </>
+                        ) : <CalendarIcon size={30} />}
                       </div>
-                    )}
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                        <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', fontFamily: 'var(--font-body)' }} lang="uz">{e.title}</h3>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: tc.color, background: tc.bg, padding: '2px 8px', borderRadius: 20 }}>{tc.label}</span>
-                        {e.image && (
-                          <span style={{ fontSize: 11, color: 'var(--muted)' }}>{fd.full}</span>
-                        )}
+                      <div className="ev-body">
+                        <div className="ev-head">
+                          <h3 className="ev-title" lang="uz">{e.title}</h3>
+                          <TypeChip typeInfo={ti} />
+                        </div>
+                        {fd.full && <div className="ev-when"><CalendarIcon />{fd.full}</div>}
+                        <p className="ev-desc" lang="uz">{e.desc}</p>
                       </div>
-                      <p style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.6 }} lang="uz">{e.desc}</p>
+                      {e.image && (
+                        <img
+                          className="ev-img"
+                          src={e.image}
+                          alt={e.title}
+                          loading="lazy"
+                          onError={ev => { ev.currentTarget.dataset.broken = 'true' }}
+                        />
+                      )}
                     </div>
                   </div>
                 )

@@ -425,3 +425,76 @@ describe('Bosqich 6.11c2: Hemis, FAQ, Sharhlar, Aloqa, Xarita, QR kodlar, 404', 
     for (const f of ['Hemis', 'FAQ', 'Testimonials', 'Contact', 'Map', 'QRCode']) expect(read(`src/pages/${f}.jsx`), f).toMatch(/PageHero/)
   })
 })
+
+describe('Bosqich 6.11c3: Tadbirlar, O\'qituvchilar, Galereya', () => {
+  const tokens = read('src/styles/tokens.css')
+  const inline = f => (read(f).match(/style=\{/g) ?? []).length
+
+  it("yangi tokenlar: galereya hover/nishon (Light + ikkala Dark blok), lightbox foni doim bir xil", () => {
+    expect(tokens).toMatch(/--gallery-hover-overlay:\s*rgb\(100 24 78 \/ 0\.55\)/)
+    expect((tokens.match(/--gallery-hover-overlay:\s*rgb\(18 8 14 \/ 0\.5\)/g) ?? []).length).toBe(2)
+    expect((tokens.match(/--gallery-badge-bg:/g) ?? []).length).toBe(3)
+    expect((tokens.match(/--gallery-badge-text:\s*#f3c5df/g) ?? []).length).toBe(2)
+    expect((tokens.match(/--color-lightbox-bg:/g) ?? []).length).toBe(1)
+  })
+
+  it("Tadbirlar: tur → `--chart-N` (data-type), chip foni `--cat-chip-mix`, matn `--color-text`; 7 tur ham xaritalangan", () => {
+    expect(code).toMatch(/\.ev-chip \{[^}]*background: color-mix\(in oklab, var\(--cat\) var\(--cat-chip-mix\), transparent\);[^}]*color: var\(--color-text\);/)
+    const map = { general: 'chart-1', graduation: 'chart-5', sport: 'chart-4', culture: 'chart-3', open: 'chart-2', admission: 'chart-6', science: 'stat-violet' }
+    for (const [type, tok] of Object.entries(map)) expect(code).toMatch(new RegExp(`\\.ev-chip\\[data-type="${type}"\\]\\s*\\{ --cat: var\\(--${tok}\\); \\}`))
+  })
+
+  it("Tadbirlar: karta 20 px radius, sana plitkasi 84×88 brand gradient, rasm 168×104; modal hairline + yumaloq yopish tugmasi", () => {
+    expect(code).toMatch(/\.card\.ev-card \{[^}]*padding: 20px 24px 20px 20px;[^}]*border-radius: 20px;[^}]*cursor: pointer;/)
+    expect(code).toMatch(/\.ev-date \{[^}]*width: 84px;[^}]*height: 88px;[^}]*linear-gradient\(135deg, var\(--color-brand-fill\), var\(--color-brand-hover\)\)/)
+    expect(code).toMatch(/\.ev-img \{[^}]*width: 168px;[^}]*height: 104px;/)
+    expect(code).toMatch(/\.ev-img\[data-broken="true"\] \{ display: none; \}/)
+    expect(code).toMatch(/\.ev-modal::before \{[^}]*var\(--gradient-hairline\)/)
+    expect(code).toMatch(/\.ev-modal__close \{[^}]*width: 36px;[^}]*height: 36px;[^}]*border-radius: 50%;/)
+    expect(code).toMatch(/\.ev-modal-overlay \{[^}]*var\(--color-modal-overlay\)/)
+  })
+
+  it("O'qituvchilar: 290 px yon panel + 1fr, panel sticky (≤900 px da static, ustma-ust); 3 → 2 → 1 ustun; eski `!important` qoidalari global.css da yo'q", () => {
+    expect(code).toMatch(/\.teachers-layout \{[^}]*grid-template-columns: 290px minmax\(0, 1fr\);/)
+    expect(code).toMatch(/\.card\.kafedra-card \{[^}]*position: sticky;[^}]*top: 96px;/)
+    expect(code).toMatch(/@media \(max-width: 900px\) \{\s*\.teachers-layout \{ grid-template-columns: minmax\(0, 1fr\); \}\s*\.card\.kafedra-card \{ position: static; \}/)
+    expect(code).toMatch(/\.teachers-grid \{[^}]*repeat\(3, minmax\(0, 1fr\)\)/)
+    expect(code).toMatch(/\.kafedra-btn\[data-active="true"\] \{[^}]*border-color: var\(--color-brand\);/)
+    expect(code).toMatch(/\.avatar-wine\.teacher-card__avatar \{[^}]*width: 88px;[^}]*height: 88px;/)
+    expect(code).toMatch(/\.teacher-card__avatar img\[data-broken="true"\] \{ display: none; \}/)
+    expect(read('src/styles/global.css')).not.toMatch(/\.teachers-layout/)
+  })
+
+  it("Galereya: rasm 220 px, placeholder `--chart-1…6` (data-slot), hover qoplama tokendan, ko'tarilish/zoom faqat `no-preference`", () => {
+    expect(code).toMatch(/\.photo-card__media \{[^}]*height: 220px;/)
+    for (let i = 1; i <= 5; i++) expect(code).toContain(`.photo-card[data-slot="${i}"] { --ph: var(--chart-${i + 1}); }`)
+    expect(code).toMatch(/\.photo-card__zoom \{[^}]*background: var\(--gallery-hover-overlay\);[^}]*opacity: 0;/)
+    expect(code).toMatch(/\.photo-card:focus-visible \.photo-card__zoom \{ opacity: 1; \}/)
+    expect(code).toMatch(/\.photo-card__badge \{[^}]*var\(--gallery-badge-bg\);[^}]*var\(--gallery-badge-text\);/)
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.photo-card:hover \.photo-card__media img/)
+  })
+
+  it("Lightbox: fon `--color-lightbox-bg`, rasm 880 px gacha radius 16, tugmalar 46/54 px doira, qora soya", () => {
+    expect(code).toMatch(/\.photo-lightbox \{[^}]*var\(--color-lightbox-bg\)/)
+    expect(code).toMatch(/\.photo-lightbox__content \{[^}]*max-width: 880px;/)
+    expect(code).toMatch(/\.photo-lightbox__img \{[^}]*border-radius: 16px;[^}]*box-shadow: 0 12px 48px rgb\(0 0 0 \/ 0\.6\);/)
+    expect(code).toMatch(/\.photo-lightbox__btn \{[^}]*width: 46px;[^}]*height: 46px;[^}]*border-radius: 50%;/)
+    expect(code).toMatch(/\.photo-lightbox__btn--prev,\s*\.photo-lightbox__btn--next \{[^}]*width: 54px;/)
+  })
+
+  it("Banner: `.notice-banner` brand-subtle, `data-tone=danger` — `--color-danger` dan color-mix", () => {
+    expect(code).toMatch(/\.notice-banner \{[^}]*background: var\(--color-brand-subtle\);/)
+    expect(code).toMatch(/\.notice-banner\[data-tone="danger"\] \{[^}]*color-mix\(in srgb, var\(--color-danger\) 8%, transparent\)/)
+  })
+
+  it("Events, Teachers, Gallery: inline style yo'q, hex/rgba yo'q, PageHero ishlatiladi; Teachers email chiqarmaydi; eski `✕` matni yo'q", () => {
+    for (const f of ['Events', 'Teachers', 'Gallery']) {
+      const path = `src/pages/${f}.jsx`
+      expect(inline(path), f).toBe(0)
+      expect(read(path), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|✕/i)
+      expect(read(path), f).toMatch(/PageHero/)
+    }
+    expect(read('src/pages/Teachers.jsx')).not.toMatch(/\.email|mailto:|KAFEDRALAR/)
+    expect(read('src/pages/Gallery.jsx')).toMatch(/useModalA11y/)
+  })
+})
