@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from '../i18n/router'
 import { validateFullName, validatePhone } from '../utils/validation'
+import Icon from '../components/Icon'
 import { IcHat, IcStar } from './sortinghat/Icons.jsx'
 import { QUESTIONS, FACULTIES } from './sortinghat/Data.jsx'
 import { postSortingHatLead } from './sortinghat/api'
@@ -9,6 +10,9 @@ import IntroStage from './sortinghat/IntroStage.jsx'
 import RegisterStage from './sortinghat/RegisterStage.jsx'
 import QuizStage from './sortinghat/QuizStage.jsx'
 import ResultStage from './sortinghat/ResultStage.jsx'
+
+// Hero fonidagi 7 ta xira oltin yulduz: o'rni va o'lchami doimiy (avval har render'da `Math.sin` bilan hisoblanardi)
+const BG_STARS = Array.from({ length: 7 }, (_, i) => ({ s: 12 + i * 2, x: 8 + i * 13, y: +(12 + (Math.sin(i * 1.7) + 1) * 34).toFixed(1) }))
 
 // ── COMPONENT ───────────────────────────────────────────────
 export default function SortingHat() {
@@ -56,46 +60,35 @@ export default function SortingHat() {
 
   return (
     <div className="fade-up">
-      {/* ── HERO ── */}
-<section style={{ padding: '3rem 2rem 2.5rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-  {/* bg stars */}
-  {[...Array(7)].map((_, i) => (
-    <span key={i} style={{ position: 'absolute', opacity: .15, left: `${8 + i * 13}%`, top: `${15 + Math.sin(i) * 50}%` }}>
-      <IcStar s={12 + i * 2} c="#f0ec0b" />
-    </span>
-  ))}
+      {/* ── HERO (hamma bosqichda bir xil) ── */}
+      <section className="inner-hero sh-hero">
+        {/* Fon yulduzlari: dekorativ, o'rni — `--x`/`--y` (faqat dinamik qiymat inline) */}
+        {BG_STARS.map((st, i) => (
+          <span key={i} className="sh-hero__star" aria-hidden="true" style={{ '--x': `${st.x}%`, '--y': `${st.y}%` }}>
+            <IcStar s={st.s} />
+          </span>
+        ))}
 
-  {/* Orqaga tugma */}
-  {/* Xatolik: <button> ilgari <a> (NavLink) ICHIDA joylashgan edi — HTML5
-      bo'yicha <a> ichida boshqa interaktiv element (button) bo'lishi
-      taqiqlangan (invalid nesting). Bu klaviatura/screen reader uchun
-      chalkash va E2E testlarda ham "button" sifatida topilib, aslida
-      havola ekanligi bilinmay qolishiga olib keladi. Endi NavLink o'zi
-      to'g'ridan-to'g'ri pill ko'rinishida (ichida qo'shimcha button yo'q). */}
-  <NavLink to="/admission" className="section-badge" style={{ textDecoration: 'none', position: 'absolute', top: '1rem', left: '1rem', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'color-mix(in srgb, var(--color-brand) 25%, transparent)', color: 'var(--color-brand)', border: '1px solid color-mix(in srgb, var(--color-brand) 20%, transparent)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="19" y1="12" x2="5" y2="12"/>
-      <polyline points="12 19 5 12 12 5"/>
-    </svg>
-    {t('sortingHat.backToAdmission')}
-  </NavLink>
+        {/* Orqaga: <a> ichida <button> yo'q — NavLink o'zi pill (HTML5: ichma-ich interaktiv element taqiqlangan) */}
+        <NavLink to="/admission" className="sh-back">
+          <Icon size={16}><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></Icon>
+          {t('sortingHat.backToAdmission')}
+        </NavLink>
 
-  <div style={{ position: 'relative', zIndex: 1 }}>
-    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}><IcHat /></div>
-    <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 25%, transparent)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid color-mix(in srgb, var(--color-brand) 20%, transparent)' }}>
-      <IcStar s={11} c="var(--color-brand)" /> {t('sortingHat.badge')} <IcStar s={11} c="var(--color-brand)" />
-    </div>
-    <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '0.6rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
-      {t('sortingHat.title')}
-    </h1>
-    <p style={{ fontSize: 14, color: 'var(--muted)', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
-      {t('sortingHat.subtitle')}
-    </p>
-  </div>
-</section>
+        <div className="container inner-hero__inner">
+          <div className="sh-hero__hat"><IcHat s={76} /></div>
+          <span className="hero-badge sh-badge">
+            <span className="sh-badge__star"><IcStar s={12} c="currentColor" /></span>
+            {t('sortingHat.badge')}
+            <span className="sh-badge__star"><IcStar s={12} c="currentColor" /></span>
+          </span>
+          <h1 className="inner-hero__title">{t('sortingHat.title')}</h1>
+          <p className="inner-hero__sub">{t('sortingHat.subtitle')}</p>
+        </div>
+      </section>
 
-      <section className="section">
-        <div className="container" style={{ maxWidth: 680 }}>
+      <section className="sh-body">
+        <div className="container sh-wrap">
 
           {stage === 'intro' && (
             <IntroStage onStart={startQuiz} />

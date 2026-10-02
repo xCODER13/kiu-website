@@ -136,7 +136,9 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
   it("SortingHat: tanlangan variant `data-selected`, hover `:not(:disabled, [data-selected])`; input fokusi `:focus`", () => {
     expect(code).toMatch(/\.sh-opt\[data-selected="true"\] \{/)
     expect(code).toMatch(/\.sh-opt:hover:not\(:disabled, \[data-selected="true"\]\)/)
-    expect(code).toMatch(/\.sh-start:hover \{ transform: translateY\(-2px\); \}/)
+    // 6.11d: boshlash tugmasi `.btn.btn-primary` (hover — umumiy `.btn` qoidasidan), alohida `.sh-start:hover` yo'q
+    expect(code).toMatch(/\.btn\.sh-start \{[^}]*min-height: 52px;/)
+    expect(code).not.toMatch(/\.sh-start:hover/)
     expect(code).toMatch(/\.input--lg:focus \{ border-color: var\(--color-brand\); \}/)
   })
 
@@ -150,7 +152,7 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
   it("`onMouseEnter/Leave/Focus/Blur` stil uchun ishlatilmaydi (Home news karuseli — faqat pauza mantig'i)", () => {
     const files = [
       'src/pages/NewsDetail.jsx', 'src/pages/QRCode.jsx', 'src/pages/faculty/FacultyCard.jsx',
-      'src/pages/sortinghat/IntroStage.jsx', 'src/pages/sortinghat/QuizStage.jsx', 'src/pages/sortinghat/RegisterStage.jsx',
+      'src/pages/sortinghat/IntroStage.jsx', 'src/pages/sortinghat/QuizStage.jsx', 'src/pages/sortinghat/RegisterStage.jsx', 'src/pages/sortinghat/ResultStage.jsx',
       'src/components/ApplyModal.jsx', 'src/components/TelegramPanel.jsx',
     ]
     for (const f of files) expect(read(f), f).not.toMatch(/onMouse(Enter|Leave)|onFocus|onBlur/)
@@ -612,5 +614,72 @@ describe('Bosqich 6.11c5: Bosh sahifa', () => {
       expect(read(path), f).not.toMatch(/<NavLink[^>]*>\s*<button/)
     }
     expect(read('src/pages/home/HeroSection.jsx')).toMatch(/btn btn-accent btn-lg/)
+  })
+})
+
+describe('Bosqich 6.11d: Sehrli shlyapa', () => {
+  const tokens = read('src/styles/tokens.css')
+  const inline = f => (read(f).match(/style=\{/g) ?? []).length
+  const SH = ['SortingHat.jsx', 'sortinghat/IntroStage.jsx', 'sortinghat/RegisterStage.jsx', 'sortinghat/QuizStage.jsx', 'sortinghat/ResultStage.jsx', 'sortinghat/Icons.jsx']
+    .map(f => `src/pages/${f}`)
+
+  it("yangi token `--ring-option` (tanlangan variant halqasi): Light + ikkala Dark blok", () => {
+    expect(tokens).toMatch(/--ring-option:\s*rgb\(127 32 99 \/ 0\.12\)/)
+    expect((tokens.match(/--ring-option:\s*rgb\(233 168 208 \/ 0\.16\)/g) ?? []).length).toBe(2)
+  })
+
+  it("Hero: umumiy `.inner-hero` ustida (padding 56/48), h1 ≤ 46 px, tavsif 620 px, fon yulduzlari .22; orqaga — 40 px pill", () => {
+    expect(code).toMatch(/\.inner-hero\.sh-hero \{ padding: 56px 0 48px; \}/)
+    expect(code).toMatch(/\.sh-hero \.inner-hero__title \{ font-size: clamp\(2rem, 1\.2rem \+ 3vw, 2\.875rem\); \}/)
+    expect(code).toMatch(/\.sh-hero \.inner-hero__sub \{ max-width: 620px; \}/)
+    expect(code).toMatch(/\.sh-hero__star \{[^}]*opacity: 0\.22;/)
+    expect(code).toMatch(/\.sh-back \{[^}]*min-height: 40px;[^}]*background: var\(--color-brand-subtle\);/)
+    expect(code).toMatch(/\.sh-back:hover \{ border-color: var\(--color-brand\);/)
+  })
+
+  it("Konteyner 760 px, Intro setkasi aniq 4 ustun (auto-fit va minmax(128px) yo'q)", () => {
+    expect(code).toMatch(/\.container\.sh-wrap \{ max-width: 760px; \}/)
+    expect(code).toMatch(/\.sh-info \{[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\);[^}]*gap: 16px;/)
+    expect(code).not.toMatch(/auto-fit/)
+  })
+
+  it("Variantlar: 2 px chegara, radius 14, harf 36 px; tanlangan — `--ring-option` halqasi; `scale()` yo'q, hover faqat chegara", () => {
+    expect(code).toMatch(/\.sh-opt \{[^}]*padding: 16px 20px;[^}]*border: 2px solid var\(--color-border\);[^}]*border-radius: 14px;[^}]*font-size: 1rem;/)
+    expect(code).toMatch(/\.sh-opt\[data-selected="true"\] \{[^}]*background: var\(--color-brand-subtle\);[^}]*box-shadow: 0 0 0 4px var\(--ring-option\);/)
+    expect(code).toMatch(/\.sh-opt:hover:not\(:disabled, \[data-selected="true"\]\) \{ border-color: var\(--color-brand\); \}/)
+    expect(code).toMatch(/\.sh-opt-letter \{[^}]*width: 36px;[^}]*height: 36px;/)
+    expect(code).not.toMatch(/\.sh-opt[^{]*\{[^}]*scale\(/)
+  })
+
+  it("Progress/nuqtalar: holat `data-state`; animatsiya faqat `no-preference` da", () => {
+    expect(code).toMatch(/\.sh-progress__bar \{ height: 8px;/)
+    expect(code).toMatch(/\.sh-dot\[data-state="current"\] \{ width: 22px;/)
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.sh-progress__fill \{ transition: width 0\.4s ease; \}/)
+  })
+
+  it("Register: input 52 px, \"Boshlash\" bo'sh holatda kulrang fon emas, `opacity .5` (+ `not-allowed` `.btn` dan)", () => {
+    expect(code).toMatch(/\.sh-register \.input\.input--lg \{ min-height: 52px; font-size: 1rem; \}/)
+    expect(code).toMatch(/\.btn\.sh-register__submit:disabled \{[^}]*background: var\(--color-brand-fill\);[^}]*opacity: 0\.5;/)
+  })
+
+  it("Result: yo'nalish plitkasi hamma yo'nalishda bitta brend gradient; birinchi karta — oltin hairline + oltin pill; CTA — surface-2", () => {
+    expect(code).toMatch(/\.sh-fac__tile\.tile \{[^}]*linear-gradient\(135deg, var\(--color-brand-fill\), var\(--color-brand-hover\)\)/)
+    expect(code).toMatch(/\.card\.sh-fac\[data-best="true"\]::before \{[^}]*var\(--gradient-hairline\)/)
+    expect(code).toMatch(/\.sh-fac__best \{[^}]*background: var\(--color-accent\);[^}]*color: var\(--color-on-accent\);/)
+    expect(code).toMatch(/\.sh-cta \{[^}]*border-radius: 20px;[^}]*background: var\(--color-surface-2\);/)
+    // doimiy "faol" ko'rinish yo'q: glow faqat `.card--lift:hover` dan (Home'dagi tajriba, 6.11c5)
+    expect(code).not.toMatch(/\.card\.sh-fac\[data-best="true"\] \{/)
+  })
+
+  it("JSX: hex/rgba yo'q, inline faqat dinamik (`--x/--y`, `--pct`), ichma-ich `<button>` yo'q; Data.jsx yo'nalish ranglari stilda ishlatilmaydi", () => {
+    const counts = { 'SortingHat.jsx': 1, 'sortinghat/QuizStage.jsx': 1 }
+    for (const f of SH) {
+      const name = f.replace('src/pages/', '')
+      expect(inline(f), name).toBe(counts[name] ?? 0)
+      expect(read(f), name).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|var\(--(muted|text|border|bg-2)\)/i)
+      expect(read(f), name).not.toMatch(/<NavLink[^>]*>\s*<button/)
+    }
+    expect(read('src/pages/sortinghat/ResultStage.jsx')).not.toMatch(/fac\.(color|grad)/)
+    expect(read('src/pages/sortinghat/IntroStage.jsx')).not.toMatch(/INFO_CARD/)
   })
 })

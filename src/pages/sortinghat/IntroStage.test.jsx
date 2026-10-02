@@ -1,11 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import IntroStage, { INFO_CARD_MIN_WIDTH, INFO_CARD_GAP } from './IntroStage'
+import IntroStage from './IntroStage'
 import { QUESTIONS } from './Data.jsx'
-
-// SortingHat sahifasi konteyneri maxWidth: 680px, ichki bo'sh joyni olib tashlagach
-// kontent kengligi ~615px (haqiqiy brauzerda o'lchangan).
-const CONTENT_WIDTH = 615
 
 describe('IntroStage', () => {
   it("4 ta ma'lumot kartasi chiqadi", () => {
@@ -16,24 +12,32 @@ describe('IntroStage', () => {
     expect(screen.getByText('Shaxsiy tahlil')).toBeInTheDocument()
   })
 
-  it("4 ta karta konteyner kengligida (~615px) bitta qatorga sig'adi", () => {
-    // Regressiya: minimal ustun 148px bo'lganda 4*148 + 3*12 = 628px > 615px edi va
-    // to'rtinchi karta ("Shaxsiy tahlil") pastki qatorga tushib qolgan.
-    expect(4 * INFO_CARD_MIN_WIDTH + 3 * INFO_CARD_GAP).toBeLessThanOrEqual(CONTENT_WIDTH)
+  // 6.11d: JS'da hisoblangan `INFO_CARD_MIN_WIDTH`/`INFO_CARD_GAP` (auto-fit) olib tashlandi: setka CSS'da aniq `repeat(4, 1fr)`,
+  // konteyner 760 px. Regressiya (4-karta pastki qatorga tushishi) endi CSS testida (`pages.test.js`) tekshiriladi.
+  it("karta ro'yxat (`ul > li`) ko'rinishida, inline stilsiz; ustun soni CSS'da", () => {
+    const { container } = render(<IntroStage onStart={() => {}} />)
+    const grid = screen.getByText('3 daqiqa').closest('ul')
+    expect(grid).toHaveClass('sh-info')
+    expect(grid.children).toHaveLength(4)
+    expect(grid.hasAttribute('style')).toBe(false)
+    expect(container.querySelector('[style]')).toBeNull()
   })
 
-  it("setka minimal ustun kengligini stildan oladi (auto-fit)", () => {
+  it('"Qanday ishlaydi" — tartiblangan 4 qadam (`ol`), raqamlar dekorativ', () => {
     const { container } = render(<IntroStage onStart={() => {}} />)
-    const grid = screen.getByText('3 daqiqa').closest('.card').parentElement
-    expect(grid.style.gridTemplateColumns).toContain(`minmax(${INFO_CARD_MIN_WIDTH}px`)
-    expect(grid.children).toHaveLength(4)
-    expect(container.firstChild).toContainElement(grid)
+    const steps = container.querySelectorAll('ol.sh-steps > li')
+    expect(steps).toHaveLength(4)
+    steps.forEach(li => expect(li.querySelector('.sh-step__num')).toHaveAttribute('aria-hidden', 'true'))
+    expect(screen.getByRole('heading', { name: 'Qanday ishlaydi?' })).toBeInTheDocument()
   })
 
   it('"Testni boshlash" tugmasi onStart ni chaqiradi', () => {
     const onStart = vi.fn()
     render(<IntroStage onStart={onStart} />)
-    fireEvent.click(screen.getByRole('button', { name: /Testni boshlash/ }))
+    const btn = screen.getByRole('button', { name: /Testni boshlash/ })
+    expect(btn).toHaveClass('btn', 'btn-primary', 'sh-start')
+    expect(btn).toHaveAttribute('type', 'button')
+    fireEvent.click(btn)
     expect(onStart).toHaveBeenCalledTimes(1)
   })
 })
