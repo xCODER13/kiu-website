@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, within, waitFor } from '@testing-library/react'
+import { render, screen, within, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import TeachersAdmin from './TeachersAdmin'
 import { mockApi, rowOf } from '../../test/helpers'
@@ -129,5 +129,22 @@ describe('TeachersAdmin', () => {
     await user.click(screen.getByRole('button', { name: /Saqlash/ }))
     await waitFor(() => expect(alert).toHaveBeenCalledWith("Server bilan bog'lanib bo'lmadi."))
     expect(screen.getByRole('button', { name: /Saqlash/ })).toBeEnabled()
+  })
+
+  it("inline faqat avatar foni (indeksdan, 6 ta rang aylanadi); rasm yuklanmasa `data-broken` (avatar harflari CSS bilan yashirinmaydi)", async () => {
+    const many = Array.from({ length: 7 }, (_, i) => ({ _id: 't' + i, name: 'Ustoz ' + i, role: 'Dotsent', dept: 'Kafedra', avatar: 'U' + i }))
+    mockApi({ 'GET /teachers': [...many, T1] })
+    const { container } = render(<TeachersAdmin />)
+    await screen.findByText('Karimov Ali Vali')
+    const avatars = [...container.querySelectorAll('.adm-avatar')]
+    expect(avatars).toHaveLength(8)
+    expect(container.querySelectorAll('[style]')).toHaveLength(8)
+    expect(avatars.every(a => /^background:/.test(a.getAttribute('style')))).toBe(true)
+    expect(avatars[0].style.background).toBe(avatars[6].style.background)
+    expect(avatars[0].style.background).not.toBe(avatars[1].style.background)
+    const img = container.querySelector('.adm-avatar img')
+    fireEvent.error(img)
+    expect(img.dataset.broken).toBe('true')
+    expect(img.getAttribute('style')).toBeNull()
   })
 })

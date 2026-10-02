@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { extractYouTubeShortsId, parseImages } from './helpers'
+import { extractYouTubeShortsId, parseImages, markBroken } from './helpers'
 
 const ID = 'dQw4w9WgXcQ'
 describe('extractYouTubeShortsId', () => {
@@ -30,4 +30,13 @@ describe('parseImages', () => {
   it('JSON massiv', () => expect(parseImages('["a.jpg","b.jpg"]')).toEqual(['a.jpg', 'b.jpg']))
   it('eski format — bitta URL', () => expect(parseImages('https://x.uz/a.jpg')).toEqual(['https://x.uz/a.jpg']))
   it('JSON, lekin massiv emas — string sifatida qaytadi', () => expect(parseImages('{"a":1}')).toEqual(['{"a":1}']))
+})
+
+describe('markBroken', () => {
+  it("yuklanmagan rasmga `data-broken` qo'yadi, inline stil yozmaydi", () => {
+    const img = document.createElement('img')
+    markBroken({ currentTarget: img })
+    expect(img.dataset.broken).toBe('true')
+    expect(img.getAttribute('style')).toBeNull()
+  })
 })

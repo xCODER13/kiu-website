@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, within, waitFor } from '@testing-library/react'
+import { render, screen, within, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import NewsAdmin from './NewsAdmin'
 import { mockApi, rowOf } from '../../test/helpers'
@@ -190,5 +190,22 @@ describe('NewsAdmin', () => {
     await user.click(screen.getByRole('button', { name: /Qo'shish/ }))
     await waitFor(() => expect(alert).toHaveBeenCalledWith('Yangilik saqlanmadi.'))
     expect(screen.getByRole('button', { name: /Qo'shish/ })).toBeEnabled()
+  })
+
+  it("inline stil yo'q; rasm preview `data-new`, yuklanmagan rasm `data-broken` (inline opacity emas)", async () => {
+    mockApi({ 'GET /news': [N1, S1] })
+    const user = userEvent.setup()
+    const { container } = render(<NewsAdmin />)
+    await screen.findByText('Birinchi yangilik')
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    expect(container.querySelector('.adm-pill').textContent).toBe('Sport')
+    expect(container.querySelector('.adm-pill--youtube').textContent).toBe('Shorts')
+    await user.click(screen.getAllByRole('button', { name: /Tahrir/ })[0])
+    const imgs = [...container.querySelectorAll('.adm-thumb-img')]
+    expect(imgs.map(i => i.dataset.new)).toEqual(['false', 'false'])
+    fireEvent.error(imgs[0])
+    expect(imgs[0].dataset.broken).toBe('true')
+    expect(imgs[0].getAttribute('style')).toBeNull()
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
   })
 })

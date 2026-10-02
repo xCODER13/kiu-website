@@ -112,4 +112,16 @@ describe('ProfileAdmin — parol o\'zgartirish', () => {
     await new Promise(r => setTimeout(r, 1700))
     expect(screen.queryByText('LOGIN')).not.toBeInTheDocument()
   })
+
+  it("xabar `data-type` bilan (error/success), inline stil yo'q", async () => {
+    mockApi()
+    const user = userEvent.setup()
+    const { container } = renderProfile()
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    await fill(user, 'eski', 'yangi-parol-1', 'boshqa-parol-2')
+    await user.click(screen.getByRole('button', { name: /Parolni saqlash/ }))
+    const msg = container.querySelector('.adm-msg')
+    expect(msg.dataset.type).toBe('error')
+    expect(msg.getAttribute('style')).toBeNull()
+  })
 })

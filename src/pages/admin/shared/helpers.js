@@ -29,3 +29,9 @@ export function parseImages(imageField) {
   } catch { return [imageField] }
   return [imageField]  // eski format — bitta URL string
 }
+
+// <img onError> uchun: rasm yuklanmasa elementga `data-broken` qo'yadi — xira ko'rsatish yoki
+// yashirish CSS da (admin.css `img[data-broken]`). Inline `style.opacity` kerak emas.
+export function markBroken(e) {
+  e.currentTarget.dataset.broken = 'true'
+}

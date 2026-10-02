@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { API, H, HF, errorMessage, asArray } from './shared/api'
-import { card, inp, lbl, bP, bD, bE, bG } from './shared/styles'
 import { Ic } from './shared/Icons.jsx'
-import { extractYouTubeShortsId, parseImages } from './shared/helpers'
+import { extractYouTubeShortsId, parseImages, markBroken } from './shared/helpers'
 import { useMultiImageUpload } from './shared/useImageUpload'
 
 export default function NewsAdmin() {
@@ -74,116 +73,103 @@ export default function NewsAdmin() {
     setOpen(true)
   }
 
+  const regular = news.filter(n => !n.videoId)
+  const shorts  = news.filter(n => n.videoId)
+
+  // Yangilik va Shorts qatorlari bir xil tuzilishda — faqat belgi (pill) farq qiladi
+  const renderRow = (n, pill) => (
+    <div key={n._id} className="adm-card adm-row">
+      <div className="adm-row-main">
+        <div className="adm-row-meta">
+          {pill}
+          <span className="adm-row-date">{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
+        </div>
+        <div className="adm-row-title">{n.title}</div>
+        {n.content && <div className="adm-row-text adm-row-text--news">{n.content}</div>}
+      </div>
+      <div className="adm-actions adm-actions--fixed">
+        <button className="adm-btn adm-btn--edit" onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
+        <button className="adm-btn adm-btn--danger" aria-label="O'chirish" onClick={() => del(n._id)}>{Ic.del}</button>
+      </div>
+    </div>
+  )
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>Yangiliklar ({news.length})</h2>
-        <button style={bP} onClick={() => { setOpen(!open); setEdit(null); clear(); setForm({ title: '', content: '', category: 'Umumiy', image: '', shortsUrl: '' }) }}>{Ic.add} Yangi</button>
+      <div className="adm-crud-head">
+        <h2 className="adm-page-title">Yangiliklar ({news.length})</h2>
+        <button className="adm-btn adm-btn--primary" onClick={() => { setOpen(!open); setEdit(null); clear(); setForm({ title: '', content: '', category: 'Umumiy', image: '', shortsUrl: '' }) }}>{Ic.add} Yangi</button>
       </div>
       {open && (
-        <div style={{ ...card, marginBottom: '1.5rem', borderColor: 'var(--color-brand)' }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-brand)', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : 'Yangi yangilik'}</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div><label style={lbl}>Sarlavha *</label><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Yangilik sarlavhasi" style={inp} /></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div className="adm-card adm-form">
+          <h3 className="adm-form-title">{editing ? 'Tahrirlash' : 'Yangi yangilik'}</h3>
+          <div className="adm-form-body">
+            <div><label className="adm-label">Sarlavha *</label><input className="adm-input" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Yangilik sarlavhasi" /></div>
+            <div className="adm-form-grid">
               <div>
-                <label style={lbl}>Kategoriya</label>
-                <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} style={inp}>
+                <label className="adm-label">Kategoriya</label>
+                <select className="adm-input" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
                   {["Umumiy","Ta'lim","Sport","Madaniyat","Xalqaro","Fan"].map(c => <option key={c}>{c}</option>)}
                 </select>
               </div>
               <div>
-                <label style={lbl}>Rasmlar ({imagePreviews.length} ta)</label>
-                <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed var(--color-brand)', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 5%, transparent)' }}>
+                <label className="adm-label">Rasmlar ({imagePreviews.length} ta)</label>
+                <label className="adm-upload">
                   {Ic.photo}
                   Rasm qo'shish
-                  <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleFileSelect} style={{ display: 'none' }} />
+                  <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleFileSelect} hidden />
                 </label>
-                <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB · bir vaqtda bir nechta tanlash mumkin</div>
+                <div className="adm-hint">JPEG, PNG, WebP · maks 5 MB · bir vaqtda bir nechta tanlash mumkin</div>
               </div>
             </div>
             {imagePreviews.length > 0 && (
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
+              <div className="adm-thumbs adm-thumbs--spaced">
                 {imagePreviews.map((p, i) => (
-                  <div key={i} style={{ position: 'relative' }}>
-                    <img src={p.url} alt={`rasm-${i+1}`} loading="lazy" style={{ width: 90, height: 70, objectFit: 'cover', borderRadius: 8, border: '2px solid ' + (p.isNew ? 'var(--color-brand)' : 'var(--color-border)'), display: 'block' }} onError={e => e.target.style.opacity='0.3'} />
-                    {p.isNew && <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 9, fontWeight: 700, background: 'var(--color-brand-fill)', color: 'var(--color-on-brand)', padding: '1px 5px', borderRadius: 10 }}>YANGI</span>}
-                    <button onClick={() => removeImage(i)} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: 'var(--color-danger)', color: 'var(--color-on-brand)', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', textAlign: 'center', padding: 0 }}>×</button>
+                  <div key={i} className="adm-thumb">
+                    <img className="adm-thumb-img" data-new={p.isNew ? 'true' : 'false'} src={p.url} alt={`rasm-${i+1}`} loading="lazy" onError={markBroken} />
+                    {p.isNew && <span className="adm-thumb-new">YANGI</span>}
+                    <button className="adm-thumb-x" onClick={() => removeImage(i)} aria-label="Rasmni olib tashlash">×</button>
                   </div>
                 ))}
               </div>
             )}
-            <div><label style={lbl}>YouTube Shorts URL</label><input value={form.shortsUrl} onChange={e => setForm({ ...form, shortsUrl: e.target.value })} placeholder="https://youtube.com/shorts/VIDEO_ID" style={inp} /></div>
-            <div><label style={lbl}>Matn</label><textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={4} style={{ ...inp, resize: 'vertical' }} /></div>
+            <div><label className="adm-label">YouTube Shorts URL</label><input className="adm-input" value={form.shortsUrl} onChange={e => setForm({ ...form, shortsUrl: e.target.value })} placeholder="https://youtube.com/shorts/VIDEO_ID" /></div>
+            <div><label className="adm-label">Matn</label><textarea className="adm-input adm-input--area" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={4} /></div>
             {uploading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--color-brand)' }}>
-                <div style={{ width: 14, height: 14, border: '2px solid var(--color-brand-subtle-2)', borderTopColor: 'var(--color-brand)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              <div className="adm-saving">
+                <div className="adm-spinner" />
                 Saqlanmoqda...
               </div>
             )}
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button style={{ ...bP, opacity: uploading ? .6 : 1 }} onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
-              <button style={bG} onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
+            <div className="adm-form-actions">
+              <button className="adm-btn adm-btn--primary" onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
+              <button className="adm-btn" onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
             </div>
           </div>
         </div>
       )}
 
       {/* Yangiliklar */}
-      {news.filter(n => !n.videoId).length > 0 && (
+      {regular.length > 0 && (
         <>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
-            Yangiliklar ({news.filter(n => !n.videoId).length})
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '1.5rem' }}>
-            {news.filter(n => !n.videoId).map(n => (
-              <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 10, color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 10%, transparent)', padding: '2px 8px', borderRadius: 20 }}>{n.category || 'Umumiy'}</span>
-                    <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
-                  </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
-                  {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
-                </div>
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                  <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
-                  <button style={bD} aria-label="O'chirish" onClick={() => del(n._id)}>{Ic.del}</button>
-                </div>
-              </div>
-            ))}
+          <h3 className="adm-section-title">Yangiliklar ({regular.length})</h3>
+          <div className="adm-list adm-list--spaced">
+            {regular.map(n => renderRow(n, <span className="adm-pill">{n.category || 'Umumiy'}</span>))}
           </div>
         </>
       )}
 
       {/* Shorts */}
-      {news.filter(n => n.videoId).length > 0 && (
+      {shorts.length > 0 && (
         <>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
-            YouTube Shorts ({news.filter(n => n.videoId).length})
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {news.filter(n => n.videoId).map(n => (
-              <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 10, color: '#ff0000', background: 'rgba(255,0,0,.1)', padding: '2px 8px', borderRadius: 20 }}>Shorts</span>
-                    <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
-                  </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>
-                  {n.content && <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 450 }}>{n.content}</div>}
-                </div>
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                  <button style={bE} onClick={() => startEdit(n)}>{Ic.edit} Tahrir</button>
-                  <button style={bD} aria-label="O'chirish" onClick={() => del(n._id)}>{Ic.del}</button>
-                </div>
-              </div>
-            ))}
+          <h3 className="adm-section-title">YouTube Shorts ({shorts.length})</h3>
+          <div className="adm-list">
+            {shorts.map(n => renderRow(n, <span className="adm-pill adm-pill--youtube">Shorts</span>))}
           </div>
         </>
       )}
 
-      {news.length === 0 && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>Hali yangilik yo'q</p>}
+      {news.length === 0 && <p className="adm-blank">Hali yangilik yo'q</p>}
     </div>
   )
 }

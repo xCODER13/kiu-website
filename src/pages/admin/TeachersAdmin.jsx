@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { API, H, HF, errorMessage, asArray } from './shared/api.js'
-import { card, inp, lbl, bP, bD, bE, bG } from './shared/styles.js'
 import { Ic } from './shared/Icons.jsx'
+import { markBroken } from './shared/helpers.js'
 import { useSingleImageUpload } from './shared/useImageUpload.js'
 
 const KAFEDRALAR = [
@@ -76,9 +76,9 @@ export default function TeachersAdmin() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>O'qituvchilar ({teachers.length})</h2>
-        <button style={bP} onClick={() => {
+      <div className="adm-crud-head">
+        <h2 className="adm-page-title">O'qituvchilar ({teachers.length})</h2>
+        <button className="adm-btn adm-btn--primary" onClick={() => {
           setOpen(!open); setEdit(null)
           setForm({ name: '', role: '', dept: '', email: '', avatar: '', image: '' })
           setImageFile(null); setImagePreview(null)
@@ -86,81 +86,82 @@ export default function TeachersAdmin() {
       </div>
 
       {open && (
-        <div style={{ ...card, marginBottom: '1.5rem', borderColor: 'var(--color-brand)' }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-brand)', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : "Yangi o'qituvchi"}</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div><label style={lbl}>To'liq ism *</label><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Familiya Ism Sharif" style={inp} /></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-              <div><label style={lbl}>Lavozim *</label><input value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} placeholder="O'qituvchi / Dotsent" style={inp} /></div>
-              <div><label style={lbl}>Avatar (2 harf)</label><input value={form.avatar} onChange={e => setForm({ ...form, avatar: e.target.value })} placeholder="AB" maxLength={2} style={inp} /></div>
+        <div className="adm-card adm-form">
+          <h3 className="adm-form-title">{editing ? 'Tahrirlash' : "Yangi o'qituvchi"}</h3>
+          <div className="adm-form-body">
+            <div><label className="adm-label">To'liq ism *</label><input className="adm-input" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Familiya Ism Sharif" /></div>
+            <div className="adm-form-grid">
+              <div><label className="adm-label">Lavozim *</label><input className="adm-input" value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} placeholder="O'qituvchi / Dotsent" /></div>
+              <div><label className="adm-label">Avatar (2 harf)</label><input className="adm-input" value={form.avatar} onChange={e => setForm({ ...form, avatar: e.target.value })} placeholder="AB" maxLength={2} /></div>
             </div>
 
             <div>
-              <label style={lbl}>Foto (ixtiyoriy)</label>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed var(--color-brand)', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 5%, transparent)' }}>
+              <label className="adm-label">Foto (ixtiyoriy)</label>
+              <label className="adm-upload">
                 {Ic.photo}
                 {imagePreview ? 'Fotoni almashtirish' : "Foto qo'shish"}
-                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageSelect} style={{ display: 'none' }} />
+                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageSelect} hidden />
               </label>
               {imagePreview && (
-                <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
-                  <img src={imagePreview} alt="foto" loading="lazy" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '2px solid var(--color-brand)', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
-                  <button onClick={removeImage} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, borderRadius: '50%', background: 'var(--color-danger)', color: 'var(--color-on-brand)', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
+                <div className="adm-preview">
+                  <img className="adm-preview-img adm-preview-img--avatar" src={imagePreview} alt="foto" loading="lazy" onError={markBroken} />
+                  <button className="adm-thumb-x adm-thumb-x--sm" onClick={removeImage} aria-label="Rasmni olib tashlash">×</button>
                 </div>
               )}
-              <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB · rasm bo'lmasa 2-harfli avatar ko'rsatiladi</div>
+              <div className="adm-hint">JPEG, PNG, WebP · maks 5 MB · rasm bo'lmasa 2-harfli avatar ko'rsatiladi</div>
             </div>
 
-            <div><label style={lbl}>Kafedra *</label>
-              <select value={form.dept} onChange={e => setForm({ ...form, dept: e.target.value })} style={inp}>
+            <div><label className="adm-label">Kafedra *</label>
+              <select className="adm-input" value={form.dept} onChange={e => setForm({ ...form, dept: e.target.value })}>
                 <option value="">— Kafedrni tanlang —</option>
                 {KAFEDRALAR.map(k => <option key={k} value={k}>{k}</option>)}
               </select>
             </div>
             {uploading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--color-brand)' }}>
-                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: 'var(--color-brand)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              <div className="adm-saving">
+                <div className="adm-spinner" />
                 Saqlanmoqda...
               </div>
             )}
 
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button style={{ ...bP, opacity: uploading ? .6 : 1 }} onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
-              <button style={bG} onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
+            <div className="adm-form-actions">
+              <button className="adm-btn adm-btn--primary" onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
+              <button className="adm-btn" onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
             </div>
           </div>
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 10 }}>
+      <div className="adm-grid adm-grid--teachers">
         {teachers.map((t, i) => (
-          <div key={t._id} style={card}>
-            <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: '0.75rem' }}>
-              <div style={{ width: 42, height: 42, borderRadius: '50%', overflow: 'hidden', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+          <div key={t._id} className="adm-card">
+            <div className="adm-teacher-head">
+              {/* Avatar foni — ma'lumot indeksidan (spec 7.5: dinamik qiymat); palitra 6.11 da */}
+              <div className="adm-avatar" style={{ background: colors[i % colors.length] }}>
                 {t.image
-                  ? <img src={t.image} alt={t.name} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={ev => { ev.target.style.display = 'none' }} />
+                  ? <img src={t.image} alt={t.name} loading="lazy" onError={markBroken} />
                   : (t.avatar || t.name?.slice(0,2).toUpperCase())}
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.name}</div>
-                <div style={{ fontSize: 11, color: 'var(--color-brand)' }}>{t.role}</div>
+              <div className="adm-row-main">
+                <div className="adm-teacher-name">{t.name}</div>
+                <div className="adm-teacher-role">{t.role}</div>
               </div>
             </div>
-            <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 4 }}>{t.dept}</div>
-            {t.email && <div style={{ fontSize: 11, color: 'var(--color-brand)', marginBottom: '0.75rem' }}>{t.email}</div>}
-            <div style={{ display: 'flex', gap: 6 }}>
-              <button style={bE} onClick={() => {
+            <div className="adm-teacher-dept">{t.dept}</div>
+            {t.email && <div className="adm-teacher-email">{t.email}</div>}
+            <div className="adm-actions">
+              <button className="adm-btn adm-btn--edit" onClick={() => {
                 setEdit(t._id)
                 setForm({ name: t.name, role: t.role, dept: t.dept, email: t.email || '', avatar: t.avatar || '', image: t.image || '' })
                 setImageFile(null)
                 setImagePreview(t.image || null)
                 setOpen(true)
               }}>{Ic.edit} Tahrir</button>
-              <button style={bD} aria-label="O'chirish" onClick={() => del(t._id)}>{Ic.del}</button>
+              <button className="adm-btn adm-btn--danger" aria-label="O'chirish" onClick={() => del(t._id)}>{Ic.del}</button>
             </div>
           </div>
         ))}
-        {teachers.length === 0 && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: '2rem', gridColumn: '1/-1' }}>Hali o'qituvchi qo'shilmagan</p>}
+        {teachers.length === 0 && <p className="adm-blank adm-blank--grid">Hali o'qituvchi qo'shilmagan</p>}
       </div>
     </div>
   )
