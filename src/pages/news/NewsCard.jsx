@@ -10,7 +10,7 @@ export default function NewsCard({ item }) {
   const catColor = getCategoryColor(item.category)
   return (
     <div
-      className="card"
+      className="card card-link"
       style={{ padding: 0, overflow: 'hidden', transition: 'transform .2s, box-shadow .2s' }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,.12)' }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '' }}

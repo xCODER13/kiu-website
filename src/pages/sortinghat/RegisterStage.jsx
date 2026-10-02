@@ -25,18 +25,18 @@ export default function RegisterStage({ userInfo, setUserInfo, fieldErrors, onBa
           <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>{t('sortingHat.register.name')}</label>
           <input type="text" value={userInfo.name} onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
             placeholder={t('sortingHat.register.namePlaceholder')}
-            style={errorBorder(fieldErrors.name, { width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' })}
+            style={errorBorder(fieldErrors.name, { width: '100%', padding: '12px 14px', border: '2px solid var(--color-border-strong)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' })}
             onFocus={e => e.target.style.borderColor = 'var(--color-brand)'}
-            onBlur={e => e.target.style.borderColor = fieldErrors.name ? '#dc2626' : 'var(--border)'} />
+            onBlur={e => e.target.style.borderColor = fieldErrors.name ? '#dc2626' : 'var(--color-border-strong)'} />
           {fieldErrors.name && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 5 }}>{fieldErrors.name}</div>}
         </div>
         <div>
           <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 6 }}>{t('sortingHat.register.phone')}</label>
           <input type="tel" value={userInfo.phone} onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
             placeholder="+998 90 123 45 67"
-            style={errorBorder(fieldErrors.phone, { width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' })}
+            style={errorBorder(fieldErrors.phone, { width: '100%', padding: '12px 14px', border: '2px solid var(--color-border-strong)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' })}
             onFocus={e => e.target.style.borderColor = 'var(--color-brand)'}
-            onBlur={e => e.target.style.borderColor = fieldErrors.phone ? '#dc2626' : 'var(--border)'}
+            onBlur={e => e.target.style.borderColor = fieldErrors.phone ? '#dc2626' : 'var(--color-border-strong)'}
             onKeyDown={e => { if (e.key === 'Enter') onSubmit() }} />
           {fieldErrors.phone && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 5 }}>{fieldErrors.phone}</div>}
         </div>

@@ -52,7 +52,7 @@ export default function Dashboard() {
             <div style={{ position: 'relative' }}>
               <span style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,.3)', display: 'flex' }}>{Ic.search}</span>
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Bo'lim qidirish..."
-                style={{ width: '100%', padding: '7px 10px 7px 28px', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 8, fontSize: 12, color: 'var(--color-on-brand)', outline: 'none', fontFamily: 'inherit' }} />
+                style={{ width: '100%', padding: '7px 10px 7px 28px', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 8, fontSize: 12, color: 'var(--color-on-brand)', fontFamily: 'inherit' }} />
             </div>
           </div>
         )}
@@ -113,7 +113,7 @@ export default function Dashboard() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Bo'lim qidirish..."
-                style={{ padding: '7px 12px 7px 30px', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, background: 'var(--bg)', color: 'var(--text)', outline: 'none', width: 180, fontFamily: 'inherit' }}
+                style={{ padding: '7px 12px 7px 30px', border: '1px solid var(--color-border-strong)', borderRadius: 8, fontSize: 12, background: 'var(--bg)', color: 'var(--text)', width: 180, fontFamily: 'inherit' }}
               />
             </div>
             {/* Dark mode */}

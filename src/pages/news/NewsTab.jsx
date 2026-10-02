@@ -75,8 +75,8 @@ export default function NewsTab({
               placeholder={t('news.searchPh')}
               style={{
                 width: '100%', padding: '10px 14px 10px 36px',
-                border: '1px solid var(--border)', borderRadius: 10, fontSize: 13,
-                background: 'var(--bg)', color: 'var(--text)', outline: 'none',
+                border: '1px solid var(--color-border-strong)', borderRadius: 10, fontSize: 13,
+                background: 'var(--bg)', color: 'var(--text)',
                 fontFamily: 'var(--font-body)', boxSizing: 'border-box',
               }}
             />
