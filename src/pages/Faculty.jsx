@@ -27,7 +27,7 @@ export default function Faculty() {
       {/* Hero */}
       <section style={{
         padding: '3rem 2rem 2rem',
-        background: 'linear-gradient(135deg,#faf5ff 0%,#ede9fe 40%,#e0e7ff 100%)',
+        background: 'var(--gradient-hero)',
         borderBottom: '1px solid var(--border)',
         textAlign: 'center',
       }}>
@@ -48,7 +48,7 @@ export default function Faculty() {
                   className="kiu-tab-btn"
                   style={{
                     border: active ? 'none' : '1px solid color-mix(in srgb, var(--color-brand) 35%, transparent)',
-                    background: active ? 'linear-gradient(135deg,var(--color-brand),#6d28d9)' : 'transparent',
+                    background: active ? 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))' : 'transparent',
                     color: active ? '#fff' : 'var(--text)',
                     boxShadow: active ? '0 3px 10px color-mix(in srgb, var(--color-brand) 35%, transparent)' : 'none',
                   }}

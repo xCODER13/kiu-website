@@ -15,8 +15,8 @@ export default function Achievements() {
   const { t } = useTranslation()
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('achievements.title')}</h1>
+      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('achievements.title')}</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('achievements.subtitle')}</p>
       </section>
 
@@ -25,7 +25,7 @@ export default function Achievements() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
             {AWARDS.map((a, i) => (
               <div key={a.id} className={`card reveal reveal-delay-${(i % 4) + 1}`} style={{ textAlign: 'center' }}>
-                <div className="achieve-icon" style={{ width: 56, height: 56, borderRadius: 14, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'var(--color-brand)' }}>
+                <div className="achieve-icon" style={{ width: 56, height: 56, borderRadius: 14, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'var(--color-brand)' }}>
                   {a.icon}
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 10%, transparent)', padding: '2px 10px', borderRadius: 20, display: 'inline-block', marginBottom: 8 }}>{a.year}</span>

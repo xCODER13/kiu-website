@@ -34,6 +34,14 @@
     --mist-100:   #e8e8f0;
     --violet-950: #1e1b4b;
     --violet-900: #2d1b69;
+    --violet-400: #a78bfa;
+    --violet-200: #e9d5ff;
+    --indigo-100: #e0e7ff;
+    --navy-800:   #16213e;
+    --plum-900:   #1e1545;
+    --plum-950:   #13102b;
+    --plum-1000:  #0d0b1e;
+    --gray-100:   #f3f4f6;
 
     /* ── 2. Semantik rang (Light) ─────────────────────────────────── */
     --color-bg:            var(--white);
@@ -50,6 +58,22 @@
 
     --color-accent:        var(--gold-600);
     --color-on-accent:     var(--white);
+
+    /* Doim to'q yuzalar (footer, to'q hero, karusel) ustidagi ranglar — tema bilan almashmaydi */
+    --color-on-dark:             var(--gray-100);
+    --color-on-dark-muted:       var(--gray-400);
+    --color-brand-on-dark:       var(--violet-400);
+    --color-brand-on-dark-hover: var(--violet-200);
+    --color-media-bg:            var(--plum-950);
+
+    /* Gradientlar */
+    --gradient-hero:      linear-gradient(135deg, var(--violet-50) 0%, var(--violet-100) 40%, var(--indigo-100) 100%);
+    --gradient-hero-soft: linear-gradient(135deg, var(--violet-50), var(--violet-100));
+    --gradient-dark:      linear-gradient(135deg, var(--ink-900), var(--violet-900));
+    --gradient-brand:     linear-gradient(135deg, var(--color-brand), var(--color-brand-hover));
+    --gradient-footer:    linear-gradient(135deg, var(--ink-900), var(--navy-800));
+    --gradient-sidebar:   linear-gradient(180deg, var(--ink-900) 0%, var(--navy-800) 100%);
+    --gradient-media:     linear-gradient(135deg, var(--plum-900), var(--plum-950) 60%, var(--plum-1000));
 
     /* Holat ranglari: JSX'da hozir eng ko'p ishlatiladigan qiymatlar.
        "-bg" qiymatlari yangi (hozircha hech qayerda ishlatilmaydi). */

@@ -4,8 +4,8 @@ export default function About() {
   const { t } = useTranslation()
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('about.title')}</h1>
+      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('about.title')}</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('about.subtitle')}</p>
       </section>
 
@@ -13,7 +13,7 @@ export default function About() {
         <div className="container">
           <div className="grid-2" style={{ marginBottom: '3rem' }}>
             <div className="reveal">
-              <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#1a1a2e' }}>{t('about.ourUniversity')}</h2>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--color-text)' }}>{t('about.ourUniversity')}</h2>
               <p style={{ fontSize: 14, color: 'var(--muted)', lineHeight: 1.8, marginBottom: '1rem' }}>
                 {t('about.p1')}
               </p>
@@ -27,14 +27,14 @@ export default function About() {
             <div className="reveal reveal-delay-1">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 {[
-                  { n: '6875', k: 'students', color: '#7c3aed' },
-                  { n: '151', k: 'teachers', color: '#4f46e5' },
+                  { n: '6875', k: 'students', color: 'var(--color-brand)' },
+                  { n: '151', k: 'teachers', color: 'var(--color-brand-hover)' },
                   { n: '10', k: 'programs', color: '#0088cc' },
                   { n: '8', k: 'awards', color: '#059669' },
                   { n: '2', k: 'grants', color: '#d97706' },
                   { n: '16', k: 'clubs', color: '#db2777' },
                 ].map(s => (
-                  <div key={s.k} style={{ padding: '1.25rem', borderRadius: 12, background: `${s.color}10`, border: `1px solid ${s.color}25`, textAlign: 'center' }}>
+                  <div key={s.k} style={{ padding: '1.25rem', borderRadius: 12, background: `color-mix(in srgb, ${s.color} 6.27%, transparent)`, border: `1px solid color-mix(in srgb, ${s.color} 14.51%, transparent)`, textAlign: 'center' }}>
                     <div style={{ fontSize: '1.6rem', fontWeight: 700, color: s.color }}>{s.n}</div>
                     <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3 }}>{t(`about.stats.${s.k}`)}</div>
                   </div>
@@ -43,14 +43,14 @@ export default function About() {
             </div>
           </div>
 
-          <div className="reveal" style={{ background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, padding: '2.5rem', marginBottom: '2rem' }}>
+          <div className="reveal" style={{ background: 'var(--gradient-dark)', borderRadius: 16, padding: '2.5rem', marginBottom: '2rem' }}>
             <h2 style={{ color: 'var(--color-on-brand)', fontSize: '1.3rem', marginBottom: '1rem' }}>{t('about.missionTitle')}</h2>
             <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.8 }}>
               {t('about.missionText')}
             </p>
           </div>
 
-          <h2 className="reveal" style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: '#1a1a2e' }}>{t('about.advantagesTitle')}</h2>
+          <h2 className="reveal" style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: 'var(--color-text)' }}>{t('about.advantagesTitle')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
             {[
               {
@@ -87,7 +87,7 @@ export default function About() {
               },
             ].map((item, i) => (
               <div key={i} className={`card reveal reveal-delay-${(i % 4) + 1}`} style={{ textAlign: 'center', padding: '1.5rem' }}>
-                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: 'var(--color-brand)' }}>
+                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: 'var(--color-brand)' }}>
                   {item.icon}
                 </div>
                 <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)' }}>{t(`about.advantages.${item.k}.title`)}</h3>
@@ -96,10 +96,10 @@ export default function About() {
             ))}
           </div>
 
-          <h2 className="reveal" style={{ fontSize: '1.4rem', margin: '2.5rem 0 1.5rem', color: '#1a1a2e' }}>{t('about.leadershipTitle')}</h2>
+          <h2 className="reveal" style={{ fontSize: '1.4rem', margin: '2.5rem 0 1.5rem', color: 'var(--color-text)' }}>{t('about.leadershipTitle')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
             {[
-              { k: 'rector', hasInfo: true, color: '#7c3aed' },
+              { k: 'rector', hasInfo: true, color: 'var(--color-brand)' },
               { k: 'viceRector', color: '#08b310' },
               { k: 'financeDirector', hasInfo: true, color: '#0088cc' },
               { k: 'boardChair', hasInfo: true, color: '#059669' },
@@ -118,7 +118,7 @@ export default function About() {
             })}
           </div>
 
-          <h2 className="reveal" style={{ fontSize: '1.4rem', margin: '2.5rem 0 1.5rem', color: '#1a1a2e' }}>{t('about.infraTitle')}</h2>
+          <h2 className="reveal" style={{ fontSize: '1.4rem', margin: '2.5rem 0 1.5rem', color: 'var(--color-text)' }}>{t('about.infraTitle')}</h2>
           <p className="reveal" style={{ fontSize: 13, color: 'var(--muted)', marginBottom: '1.25rem', maxWidth: 520 }}>
             {t('about.infraText')}
           </p>
@@ -142,7 +142,7 @@ export default function About() {
               },
             ].map((item, i) => (
               <div key={i} className={`card reveal reveal-delay-${i + 1}`} style={{ textAlign: 'center', padding: '1.5rem' }}>
-                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: 'var(--color-brand)' }}>
+                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: 'var(--color-brand)' }}>
                   {item.icon}
                 </div>
                 <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 4, fontFamily: 'var(--font-body)' }}>{t(`about.infra.${item.k}.title`)}</h3>

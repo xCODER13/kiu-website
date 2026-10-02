@@ -32,7 +32,7 @@ export default function FeaturedCarousel({ items }) {
         width: '100%',
         height: 480,
         overflow: 'hidden',
-        background: '#13102b',
+        background: 'var(--color-media-bg)',
         borderRadius: 20,
         margin: '1.5rem 0',
       }}
@@ -46,7 +46,7 @@ export default function FeaturedCarousel({ items }) {
           position: 'absolute', inset: 0,
           backgroundImage: parseImages(item.image)[0]
             ? `url(${parseImages(item.image)[0]})`
-            : `linear-gradient(135deg, #1e1545 0%, #13102b 60%, #0d0b1e 100%)`,
+            : `var(--gradient-media)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           animation: 'carouselFadeIn .6s ease',

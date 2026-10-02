@@ -247,7 +247,7 @@ export default function Search() {
                       fontSize: 12, color: 'var(--text)', cursor: 'pointer',
                       fontFamily: 'inherit', transition: 'all .15s',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor='#7c3aed'; e.currentTarget.style.color='#7c3aed'; e.currentTarget.style.background='rgba(124,58,237,.06)' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor='var(--color-brand)'; e.currentTarget.style.color='var(--color-brand)'; e.currentTarget.style.background='color-mix(in srgb, var(--color-brand) 6%, transparent)' }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.color='var(--text)'; e.currentTarget.style.background='var(--bg-2)' }}>
                     {l.icon} {t(`search.quick.${l.id}`)}
                   </button>

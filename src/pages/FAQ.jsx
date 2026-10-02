@@ -26,8 +26,8 @@ export default function FAQ() {
 
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('faq.title')}</h1>
+      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('faq.title')}</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('faq.subtitle')}</p>
       </section>
 
@@ -41,7 +41,7 @@ export default function FAQ() {
               >
                 <span style={{ fontSize: 14, fontWeight: 600, color: open === i ? 'var(--color-brand)' : 'var(--text)' }}>{faq.q}</span>
                 <div style={{ width: 24, height: 24, borderRadius: '50%', background: open === i ? 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))' : 'var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all .2s' }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={open === i ? '#fff' : '#7c3aed'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={open === i ? '#fff' : 'var(--color-brand)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     {open === i ? <polyline points="18 15 12 9 6 15"/> : <polyline points="6 9 12 15 18 9"/>}
                   </svg>
                 </div>

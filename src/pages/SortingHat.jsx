@@ -57,7 +57,7 @@ export default function SortingHat() {
   return (
     <div className="fade-up">
       {/* ── HERO ── */}
-<section style={{ padding: '3rem 2rem 2.5rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+<section style={{ padding: '3rem 2rem 2.5rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
   {/* bg stars */}
   {[...Array(7)].map((_, i) => (
     <span key={i} style={{ position: 'absolute', opacity: .15, left: `${8 + i * 13}%`, top: `${15 + Math.sin(i) * 50}%` }}>
@@ -83,9 +83,9 @@ export default function SortingHat() {
   <div style={{ position: 'relative', zIndex: 1 }}>
     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}><IcHat /></div>
     <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 25%, transparent)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid color-mix(in srgb, var(--color-brand) 20%, transparent)' }}>
-      <IcStar s={11} c="#7c3aed" /> {t('sortingHat.badge')} <IcStar s={11} c="#7c3aed" />
+      <IcStar s={11} c="var(--color-brand)" /> {t('sortingHat.badge')} <IcStar s={11} c="var(--color-brand)" />
     </div>
-    <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '0.6rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
+    <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '0.6rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>
       {t('sortingHat.title')}
     </h1>
     <p style={{ fontSize: 14, color: 'var(--muted)', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>

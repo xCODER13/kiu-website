@@ -5,8 +5,8 @@ export default function Hemis() {
   const { t } = useTranslation()
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('hemis.title')}</h1>
+      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('hemis.title')}</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('hemis.subtitle')}</p>
       </section>
 
@@ -14,7 +14,7 @@ export default function Hemis() {
         <div className="container" style={{ maxWidth: 700 }}>
           <div className="grid-2">
             <div className="card reveal" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-              <div className="achieve-icon" style={{ width: 64, height: 64, borderRadius: 16, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--color-brand)' }}>
+              <div className="achieve-icon" style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--color-brand)' }}>
                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
               </div>
               <h2 style={{ fontSize: '1.2rem', color: 'var(--text)', marginBottom: '.5rem' }}>{t('hemis.studentsTitle')}</h2>
@@ -28,7 +28,7 @@ export default function Hemis() {
             </div>
 
             <div className="card reveal reveal-delay-1" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-              <div className="achieve-icon" style={{ width: 64, height: 64, borderRadius: 16, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--color-brand)' }}>
+              <div className="achieve-icon" style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--color-brand)' }}>
                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               </div>
               <h2 style={{ fontSize: '1.2rem', color: 'var(--text)', marginBottom: '.5rem' }}>{t('hemis.teachersTitle')}</h2>
@@ -41,7 +41,7 @@ export default function Hemis() {
           </div>
 
           <div className="card reveal" style={{ marginTop: '1.5rem', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div className="achieve-icon" style={{ width: 44, height: 44, borderRadius: 10, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-brand)', flexShrink: 0 }}>
+            <div className="achieve-icon" style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-brand)', flexShrink: 0 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             </div>
             <div>

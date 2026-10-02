@@ -171,7 +171,7 @@ export default function NewsDetail() {
       {/* Hero */}
       <section style={{
         padding: '2.5rem 2rem 1.5rem',
-        background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)',
+        background: 'var(--gradient-hero)',
         borderBottom: '1px solid var(--border)',
       }}>
         <div className="container">

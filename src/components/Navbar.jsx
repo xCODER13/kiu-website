@@ -106,7 +106,7 @@ export default function Navbar({ dark, setDark, onApply }) {
         <NavLink to="/" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <img src="/logo.png" alt={t('nav.logoAlt')} className="nav-logo-img" style={{ width: 38, height: 38, objectFit: 'contain', }} />
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: dark ? '#ffffff' : '#1a1a2e' }}>{t('university.name')}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: dark ? '#ffffff' : 'var(--color-text)' }}>{t('university.name')}</div>
             <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t('nav.subtitle', { website: config.university.website })}</div>
           </div>
         </NavLink>
@@ -117,8 +117,8 @@ export default function Navbar({ dark, setDark, onApply }) {
             <NavLink key={l.to} to={l.to} end
               style={({ isActive }) => ({
                 fontSize: 11,
-                color: isActive ? '#7c3aed' : (dark ? '#ffffff' : '#1a1a2e'),
-                borderBottom: isActive ? '2px solid #7c3aed' : '2px solid transparent',
+                color: isActive ? 'var(--color-brand)' : (dark ? '#ffffff' : 'var(--color-text)'),
+                borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
                 paddingBottom: 3,
                 fontWeight: isActive ? 600 : 400,
                 transition: 'all 0.2s'
@@ -140,7 +140,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                   style={{
                     display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer',
                     fontFamily: 'inherit', fontSize: 11, padding: 0, paddingBottom: 3,
-                    color: isActive ? 'var(--color-brand)' : (dark ? '#ffffff' : '#1a1a2e'),
+                    color: isActive ? 'var(--color-brand)' : (dark ? '#ffffff' : 'var(--color-text)'),
                     fontWeight: isActive ? 600 : 400,
                     borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
                   }}
@@ -169,8 +169,8 @@ export default function Navbar({ dark, setDark, onApply }) {
             <NavLink key={l.to} to={l.to} end
               style={({ isActive }) => ({
                 fontSize: 11,
-                color: isActive ? '#7c3aed' : (dark ? '#ffffff' : '#1a1a2e'),
-                borderBottom: isActive ? '2px solid #7c3aed' : '2px solid transparent',
+                color: isActive ? 'var(--color-brand)' : (dark ? '#ffffff' : 'var(--color-text)'),
+                borderBottom: isActive ? '2px solid var(--color-brand)' : '2px solid transparent',
                 paddingBottom: 3,
                 fontWeight: isActive ? 600 : 400,
                 transition: 'all 0.2s'
@@ -208,7 +208,7 @@ export default function Navbar({ dark, setDark, onApply }) {
             <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)}
               style={({ isActive }) => ({
                 fontSize: 18, fontWeight: 600,
-                color: isActive ? '#7c3aed' : 'var(--text)',
+                color: isActive ? 'var(--color-brand)' : 'var(--text)',
                 padding: '0.75rem 0',
                 borderBottom: '1px solid var(--border)',
               })}>
@@ -228,7 +228,7 @@ export default function Navbar({ dark, setDark, onApply }) {
                   <NavLink key={item.to} to={item.to} onClick={() => setMenuOpen(false)}
                     style={({ isActive }) => ({
                       fontSize: 15,
-                      color: isActive ? '#7c3aed' : 'var(--muted)',
+                      color: isActive ? 'var(--color-brand)' : 'var(--muted)',
                       fontWeight: isActive ? 600 : 400,
                       padding: '0.5rem 0 0.5rem 0.75rem',
                     })}>
@@ -243,7 +243,7 @@ export default function Navbar({ dark, setDark, onApply }) {
             <NavLink key={l.to} to={l.to} end onClick={() => setMenuOpen(false)}
               style={({ isActive }) => ({
                 fontSize: 18, fontWeight: 600,
-                color: isActive ? '#7c3aed' : 'var(--text)',
+                color: isActive ? 'var(--color-brand)' : 'var(--text)',
                 padding: '0.75rem 0',
                 borderBottom: '1px solid var(--border)',
               })}>

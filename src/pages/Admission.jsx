@@ -46,8 +46,8 @@ export default function Admission({ onApply }) {
   return (
     <div className="fade-up">
       {/* Hero */}
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>
+      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>
           {t('admission.title', { year: config.admission.year })}
         </h1>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('admission.subtitle')}</p>
@@ -57,7 +57,7 @@ export default function Admission({ onApply }) {
         <div className="container">
  
           {/* Banner */}
-          <div className="reveal" style={{ background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, padding: '2.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <div className="reveal" style={{ background: 'var(--gradient-dark)', borderRadius: 16, padding: '2.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
             <div>
               <h2 style={{ color: 'var(--color-on-brand)', fontSize: '1.4rem', marginBottom: '.35rem' }}>
                 {t('admission.banner')}
@@ -88,7 +88,7 @@ export default function Admission({ onApply }) {
           <div className="grid-auto">
             {STEPS.map((s, i) => (
               <div key={s.key} className={`card reveal reveal-delay-${i + 1}`}>
-                <div className="step-icon" style={{ width: 42, height: 42, borderRadius: 10, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10, color: 'var(--color-brand)' }}>
+                <div className="step-icon" style={{ width: 42, height: 42, borderRadius: 10, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10, color: 'var(--color-brand)' }}>
                   {s.icon}
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 10%, transparent)', padding: '2px 9px', borderRadius: 20, display: 'inline-block', marginBottom: 8 }}>

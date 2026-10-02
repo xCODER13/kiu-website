@@ -103,7 +103,7 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
                       "{a.message?.slice(0, 120)}{a.message?.length > 120 ? '...' : ''}"
                     </div>
                   )}
-                  <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 6 }}>{new Date(a.createdAt).toLocaleString('uz-UZ')}</div>
+                  <div style={{ fontSize: 10, color: 'var(--color-text-muted)', marginTop: 6 }}>{new Date(a.createdAt).toLocaleString('uz-UZ')}</div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0, alignItems: 'flex-end' }}>
                   <select value={a.status} onChange={e => updateStatus(a._id, e.target.value)}
