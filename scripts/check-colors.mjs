@@ -9,11 +9,12 @@
 // Bosqich 0: faqat HISOBOT — chiqish kodi har doim 0, CI'ni to'xtatmaydi.
 // Maqsad: Bosqich 1–2 da hex qiymatlar token'larga almashgani sayin son kamayishini ko'rish.
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs'
-import { join, relative, extname } from 'node:path'
+import { join, relative, extname, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..')
 const SRC = join(ROOT, 'src')
+const rel = (file) => relative(ROOT, file).split(sep).join('/') // Windows'da ham baza bir xil bo'lsin
 const BASELINE = join(ROOT, 'scripts', 'check-colors.baseline.json')
 
 const EXTENSIONS = new Set(['.css', '.js', '.jsx'])
@@ -39,7 +40,7 @@ function scan() {
     const hexes = (text.match(HEX) ?? []).map((v) => v.toLowerCase())
     const funcs = (text.match(FUNC) ?? []).length
     if (hexes.length + funcs === 0) continue
-    perFile[relative(ROOT, file)] = { hex: hexes.length, func: funcs }
+    perFile[rel(file)] = { hex: hexes.length, func: funcs }
     for (const v of hexes) perValue[v] = (perValue[v] ?? 0) + 1
   }
   const sum = (key) => Object.values(perFile).reduce((n, f) => n + f[key], 0)
@@ -68,7 +69,7 @@ const args = new Set(process.argv.slice(2))
 
 if (args.has('--write')) {
   writeFileSync(BASELINE, JSON.stringify(report, null, 2) + '\n')
-  console.log(`Baza saqlandi: ${relative(ROOT, BASELINE)} (${report.totals.hex} hex, ${report.totals.func} rgb/hsl)`)
+  console.log(`Baza saqlandi: ${rel(BASELINE)} (${report.totals.hex} hex, ${report.totals.func} rgb/hsl)`)
 } else if (args.has('--compare')) {
   if (!existsSync(BASELINE)) {
     console.log('Baza yo\'q. Avval: node scripts/check-colors.mjs --write')
