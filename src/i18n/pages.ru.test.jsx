@@ -46,7 +46,7 @@ describe('Navbar (RU)', () => {
 
   it('logotip /ru ga olib boradi', () => {
     at('/ru/faculty', <Navbar {...props} />)
-    expect(screen.getAllByRole('link').find(a => a.querySelector('img'))).toHaveAttribute('href', '/ru')
+    expect(screen.getAllByRole('link').find(a => a.querySelector('svg[role="img"]'))).toHaveAttribute('href', '/ru')
   })
 
   it("til almashtirgich: RU'da UZ va EN havolalari to'g'ri (UZ prefikssiz, EN /en)", () => {

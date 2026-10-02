@@ -22,6 +22,13 @@ describe('Footer', () => {
     expect(screen.getAllByRole('link', { name: "Bo'sh ish o'rinlari" }).length).toBeGreaterThan(0)
   })
 
+  it("logotip bor, lekin dekorativ: universitet nomi yonida ekran o'qiydigan dasturda takrorlanmaydi", () => {
+    const { container } = renderFooter()
+    const logo = container.querySelector('footer svg.site-logo--footer')
+    expect(logo).toHaveAttribute('aria-hidden', 'true')
+    expect(screen.queryByRole('img', { name: 'KIU logo' })).not.toBeInTheDocument()
+  })
+
   it('regressiya: "Yonalishni" emas, to\'g\'ri yozilgan "Yo\'nalishni aniqlash" havolasi ko\'rsatiladi', () => {
     renderFooter()
     expect(screen.getByRole('link', { name: "Yo'nalishni aniqlash" })).toBeInTheDocument()

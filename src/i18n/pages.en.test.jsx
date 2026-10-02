@@ -31,7 +31,7 @@ describe('Navbar (EN)', () => {
 
   it("logotip /en ga olib boradi", () => {
     at('/en/faculty', <Navbar {...props} />)
-    expect(screen.getAllByRole('link').find(a => a.querySelector('img'))).toHaveAttribute('href', '/en')
+    expect(screen.getAllByRole('link').find(a => a.querySelector('svg[role="img"]'))).toHaveAttribute('href', '/en')
   })
 
   it("faol guruh prefikssiz yo'l bo'yicha aniqlanadi (/en/faculty → 'For students' faol)", () => {
