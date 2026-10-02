@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { validateFullName, validatePhone, validateEmail, validateRequired } from '../utils/validation'
+import PageHero from '../components/PageHero'
+import Icon from '../components/Icon'
 import InfoTab from './vacancies/InfoTab'
 import ApplicationForm from './vacancies/ApplicationForm'
 
@@ -61,33 +63,34 @@ export default function Vacancies() {
     setForm(EMPTY_FORM)
   }
 
+  const tabs = [
+    { key: 'info', label: t('vacancies.tabs.info'), icon: <><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></> },
+    { key: 'form', label: t('vacancies.tabs.form'), icon: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" /></> },
+  ]
+
   return (
     <div className="fade-up">
-      {/* Hero */}
-      <section className="page-hero">
-        <div className="section-badge section-badge--hero">
-          <span className="section-badge-dot" />
-          {t('vacancies.badge')}
+      <PageHero badge={t('vacancies.badge')} title={t('vacancies.title')} sub={t('vacancies.subtitle')}>
+        {/* Tab almashtirgich (pill): rol `button` saqlangan, holat — `data-active` + `aria-pressed` */}
+        <div className="kiu-tab-wrap">
+          {tabs.map(tab => (
+            <button
+              key={tab.key}
+              type="button"
+              className="kiu-tab-btn"
+              data-active={activeTab === tab.key}
+              aria-pressed={activeTab === tab.key}
+              onClick={() => setActiveTab(tab.key)}
+            >
+              <span className="kiu-tab-icon"><Icon size={16}>{tab.icon}</Icon></span>
+              {tab.label}
+            </button>
+          ))}
         </div>
-        <h1 className="page-hero-title">{t('vacancies.title')}</h1>
-        <p className="page-hero-sub page-hero-sub--narrow">
-          {t('vacancies.subtitle')}
-        </p>
-      </section>
+      </PageHero>
 
-      <section className="section">
-        <div className="container">
-
-          {/* Tabs */}
-          <div className="tabs tabs--line">
-            {[{ key: 'info', label: t('vacancies.tabs.info') }, { key: 'form', label: t('vacancies.tabs.form') }].map(tab => (
-              <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-                className="tab" data-active={activeTab === tab.key}>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
+      <section className="page-body">
+        <div className="container-wide">
           {activeTab === 'info' && <InfoTab setActiveTab={setActiveTab} />}
 
           {activeTab === 'form' && (
@@ -97,7 +100,6 @@ export default function Vacancies() {
               onNewApplication={handleNewApplication} setActiveTab={setActiveTab}
             />
           )}
-
         </div>
       </section>
     </div>

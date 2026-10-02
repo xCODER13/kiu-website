@@ -121,10 +121,8 @@ a.lang-switch-item:hover { color: var(--color-brand); background: color-mix(in s
   .stat-item:nth-child(2) { border-right: none; }
   .stat-item:nth-child(1),
   .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
-}.vacancies-content .reveal {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-}@keyframes spin { to { transform: rotate(360deg); } }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 /* Teachers sahifasi responsive qoidalari — pages.css (6.11c3) */

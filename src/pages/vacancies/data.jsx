@@ -38,3 +38,9 @@ export const EXPERIENCE = [
   { value: "Tajribam yo'q", key: 'none' }, { value: '1 yilgacha', key: 'lt1' }, { value: '1–3 yil', key: 'y1_3' },
   { value: '3–5 yil', key: 'y3_5' }, { value: '5–10 yil', key: 'y5_10' }, { value: '10 yildan ortiq', key: 'gt10' },
 ]
+
+// Ariza topshirish bo'yicha aloqa: raqamlar HR bo'limiga tegishli (config.contact.phone — umumiy qabul raqami, boshqa).
+export const HR_PHONES = [
+  { id: 'phone1', value: '+998 91 961 11 00' },
+  { id: 'phone2', value: '+998 91 211 54 52' },
+]

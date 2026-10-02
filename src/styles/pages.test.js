@@ -498,3 +498,50 @@ describe('Bosqich 6.11c3: Tadbirlar, O\'qituvchilar, Galereya', () => {
     expect(read('src/pages/Gallery.jsx')).toMatch(/useModalA11y/)
   })
 })
+
+describe('Bosqich 6.11c4: Vakansiyalar', () => {
+  const tokens = read('src/styles/tokens.css')
+  const inline = f => (read(f).match(/style=\{/g) ?? []).length
+
+  it("yangi tokenlar: `--ring-field` / `--ring-field-danger` (Light + ikkala Dark blok)", () => {
+    expect(tokens).toMatch(/--ring-field:\s*rgb\(127 32 99 \/ 0\.14\)/)
+    expect(tokens).toMatch(/--ring-field-danger:\s*rgb\(200 30 30 \/ 0\.10\)/)
+    expect((tokens.match(/--ring-field:\s*rgb\(233 168 208 \/ 0\.18\)/g) ?? []).length).toBe(2)
+    expect((tokens.match(/--ring-field-danger:\s*rgb\(242 106 106 \/ 0\.14\)/g) ?? []).length).toBe(2)
+  })
+
+  it("Forma tizimi: `.input--lg` 48 px / radius 12, fokus — `--ring-field` + shaffof outline, xato — `--color-danger` + `--ring-field-danger`", () => {
+    expect(code).toMatch(/\.input\.input--lg \{[^}]*min-height: 48px;[^}]*border-radius: 12px;[^}]*var\(--color-field-bg\)/)
+    expect(code).toMatch(/\.input\.input--lg:focus-visible \{[^}]*var\(--ring-field\)[^}]*outline: 2px solid transparent;/)
+    expect(code).toMatch(/\.input\.input--lg\[aria-invalid="true"\],\s*\.input\.input--lg\[aria-invalid="true"\]:focus-visible \{[^}]*var\(--color-danger\)[^}]*var\(--ring-field-danger\)/)
+  })
+
+  it("`<select>` — `.select-wrap` + SVG chevron (data-URI emas), checkbox — clip-path belgi + forced-colors zaxirasi", () => {
+    expect(code).toMatch(/\.select-wrap > select \{[^}]*appearance: none;/)
+    expect(code).toMatch(/\.select-wrap > svg \{[^}]*pointer-events: none;/)
+    expect(code).not.toMatch(/data:image/)
+    expect(code).toMatch(/\.vac-checkbox \{[^}]*width: 22px;/)
+    expect(code).toMatch(/\.vac-checkbox:checked \{[^}]*var\(--color-brand-fill\)/)
+    expect(code).toMatch(/forced-colors: active\) \{ \.vac-checkbox:checked::before/)
+  })
+
+  it("forma kartasi 760 px; eski `.section-badge--hero`, `.tabs--line`, `.icon-tile` va `.vacancies-content` olib tashlangan", () => {
+    expect(code).toMatch(/\.vac-form-wrap \{ max-width: 760px;/)
+    expect(code).not.toMatch(/\.section-badge--hero|\.section-badge-dot|\.tabs--line|\.icon-tile/)
+    expect(read('src/styles/global.css')).not.toMatch(/vacancies-content/)
+  })
+
+  it("Vakansiyalar JSX: inline style yo'q, hex/rgba yo'q, PageHero + `*` JSX da (i18n matnda emas)", () => {
+    for (const f of ['Vacancies.jsx', 'vacancies/InfoTab.jsx', 'vacancies/ApplicationForm.jsx']) {
+      const path = `src/pages/${f}`
+      expect(inline(path), f).toBe(0)
+      expect(read(path), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+    }
+    expect(read('src/pages/Vacancies.jsx')).toMatch(/PageHero/)
+    expect(read('src/pages/vacancies/ApplicationForm.jsx')).toMatch(/label__req/)
+    for (const l of ['uz', 'ru', 'en']) {
+      const form = JSON.parse(read(`src/i18n/locales/${l}.json`)).vacancies.form
+      for (const k of ['fullName', 'phone', 'position', 'faculty', 'education', 'experience']) expect(form[k], `${l}.${k}`).not.toMatch(/\*\s*$/)
+    }
+  })
+})

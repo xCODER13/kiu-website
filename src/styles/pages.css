@@ -17,7 +17,7 @@
   .page-hero-sub { font-size: 14px; color: var(--color-text-muted); }
   .page-hero-sub--narrow { max-width: 560px; margin: 0 auto; }
 
-  /* Bo'lim "badge"i. Hero ichida fon 25 %, bosh sahifa bo'limlarida 10 % — 6.11 da birlashtiriladi */
+  /* Bo'lim "badge"i (Home, SortingHat). Ichki sahifa hero'sida — .hero-badge (PageHero) */
   .section-badge {
     display: inline-flex;
     align-items: center;
@@ -33,19 +33,9 @@
     margin-bottom: 1rem;
     border: 1px solid color-mix(in srgb, var(--color-brand) 20%, transparent);
   }
-  .section-badge--hero { background: color-mix(in srgb, var(--color-brand) 25%, transparent); }
-  .section-badge-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-brand);
-    display: inline-block;
-    animation: pulse 2s infinite;
-  }
 
   /* ── Umumiy: tablar. Faol holat — `data-active` (rol o'zgarmagan: testlar `button` bo'yicha qidiradi) ── */
   .tabs { display: flex; gap: 4px; }
-  .tabs--line { margin-bottom: 2rem; border-bottom: 1px solid var(--color-border); }
   .tabs-bar { border-bottom: 1px solid var(--color-border); background: var(--color-bg); }
   .tab {
     padding: 10px 24px;
@@ -64,35 +54,22 @@
   .tab[data-active="true"] { color: var(--color-brand); border-bottom-color: var(--color-brand); }
 
   /* ── Umumiy: ikonka katak, panel, yuklanish ───────────────────────── */
-  .icon-tile {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: color-mix(in srgb, var(--color-brand) 10%, transparent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-brand);
-    flex-shrink: 0;
-  }
-  .icon-tile--sm { width: 32px; height: 32px; }
-
   .panel {
-    padding: 1.25rem;
+    padding: 22px 24px;
     background: var(--color-surface-2);
-    border-radius: 12px;
+    border-radius: 16px;
     border: 1px solid var(--color-border);
   }
   .panel-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--color-brand);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-brand);
   }
 
   .spinner {
@@ -117,146 +94,6 @@
   .input--noresize { resize: none; }
   .label--form { font-size: 12px; font-weight: 400; color: var(--color-text-muted); margin-bottom: 4px; }
   .field-error--form { display: block; margin-top: 4px; font-size: 11.5px; }
-
-  /* ── Vacancies: Info tab ──────────────────────────────────────────── */
-  .vac-banner { background: var(--gradient-dark); border-radius: 16px; padding: 2.5rem; margin-bottom: 2rem; }
-  .vac-banner-title { color: var(--color-on-brand); font-size: 1.3rem; margin-bottom: 1rem; }
-  .vac-banner-text { color: rgb(255 255 255 / 0.7); font-size: 14px; line-height: 1.8; }
-
-  .vac-heading { font-size: 1.2rem; margin-bottom: 1.25rem; color: var(--color-text); }
-  .vac-mb-lg { margin-bottom: 2.5rem; }
-  .vac-mb-md { margin-bottom: 2rem; }
-
-  .vac-benefit { display: flex; gap: 12px; align-items: flex-start; }
-  .vac-benefit-title { font-size: 13px; font-weight: 600; color: var(--color-text); margin-bottom: 2px; }
-  .vac-benefit-desc { font-size: 11px; color: var(--color-text-muted); }
-
-  .vac-req-list { display: flex; flex-direction: column; gap: 12px; }
-  .vac-req { display: flex; align-items: flex-start; gap: 10px; }
-  .vac-check {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--gradient-brand);
-    color: var(--color-on-brand);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .vac-req-text { font-size: 13px; color: var(--color-text-muted); line-height: 1.6; }
-
-  .vac-card-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-text);
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .vac-card-text { font-size: 13px; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1rem; }
-  .vac-strong { color: var(--color-text); }
-  .vac-strong--brand { color: var(--color-brand); }
-  .vac-docs { display: flex; flex-direction: column; gap: 8px; }
-  .vac-doc { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-text-muted); }
-  .vac-doc-icon { color: var(--color-brand); }
-  .vac-note {
-    margin-top: 1rem;
-    padding: 10px 12px;
-    background: color-mix(in srgb, var(--color-brand) 5%, transparent);
-    border-radius: 8px;
-    border: 1px solid color-mix(in srgb, var(--color-brand) 15%, transparent);
-    font-size: 12px;
-    color: var(--color-text-muted);
-  }
-  .vac-note-line { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-muted); }
-  .vac-contact-list { display: flex; flex-direction: column; gap: 12px; }
-  .vac-contact { display: flex; flex-direction: column; gap: 2px; }
-  .vac-contact-label { font-size: 11px; color: var(--color-text-muted); }
-  .vac-contact-value { font-size: 13px; font-weight: 600; color: var(--color-brand); }
-  .vac-cta { text-align: center; }
-  .vac-cta-btn { padding: 12px 32px; font-size: 14px; }
-
-  /* ── Vacancies: Forma tab ─────────────────────────────────────────── */
-  .vac-form-wrap { max-width: 640px; margin: 0 auto; }
-  .vac-form-card { padding: 2rem; }
-  .vac-form-title { font-size: 1.3rem; color: var(--color-text); margin-bottom: 0.5rem; }
-  .vac-form-sub { font-size: 13px; color: var(--color-text-muted); margin-bottom: 1.5rem; }
-  .vac-form { display: flex; flex-direction: column; gap: 14px; }
-  .vac-fields { display: flex; flex-direction: column; gap: 10px; }
-  .vac-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .vac-check-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--color-text);
-  }
-  .vac-checkbox { width: 16px; height: 16px; accent-color: var(--color-brand); }
-  .vac-docs-box {
-    padding: 1rem;
-    background: color-mix(in srgb, var(--color-brand) 5%, transparent);
-    border-radius: 10px;
-    border: 1px solid color-mix(in srgb, var(--color-brand) 15%, transparent);
-  }
-  .vac-docs-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--color-brand);
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .vac-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .vac-chip {
-    font-size: 11px;
-    color: var(--color-text-muted);
-    background: var(--color-bg);
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid var(--color-border);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .vac-alert {
-    font-size: 12.5px;
-    color: var(--color-danger);
-    background: color-mix(in srgb, var(--color-danger) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-danger) 25%, transparent);
-    border-radius: 10px;
-    padding: 10px 14px;
-  }
-  .vac-submit { width: 100%; justify-content: center; padding: 13px; font-size: 14px; }
-  .vac-submit-inner { display: flex; align-items: center; gap: 8px; }
-  .vac-spin { animation: spin 1s linear infinite; }
-
-  .vac-success { padding: 3rem; text-align: center; }
-  .vac-success-icon {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    background: var(--gradient-hero-soft);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    color: var(--color-brand);
-  }
-  .vac-success-title { font-size: 1.4rem; color: var(--color-text); margin-bottom: 0.75rem; }
-  .vac-success-text {
-    font-size: 13px;
-    color: var(--color-text-muted);
-    line-height: 1.7;
-    max-width: 400px;
-    margin: 0 auto 1.5rem;
-  }
-  .vac-success-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-  .vac-btn-sm { font-size: 13px; }
 
   /* ── Telegram banner (ishlatilmaydi; TelegramBanner.jsx) ── */
   .tg-banner {
@@ -2109,5 +1946,200 @@
     .photo-lightbox__btn--prev,
     .photo-lightbox__btn--next { width: 44px; height: 44px; }
     .photo-card__media { height: 200px; }
+  }
+
+  /* ════════════════════════════════════════════════════════════════════
+     Bosqich 6.11c4 — Vakansiyalar (Ma'lumot tabi + ariza formasi)
+     c1/c2/c3 primitivlariga tayanadi (`.wine-banner`, `.section-title`, `.cards-*`, `.rv-item`, `.card--lift`, `.tile`, `.kiu-tab-*`).
+     Forma tizimi (`.input--lg`, `.label--lg`, `.select-wrap`, `.field-error--lg`, `.vac-checkbox`) boshqa formalar uchun ham ishlatiladi
+     (ApplyModal, admin — keyingi bosqichlarda). Rang — faqat token.
+     ════════════════════════════════════════════════════════════════════ */
+  .wine-banner.vac-banner { margin: 0 0 56px; }
+  .vac-block { margin-bottom: 56px; }
+  .label__req { color: var(--color-danger); }
+
+  /* ── Ma'lumot tabi ────────────────────────────────────────────────── */
+  .card.vac-benefit { display: flex; align-items: flex-start; gap: 16px; padding: 24px; border-radius: 20px; }
+  .vac-benefit .tile svg { width: 24px; height: 24px; }
+  .vac-benefit__title { margin: 0 0 4px; font-size: 1.0625rem; font-weight: 700; line-height: 1.3; color: var(--color-text); }
+  .vac-benefit__desc { margin: 0; font-size: 0.90625rem; line-height: 1.55; color: var(--color-text-muted); }
+
+  .card.vac-req-card { padding: 28px 32px; border-radius: 20px; }
+  .vac-req-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 32px; margin: 0; padding: 0; list-style: none; }
+  .vac-req { display: flex; align-items: flex-start; gap: 14px; }
+  .vac-req__check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex: none;
+    margin-top: 1px;
+    border-radius: 50%;
+    background: var(--color-brand-fill);
+    color: var(--color-on-brand);
+  }
+  .vac-req__text { margin: 0; font-size: 1rem; line-height: 1.6; color: var(--color-text); }
+
+  .card.vac-how { padding: 28px; border-radius: 20px; }
+  .vac-how__title { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; font-size: 1.125rem; font-weight: 700; color: var(--color-text); }
+  .vac-how__text { margin: 0 0 18px; font-size: 0.96875rem; line-height: 1.7; color: var(--color-text-muted); }
+  .vac-strong { color: var(--color-text); }
+  .vac-strong--brand { color: var(--color-brand); }
+  .vac-docs { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .vac-doc { display: flex; align-items: center; gap: 10px; font-size: 0.9375rem; color: var(--color-text-muted); }
+  .vac-doc__icon { display: flex; flex: none; color: var(--color-brand); }
+  .vac-doc__icon svg { width: 18px; height: 18px; }
+  .vac-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 14px 16px;
+    border: 1px solid color-mix(in srgb, var(--color-brand) 15%, transparent);
+    border-radius: 12px;
+    background: var(--color-brand-subtle);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+  .vac-note > svg { flex: none; margin-top: 1px; color: var(--color-brand); }
+  .vac-contact-list { display: grid; gap: 18px; margin: 0; padding: 0; list-style: none; }
+  .vac-contact { display: flex; flex-direction: column; gap: 2px; }
+  .vac-contact__label { font-size: 0.875rem; color: var(--color-text-muted); }
+  .vac-contact__value { width: fit-content; font-size: 1.0625rem; font-weight: 700; color: var(--color-brand); text-decoration: none; }
+  .vac-contact__value:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .vac-cta { text-align: center; }
+  .btn.vac-cta__btn { gap: 10px; min-height: 52px; padding: 0 36px; font-size: 1rem; }
+
+  /* ── Forma tizimi (umumiy) ────────────────────────────────────────── */
+  .label.label--lg { margin-bottom: 7px; font-size: 0.84375rem; font-weight: 600; color: var(--color-text); }
+  .input.input--lg {
+    min-height: 48px;
+    padding: 0 16px;
+    border-radius: 12px;
+    background: var(--color-field-bg);
+    font-size: 0.96875rem;
+    transition: border-color var(--duration-base), box-shadow var(--duration-base);
+  }
+  .input.input--lg.input--area { min-height: 112px; padding: 12px 16px; line-height: 1.6; resize: vertical; }
+  /* Fokus: brend chegara + 4 px halqa. `outline` shaffof — Windows High Contrast'da ko'rinadi */
+  .input.input--lg:focus-visible { border-color: var(--color-brand); box-shadow: 0 0 0 4px var(--ring-field); outline: 2px solid transparent; outline-offset: 2px; }
+  .input.input--lg[aria-invalid="true"],
+  .input.input--lg[aria-invalid="true"]:focus-visible { border-color: var(--color-danger); box-shadow: 0 0 0 4px var(--ring-field-danger); }
+  .field-error.field-error--lg { align-items: flex-start; margin-top: 7px; font-size: 0.8125rem; line-height: 1.4; }
+  .field-error--lg > svg { flex: none; margin-top: 1px; }
+
+  /* `<select>`: `appearance: none` + SVG chevron (klaviatura va ekran o'quvchi xatti-harakati native bo'lib qoladi) */
+  .select-wrap { position: relative; }
+  .select-wrap > select { appearance: none; padding-right: 46px; cursor: pointer; text-overflow: ellipsis; }
+  .select-wrap > select:has(option[value=""]:checked) { color: var(--color-text-muted); }
+  .select-wrap option { color: var(--color-text); }
+  .select-wrap > svg { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); pointer-events: none; color: var(--color-text-muted); }
+
+  /* Checkbox 22 px: to'ldirilgan holat — `--color-brand-fill` + oq tasdiq (clip-path; rang tokendan) */
+  .vac-checkbox {
+    display: grid;
+    place-content: center;
+    width: 22px;
+    height: 22px;
+    flex: none;
+    margin: 0;
+    border: 2px solid var(--color-border-strong);
+    border-radius: 7px;
+    background: var(--color-field-bg);
+    appearance: none;
+    cursor: pointer;
+    transition: background-color var(--duration-base), border-color var(--duration-base);
+  }
+  .vac-checkbox::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    background: var(--color-on-brand);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0, 43% 62%);
+    transform: scale(0);
+    transition: transform var(--duration-fast);
+  }
+  .vac-checkbox:checked { border-color: var(--color-brand-fill); background: var(--color-brand-fill); }
+  .vac-checkbox:checked::before { transform: scale(1); }
+  @media (forced-colors: active) { .vac-checkbox:checked::before { background: CanvasText; } }
+
+  /* ── Forma tabi ───────────────────────────────────────────────────── */
+  .vac-form-wrap { max-width: 760px; margin: 0 auto; }
+  .card.vac-form-card { padding: 40px; border-radius: 22px; }
+  .vac-form-title { margin: 0 0 8px; font-size: 1.75rem; font-weight: 800; line-height: 1.2; letter-spacing: -0.015em; color: var(--color-text); }
+  .vac-form-sub { margin: 0 0 28px; font-size: 1rem; line-height: 1.6; color: var(--color-text-muted); }
+  .vac-form { display: flex; flex-direction: column; gap: 18px; }
+  .vac-fields { display: flex; flex-direction: column; gap: 16px; }
+  .vac-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .vac-check-label { display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 0.96875rem; color: var(--color-text); }
+  .vac-docs-box {
+    padding: 18px 20px;
+    border: 1px solid color-mix(in srgb, var(--color-brand) 20%, transparent);
+    border-radius: 14px;
+    background: var(--color-brand-subtle);
+  }
+  .vac-docs-title { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; font-weight: 600; line-height: 1.4; color: var(--color-brand); }
+  .vac-docs-title > svg { flex: none; }
+  .vac-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
+  .vac-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-3);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .vac-chip .vac-doc__icon svg { width: 14px; height: 14px; }
+  .vac-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid color-mix(in srgb, var(--color-danger) 35%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--color-danger) 9%, transparent);
+  }
+  .vac-alert > svg { flex: none; margin-top: 1px; color: var(--color-danger); }
+  .vac-alert__text { margin: 0; font-size: 0.9375rem; line-height: 1.55; color: var(--color-text); }
+  .vac-alert__text strong { color: var(--color-danger); }
+  .btn.vac-submit { width: 100%; justify-content: center; min-height: 52px; font-size: 1rem; }
+  .vac-submit-inner { display: inline-flex; align-items: center; gap: 10px; }
+  .vac-spin { animation: spin 1s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .vac-spin { animation: none; } }
+  /* Yuborilmoqda: brend rang saqlanadi, `opacity: .72`, glow yo'q */
+  .btn.vac-submit:disabled,
+  .btn.vac-submit[aria-busy="true"] { background: var(--color-brand-fill); color: var(--color-on-brand); opacity: 0.72; box-shadow: none; cursor: not-allowed; pointer-events: auto; }
+
+  .card.vac-success { padding: 56px 40px; border-radius: 22px; text-align: center; }
+  .vac-success__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-hover));
+    color: var(--color-on-brand);
+    box-shadow: 0 0 0 8px var(--color-brand-subtle-2), 0 12px 30px var(--glow-brand);
+  }
+  .vac-success__title { margin: 0 0 14px; font-size: 1.875rem; font-weight: 800; line-height: 1.2; letter-spacing: -0.015em; color: var(--color-text); }
+  .vac-success__text { max-width: 480px; margin: 0 auto 32px; font-size: 1.03125rem; line-height: 1.75; color: var(--color-text-muted); }
+  .vac-success__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+  @media (max-width: 860px) { .vac-req-list { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 640px) {
+    .wine-banner.vac-banner { margin-bottom: 40px; }
+    .vac-block { margin-bottom: 40px; }
+    .card.vac-req-card, .card.vac-how { padding: 22px; }
+    .card.vac-form-card { padding: 24px 20px; }
+    .panel { padding: 18px 16px; }
+    .vac-row { grid-template-columns: minmax(0, 1fr); }
+    .card.vac-success { padding: 40px 20px; }
   }
 }

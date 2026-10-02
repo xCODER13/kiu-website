@@ -164,6 +164,10 @@
     --gallery-badge-border:  transparent;
     --color-lightbox-bg:     rgb(10 6 9 / 0.88);              /* katta rasm oynasi foni (ikkala temada bir xil) */
 
+    /* 6.11c4: forma maydoni halqalari (fokus — brend, xato — danger) */
+    --ring-field:            rgb(127 32 99 / 0.14);
+    --ring-field-danger:     rgb(200 30 30 / 0.10);
+
     /* Tugma yorug'ligi (glow) */
     --glow-brand:         rgb(127 32 99 / 0.30);
     --glow-brand-strong:  rgb(127 32 99 / 0.55);
@@ -331,6 +335,8 @@
       --gallery-badge-bg:      rgb(18 8 14 / 0.62);
       --gallery-badge-text:    #f3c5df;
       --gallery-badge-border:  rgb(233 168 208 / 0.3);
+      --ring-field:            rgb(233 168 208 / 0.18);
+      --ring-field-danger:     rgb(242 106 106 / 0.14);
 
       --cat-chip-mix:         18%;
       --cat-ph-1:             22%;
@@ -424,6 +430,8 @@
     --gallery-badge-bg:      rgb(18 8 14 / 0.62);
     --gallery-badge-text:    #f3c5df;
     --gallery-badge-border:  rgb(233 168 208 / 0.3);
+    --ring-field:            rgb(233 168 208 / 0.18);
+    --ring-field-danger:     rgb(242 106 106 / 0.14);
 
     --cat-chip-mix:         18%;
     --cat-ph-1:             22%;
