@@ -178,3 +178,69 @@ describe('Vacancies', () => {
     expect(document.querySelector('img[src="x"]')).toBeNull()
   })
 })
+
+// Bosqich 5b: inline stillar → klasslar (vacancies/styles.js obyektlari → klass nomlari).
+describe('Vacancies — inline stillar klassga ko\'chirilgan (Bosqich 5b)', () => {
+  it("`<style>` teglari va inline stil yo'q — Info tab", () => {
+    const { container } = render(<Vacancies />)
+    expect(document.querySelectorAll('style')).toHaveLength(0)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+
+  it("tablar: faol holat `data-active` da va almashadi (rol `button` o'zgarmagan)", async () => {
+    const user = userEvent.setup()
+    render(<Vacancies />)
+    const info = screen.getByRole('button', { name: "Ma'lumot" })
+    const form = screen.getByRole('button', { name: /Ariza topshirish/ })
+    expect(info).toHaveClass('tab')
+    expect(info).toHaveAttribute('data-active', 'true')
+    expect(form).toHaveAttribute('data-active', 'false')
+    await user.click(form)
+    expect(form).toHaveAttribute('data-active', 'true')
+    expect(info).toHaveAttribute('data-active', 'false')
+  })
+
+  it("Forma tabi: inline stil yo'q, maydonlar `.input` klassida", async () => {
+    const user = userEvent.setup()
+    const { container } = render(<Vacancies />)
+    await goToForm(user)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    expect(screen.getByPlaceholderText('Familiya Ism Otasining ismi')).toHaveClass('input', 'input--form')
+    expect(container.querySelectorAll('.panel')).toHaveLength(3)
+    expect(container.querySelectorAll('select.input')).toHaveLength(4)
+  })
+
+  it("validatsiya xatosi: maydon `aria-invalid=\"true\"` oladi (ramka CSS da), xato matni `.field-error`, inline yo'q", async () => {
+    const user = userEvent.setup()
+    const { container } = render(<Vacancies />)
+    await goToForm(user)
+    const name = screen.getByPlaceholderText('Familiya Ism Otasining ismi')
+    expect(name).toHaveAttribute('aria-invalid', 'false')
+    await user.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
+    expect(name).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByPlaceholderText('email@example.com')).toHaveAttribute('aria-invalid', 'false') // email ixtiyoriy
+    expect(container.querySelectorAll('.field-error').length).toBe(6)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+
+  it("server xatosi banneri va muvaffaqiyat ekrani ham inline'siz", async () => {
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: false, status: 500 })))
+    const user = userEvent.setup()
+    const { container, unmount } = render(<Vacancies />)
+    await fillValid(user)
+    await user.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
+    await screen.findByText(/xatolik yuz berdi/)
+    expect(container.querySelector('.vac-alert')).not.toBeNull()
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    unmount()
+
+    okFetch()
+    const user2 = userEvent.setup()
+    const r = render(<Vacancies />)
+    await fillValid(user2)
+    await user2.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
+    await screen.findByText('Arizangiz qabul qilindi!')
+    expect(r.container.querySelector('.vac-success')).not.toBeNull()
+    expect(r.container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+})

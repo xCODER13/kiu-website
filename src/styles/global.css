@@ -143,6 +143,7 @@ a.lang-switch-item:hover { color: var(--color-brand); background: color-mix(in s
   opacity: 1 !important;
   transform: translateY(0) !important;
 }@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 /* Teachers page responsive */
 @media (max-width: 640px) {

@@ -43,6 +43,11 @@
 
     --gold-500: #d4af37;
 
+    /* Uchinchi tomon brend ranglari (tema bilan o'zgarmaydi) */
+    --brand-youtube:       #ff0000;
+    --brand-telegram:      #0088cc;
+    --brand-telegram-deep: #006aa3;
+
     --dark-deep:      #0d080b;
     --dark-bg:        #120c10;
     --dark-surface-2: #1c1519;

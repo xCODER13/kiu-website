@@ -5,6 +5,7 @@ import App from './App'
 import './styles/tokens.css'
 import './styles/components.css'
 import './styles/site.css'
+import './styles/pages.css'
 import './styles/global.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
