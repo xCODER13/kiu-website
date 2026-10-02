@@ -26,7 +26,7 @@ export default function RegisterStage({ userInfo, setUserInfo, fieldErrors, onBa
           <input type="text" value={userInfo.name} onChange={e => setUserInfo({ ...userInfo, name: e.target.value })}
             placeholder={t('sortingHat.register.namePlaceholder')}
             style={errorBorder(fieldErrors.name, { width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' })}
-            onFocus={e => e.target.style.borderColor = '#7c3aed'}
+            onFocus={e => e.target.style.borderColor = 'var(--color-brand)'}
             onBlur={e => e.target.style.borderColor = fieldErrors.name ? '#dc2626' : 'var(--border)'} />
           {fieldErrors.name && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 5 }}>{fieldErrors.name}</div>}
         </div>
@@ -35,7 +35,7 @@ export default function RegisterStage({ userInfo, setUserInfo, fieldErrors, onBa
           <input type="tel" value={userInfo.phone} onChange={e => setUserInfo({ ...userInfo, phone: e.target.value })}
             placeholder="+998 90 123 45 67"
             style={errorBorder(fieldErrors.phone, { width: '100%', padding: '12px 14px', border: '2px solid var(--border)', borderRadius: 12, fontSize: 14, background: 'var(--bg)', color: 'var(--text)', outline: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', transition: 'border-color .2s' })}
-            onFocus={e => e.target.style.borderColor = '#7c3aed'}
+            onFocus={e => e.target.style.borderColor = 'var(--color-brand)'}
             onBlur={e => e.target.style.borderColor = fieldErrors.phone ? '#dc2626' : 'var(--border)'}
             onKeyDown={e => { if (e.key === 'Enter') onSubmit() }} />
           {fieldErrors.phone && <div style={{ fontSize: 11.5, color: 'var(--color-danger)', marginTop: 5 }}>{fieldErrors.phone}</div>}

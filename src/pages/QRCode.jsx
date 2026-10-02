@@ -39,8 +39,8 @@ export default function QRCode() {
   const { t } = useTranslation()
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('qrcode.title')}</h1>
+      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('qrcode.title')}</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('qrcode.subtitle')}</p>
       </section>
 
@@ -90,7 +90,7 @@ export default function QRCode() {
           </div>
 
           {/* Info banner */}
-          <div className="reveal" style={{ marginTop: '2.5rem', padding: '1.5rem', background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <div className="reveal" style={{ marginTop: '2.5rem', padding: '1.5rem', background: 'var(--gradient-dark)', borderRadius: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
             <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(255,255,255,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>

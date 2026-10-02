@@ -19,8 +19,8 @@ export default function Testimonials() {
   const { t } = useTranslation()
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('testimonials.title')}</h1>
+      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('testimonials.title')}</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('testimonials.subtitle')}</p>
       </section>
 

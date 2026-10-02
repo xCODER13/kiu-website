@@ -69,7 +69,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
   box-shadow: 0 4px 15px color-mix(in srgb, var(--color-brand) 30%, transparent);
 }
 .btn-secondary {
-  background: #fff;
+  background: var(--color-bg);
   color: var(--purple);
   border: 1.5px solid var(--purple);
 }
@@ -118,7 +118,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
   grid-template-columns: repeat(4, 1fr);
   max-width: 560px;
   margin: 2.5rem auto 0;
-  background: #fff;
+  background: var(--color-bg);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 30px color-mix(in srgb, var(--color-brand) 12%, transparent);

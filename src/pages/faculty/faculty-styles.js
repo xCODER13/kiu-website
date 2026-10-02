@@ -20,7 +20,7 @@ if (typeof document !== 'undefined' && !document.getElementById('faculty-styles'
       padding: 5px;
       border-radius: 40px;
       border: 2px solid var(--border);
-      box-shadow: 0 0 0 1px rgba(124,58,237,.25);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-brand) 25%, transparent);
       max-width: 100%;
     }
     .kiu-tab-btn {

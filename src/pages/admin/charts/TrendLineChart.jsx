@@ -11,9 +11,9 @@ import { localPoint } from '@visx/event'
 const MARGIN = { top: 12, right: 16, bottom: 28, left: 34 }
 const tooltipStyles = {
   ...defaultStyles,
-  background: 'var(--bg, #fff)',
-  color: 'var(--text, #1a1a2e)',
-  border: '1px solid var(--border, #e5e7eb)',
+  background: 'var(--color-bg)',
+  color: 'var(--text, var(--color-text))',
+  border: '1px solid var(--color-border)',
   borderRadius: 8,
   padding: '8px 10px',
   fontSize: 11,
@@ -77,7 +77,7 @@ function Chart({ width, height, data, series, dateLabel }) {
     <div style={{ position: 'relative' }}>
       <svg width={width} height={height} onMouseMove={handleMove} onMouseLeave={hideTooltip} style={{ overflow: 'visible' }}>
         <Group left={MARGIN.left} top={MARGIN.top}>
-          <GridRows scale={yScale} width={innerWidth} height={innerHeight} stroke="var(--border, #e5e7eb)" strokeDasharray="3,3" numTicks={4} />
+          <GridRows scale={yScale} width={innerWidth} height={innerHeight} stroke="var(--color-border)" strokeDasharray="3,3" numTicks={4} />
           {series.map(s => (
             <LinePath
               key={s.key}
@@ -90,13 +90,13 @@ function Chart({ width, height, data, series, dateLabel }) {
             />
           ))}
           {tooltipData && series.map(s => (
-            <Circle key={s.key} cx={xScale(tooltipData.date)} cy={yScale(tooltipData[s.key] || 0)} r={4} fill={s.color} stroke="#fff" strokeWidth={1.5} />
+            <Circle key={s.key} cx={xScale(tooltipData.date)} cy={yScale(tooltipData[s.key] || 0)} r={4} fill={s.color} stroke="var(--color-bg)" strokeWidth={1.5} />
           ))}
-          <AxisLeft scale={yScale} numTicks={4} stroke="var(--muted, #6b7280)" tickStroke="var(--muted, #6b7280)"
-            tickLabelProps={() => ({ fill: 'var(--muted, #6b7280)', fontSize: 10, textAnchor: 'end', dx: -4, dy: 3 })} />
-          <AxisBottom top={innerHeight} scale={xScale} numTicks={Math.min(6, data.length)} stroke="var(--muted, #6b7280)" tickStroke="var(--muted, #6b7280)"
+          <AxisLeft scale={yScale} numTicks={4} stroke="var(--color-text-muted)" tickStroke="var(--color-text-muted)"
+            tickLabelProps={() => ({ fill: 'var(--color-text-muted)', fontSize: 10, textAnchor: 'end', dx: -4, dy: 3 })} />
+          <AxisBottom top={innerHeight} scale={xScale} numTicks={Math.min(6, data.length)} stroke="var(--color-text-muted)" tickStroke="var(--color-text-muted)"
             tickFormat={v => dateLabel(v instanceof Date ? v : new Date(v))}
-            tickLabelProps={() => ({ fill: 'var(--muted, #6b7280)', fontSize: 10, textAnchor: 'middle' })} />
+            tickLabelProps={() => ({ fill: 'var(--color-text-muted)', fontSize: 10, textAnchor: 'middle' })} />
         </Group>
       </svg>
       {tooltipData && (

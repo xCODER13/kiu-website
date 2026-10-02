@@ -14,8 +14,8 @@ export default function Contact() {
   const { t } = useTranslation()
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('contact.title')}</h1>
+      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('contact.title')}</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('contact.subtitle')}</p>
       </section>
       <section className="section">
@@ -24,7 +24,7 @@ export default function Contact() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {items.map((item, i) => (
                 <div key={item.key} className={`card reveal reveal-delay-${i + 1}`} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div className="cc-icon" style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-brand)', flexShrink: 0 }}>
+                  <div className="cc-icon" style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-brand)', flexShrink: 0 }}>
                     {item.icon}
                   </div>
                   <div>

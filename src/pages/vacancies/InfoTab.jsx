@@ -10,7 +10,7 @@ export default function InfoTab({ setActiveTab }) {
   return (
     <div>
       {/* Banner */}
-      <div style={{ background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, padding: '2.5rem', marginBottom: '2rem' }}>
+      <div style={{ background: 'var(--gradient-dark)', borderRadius: 16, padding: '2.5rem', marginBottom: '2rem' }}>
         <h2 style={{ color: 'var(--color-on-brand)', fontSize: '1.3rem', marginBottom: '1rem' }}>{t('vacancies.info.whyTitle')}</h2>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.8 }}>
           {t('vacancies.info.whyText')}
@@ -18,7 +18,7 @@ export default function InfoTab({ setActiveTab }) {
       </div>
 
       {/* Benefits */}
-      <h2 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', color: '#1a1a2e' }}>{t('vacancies.info.offerTitle')}</h2>
+      <h2 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', color: 'var(--color-text)' }}>{t('vacancies.info.offerTitle')}</h2>
       <div className="grid-3" style={{ marginBottom: '2.5rem' }}>
         {BENEFITS.map((b, i) => (
           <div key={i} className="card" style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
@@ -32,7 +32,7 @@ export default function InfoTab({ setActiveTab }) {
       </div>
 
       {/* Requirements */}
-      <h2 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', color: '#1a1a2e' }}>{t('vacancies.info.reqTitle')}</h2>
+      <h2 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', color: 'var(--color-text)' }}>{t('vacancies.info.reqTitle')}</h2>
       <div className="card" style={{ marginBottom: '2.5rem' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {REQUIREMENTS.map((r, i) => (
@@ -47,7 +47,7 @@ export default function InfoTab({ setActiveTab }) {
       </div>
 
       {/* How to apply */}
-      <h2 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', color: '#1a1a2e' }}>{t('vacancies.info.howTitle')}</h2>
+      <h2 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', color: 'var(--color-text)' }}>{t('vacancies.info.howTitle')}</h2>
       <div className="grid-2" style={{ marginBottom: '2rem' }}>
         <div className="card">
           <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: '1rem', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 8 }}>

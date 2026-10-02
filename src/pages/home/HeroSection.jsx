@@ -11,7 +11,7 @@ const STAT_KEYS = ['students', 'teachers', 'programs', 'founded']
 export default function HeroSection() {
   const { t } = useTranslation()
   return (
-    <section style={{ padding: '4.5rem 2rem 4rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', position: 'relative', overflow: 'hidden' }}>
+    <section style={{ padding: '4.5rem 2rem 4rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', position: 'relative', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.04, backgroundImage: 'radial-gradient(var(--color-brand) 1px, transparent 1px)', backgroundSize: '26px 26px', pointerEvents: 'none' }} />
 
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
@@ -23,7 +23,7 @@ export default function HeroSection() {
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--color-brand)', display: 'inline-block', animation: 'pulse 2s infinite' }} />
               {t('home.hero.badge', { from: config.admission.year, to: parseInt(config.admission.year) + 1 })}
             </div>
-            <h1 className="reveal reveal-delay-1" style={{ marginBottom: '1rem', color: '#1a1a2e' }}>{t('university.name')}</h1>
+            <h1 className="reveal reveal-delay-1" style={{ marginBottom: '1rem', color: 'var(--color-text)' }}>{t('university.name')}</h1>
             <p className="reveal reveal-delay-2" style={{ fontSize: '0.95rem', color: 'var(--muted)', maxWidth: 460, marginBottom: '2rem', lineHeight: 1.75 }}>
               {t('home.hero.lead')}
             </p>

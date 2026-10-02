@@ -1,152 +1,92 @@
 {
   "totals": {
-    "hex": 471,
-    "func": 129,
-    "files": 64,
-    "uniqueHex": 88
+    "hex": 261,
+    "func": 124,
+    "files": 52,
+    "uniqueHex": 80
   },
   "perFile": {
     "src/styles/global.css": {
-      "hex": 56,
+      "hex": 54,
       "func": 6
-    },
-    "src/components/Footer.jsx": {
-      "hex": 23,
-      "func": 5
     },
     "src/pages/sortinghat/Data.jsx": {
       "hex": 27,
       "func": 0
     },
-    "src/pages/About.jsx": {
-      "hex": 24,
-      "func": 1
-    },
-    "src/pages/QRCode.jsx": {
-      "hex": 23,
-      "func": 2
-    },
-    "src/pages/news/FeaturedCarousel.jsx": {
-      "hex": 5,
-      "func": 18
-    },
     "src/index.css": {
       "hex": 12,
       "func": 10
-    },
-    "src/pages/Events.jsx": {
-      "hex": 11,
-      "func": 9
     },
     "src/pages/admin/Login.jsx": {
       "hex": 14,
       "func": 5
     },
-    "src/pages/admin/Dashboard.jsx": {
-      "hex": 5,
-      "func": 13
+    "src/pages/news/FeaturedCarousel.jsx": {
+      "hex": 1,
+      "func": 18
     },
-    "src/components/Navbar.jsx": {
-      "hex": 15,
-      "func": 1
+    "src/pages/QRCode.jsx": {
+      "hex": 17,
+      "func": 2
     },
     "src/pages/admin/Stats.jsx": {
       "hex": 16,
       "func": 0
     },
+    "src/pages/Events.jsx": {
+      "hex": 7,
+      "func": 9
+    },
     "src/pages/Gallery.jsx": {
       "hex": 10,
       "func": 6
     },
-    "src/pages/International.jsx": {
-      "hex": 14,
-      "func": 2
+    "src/pages/admin/Dashboard.jsx": {
+      "hex": 2,
+      "func": 12
     },
     "src/pages/faculty/data.js": {
       "hex": 13,
       "func": 0
     },
-    "src/pages/NewsDetail.jsx": {
-      "hex": 5,
-      "func": 8
-    },
     "src/pages/Teachers.jsx": {
       "hex": 12,
       "func": 1
     },
-    "src/pages/admin/charts/TrendLineChart.jsx": {
-      "hex": 11,
-      "func": 1
-    },
-    "src/components/TelegramPanel.jsx": {
-      "hex": 11,
-      "func": 0
-    },
-    "src/pages/home/NewsCarousel.jsx": {
-      "hex": 5,
-      "func": 6
-    },
-    "src/pages/Hemis.jsx": {
-      "hex": 10,
-      "func": 0
-    },
-    "src/pages/Admission.jsx": {
-      "hex": 8,
-      "func": 1
+    "src/pages/NewsDetail.jsx": {
+      "hex": 2,
+      "func": 8
     },
     "src/pages/sortinghat/Icons.jsx": {
       "hex": 9,
       "func": 0
     },
-    "src/pages/Faculty.jsx": {
+    "src/pages/About.jsx": {
       "hex": 7,
       "func": 1
-    },
-    "src/pages/admin/shared/styles.js": {
-      "hex": 7,
-      "func": 0
     },
     "src/pages/admin/TeachersAdmin.jsx": {
       "hex": 7,
       "func": 0
     },
-    "src/pages/SortingHat.jsx": {
-      "hex": 7,
-      "func": 0
-    },
-    "src/pages/vacancies/InfoTab.jsx": {
-      "hex": 6,
-      "func": 1
+    "src/pages/home/NewsCarousel.jsx": {
+      "hex": 1,
+      "func": 6
     },
     "src/utils/newsCategories.js": {
       "hex": 7,
-      "func": 0
-    },
-    "src/pages/Achievements.jsx": {
-      "hex": 6,
-      "func": 0
-    },
-    "src/pages/Contact.jsx": {
-      "hex": 6,
-      "func": 0
-    },
-    "src/pages/FAQ.jsx": {
-      "hex": 6,
       "func": 0
     },
     "src/pages/news/ShortsTab.jsx": {
       "hex": 4,
       "func": 2
     },
-    "src/pages/Testimonials.jsx": {
-      "hex": 6,
-      "func": 0
+    "src/components/Footer.jsx": {
+      "hex": 0,
+      "func": 5
     },
-    "src/pages/admin/ApplicationsAdmin.jsx": {
-      "hex": 2,
-      "func": 3
-    },
-    "src/pages/admin/NewsAdmin.jsx": {
+    "src/components/Navbar.jsx": {
       "hex": 4,
       "func": 1
     },
@@ -154,71 +94,55 @@
       "hex": 1,
       "func": 4
     },
-    "src/pages/home/AboutSection.jsx": {
-      "hex": 3,
-      "func": 2
-    },
-    "src/pages/home/HeroSection.jsx": {
-      "hex": 4,
-      "func": 1
-    },
-    "src/pages/Map.jsx": {
-      "hex": 5,
-      "func": 0
-    },
-    "src/pages/sortinghat/QuizStage.jsx": {
-      "hex": 3,
-      "func": 2
-    },
-    "src/pages/sortinghat/RegisterStage.jsx": {
-      "hex": 5,
-      "func": 0
-    },
     "src/components/ApplyModal.jsx": {
       "hex": 1,
       "func": 3
     },
-    "src/components/Search.jsx": {
-      "hex": 2,
-      "func": 2
-    },
-    "src/pages/admin/GalleryAdmin.jsx": {
+    "src/components/TelegramPanel.jsx": {
       "hex": 4,
       "func": 0
+    },
+    "src/pages/admin/ApplicationsAdmin.jsx": {
+      "hex": 1,
+      "func": 3
     },
     "src/pages/admin/shared/constants.js": {
       "hex": 4,
       "func": 0
     },
-    "src/pages/Documents.jsx": {
-      "hex": 4,
-      "func": 0
+    "src/pages/Faculty.jsx": {
+      "hex": 3,
+      "func": 1
     },
-    "src/pages/News.jsx": {
-      "hex": 4,
-      "func": 0
-    },
-    "src/pages/Vacancies.jsx": {
-      "hex": 4,
+    "src/pages/admin/shared/styles.js": {
+      "hex": 3,
       "func": 0
     },
     "src/pages/home/utils.js": {
       "hex": 1,
       "func": 2
     },
-    "src/pages/vacancies/ApplicationForm.jsx": {
-      "hex": 1,
-      "func": 2
-    },
-    "src/pages/vacancies/styles.js": {
+    "src/pages/sortinghat/QuizStage.jsx": {
       "hex": 2,
       "func": 1
     },
-    "src/pages/admin/charts/RankedBarChart.jsx": {
-      "hex": 2,
+    "src/pages/sortinghat/RegisterStage.jsx": {
+      "hex": 3,
       "func": 0
     },
+    "src/pages/admin/NewsAdmin.jsx": {
+      "hex": 1,
+      "func": 1
+    },
     "src/pages/admin/ProfileAdmin.jsx": {
+      "hex": 0,
+      "func": 2
+    },
+    "src/pages/home/AboutSection.jsx": {
+      "hex": 0,
+      "func": 2
+    },
+    "src/pages/International.jsx": {
       "hex": 0,
       "func": 2
     },
@@ -230,11 +154,31 @@
       "hex": 0,
       "func": 2
     },
-    "src/pages/admin/EventsAdmin.jsx": {
+    "src/pages/Testimonials.jsx": {
+      "hex": 2,
+      "func": 0
+    },
+    "src/pages/vacancies/ApplicationForm.jsx": {
+      "hex": 0,
+      "func": 2
+    },
+    "src/pages/vacancies/InfoTab.jsx": {
+      "hex": 1,
+      "func": 1
+    },
+    "src/components/Search.jsx": {
+      "hex": 0,
+      "func": 1
+    },
+    "src/pages/admin/charts/RankedBarChart.jsx": {
       "hex": 1,
       "func": 0
     },
-    "src/pages/faculty/faculty-styles.js": {
+    "src/pages/admin/charts/TrendLineChart.jsx": {
+      "hex": 0,
+      "func": 1
+    },
+    "src/pages/Admission.jsx": {
       "hex": 0,
       "func": 1
     },
@@ -242,7 +186,15 @@
       "hex": 0,
       "func": 1
     },
-    "src/pages/home/NewsSection.jsx": {
+    "src/pages/FAQ.jsx": {
+      "hex": 1,
+      "func": 0
+    },
+    "src/pages/home/HeroSection.jsx": {
+      "hex": 0,
+      "func": 1
+    },
+    "src/pages/Map.jsx": {
       "hex": 1,
       "func": 0
     },
@@ -254,7 +206,7 @@
       "hex": 1,
       "func": 0
     },
-    "src/pages/NotFound.jsx": {
+    "src/pages/SortingHat.jsx": {
       "hex": 1,
       "func": 0
     },
@@ -264,44 +216,37 @@
     }
   },
   "perValue": {
-    "#1a1a2e": 56,
-    "#ede9fe": 38,
-    "#7c3aed": 36,
-    "#faf5ff": 35,
-    "#fff": 31,
-    "#9ca3af": 22,
-    "#e0e7ff": 20,
-    "#a78bfa": 18,
+    "#fff": 27,
     "#0088cc": 14,
     "#059669": 14,
+    "#a78bfa": 14,
+    "#1a1a2e": 12,
     "#dc2626": 12,
-    "#2d1b69": 11,
+    "#7c3aed": 11,
     "#e8e8f0": 10,
-    "#4f46e5": 8,
+    "#9ca3af": 8,
     "#d97706": 8,
-    "#6b7280": 6,
+    "#2d1b69": 6,
+    "#4f46e5": 6,
     "#db2777": 6,
     "#f59e0b": 6,
     "#ff0000": 6,
     "#1e1b4b": 5,
-    "#f3f4f6": 5,
     "#0055aa": 4,
     "#0f0f1a": 4,
-    "#13102b": 4,
     "#2563eb": 4,
-    "#6d28d9": 4,
-    "#c4b5fd": 4,
-    "#e5e7eb": 4,
+    "#ede9fe": 4,
     "#ffffff": 4,
     "#10b981": 3,
+    "#6d28d9": 3,
     "#8b5cf6": 3,
+    "#c4b5fd": 3,
     "#e546e5": 3,
     "#f11717": 3,
+    "#faf5ff": 3,
     "#000": 2,
-    "#0d0b1e": 2,
-    "#16213e": 2,
     "#1877f2": 2,
-    "#1e1545": 2,
+    "#e0e7ff": 2,
     "#006aa3": 1,
     "#047857": 1,
     "#06bdc7": 1,
@@ -344,12 +289,11 @@
     "#e3dd2c": 1,
     "#e5e4e7": 1,
     "#e6683c": 1,
-    "#e9d5ff": 1,
     "#ea580c": 1,
     "#f09433": 1,
     "#f0ec0b": 1,
-    "#f0eeff": 1,
     "#f33218": 1,
+    "#f3f4f6": 1,
     "#f4f3ec": 1,
     "#f87171": 1
   }

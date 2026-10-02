@@ -32,13 +32,13 @@ export default function HomeNewsCarousel({ items }) {
       onMouseLeave={() => setPaused(false)}
       style={{
         position: 'relative', width: '100%', height: 380, borderRadius: 20,
-        overflow: 'hidden', background: '#13102b',
+        overflow: 'hidden', background: 'var(--color-media-bg)',
         animation: 'homeSectionFadeIn .4s ease both',
       }}
     >
       <div key={idx} style={{
         position: 'absolute', inset: 0,
-        backgroundImage: img ? `url(${img})` : 'linear-gradient(135deg,#1e1545,#13102b 60%,#0d0b1e)',
+        backgroundImage: img ? `url(${img})` : 'var(--gradient-media)',
         backgroundSize: 'cover', backgroundPosition: 'center',
         animation: 'homeCarouselFade .5s ease',
       }} />

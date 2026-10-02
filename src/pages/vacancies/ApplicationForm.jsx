@@ -16,7 +16,7 @@ export default function ApplicationForm({
     <div style={{ maxWidth: 640, margin: '0 auto' }}>
       {!sent ? (
         <div className="card" style={{ padding: '2rem' }}>
-          <h2 style={{ fontSize: '1.3rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('vacancies.form.title')}</h2>
+          <h2 style={{ fontSize: '1.3rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('vacancies.form.title')}</h2>
           <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: '1.5rem' }}>{t('vacancies.form.subtitle')}</p>
 
           <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

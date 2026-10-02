@@ -15,7 +15,7 @@ export default function NewsSection({ newsLoading, articles, newsError, featured
           <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 10%, transparent)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid color-mix(in srgb, var(--color-brand) 20%, transparent)' }}>
             {t('home.news.badge')}
           </div>
-          <h2 style={{ fontSize: '1.6rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('home.news.title')}</h2>
+          <h2 style={{ fontSize: '1.6rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('home.news.title')}</h2>
           <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('home.news.subtitle')}</p>
           <ContentLangNote />
         </div>

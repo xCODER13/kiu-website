@@ -42,8 +42,8 @@ export default function International() {
   const { t } = useTranslation()
   return (
     <div className="fade-up">
-      <section style={{ padding: '3rem 2rem 1rem', background: 'linear-gradient(135deg, #faf5ff 0%, #ede9fe 40%, #e0e7ff 100%)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '.5rem' }}>{t('international.title')}</h1>
+      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('international.title')}</h1>
         <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('international.subtitle')}</p>
       </section>
 
@@ -51,7 +51,7 @@ export default function International() {
         <div className="container">
 
           {/* Banner */}
-          <div className="reveal" style={{ background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, padding: '2.5rem', marginBottom: '2.5rem', textAlign: 'center' }}>
+          <div className="reveal" style={{ background: 'var(--gradient-dark)', borderRadius: 16, padding: '2.5rem', marginBottom: '2.5rem', textAlign: 'center' }}>
             <h2 style={{ color: 'var(--color-on-brand)', fontSize: '1.3rem', marginBottom: '.75rem' }}>{t('international.strategyTitle')}</h2>
             <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.8, maxWidth: 600, margin: '0 auto 1.5rem' }}>
               {t('international.strategyText')}
@@ -59,7 +59,7 @@ export default function International() {
             <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
               {[{ n: PARTNERS.length, k: 'partners' }, { n: COUNTRY_COUNT, k: 'countries' }, { n: '11', k: 'programs' }, { n: '2', k: 'formats' }].map(s => (
                 <div key={s.k} style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#c4b5fd' }}>{s.n}</div>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--color-brand-on-dark)' }}>{s.n}</div>
                   <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>{t(`international.stats.${s.k}`)}</div>
                 </div>
               ))}
@@ -67,11 +67,11 @@ export default function International() {
           </div>
 
           {/* Opportunities */}
-          <h2 className="reveal" style={{ fontSize: '1.3rem', marginBottom: '1.25rem', color: '#1a1a2e' }}>{t('international.opportunitiesTitle')}</h2>
+          <h2 className="reveal" style={{ fontSize: '1.3rem', marginBottom: '1.25rem', color: 'var(--color-text)' }}>{t('international.opportunitiesTitle')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12, marginBottom: '2.5rem' }}>
             {OPPORTUNITIES.map((item, i) => (
               <div key={i} className={`card reveal reveal-delay-${(i % 4) + 1}`}>
-                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, color: 'var(--color-brand)' }}>
+                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, color: 'var(--color-brand)' }}>
                   {item.icon}
                 </div>
                 <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 6, fontFamily: 'var(--font-body)' }}>{t(`international.opportunities.${item.id}.title`)}</h3>
@@ -81,7 +81,7 @@ export default function International() {
           </div>
 
           {/* Partners */}
-          <h2 className="reveal" style={{ fontSize: '1.3rem', marginBottom: '1.25rem', color: '#1a1a2e' }}>{t('international.partnersTitle')}</h2>
+          <h2 className="reveal" style={{ fontSize: '1.3rem', marginBottom: '1.25rem', color: 'var(--color-text)' }}>{t('international.partnersTitle')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12, marginBottom: '2.5rem' }}>
             {PARTNERS.map((p, i) => (
               <div key={i} className={`card reveal reveal-delay-${(i % 4) + 1}`} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -96,7 +96,7 @@ export default function International() {
           </div>
 
           {/* Academic exchange */}
-          <h2 className="reveal" style={{ fontSize: '1.3rem', marginBottom: '1.25rem', color: '#1a1a2e' }}>{t('international.exchangeTitle')}</h2>
+          <h2 className="reveal" style={{ fontSize: '1.3rem', marginBottom: '1.25rem', color: 'var(--color-text)' }}>{t('international.exchangeTitle')}</h2>
           <div className="grid-2">
             {[
               {
@@ -109,7 +109,7 @@ export default function International() {
               },
             ].map((item, i) => (
               <div key={i} className={`card reveal reveal-delay-${i + 1}`}>
-                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, color: 'var(--color-brand)' }}>
+                <div className="achieve-icon" style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--gradient-hero-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, color: 'var(--color-brand)' }}>
                   {item.icon}
                 </div>
                 <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', marginBottom: 6, fontFamily: 'var(--font-body)' }}>{t(`international.exchange.${item.id}.title`)}</h3>

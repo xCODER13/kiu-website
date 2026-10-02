@@ -44,7 +44,7 @@ function Chart({ width, height, data, color }) {
             const barWidth = Math.max(xScale(d.value), 3)
             return (
               <Group key={i}>
-                <rect x={0} y={barY} width={innerWidth} height={BAR_HEIGHT} rx={5} fill="var(--bg-2, #f3f4f6)" />
+                <rect x={0} y={barY} width={innerWidth} height={BAR_HEIGHT} rx={5} fill="var(--color-surface-2)" />
                 <Bar x={0} y={barY} width={barWidth} height={BAR_HEIGHT} rx={5} fill={color} />
                 <text x={innerWidth + 8} y={barY + BAR_HEIGHT / 2} dy="0.35em" fontSize={11} fontWeight={700} fill="var(--text)">
                   {d.value}

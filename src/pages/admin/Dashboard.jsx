@@ -30,7 +30,7 @@ export default function Dashboard() {
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-2)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* ── SIDEBAR ── */}
-      <div style={{ width: collapsed ? 60 : 230, background: 'linear-gradient(180deg,#1a1a2e 0%,#16213e 100%)', display: 'flex', flexDirection: 'column', flexShrink: 0, transition: 'width .25s', overflow: 'hidden' }}>
+      <div style={{ width: collapsed ? 60 : 230, background: 'var(--gradient-sidebar)', display: 'flex', flexDirection: 'column', flexShrink: 0, transition: 'width .25s', overflow: 'hidden' }}>
 
         {/* Logo */}
         <div style={{ padding: collapsed ? '1rem 0' : '1.1rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'space-between', gap: 8 }}>
@@ -67,9 +67,9 @@ export default function Dashboard() {
                 justifyContent: collapsed ? 'center' : 'flex-start',
                 fontSize: 12, fontWeight: isActive ? 600 : 400,
                 color: isActive ? '#fff' : 'rgba(255,255,255,.5)',
-                background: isActive ? 'rgba(124,58,237,.3)' : 'none',
+                background: isActive ? 'color-mix(in srgb, var(--color-brand) 30%, transparent)' : 'none',
                 textDecoration: 'none', transition: 'all .15s',
-                borderLeft: isActive ? '3px solid #7c3aed' : '3px solid transparent',
+                borderLeft: isActive ? '3px solid var(--color-brand)' : '3px solid transparent',
               })}>
               <span style={{ flexShrink: 0 }}>{item.icon}</span>
               {!collapsed && <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.label}</span>}
