@@ -52,7 +52,7 @@ export default function Login() {
             placeholder="Login"
             value={form.username}
             onChange={e => setForm({ ...form, username: e.target.value })}
-            style={{ padding: '10px 14px', border: '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', background: 'var(--color-field-bg)', color: 'var(--color-text)' }}
+            style={{ padding: '10px 14px', border: '1px solid var(--color-border-strong)', borderRadius: 10, fontSize: 13, background: 'var(--color-field-bg)', color: 'var(--color-text)' }}
           />
           <div style={{ position: 'relative' }}>
             <input
@@ -60,7 +60,7 @@ export default function Login() {
              placeholder="Parol"
              value={form.password}
              onChange={e => setForm({ ...form, password: e.target.value })}
-             style={{ width: '100%', padding: '10px 40px 10px 14px', border: '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', background: 'var(--color-field-bg)', color: 'var(--color-text)', boxSizing: 'border-box' }}
+             style={{ width: '100%', padding: '10px 40px 10px 14px', border: '1px solid var(--color-border-strong)', borderRadius: 10, fontSize: 13, background: 'var(--color-field-bg)', color: 'var(--color-text)', boxSizing: 'border-box' }}
              />
              <button type="button" onClick={() => setShowPass(!showPass)} aria-label={showPass ? "Parolni berkitish" : "Parolni ko'rsatish"}
               style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)', display: 'flex' }}>
@@ -72,7 +72,7 @@ export default function Login() {
              </button>
            </div>
           {error && <p style={{ fontSize: 12, color: 'var(--color-danger)', textAlign: 'center' }}>{error}</p>}
-          <button type="submit" className="btn btn-primary" style={{ justifyContent: 'center', padding: '12px' }} disabled={loading}>
+          <button type="submit" className="btn btn-primary" style={{ justifyContent: 'center', padding: '12px' }} disabled={loading} aria-busy={loading}>
             {loading ? 'Kirmoqda...' : 'Kirish'}
           </button>
         </form>

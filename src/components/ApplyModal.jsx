@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { validateFullName, validatePhone, errorBorder } from '../utils/validation'
 import useModalA11y from '../hooks/useModalA11y'
 
-const inputBase = { width: '100%', padding: '10px 14px', border: '1px solid var(--border)', borderRadius: 10, fontSize: 13, background: 'var(--bg)', color: 'var(--text)', outline: 'none' }
+const inputBase = { width: '100%', padding: '10px 14px', border: '1px solid var(--color-border-strong)', borderRadius: 10, fontSize: 13, background: 'var(--bg)', color: 'var(--text)' }
 const fieldErrStyle = { fontSize: 11.5, color: '#dc2626', marginTop: 4 }
 
 // value — backend'ga yuboriladigan o'zbekcha nom (admin panel shunga tayanadi); key — ko'rsatiladigan nom kaliti
@@ -106,7 +106,7 @@ export default function ApplyModal({ onClose }) {
                   {t('applyModal.error')}
                 </div>
               )}
-              <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', marginTop: 4 }} disabled={loading}>
+              <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', marginTop: 4 }} disabled={loading} aria-busy={loading}>
                 {loading ? t('applyModal.sending') : t('applyModal.submit')}
               </button>
             </form>

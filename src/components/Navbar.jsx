@@ -192,7 +192,7 @@ export default function Navbar({ dark, setDark, onApply }) {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             )}
           </button>
-          <button onClick={onApply} className="btn btn-primary desktop-nav" style={{ fontSize: '0.8rem', padding: '8px 16px' }}>
+          <button onClick={onApply} className="btn btn-primary btn-sm desktop-nav">
             {t('nav.apply')}
           </button>
           <button className="mobile-nav" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', color: 'var(--text)', fontSize: 20, lineHeight: 1 }}>

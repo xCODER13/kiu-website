@@ -173,7 +173,7 @@ export default function Search() {
               role="combobox" aria-expanded={results.length > 0} aria-controls="site-search-results"
               aria-autocomplete="list" aria-activedescendant={results.length > 0 ? `site-search-opt-${selected}` : undefined}
               placeholder={t('search.placeholder')}
-              style={{ flex: 1, border: 'none', outline: 'none', fontSize: 14, background: 'none', color: 'var(--text)', fontFamily: 'inherit' }}
+              style={{ flex: 1, border: 'none', outlineOffset: -2, fontSize: 14, background: 'none', color: 'var(--text)', fontFamily: 'inherit' }}
             />
             {query ? (
               <button onClick={() => setQuery('')} aria-label={t('search.clear')}

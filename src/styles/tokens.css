@@ -37,6 +37,7 @@
     --neutral-50:  #f9f6f7;
     --neutral-100: #f3eff1;
     --neutral-200: #e7e1e4;
+    --neutral-500: #81777d;
     --neutral-600: #645b60;
     --neutral-900: #1c161a;
 
@@ -49,6 +50,8 @@
     --dark-border:    #393035;
     --dark-text:      #f1ebee;
     --dark-muted:     #b1a8ad;
+    --dark-subtle:    #8a8085;
+    --dark-border-strong: #6a6066;
     --dark-wine-tint: #38132d;
 
     /* ── 2. Semantik rang (Light) ──────────────────────────────────── */
@@ -58,18 +61,25 @@
     --color-field-bg:      var(--neutral-0);      /* input foni */
     --color-text:          var(--neutral-900);
     --color-text-muted:    var(--neutral-600);
+    --color-text-subtle:   var(--neutral-500);    /* faqat disabled/dekor; matn uchun emas (4.31:1) */
     --color-border:        var(--neutral-200);
+    --color-border-strong: var(--neutral-500);    /* input chegarasi (≥ 3:1) */
+    --color-disabled-bg:   var(--neutral-200);
+    --color-overlay:       rgb(0 0 0 / 0.5);      /* modal foni */
 
     --color-brand:         var(--wine-700);       /* matn, chiziq, ikonka */
     --color-brand-fill:    var(--wine-700);       /* to'ldirilgan fon (ustida --color-on-brand) */
     --color-brand-hover:   var(--wine-800);
-    --color-brand-strong:  var(--wine-800);       /* kuchaytirilgan brend MATN (hover emas) */
+    --color-brand-active:  var(--wine-900);
+    --color-brand-strong:  var(--wine-900);       /* kuchaytirilgan brend MATN/to'q yuza (hover emas) */
+    --color-focus:         var(--wine-700);       /* fokus halqasi */
     --color-brand-subtle:  var(--wine-50);
     --color-brand-subtle-2: var(--wine-100);
     --color-on-brand:      var(--neutral-0);
 
     --color-accent:        var(--gold-500);
     --color-on-accent:     var(--neutral-900);
+    --color-accent-hover:  #c29d2b;
 
     /* Doim to'q yuzalar (footer, to'q hero, karusel) ustidagi ranglar — tema bilan almashmaydi */
     --color-on-dark:             var(--neutral-100);
@@ -88,6 +98,12 @@
     --color-danger-bg:     #fbeaea;
     --color-info:          #026a9d;
     --color-info-bg:       #e6f0f5;
+
+    /* Tugma yorug'ligi (glow) */
+    --glow-brand:         rgb(127 32 99 / 0.30);
+    --glow-brand-strong:  rgb(127 32 99 / 0.55);
+    --glow-accent:        rgb(212 175 55 / 0.35);
+    --glow-accent-strong: rgb(212 175 55 / 0.65);
 
     /* Gradientlar */
     --gradient-hero:      linear-gradient(135deg, var(--wine-50) 0%, var(--wine-100) 40%, var(--wine-200) 100%);
@@ -176,11 +192,18 @@
       --color-field-bg:       var(--dark-surface-2);
       --color-text:           var(--dark-text);
       --color-text-muted:     var(--dark-muted);
+      --color-text-subtle:    var(--dark-subtle);
       --color-border:         var(--dark-border);
+      --color-border-strong:  var(--dark-border-strong);
+      --color-disabled-bg:    var(--dark-border);
+      --color-overlay:        rgb(0 0 0 / 0.65);
 
       --color-brand:          var(--wine-300);
       --color-brand-fill:     var(--wine-600);
       --color-brand-hover:    var(--wine-700);
+      --color-brand-active:   var(--wine-800);
+      --color-focus:          var(--wine-300);
+      --color-accent-hover:   #e0bd47;
       --color-brand-strong:   var(--wine-200);
       --color-footer-logo:    var(--wine-300);
       --color-brand-subtle:   var(--dark-wine-tint);
@@ -201,6 +224,10 @@
       --gradient-brand-text:  linear-gradient(135deg, var(--wine-300), var(--wine-200));
 
       --shadow-brand:         0 4px 15px rgb(159 51 126 / 0.4);
+      --glow-brand:           rgb(159 51 126 / 0.40);
+      --glow-brand-strong:    rgb(159 51 126 / 0.80);
+      --glow-accent:          rgb(212 175 55 / 0.25);
+      --glow-accent-strong:   rgb(212 175 55 / 0.55);
 
       --opacity-avatar:       0.9;
       --opacity-placeholder:  0.7;
@@ -216,11 +243,18 @@
     --color-field-bg:       var(--dark-surface-2);
     --color-text:           var(--dark-text);
     --color-text-muted:     var(--dark-muted);
+    --color-text-subtle:    var(--dark-subtle);
     --color-border:         var(--dark-border);
+    --color-border-strong:  var(--dark-border-strong);
+    --color-disabled-bg:    var(--dark-border);
+    --color-overlay:        rgb(0 0 0 / 0.65);
 
     --color-brand:          var(--wine-300);
     --color-brand-fill:     var(--wine-600);
     --color-brand-hover:    var(--wine-700);
+    --color-brand-active:   var(--wine-800);
+    --color-focus:          var(--wine-300);
+    --color-accent-hover:   #e0bd47;
     --color-brand-strong:   var(--wine-200);
     --color-footer-logo:    var(--wine-300);
     --color-brand-subtle:   var(--dark-wine-tint);
@@ -241,6 +275,10 @@
     --gradient-brand-text:  linear-gradient(135deg, var(--wine-300), var(--wine-200));
 
     --shadow-brand:         0 4px 15px rgb(159 51 126 / 0.4);
+    --glow-brand:           rgb(159 51 126 / 0.40);
+    --glow-brand-strong:    rgb(159 51 126 / 0.80);
+    --glow-accent:          rgb(212 175 55 / 0.25);
+    --glow-accent-strong:   rgb(212 175 55 / 0.55);
 
     --opacity-avatar:       0.9;
     --opacity-placeholder:  0.7;
