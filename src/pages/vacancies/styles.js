@@ -1,7 +1,9 @@
-// Vacancies.jsx'dan o'zgarishsiz ko'chirilgan style obyektlari
-// (Info va Form tablar o'rtasida umumiy).
-export const iconStyle = { width: 40, height: 40, borderRadius: 10, background: 'color-mix(in srgb, var(--color-brand) 10%, transparent)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-brand)', flexShrink: 0 }
-export const inputStyle = { width: '100%', padding: '10px 14px', border: '1px solid var(--color-border-strong)', borderRadius: 10, fontSize: 13, background: 'var(--bg)', color: 'var(--text)', fontFamily: 'var(--font-body)' }
-export const labelStyle = { fontSize: 12, color: 'var(--muted)', display: 'block', marginBottom: 4 }
-export const sectionBoxStyle = { padding: '1.25rem', background: 'var(--bg-2)', borderRadius: 12, border: '1px solid var(--border)' }
-export const sectionTitleStyle = { fontSize: 11, fontWeight: 700, color: 'var(--color-brand)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: 6 }
+// Vacancies.jsx'dan ko'chirilgan umumiy style obyektlari (Info va Form tablar o'rtasida umumiy).
+// Bosqich 5b: obyektlar o'rniga CSS klass nomlari (src/styles/pages.css) — fayl va eksportlar saqlangan.
+export const iconClass = 'icon-tile vacancy-icon'
+export const iconClassSm = 'icon-tile icon-tile--sm vacancy-icon'
+export const inputClass = 'input input--form'
+export const areaClass = 'input input--form input--area'
+export const labelClass = 'label label--form'
+export const sectionBoxClass = 'panel'
+export const sectionTitleClass = 'panel-title'

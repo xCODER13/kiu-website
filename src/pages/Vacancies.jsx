@@ -63,19 +63,14 @@ export default function Vacancies() {
 
   return (
     <div className="fade-up">
-      <style>{`
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-        @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-      `}</style>
-
       {/* Hero */}
-      <section style={{ padding: '3rem 2rem 1rem', background: 'var(--gradient-hero)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-        <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 25%, transparent)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid color-mix(in srgb, var(--color-brand) 20%, transparent)' }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--color-brand)', display: 'inline-block', animation: 'pulse 2s infinite' }} />
+      <section className="page-hero">
+        <div className="section-badge section-badge--hero">
+          <span className="section-badge-dot" />
           {t('vacancies.badge')}
         </div>
-        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('vacancies.title')}</h1>
-        <p style={{ fontSize: 14, color: 'var(--muted)', maxWidth: 560, margin: '0 auto' }}>
+        <h1 className="page-hero-title">{t('vacancies.title')}</h1>
+        <p className="page-hero-sub page-hero-sub--narrow">
           {t('vacancies.subtitle')}
         </p>
       </section>
@@ -84,10 +79,10 @@ export default function Vacancies() {
         <div className="container">
 
           {/* Tabs */}
-          <div style={{ display: 'flex', gap: 4, marginBottom: '2rem', borderBottom: '1px solid var(--border)' }}>
+          <div className="tabs tabs--line">
             {[{ key: 'info', label: t('vacancies.tabs.info') }, { key: 'form', label: t('vacancies.tabs.form') }].map(tab => (
               <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-                style={{ padding: '10px 24px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: activeTab === tab.key ? 'var(--color-brand)' : 'var(--muted)', borderBottom: activeTab === tab.key ? '2px solid var(--color-brand)' : '2px solid transparent', marginBottom: -1, fontFamily: 'var(--font-body)', transition: 'all .2s' }}>
+                className="tab" data-active={activeTab === tab.key}>
                 {tab.label}
               </button>
             ))}

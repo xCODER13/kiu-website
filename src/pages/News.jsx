@@ -33,27 +33,18 @@ export default function News() {
   return (
     <div className="fade-up">
       {/* Hero header */}
-      <section style={{
-        padding: '3rem 2rem 1rem',
-        background: 'var(--gradient-hero)',
-        borderBottom: '1px solid var(--border)', textAlign: 'center',
-      }}>
-        <h1 style={{ fontSize: '2rem', color: 'var(--color-text)', marginBottom: '.5rem' }}>{t('news.title')}</h1>
-        <p style={{ fontSize: 14, color: 'var(--muted)' }}>{t('news.subtitle')}</p>
+      <section className="page-hero">
+        <h1 className="page-hero-title">{t('news.title')}</h1>
+        <p className="page-hero-sub">{t('news.subtitle')}</p>
         <ContentLangNote />
       </section>
 
       {/* Tabs */}
-      <div style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg)' }}>
-        <div className="container" style={{ display: 'flex', gap: 4 }}>
+      <div className="tabs-bar">
+        <div className="container tabs">
           {[{ key: 'news', label: `${t('news.tabs.news')}${articles.length ? ` (${articles.length})` : ''}` }, { key: 'shorts', label: `${t('news.tabs.video')}${shorts.length ? ` (${shorts.length})` : ''}` }].map(tab => (
-            <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
-              padding: '12px 20px', background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: 13, fontWeight: 600,
-              color: activeTab === tab.key ? 'var(--color-brand)' : 'var(--muted)',
-              borderBottom: activeTab === tab.key ? '2px solid var(--color-brand)' : '2px solid transparent',
-              marginBottom: -1, fontFamily: 'var(--font-body)', transition: 'all .2s',
-            }}>
+            <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+              className="tab" data-active={activeTab === tab.key}>
               {tab.label}
             </button>
           ))}

@@ -25,116 +25,64 @@ export default function FeaturedCarousel({ items }) {
   const item = items[idx]
   const catColor = getCategoryColor(item.category)
 
+  const image = parseImages(item.image)[0]
+
   return (
     <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: 480,
-        overflow: 'hidden',
-        background: 'var(--color-media-bg)',
-        borderRadius: 20,
-        margin: '1.5rem 0',
-      }}
+      className="carousel"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Background */}
+      {/* Background: faqat rasm manzili dinamik; rasm yo'q bo'lsa CSS dagi gradient */}
       <div
         key={idx}
-        style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: parseImages(item.image)[0]
-            ? `url(${parseImages(item.image)[0]})`
-            : `var(--gradient-media)`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          animation: 'carouselFadeIn .6s ease',
-          transition: 'background .4s ease',
-        }}
+        className="carousel-bg"
+        style={image ? { backgroundImage: `url(${image})` } : undefined}
       />
 
-      {/* Overlay gradients */}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.4) 50%, rgba(0,0,0,.15) 100%)' }} />
-      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, ${catColor}40, transparent 65%)` }} />
+      {/* Overlay gradients: toifa rangi ma'lumotdan keladi (inline) */}
+      <div className="carousel-shade" />
+      <div className="carousel-tint" style={{ background: `linear-gradient(to right, ${catColor}40, transparent 65%)` }} />
 
       {/* Slide counter top-right */}
-      <div style={{
-        position: 'absolute', top: 24, right: 24,
-        fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,.5)',
-        letterSpacing: '.1em', fontFamily: 'var(--font-body)',
-      }}>
+      <div className="carousel-counter">
         {String(idx + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
       </div>
 
       {/* Content */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        padding: '2.5rem 3rem',
-        display: 'flex', flexDirection: 'column', gap: 12,
-      }}>
+      <div className="carousel-content">
         {/* Category badge */}
         {item.category && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              fontSize: 10, fontWeight: 700, letterSpacing: '.08em',
-              color: 'var(--color-on-brand)', textTransform: 'uppercase',
-              background: catColor,
-              padding: '4px 12px', borderRadius: 20,
-            }}>
-              <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'rgba(255,255,255,.7)', display: 'inline-block' }} />
+          <div className="carousel-meta">
+            <span className="carousel-cat" style={{ background: catColor }}>
+              <span className="carousel-cat-dot" />
               {getCategoryLabel(item.category, t)}
             </span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', fontFamily: 'var(--font-body)' }}>
+            <span className="carousel-date">
               {new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}
             </span>
           </div>
         )}
 
         {/* Title */}
-        <h2 style={{
-          fontSize: 'clamp(1.4rem, 3.5vw, 2rem)',
-          fontWeight: 800, color: 'var(--color-on-brand)', lineHeight: 1.3,
-          fontFamily: 'var(--font-body)', maxWidth: 700,
-          textShadow: '0 2px 20px rgba(0,0,0,.5)',
-        }} lang="uz">
+        <h2 className="carousel-title" lang="uz">
           {item.title}
         </h2>
 
         {/* Excerpt */}
         {item.content && (
-          <p style={{
-            fontSize: 14, color: 'rgba(255,255,255,.7)',
-            lineHeight: 1.6, maxWidth: 560,
-            display: '-webkit-box', WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical', overflow: 'hidden',
-          }}>
+          <p className="carousel-excerpt">
             {item.content}
           </p>
         )}
 
         {/* Bottom row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 4 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'rgba(255,255,255,.5)' }}>
+        <div className="carousel-foot">
+          <span className="carousel-views">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             {item.views}
           </span>
-          <button
-            onClick={() => navigate(`/news/${item._id}`)}
-            style={{
-              padding: '7px 18px',
-              background: 'rgba(255,255,255,.15)',
-              border: '1px solid rgba(255,255,255,.3)',
-              borderRadius: 8, color: 'var(--color-on-brand)', cursor: 'pointer',
-              fontSize: 12, fontWeight: 600,
-              backdropFilter: 'blur(8px)',
-              fontFamily: 'var(--font-body)',
-              transition: 'background .2s',
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,.25)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,.15)'}
-          >
+          <button onClick={() => navigate(`/news/${item._id}`)} className="carousel-more">
             {t('news.more')}
           </button>
         </div>
@@ -142,38 +90,20 @@ export default function FeaturedCarousel({ items }) {
 
       {/* Prev / Next buttons */}
       {items.length > 1 && (<>
-        <button onClick={prev} aria-label={t('news.prevNews')} style={{
-          position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)',
-          width: 42, height: 42, borderRadius: '50%',
-          background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.2)',
-          color: 'var(--color-on-brand)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          backdropFilter: 'blur(8px)', transition: 'background .2s',
-        }}>
+        <button onClick={prev} aria-label={t('news.prevNews')} className="carousel-nav carousel-nav--prev">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button onClick={next} aria-label={t('news.nextNews')} style={{
-          position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)',
-          width: 42, height: 42, borderRadius: '50%',
-          background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.2)',
-          color: 'var(--color-on-brand)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          backdropFilter: 'blur(8px)', transition: 'background .2s',
-        }}>
+        <button onClick={next} aria-label={t('news.nextNews')} className="carousel-nav carousel-nav--next">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
 
         {/* Dots */}
-        <div style={{ position: 'absolute', bottom: 24, right: 28, display: 'flex', gap: 6 }}>
+        <div className="carousel-dots">
           {items.map((_, i) => (
-            <button key={i} onClick={() => setIdx(i)} aria-label={t('news.goSlide', { n: i + 1 })} aria-current={i === idx ? 'true' : undefined} style={{
-              width: i === idx ? 24 : 6, height: 6, borderRadius: 10, padding: 0,
-              background: i === idx ? '#fff' : 'rgba(255,255,255,.3)',
-              border: 'none', cursor: 'pointer', transition: 'all .3s ease',
-            }} />
+            <button key={i} onClick={() => setIdx(i)} aria-label={t('news.goSlide', { n: i + 1 })} aria-current={i === idx ? 'true' : undefined} className="carousel-dot" />
           ))}
         </div>
       </>)}
-
-      <style>{`@keyframes carouselFadeIn { from { opacity: 0; transform: scale(1.02) } to { opacity: 1; transform: scale(1) } }`}</style>
     </div>
   )
 }

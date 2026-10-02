@@ -1,0 +1,549 @@
+/* Sahifa klasslari: umumiy bloklar + Vacancies va News (Bosqich 5b).
+   Inline `style={{}}` va `onMouseEnter` o'rniga — qiymatlar ataylab o'zgarmagan (vizual farq 0).
+   Istisnolar (hammasi 5b hujjatida): xato holati (`--color-danger` tokeni) va input placeholder (`.input` dan).
+   Qatlam: `components`. Fayl components.css va site.css DAN KEYIN import qilinadi (main.jsx):
+   bir xil qatlamda tartib hal qiladi, shuning uchun `.container.news-telegram` kabi juftliklar to'g'ri ishlaydi.
+   Faqat token ishlatiladi; istisno — `rgb(255 255 255 / a)` / `rgb(0 0 0 / a)` (to'q yuza ustidagi matn, qoplama, soya). */
+
+@layer components {
+  /* ── Umumiy: sahifa "hero" bloki ──────────────────────────────────── */
+  .page-hero {
+    padding: 3rem 2rem 1rem;
+    background: var(--gradient-hero);
+    border-bottom: 1px solid var(--color-border);
+    text-align: center;
+  }
+  .page-hero-title { font-size: 2rem; color: var(--color-text); margin-bottom: 0.5rem; }
+  .page-hero-sub { font-size: 14px; color: var(--color-text-muted); }
+  .page-hero-sub--narrow { max-width: 560px; margin: 0 auto; }
+
+  /* Bo'lim "badge"i. Hero ichida fon 25 %, bosh sahifa bo'limlarida 10 % — 6.11 da birlashtiriladi */
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+    background: color-mix(in srgb, var(--color-brand) 10%, transparent);
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-brand) 20%, transparent);
+  }
+  .section-badge--hero { background: color-mix(in srgb, var(--color-brand) 25%, transparent); }
+  .section-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-brand);
+    display: inline-block;
+    animation: pulse 2s infinite;
+  }
+
+  /* ── Umumiy: tablar. Faol holat — `data-active` (rol o'zgarmagan: testlar `button` bo'yicha qidiradi) ── */
+  .tabs { display: flex; gap: 4px; }
+  .tabs--line { margin-bottom: 2rem; border-bottom: 1px solid var(--color-border); }
+  .tabs-bar { border-bottom: 1px solid var(--color-border); background: var(--color-bg); }
+  .tab {
+    padding: 10px 24px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    transition: all 0.2s;
+  }
+  .tabs-bar .tab { padding: 12px 20px; }
+  .tab[data-active="true"] { color: var(--color-brand); border-bottom-color: var(--color-brand); }
+
+  /* ── Umumiy: ikonka katak, panel, yuklanish ───────────────────────── */
+  .icon-tile {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--color-brand) 10%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-brand);
+    flex-shrink: 0;
+  }
+  .icon-tile--sm { width: 32px; height: 32px; }
+
+  .panel {
+    padding: 1.25rem;
+    background: var(--color-surface-2);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+  }
+  .panel-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-brand);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-brand);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  .page-loading { text-align: center; padding: 5rem; color: var(--color-text-muted); }
+  .empty-state { text-align: center; padding: 5rem 2rem; color: var(--color-text-muted); }
+  .empty-state svg { opacity: 0.3; margin-bottom: 12px; }
+  .empty-state-title { font-size: 14px; }
+  .empty-state-hint { font-size: 12px; margin-top: 4px; }
+
+  /* ── Forma maydonlari (Vacancies): `.input`/`.label`/`.field-error` ustiga ixcham variant.
+        Eski o'lcham (13 px, fon `--color-bg`) saqlangan; 6.11 da asosiy variantga qo'shiladi ── */
+  .input--form { font-size: 13px; background: var(--color-bg); }
+  .input--area { resize: none; line-height: 1.6; }
+  .label--form { font-size: 12px; font-weight: 400; color: var(--color-text-muted); margin-bottom: 4px; }
+  .field-error--form { display: block; margin-top: 4px; font-size: 11.5px; }
+
+  /* ── Vacancies: Info tab ──────────────────────────────────────────── */
+  .vac-banner { background: var(--gradient-dark); border-radius: 16px; padding: 2.5rem; margin-bottom: 2rem; }
+  .vac-banner-title { color: var(--color-on-brand); font-size: 1.3rem; margin-bottom: 1rem; }
+  .vac-banner-text { color: rgb(255 255 255 / 0.7); font-size: 14px; line-height: 1.8; }
+
+  .vac-heading { font-size: 1.2rem; margin-bottom: 1.25rem; color: var(--color-text); }
+  .vac-mb-lg { margin-bottom: 2.5rem; }
+  .vac-mb-md { margin-bottom: 2rem; }
+
+  .vac-benefit { display: flex; gap: 12px; align-items: flex-start; }
+  .vac-benefit-title { font-size: 13px; font-weight: 600; color: var(--color-text); margin-bottom: 2px; }
+  .vac-benefit-desc { font-size: 11px; color: var(--color-text-muted); }
+
+  .vac-req-list { display: flex; flex-direction: column; gap: 12px; }
+  .vac-req { display: flex; align-items: flex-start; gap: 10px; }
+  .vac-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--gradient-brand);
+    color: var(--color-on-brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .vac-req-text { font-size: 13px; color: var(--color-text-muted); line-height: 1.6; }
+
+  .vac-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .vac-card-text { font-size: 13px; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 1rem; }
+  .vac-strong { color: var(--color-text); }
+  .vac-strong--brand { color: var(--color-brand); }
+  .vac-docs { display: flex; flex-direction: column; gap: 8px; }
+  .vac-doc { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-text-muted); }
+  .vac-doc-icon { color: var(--color-brand); }
+  .vac-note {
+    margin-top: 1rem;
+    padding: 10px 12px;
+    background: color-mix(in srgb, var(--color-brand) 5%, transparent);
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--color-brand) 15%, transparent);
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+  .vac-note-line { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-muted); }
+  .vac-contact-list { display: flex; flex-direction: column; gap: 12px; }
+  .vac-contact { display: flex; flex-direction: column; gap: 2px; }
+  .vac-contact-label { font-size: 11px; color: var(--color-text-muted); }
+  .vac-contact-value { font-size: 13px; font-weight: 600; color: var(--color-brand); }
+  .vac-cta { text-align: center; }
+  .vac-cta-btn { padding: 12px 32px; font-size: 14px; }
+
+  /* ── Vacancies: Forma tab ─────────────────────────────────────────── */
+  .vac-form-wrap { max-width: 640px; margin: 0 auto; }
+  .vac-form-card { padding: 2rem; }
+  .vac-form-title { font-size: 1.3rem; color: var(--color-text); margin-bottom: 0.5rem; }
+  .vac-form-sub { font-size: 13px; color: var(--color-text-muted); margin-bottom: 1.5rem; }
+  .vac-form { display: flex; flex-direction: column; gap: 14px; }
+  .vac-fields { display: flex; flex-direction: column; gap: 10px; }
+  .vac-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .vac-check-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--color-text);
+  }
+  .vac-checkbox { width: 16px; height: 16px; accent-color: var(--color-brand); }
+  .vac-docs-box {
+    padding: 1rem;
+    background: color-mix(in srgb, var(--color-brand) 5%, transparent);
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--color-brand) 15%, transparent);
+  }
+  .vac-docs-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-brand);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .vac-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .vac-chip {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    background: var(--color-bg);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .vac-alert {
+    font-size: 12.5px;
+    color: var(--color-danger);
+    background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-danger) 25%, transparent);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .vac-submit { width: 100%; justify-content: center; padding: 13px; font-size: 14px; }
+  .vac-submit-inner { display: flex; align-items: center; gap: 8px; }
+  .vac-spin { animation: spin 1s linear infinite; }
+
+  .vac-success { padding: 3rem; text-align: center; }
+  .vac-success-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--gradient-hero-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: var(--color-brand);
+  }
+  .vac-success-title { font-size: 1.4rem; color: var(--color-text); margin-bottom: 0.75rem; }
+  .vac-success-text {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    max-width: 400px;
+    margin: 0 auto 1.5rem;
+  }
+  .vac-success-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .vac-btn-sm { font-size: 13px; }
+
+  /* ── News: tab ro'yxati va holatlar ───────────────────────────────── */
+  .news-telegram { margin-bottom: 0.5rem; }
+  .news-telegram-box { border-radius: 20px; overflow: hidden; }
+  .news-all-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-brand);
+    margin-top: 0.75rem;
+    display: inline-block;
+  }
+  .news-offline {
+    text-align: center;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    background: color-mix(in srgb, var(--color-brand) 6%, transparent);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+  .news-search { position: relative; margin-bottom: 1rem; }
+  .news-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+  }
+  .news-search-input { padding-left: 36px; }
+
+  .news-cats { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  /* Faol toifa: rang ma'lumotdan keladi (toifa rangi) — faqat `border-color`/`background`/`color` inline */
+  .news-cat {
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 400;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text-muted);
+  }
+  .news-cat[data-active="true"] { font-weight: 600; }
+  .news-cat-count { margin-left: 5px; font-size: 10px; }
+
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 1.5rem;
+  }
+  .news-noresults { text-align: center; padding: 2rem; color: var(--color-text-muted); font-size: 13px; }
+  .news-more { text-align: center; }
+  .news-load-more {
+    padding: 10px 28px;
+    background: var(--gradient-brand);
+    color: var(--color-on-brand);
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-sans);
+  }
+
+  /* ── News: kartochka (hover oldin JS `onMouseEnter/Leave` edi) ────── */
+  /* `.card.news-card:hover` (3 klass) — `.card:is(.card-link):hover` ni bosib o'tadi: eski inline qiymatlar ustun edi */
+  .card.news-card {
+    padding: 0;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card.news-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgb(0 0 0 / 0.12); }
+  .news-card-img { width: 100%; height: 160px; object-fit: cover; }
+  .news-card-ph { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; }
+  .news-card-body { padding: 1rem; }
+  .news-card-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+  .news-card-cat { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+  .news-card-date { font-size: 11px; color: var(--color-text-muted); }
+  .news-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.5;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .news-card-text {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .news-card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .news-card-views { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--color-text-muted); }
+  .news-card-btn {
+    padding: 5px 14px;
+    background: var(--gradient-brand);
+    color: var(--color-on-brand);
+    border: none;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: opacity 0.2s;
+  }
+  .news-card-btn:hover { opacity: 0.85; }
+
+  /* ── News: asosiy karusel ─────────────────────────────────────────── */
+  @keyframes carouselFadeIn {
+    from { opacity: 0; transform: scale(1.02); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .carousel {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    overflow: hidden;
+    background: var(--color-media-bg);
+    border-radius: 20px;
+    margin: 1.5rem 0;
+  }
+  /* Fon rasmi `background-image` — dinamik (inline); rasm yo'q bo'lsa — gradient */
+  .carousel-bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--gradient-media);
+    background-size: cover;
+    background-position: center;
+    animation: carouselFadeIn 0.6s ease;
+    transition: background 0.4s ease;
+  }
+  .carousel-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.92) 0%, rgb(0 0 0 / 0.4) 50%, rgb(0 0 0 / 0.15) 100%);
+  }
+  /* Toifa rangidagi qoplama — rang dinamik (inline `background`) */
+  .carousel-tint { position: absolute; inset: 0; }
+  .carousel-counter {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.5);
+    letter-spacing: 0.1em;
+  }
+  .carousel-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .carousel-meta { display: flex; align-items: center; gap: 8px; }
+  .carousel-cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--color-on-brand);
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .carousel-cat-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.7);
+    display: inline-block;
+  }
+  .carousel-date { font-size: 11px; color: rgb(255 255 255 / 0.5); }
+  .carousel-title {
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    font-weight: 800;
+    color: var(--color-on-brand);
+    line-height: 1.3;
+    max-width: 700px;
+    text-shadow: 0 2px 20px rgb(0 0 0 / 0.5);
+  }
+  .carousel-excerpt {
+    font-size: 14px;
+    color: rgb(255 255 255 / 0.7);
+    line-height: 1.6;
+    max-width: 560px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .carousel-foot { display: flex; align-items: center; gap: 16px; margin-top: 4px; }
+  .carousel-views { display: flex; align-items: center; gap: 5px; font-size: 12px; color: rgb(255 255 255 / 0.5); }
+  .carousel-more {
+    padding: 7px 18px;
+    background: rgb(255 255 255 / 0.15);
+    border: 1px solid rgb(255 255 255 / 0.3);
+    border-radius: 8px;
+    color: var(--color-on-brand);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    font-family: var(--font-sans);
+    transition: background 0.2s;
+  }
+  .carousel-more:hover { background: rgb(255 255 255 / 0.25); }
+  .carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.12);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    color: var(--color-on-brand);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s;
+  }
+  .carousel-nav--prev { left: 20px; }
+  .carousel-nav--next { right: 20px; }
+  .carousel-dots { position: absolute; bottom: 24px; right: 28px; display: flex; gap: 6px; }
+  .carousel-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 10px;
+    padding: 0;
+    background: rgb(255 255 255 / 0.3);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .carousel-dot[aria-current="true"] { width: 24px; background: rgb(255 255 255 / 1); }
+
+  /* ── News: Shorts tab va (ishlatilmaydigan) Telegram banner ───────── */
+  .shorts-channel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--brand-youtube) 5%, transparent);
+    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--brand-youtube) 10%, transparent);
+  }
+  .shorts-channel-icon { fill: var(--brand-youtube); }
+  .shorts-channel-title { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .shorts-link { font-size: 12px; color: var(--brand-youtube); }
+  .shorts-empty { padding: 3rem 2rem; }
+  .shorts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .card.shorts-card { padding: 0; overflow: hidden; }
+  .shorts-frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 177.77%;
+    background: rgb(0 0 0 / 1);
+    overflow: hidden;
+  }
+  .shorts-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  .shorts-body { padding: 0.75rem 1rem; }
+  .shorts-title { font-size: 13px; font-weight: 500; color: var(--color-text); }
+  .shorts-watch { font-size: 11px; color: var(--brand-youtube); margin-top: 4px; display: inline-block; }
+
+  .tg-banner {
+    width: 100%;
+    background: linear-gradient(135deg, var(--brand-telegram), var(--brand-telegram-deep));
+    padding: 0;
+    overflow: hidden;
+  }
+  .tg-banner-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+}
