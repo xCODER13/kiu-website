@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { API, H, HF, errorMessage, asArray } from './shared/api'
-import { card, inp, lbl, bP, bD, bE, bG } from './shared/styles'
 import { Ic } from './shared/Icons.jsx'
+import { markBroken } from './shared/helpers'
 import { useSingleImageUpload } from './shared/useImageUpload'
 
 const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
@@ -80,9 +80,9 @@ export default function EventsAdmin() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)' }}>Tadbirlar ({events.length})</h2>
-        <button style={bP} onClick={() => {
+      <div className="adm-crud-head">
+        <h2 className="adm-page-title">Tadbirlar ({events.length})</h2>
+        <button className="adm-btn adm-btn--primary" onClick={() => {
           setOpen(!open); setEdit(null)
           setForm({ title: '', desc: '', eventDate: '', type: 'general', image: '' })
           setImageFile(null); setImagePreview(null)
@@ -90,85 +90,80 @@ export default function EventsAdmin() {
       </div>
 
       {open && (
-        <div style={{ ...card, marginBottom: '1.5rem', borderColor: 'var(--color-brand)' }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-brand)', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : 'Yangi tadbir'}</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div><label style={lbl}>Sarlavha *</label><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Tadbir nomi" style={inp} /></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div className="adm-card adm-form">
+          <h3 className="adm-form-title">{editing ? 'Tahrirlash' : 'Yangi tadbir'}</h3>
+          <div className="adm-form-body">
+            <div><label className="adm-label">Sarlavha *</label><input className="adm-input" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Tadbir nomi" /></div>
+            <div className="adm-form-grid">
               <div>
-                <label style={lbl}>Sana *</label>
+                <label className="adm-label">Sana *</label>
                 <input
+                  className="adm-input"
                   type="date"
                   value={form.eventDate}
                   onChange={e => setForm(f => ({ ...f, eventDate: e.target.value }))}
-                  style={inp}
                 />
               </div>
               <div>
-                <label style={lbl}>Turi</label>
-                <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} style={inp}>
+                <label className="adm-label">Turi</label>
+                <select className="adm-input" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
                   {types.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
               </div>
             </div>
 
             <div>
-              <label style={lbl}>Poster rasm</label>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed var(--color-brand)', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 5%, transparent)' }}>
+              <label className="adm-label">Poster rasm</label>
+              <label className="adm-upload">
                 {Ic.photo}
                 {imagePreview ? 'Rasmni almashtirish' : "Rasm qo'shish"}
-                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageSelect} style={{ display: 'none' }} />
+                <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageSelect} hidden />
               </label>
               {imagePreview && (
-                <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
-                  <img src={imagePreview} alt="poster" loading="lazy" style={{ width: 70, height: 50, objectFit: 'cover', borderRadius: 8, border: '2px solid var(--color-brand)', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
-                  <button onClick={removeImage} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: 'var(--color-danger)', color: 'var(--color-on-brand)', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
+                <div className="adm-preview">
+                  <img className="adm-preview-img adm-preview-img--poster" src={imagePreview} alt="poster" loading="lazy" onError={markBroken} />
+                  <button className="adm-thumb-x" onClick={removeImage} aria-label="Rasmni olib tashlash">×</button>
                 </div>
               )}
-              <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB · ixtiyoriy — bo'lmasa sana-badge ko'rsatiladi</div>
+              <div className="adm-hint">JPEG, PNG, WebP · maks 5 MB · ixtiyoriy — bo'lmasa sana-badge ko'rsatiladi</div>
             </div>
 
-            <div><label style={lbl}>Tavsif</label><textarea value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} rows={3} style={{ ...inp, resize: 'vertical' }} /></div>
+            <div><label className="adm-label">Tavsif</label><textarea className="adm-input adm-input--area" value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} rows={3} /></div>
 
             {uploading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--color-brand)' }}>
-                <div style={{ width: 14, height: 14, border: '2px solid var(--color-brand-subtle-2)', borderTopColor: 'var(--color-brand)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              <div className="adm-saving">
+                <div className="adm-spinner" />
                 Saqlanmoqda...
               </div>
             )}
 
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button style={{ ...bP, opacity: uploading ? .6 : 1 }} onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
-              <button style={bG} onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
+            <div className="adm-form-actions">
+              <button className="adm-btn adm-btn--primary" onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
+              <button className="adm-btn" onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
             </div>
           </div>
         </div>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div className="adm-list">
         {events.map(e => (
-          <div key={e._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-            <div style={{ display: 'flex', gap: 12, flex: 1, minWidth: 0 }}>
+          <div key={e._id} className="adm-card adm-row adm-row--center">
+            <div className="adm-row-left">
               {e.image ? (
-                <img
-                  src={e.image} alt={e.title}
-                  loading="lazy"
-                  style={{ width: 46, height: 46, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
-                  onError={ev => { ev.target.style.opacity = '0.2' }}
-                />
+                <img className="adm-row-thumb" src={e.image} alt={e.title} loading="lazy" onError={markBroken} />
               ) : (
-                <div style={{ width: 46, height: 46, borderRadius: 10, background: 'var(--gradient-brand)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1 }}>{dayMonthBadge(e.eventDate).day}</div>
-                  <div style={{ fontSize: 9, opacity: .75 }}>{dayMonthBadge(e.eventDate).month}</div>
+                <div className="adm-event-date">
+                  <div className="adm-event-day">{dayMonthBadge(e.eventDate).day}</div>
+                  <div className="adm-event-month">{dayMonthBadge(e.eventDate).month}</div>
                 </div>
               )}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>{e.title}</div>
-                <div style={{ fontSize: 11, color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.desc}</div>
+              <div className="adm-row-main">
+                <div className="adm-row-title adm-row-title--tight">{e.title}</div>
+                <div className="adm-row-text">{e.desc}</div>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-              <button style={bE} aria-label="Tahrirlash" onClick={() => {
+            <div className="adm-actions adm-actions--fixed">
+              <button className="adm-btn adm-btn--edit" aria-label="Tahrirlash" onClick={() => {
                 setEdit(e._id)
                 // <input type="date"> aniq "YYYY-MM-DD" formatini talab qiladi —
                 // backend to'liq ISO datetime qaytaradi, shuning uchun kesib olamiz
@@ -177,11 +172,11 @@ export default function EventsAdmin() {
                 setImagePreview(e.image || null)
                 setOpen(true)
               }}>{Ic.edit}</button>
-              <button style={bD} aria-label="O'chirish" onClick={() => del(e._id)}>{Ic.del}</button>
+              <button className="adm-btn adm-btn--danger" aria-label="O'chirish" onClick={() => del(e._id)}>{Ic.del}</button>
             </div>
           </div>
         ))}
-        {events.length === 0 && <p style={{ fontSize: 13, color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>Hali tadbir yo'q</p>}
+        {events.length === 0 && <p className="adm-blank">Hali tadbir yo'q</p>}
       </div>
     </div>
   )

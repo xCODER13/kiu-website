@@ -1,6 +1,6 @@
 /* global process */
 // admin.css (Bosqich 6a): token qoidasi, qatlam, yig'ilgan holat va kontrast tuzatishi.
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
@@ -122,5 +122,53 @@ describe('Bosqich 6b: statistika va grafiklar', () => {
   it("tooltip visx standart stillarisiz (`unstyled`) va `.adm-tooltip` klassida", () => {
     expect(read('src/pages/admin/charts/TrendLineChart.jsx')).toMatch(/<TooltipWithBounds[^>]*unstyled[^>]*className="adm-tooltip"/)
     expect(code).toMatch(/\.adm-tooltip \{[^}]*position: absolute;[^}]*pointer-events: none;/)
+  })
+})
+
+describe('Bosqich 6c: CRUD sahifalar (shared/styles.js klasslarga o\'tdi)', () => {
+  const PAGES = ['NewsAdmin', 'EventsAdmin', 'GalleryAdmin', 'TeachersAdmin', 'ProfileAdmin']
+  const src = n => read(`src/pages/admin/${n}.jsx`)
+
+  it("`shared/styles.js` o'chirilgan va hech kim import qilmaydi", () => {
+    expect(existsSync(resolve(process.cwd(), 'src/pages/admin/shared/styles.js'))).toBe(false)
+    for (const n of PAGES) expect(src(n)).not.toMatch(/shared\/styles/)
+  })
+
+  it("5 sahifada inline stil yo'q; faqat TeachersAdmin avatar foni (indeksdan — spec 7.5 dinamik)", () => {
+    for (const n of PAGES.filter(x => x !== 'TeachersAdmin')) expect(src(n), n).not.toMatch(/style=\{/)
+    expect(src('TeachersAdmin').match(/style=\{/g)).toHaveLength(1)
+    expect(src('TeachersAdmin')).toMatch(/className="adm-avatar" style=\{\{ background: colors\[i % colors\.length\] \}\}/)
+  })
+
+  it("JS orqali stil yozilmaydi: `onError` → `markBroken` (`data-broken`), `style.opacity/display` yo'q", () => {
+    for (const n of PAGES) {
+      expect(src(n), n).not.toMatch(/\.style\.(opacity|display)/)
+      expect(src(n), n).not.toMatch(/onMouse(Enter|Leave)|onFocus|onBlur/)
+    }
+    expect(code).toMatch(/img\[data-broken="true"\] \{ opacity: \.3; \}/)
+    expect(code).toMatch(/\.adm-avatar img\[data-broken="true"\] \{ display: none; \}/)
+  })
+
+  it("forma elementlari tokenlarda: `.adm-input` chegarasi `--color-border-strong`, `.adm-label` 11px token, tugma variantlari", () => {
+    expect(code).toMatch(/\.adm-input \{[^}]*border: 1px solid var\(--color-border-strong\)/)
+    expect(code).toMatch(/\.adm-input \{[^}]*font-size: var\(--text-sm\)/)
+    expect(code).toMatch(/\.adm-label \{[^}]*font-size: var\(--text-2xs\)/)
+    expect(code).toMatch(/\.adm-btn--edit \{[^}]*color: var\(--color-brand\)/)
+    expect(code).toMatch(/\.adm-btn--primary:disabled \{ opacity: \.6; \}/)
+  })
+
+  it("`.adm-msg` rangi `data-type` → `--msg-c` (success/danger tokenlari); Shorts belgisi `--brand-youtube`", () => {
+    expect(code).toMatch(/\.adm-msg\[data-type="success"\] \{ --msg-c: var\(--color-success\); \}/)
+    expect(code).toMatch(/\.adm-msg\[data-type="error"\]\s+\{ --msg-c: var\(--color-danger\); \}/)
+    expect(code).toMatch(/\.adm-pill--youtube \{[^}]*var\(--brand-youtube\)/)
+  })
+
+  it("spinner `--color-brand-subtle-2` + `spin` animatsiyasi (eski `#ede9fe` yo'q); fayl kiritish `hidden`", () => {
+    expect(code).toMatch(/\.adm-spinner \{[^}]*border: 2px solid var\(--color-brand-subtle-2\)/)
+    expect(code).toMatch(/animation: spin 0\.7s linear infinite/)
+    for (const n of ['NewsAdmin', 'EventsAdmin', 'GalleryAdmin', 'TeachersAdmin']) {
+      expect(src(n), n).not.toMatch(/ede9fe/i)
+      expect(src(n), n).toMatch(/type="file"[^>]* hidden \/>/)
+    }
   })
 })

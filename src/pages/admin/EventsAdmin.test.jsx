@@ -146,4 +146,17 @@ describe('EventsAdmin', () => {
     await waitFor(() => expect(alert).toHaveBeenCalledWith("Server bilan bog'lanib bo'lmadi."))
     expect(screen.getByRole('button', { name: /Saqlash/ })).toBeEnabled()
   })
+
+  it("inline stil yo'q; poster rasmi yuklanmasa `data-broken`; rasmsiz tadbirda kun/oy nishoni", async () => {
+    mockApi({ 'GET /events': [E1, { _id: 'e2', title: 'Rasmsiz', desc: '', eventDate: '2026-06-03T00:00:00.000Z', type: 'general' }] })
+    const { container } = render(<EventsAdmin />)
+    await screen.findByText('Ochiq eshiklar kuni')
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    const img = container.querySelector('.adm-row-thumb')
+    fireEvent.error(img)
+    expect(img.dataset.broken).toBe('true')
+    expect(img.getAttribute('style')).toBeNull()
+    expect(container.querySelector('.adm-event-day').textContent).toBe('3')
+    expect(container.querySelector('.adm-event-month').textContent).toBe('iyun')
+  })
 })

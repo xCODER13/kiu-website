@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, within, waitFor } from '@testing-library/react'
+import { render, screen, within, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import GalleryAdmin from './GalleryAdmin'
 import { mockApi, rowOf } from '../../test/helpers'
@@ -173,5 +173,19 @@ describe('GalleryAdmin', () => {
     await waitFor(() => expect(alert).toHaveBeenCalledWith("Server bilan bog'lanib bo'lmadi."))
     expect(screen.getByRole('button', { name: /Qo'shish/ })).toBeEnabled()
     expect(screen.getByPlaceholderText('1-kampus')).toHaveValue('Sarlavha')
+  })
+
+  it("inline stil yo'q (karta, forma, preview); muqova rasmi yuklanmasa `data-broken`", async () => {
+    mockApi({ 'GET /gallery': [G1] })
+    const user = userEvent.setup()
+    const { container } = render(<GalleryAdmin />)
+    await screen.findByText('1-kampus')
+    const cover = container.querySelector('.adm-album-cover img')
+    fireEvent.error(cover)
+    expect(cover.dataset.broken).toBe('true')
+    await user.click(screen.getByRole('button', { name: /Tahrir/ }))
+    expect(container.querySelectorAll('.adm-thumb-img')).toHaveLength(2)
+    expect(container.querySelector('input[type="file"]').hidden).toBe(true)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
   })
 })
