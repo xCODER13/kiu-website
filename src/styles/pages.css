@@ -120,75 +120,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── SortingHat ───────────────────────────────────────────────────── */
-  .sh-start {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 13px 36px;
-    background: var(--gradient-brand);
-    color: var(--color-on-brand);
-    border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: var(--font-sans);
-    box-shadow: 0 4px 20px color-mix(in srgb, var(--color-brand) 40%, transparent);
-    transition: transform 0.2s;
-  }
-  .sh-start:hover { transform: translateY(-2px); }
-
-  .sh-opt {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 0.9rem 1.1rem;
-    text-align: left;
-    cursor: pointer;
-    background: var(--color-bg);
-    border: 2px solid var(--color-border);
-    border-radius: 12px;
-    font-size: 13.5px;
-    color: var(--color-text);
-    font-family: var(--font-sans);
-    transition: all 0.18s;
-    transform: scale(1);
-  }
-  .sh-opt:disabled { cursor: default; }
-  .sh-opt:hover:not(:disabled, [data-selected="true"]) {
-    border-color: var(--color-brand);
-    background: color-mix(in srgb, var(--color-brand) 5%, transparent);
-  }
-  .sh-opt[data-selected="true"] {
-    border-color: var(--color-brand);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-brand) 12%, transparent), color-mix(in srgb, var(--color-brand-hover) 12%, transparent));
-    transform: scale(1.01);
-  }
-  .sh-opt-letter {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.18s;
-    background: var(--color-surface-2);
-    border: 2px solid var(--color-border);
-    color: var(--color-text-muted);
-    font-size: 12px;
-    font-weight: 700;
-  }
-  .sh-opt[data-selected="true"] .sh-opt-letter {
-    background: var(--gradient-brand);
-    border-color: var(--color-brand);
-    color: var(--color-on-brand);
-  }
-  .sh-opt-text { line-height: 1.5; }
-  .sh-opt-arrow { margin-left: auto; flex-shrink: 0; color: var(--color-brand); }
-
   /* Katta input: `.input` ustiga. Fokus — brend rangli ramka; xato (`aria-invalid`) `.input` dan keladi */
   .input--lg {
     padding: 12px 14px;
@@ -2028,7 +1959,7 @@
   .input.input--lg:focus-visible { border-color: var(--color-brand); box-shadow: 0 0 0 4px var(--ring-field); outline: 2px solid transparent; outline-offset: 2px; }
   .input.input--lg[aria-invalid="true"],
   .input.input--lg[aria-invalid="true"]:focus-visible { border-color: var(--color-danger); box-shadow: 0 0 0 4px var(--ring-field-danger); }
-  .field-error.field-error--lg { align-items: flex-start; margin-top: 7px; font-size: 0.8125rem; line-height: 1.4; }
+  .field-error.field-error--lg { display: flex; align-items: flex-start; margin-top: 7px; font-size: 0.8125rem; line-height: 1.4; }
   .field-error--lg > svg { flex: none; margin-top: 1px; }
 
   /* `<select>`: `appearance: none` + SVG chevron (klaviatura va ekran o'quvchi xatti-harakati native bo'lib qoladi) */
@@ -2294,5 +2225,226 @@
   @media (max-width: 640px) {
     .home-news .carousel { height: 440px; }
     .home-features { margin-top: 40px; }
+  }
+
+  /* ══ Bosqich 6.11d: Sehrli shlyapa (hero + Intro / Register / Quiz / Result) ═════════════════════════
+     Primitivlarga tayanadi: `.inner-hero`, `.hero-badge`, `.card--lift`, `.tile`, `.wine-banner`, `.btn-*`, `.input--lg`, `.label--lg`,
+     `.field-error--lg`. Faqat token; hex yo'q. Yangi token: `--ring-option` (tanlangan variant halqasi, 3 joyda). */
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .inner-hero.sh-hero { padding: 56px 0 48px; }
+  .sh-hero .inner-hero__title { font-size: clamp(2rem, 1.2rem + 3vw, 2.875rem); }
+  .sh-hero .inner-hero__sub { max-width: 620px; }
+  .sh-hero__star { position: absolute; left: var(--x); top: var(--y); z-index: -1; opacity: 0.22; pointer-events: none; }
+  .sh-hero__hat { display: flex; justify-content: center; margin-bottom: 14px; filter: drop-shadow(0 10px 18px var(--glow-brand)); }
+  .hero-badge.sh-badge { gap: 8px; font-size: 0.8125rem; }
+  .sh-badge__star { display: inline-flex; color: var(--color-accent-text); }
+  .sh-back {
+    position: absolute;
+    top: 20px;
+    left: max(16px, calc((100% - 1200px) / 2 + 24px));
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 18px 0 12px;
+    border: 1px solid color-mix(in srgb, var(--color-brand) 40%, transparent);
+    border-radius: var(--radius-pill);
+    background: var(--color-brand-subtle);
+    color: var(--color-brand);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color var(--duration-base), background-color var(--duration-base);
+  }
+  .sh-back:hover { border-color: var(--color-brand); background: var(--color-brand-subtle-2); }
+  .sh-body { padding: 24px 0 112px; }
+  .container.sh-wrap { max-width: 760px; }
+
+  /* ── Intro ────────────────────────────────────────────────────────── */
+  .sh-info { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 0 0 28px; padding: 0; list-style: none; }
+  .card.sh-info__card { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 22px 14px 20px; border-radius: 18px; text-align: center; }
+  .sh-info__tile { margin-bottom: 10px; }
+  .sh-info__title { font-size: 0.9375rem; font-weight: 700; line-height: 1.3; color: var(--color-text); }
+  .sh-info__desc { font-size: 0.8125rem; line-height: 1.4; color: var(--color-text-muted); }
+  .card.sh-how { margin-bottom: 28px; padding: 30px 32px; border-radius: 20px; }
+  .sh-how__head { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .sh-how__tile.tile { width: 40px; height: 40px; border-radius: 12px; }
+  .sh-how__title { margin: 0; font-size: 1.1875rem; font-weight: 800; color: var(--color-text); }
+  .sh-steps { display: flex; flex-direction: column; gap: 18px; margin: 0; padding: 0; list-style: none; }
+  .sh-step { display: flex; align-items: flex-start; gap: 14px; }
+  .sh-step__num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-hover));
+    color: var(--color-on-brand);
+    font-size: 0.875rem;
+    font-weight: 800;
+  }
+  .sh-step__title { font-size: 1rem; font-weight: 600; line-height: 1.4; color: var(--color-text); }
+  .sh-step__desc { margin-top: 2px; font-size: 0.90625rem; line-height: 1.55; color: var(--color-text-muted); }
+  .sh-start-wrap { text-align: center; }
+  .btn.sh-start { gap: 10px; min-height: 52px; padding: 0 40px; font-size: 1rem; font-weight: 700; }
+
+  /* ── Register ─────────────────────────────────────────────────────── */
+  .card.sh-register__head { margin-bottom: 24px; padding: 32px; border-radius: 20px; text-align: center; }
+  .sh-register__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-hover));
+    color: var(--color-on-brand);
+    box-shadow: 0 8px 22px var(--glow-brand);
+  }
+  .sh-register__title { margin: 0 0 8px; font-size: 1.625rem; font-weight: 800; line-height: 1.25; color: var(--color-text); }
+  .sh-register__desc { max-width: 520px; margin: 0 auto; font-size: 0.96875rem; line-height: 1.6; color: var(--color-text-muted); }
+  .sh-register__fields { display: flex; flex-direction: column; gap: 18px; margin-bottom: 24px; }
+  .sh-register .label.label--lg { font-size: 0.875rem; }
+  .sh-register .input.input--lg { min-height: 52px; font-size: 1rem; }
+  .sh-register__actions { display: flex; gap: 12px; }
+  .btn.sh-register__btn { min-height: 52px; padding: 0 24px; border-radius: 12px; font-size: 1rem; font-weight: 700; }
+  .btn.sh-register__submit { flex: 1; }
+  /* Bo'sh forma: kulrang fon o'rniga o'sha brend tugma, xiralashgan */
+  .btn.sh-register__submit:disabled { background: var(--color-brand-fill); color: var(--color-on-brand); opacity: 0.5; }
+  .sh-register__privacy { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 16px 0 0; font-size: 0.8125rem; line-height: 1.6; color: var(--color-text-muted); }
+
+  /* ── Quiz ─────────────────────────────────────────────────────────── */
+  .sh-progress { margin-bottom: 22px; }
+  .sh-progress__row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 0.875rem; color: var(--color-text-muted); }
+  .sh-progress__label { display: inline-flex; align-items: center; gap: 6px; }
+  .sh-progress__label > svg { color: var(--color-brand); }
+  .sh-progress__pct { font-weight: 700; color: var(--color-brand); }
+  .sh-progress__bar { height: 8px; overflow: hidden; border-radius: var(--radius-pill); background: var(--color-border); }
+  .sh-progress__fill {
+    width: var(--pct);
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, var(--color-brand-fill), var(--color-brand-hover));
+  }
+  .sh-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+  .sh-dot { width: 8px; height: 8px; border-radius: var(--radius-pill); background: var(--color-border); }
+  .sh-dot[data-state="done"] { background: var(--color-brand); }
+  .sh-dot[data-state="current"] { width: 22px; background: linear-gradient(90deg, var(--color-brand-fill), var(--color-brand-hover)); }
+  @media (prefers-reduced-motion: no-preference) {
+    .sh-progress__fill { transition: width 0.4s ease; }
+    .sh-dot { transition: width var(--duration-base), background-color var(--duration-base); }
+  }
+
+  .card.sh-question { margin-bottom: 18px; padding: 32px 36px; border-radius: 20px; text-align: center; }
+  .sh-question__tile { margin: 0 auto 16px; }
+  .sh-question__tile svg { width: 28px; height: 28px; }
+  .sh-question__text { margin: 0; font-size: 1.5rem; font-weight: 800; line-height: 1.4; color: var(--color-text); }
+
+  .sh-opts { display: flex; flex-direction: column; gap: 12px; }
+  .sh-opt {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 16px 20px;
+    border: 2px solid var(--color-border);
+    border-radius: 14px;
+    background: var(--color-surface-3);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--duration-base), background-color var(--duration-base), box-shadow var(--duration-base);
+  }
+  .sh-opt:disabled { cursor: default; }
+  /* Hover: faqat brend chegara (`scale(1.01)` olib tashlandi — layout siljimasin) */
+  .sh-opt:hover:not(:disabled, [data-selected="true"]) { border-color: var(--color-brand); }
+  .sh-opt[data-selected="true"] { border-color: var(--color-brand); background: var(--color-brand-subtle); box-shadow: 0 0 0 4px var(--ring-option); }
+  .sh-opt-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border: 2px solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-surface-2);
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: background-color var(--duration-base), border-color var(--duration-base), color var(--duration-base);
+  }
+  .sh-opt[data-selected="true"] .sh-opt-letter { border-color: var(--color-brand-fill); background: var(--color-brand-fill); color: var(--color-on-brand); }
+  .sh-opt-text { flex: 1; line-height: 1.5; }
+  .sh-opt-arrow { display: flex; flex: none; margin-left: auto; color: var(--color-brand); }
+
+  /* ── Result ───────────────────────────────────────────────────────── */
+  .wine-banner.sh-result-banner { margin: 0 0 28px; padding: 2.25rem 2rem; }
+  .sh-result-banner__hat { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
+  .sh-result-banner__hat svg:not(:nth-child(2)) { filter: drop-shadow(0 0 8px var(--glow-accent)); }
+  .wine-banner__title.sh-result-banner__title { margin: 0 0 8px; font-size: 1.875rem; }
+  .wine-banner__text.sh-result-banner__text { font-size: 1.03125rem; line-height: 1.6; }
+
+  .sh-facs { display: flex; flex-direction: column; gap: 20px; margin-bottom: 28px; }
+  .card.sh-fac { position: relative; display: flex; align-items: flex-start; gap: 20px; overflow: hidden; padding: 28px 30px; border-radius: 20px; }
+  .card.sh-fac[data-best="true"]::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--gradient-hairline); }
+  /* Hamma yo'nalishda bitta brend gradient (avval har yo'nalishning o'z rangi edi) */
+  .sh-fac__tile.tile {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-hover));
+    color: var(--color-on-brand);
+    box-shadow: 0 8px 20px var(--glow-brand);
+  }
+  .sh-fac__tile svg { width: 28px; height: 28px; }
+  .sh-fac__body { flex: 1; min-width: 0; }
+  .sh-fac__rank { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .sh-fac__medal { display: inline-flex; align-items: center; gap: 6px; font-size: 0.875rem; font-weight: 700; color: var(--color-brand); }
+  .sh-fac__best {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-size: 0.78125rem;
+    font-weight: 700;
+  }
+  .sh-fac__name { margin: 0 0 8px; font-size: 1.375rem; font-weight: 800; line-height: 1.25; color: var(--color-text); }
+  .sh-fac__desc { margin: 0 0 20px; font-size: 0.96875rem; line-height: 1.65; color: var(--color-text-muted); }
+  .sh-fac__lists { display: flex; flex-wrap: wrap; gap: 20px 32px; padding-top: 18px; border-top: 1px solid var(--color-border); }
+  .sh-fac__col { flex: 1 1 200px; min-width: 0; }
+  .sh-fac__list-title { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; font-size: 0.78125rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-brand); }
+  .sh-fac__list { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .sh-fac__list li { display: flex; align-items: center; gap: 6px; font-size: 0.9375rem; line-height: 1.45; color: var(--color-text-muted); }
+  .sh-fac__list li > svg { flex: none; color: var(--color-brand); }
+
+  .sh-cta { padding: 30px 32px; border: 1px solid var(--color-border); border-radius: 20px; background: var(--color-surface-2); }
+  .sh-cta__head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .sh-cta__tile.tile { width: 48px; height: 48px; border-radius: 14px; }
+  .sh-cta__text { margin: 0; font-size: 1rem; line-height: 1.7; color: var(--color-text-muted); }
+  .sh-cta__em { font-weight: 700; color: var(--color-brand); }
+  .sh-cta__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn.sh-cta__btn { flex: 1 1 auto; min-height: 50px; border-radius: 12px; font-size: 0.9375rem; font-weight: 700; }
+
+  @media (max-width: 640px) {
+    .sh-info { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card.sh-how, .sh-cta { padding: 24px 20px; }
+    .card.sh-question { padding: 24px 20px; }
+    .card.sh-fac { flex-direction: column; padding: 24px 20px; }
+    .sh-register__actions { flex-direction: column-reverse; }
+  }
+  @media (max-width: 768px) {
+    .sh-back { position: static; width: fit-content; margin: 0 0 18px 20px; }
+    .inner-hero.sh-hero { padding-top: 24px; }
   }
 }

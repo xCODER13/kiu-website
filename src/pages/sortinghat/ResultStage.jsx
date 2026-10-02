@@ -3,101 +3,85 @@ import { NavLink } from '../../i18n/router'
 import { IcStar, IcHat, IcGrad, IcArrow, IcFile, IcBulb, IcRefresh } from './Icons.jsx'
 import { FACULTIES, MEDALS, RANKS } from './Data'
 
-/* ── Result Stage ──────────────────────────────────────────── */
+const list = (t, key) => {
+  const v = t(key, { returnObjects: true })
+  return Array.isArray(v) ? v : []
+}
+
+/* ── Result Stage ──────────────────────────────────────────────
+   6.11d: yo'nalish kartalari bitta brend gradient/rangda (`FACULTIES[k].color/grad` endi stilda ishlatilmaydi — ma'lumot
+   Data.jsx da qoldi). Birinchi karta: tepada oltin hairline + "Eng mos" pill (doimiy); hover/glow — hamma kartada bir xil
+   (`.card--lift`). Natija ko'rsatilgach yaratiladi (async yuklashdan keyin) — shuning uchun `.reveal` ishlatilmaydi. */
 export default function ResultStage({ result, onRestart }) {
   const { t } = useTranslation()
   return (
     <div>
-      {/* result header */}
-      <div className="card" style={{ textAlign: 'center', marginBottom: '1.5rem', padding: '1.75rem', background: 'linear-gradient(135deg,color-mix(in srgb, var(--color-brand) 8%, transparent),color-mix(in srgb, var(--color-brand-hover) 8%, transparent))', borderColor: 'color-mix(in srgb, var(--color-brand) 25%, transparent)' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: '0.75rem' }}>
-          <IcStar s={20} />
-          <IcHat />
-          <IcStar s={20} />
+      <div className="wine-banner wine-banner--center sh-result-banner">
+        <div className="sh-result-banner__hat">
+          <IcStar s={22} />
+          <IcHat s={72} />
+          <IcStar s={22} />
         </div>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.4rem', fontFamily: 'var(--font-body)' }}>
-          {t('sortingHat.result.title')}
-        </h2>
-        <p style={{ fontSize: 13, color: 'var(--muted)' }}>
-          {t('sortingHat.result.desc')}
-        </p>
+        <h2 className="wine-banner__title sh-result-banner__title">{t('sortingHat.result.title')}</h2>
+        <p className="wine-banner__text sh-result-banner__text">{t('sortingHat.result.desc')}</p>
       </div>
 
-      {/* faculty cards */}
-      {result.map((key, idx) => {
-        const fac = FACULTIES[key]
-        if (!fac) return null
-        return (
-         <div key={key} className="card" style={{ marginBottom: '1.1rem', overflow: 'hidden', borderColor: fac.color + '50', position: 'relative' }}>
-            {/* top stripe */}
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: fac.grad }} />
-            <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', paddingTop: 6 }}>
-              {/* icon */}
-              <div style={{ width: 50, height: 50, borderRadius: 13, background: fac.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0, boxShadow: `0 4px 14px ${fac.color}40` }}>
-                {fac.icon}
-              </div>
-              <div style={{ flex: 1 }}>
-                {/* rank badge */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 5, flexWrap: 'wrap' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600, color: fac.color }}>
-                    {MEDALS[idx]} {t(`sortingHat.result.ranks.${RANKS[idx]}`)}
-                  </span>
+      <div className="sh-facs">
+        {result.map((key, idx) => {
+          const fac = FACULTIES[key]
+          if (!fac) return null
+          return (
+            <article key={key} className="card card--lift sh-fac" data-best={idx === 0}>
+              <span className="tile tile--60 sh-fac__tile">{fac.icon}</span>
+              <div className="sh-fac__body">
+                <div className="sh-fac__rank">
+                  <span className="sh-fac__medal">{MEDALS[idx]} {t(`sortingHat.result.ranks.${RANKS[idx]}`)}</span>
                   {idx === 0 && (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 10, background: fac.color + '18', color: fac.color, padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>
-                      <IcStar s={9} c={fac.color} /> {t('sortingHat.result.best')}
-                    </span>
+                    <span className="sh-fac__best"><IcStar s={12} c="currentColor" /> {t('sortingHat.result.best')}</span>
                   )}
                 </div>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text)', marginBottom: 6, fontFamily: 'var(--font-body)' }}>{t(`sortingHat.faculties.${key}.name`)}</h3>
-                <p style={{ fontSize: 12.5, color: 'var(--muted)', lineHeight: 1.65, marginBottom: '0.75rem' }}>{t(`sortingHat.faculties.${key}.desc`)}</p>
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1, minWidth: 150 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: fac.color, marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.05em', display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <IcGrad s={12} /> {t('sortingHat.result.careers')}
-                    </div>
-                    {t(`sortingHat.faculties.${key}.career`, { returnObjects: true }).map((c, i) => (
-                      <div key={i} style={{ fontSize: 11.5, color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 5, marginBottom: 3 }}>
-                        <IcArrow s={11} /> {c}
-                      </div>
-                    ))}
+                <h3 className="sh-fac__name">{t(`sortingHat.faculties.${key}.name`)}</h3>
+                <p className="sh-fac__desc">{t(`sortingHat.faculties.${key}.desc`)}</p>
+                <div className="sh-fac__lists">
+                  <div className="sh-fac__col">
+                    <h4 className="sh-fac__list-title"><IcGrad s={15} /> {t('sortingHat.result.careers')}</h4>
+                    <ul className="sh-fac__list">
+                      {list(t, `sortingHat.faculties.${key}.career`).map((c, i) => (
+                        <li key={i}><IcArrow s={13} /> {c}</li>
+                      ))}
+                    </ul>
                   </div>
-                  <div style={{ flex: 1, minWidth: 150 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: fac.color, marginBottom: 5, textTransform: 'uppercase', letterSpacing: '.05em', display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <IcFile s={12} /> {t('sortingHat.result.subjects')}
-                    </div>
-                    {t(`sortingHat.faculties.${key}.subjects`, { returnObjects: true }).map((s, i) => (
-                      <div key={i} style={{ fontSize: 11.5, color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 5, marginBottom: 3 }}>
-                        <IcArrow s={11} /> {s}
-                      </div>
-                    ))}
+                  <div className="sh-fac__col">
+                    <h4 className="sh-fac__list-title"><IcFile s={15} /> {t('sortingHat.result.subjects')}</h4>
+                    <ul className="sh-fac__list">
+                      {list(t, `sortingHat.faculties.${key}.subjects`).map((s, i) => (
+                        <li key={i}><IcArrow s={13} /> {s}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )
-      })}
+            </article>
+          )
+        })}
+      </div>
 
-      {/* bottom CTA */}
-      <div className="card" style={{ background: 'linear-gradient(135deg,color-mix(in srgb, var(--color-brand) 6%, transparent),color-mix(in srgb, var(--color-brand-hover) 6%, transparent))', borderColor: 'color-mix(in srgb, var(--color-brand) 20%, transparent)', textAlign: 'center', padding: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}><IcBulb s={26} /></div>
-        <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.7, marginBottom: '1rem' }}>
-          <Trans i18nKey="sortingHat.result.cta" components={{ b: <strong style={{ color: 'var(--color-brand)' }} /> }} />
-        </p>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <NavLink to="/faculty" style={{ textDecoration: 'none' }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-              <IcGrad s={15} /> {t('sortingHat.result.viewPrograms')}
-            </button>
+      <div className="sh-cta">
+        <div className="sh-cta__head">
+          <span className="tile sh-cta__tile"><IcBulb s={24} /></span>
+          <p className="sh-cta__text">
+            <Trans i18nKey="sortingHat.result.cta" components={{ b: <strong className="sh-cta__em" /> }} />
+          </p>
+        </div>
+        <div className="sh-cta__actions">
+          <NavLink to="/admission" className="btn btn-primary sh-cta__btn">
+            <IcFile s={17} /> {t('sortingHat.result.apply')}
           </NavLink>
-          <NavLink to="/admission" style={{ textDecoration: 'none' }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-              <IcFile s={15} /> {t('sortingHat.result.apply')}
-            </button>
+          <NavLink to="/faculty" className="btn btn-accent sh-cta__btn">
+            <IcGrad s={17} /> {t('sortingHat.result.viewPrograms')}
           </NavLink>
-          <button onClick={onRestart}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 22px', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-            <IcRefresh s={14} /> {t('sortingHat.result.restart')}
+          <button type="button" onClick={onRestart} className="btn btn-secondary sh-cta__btn">
+            <IcRefresh s={16} /> {t('sortingHat.result.restart')}
           </button>
         </div>
       </div>
