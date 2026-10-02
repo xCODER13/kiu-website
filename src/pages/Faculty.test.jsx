@@ -93,3 +93,34 @@ describe('Faculty (public)', () => {
     expect(document.activeElement).toBe(card)
   })
 })
+
+describe('Faculty — <style> inject va JS hover CSS ga ko\'chirilgan (Bosqich 5c)', () => {
+  it("`<style id=\"faculty-styles\">` endi hujjatga qo'shilmaydi", () => {
+    renderFaculty()
+    expect(document.getElementById('faculty-styles')).toBeNull()
+    expect(document.querySelectorAll('style')).toHaveLength(0)
+  })
+
+  it("karta: faqat dinamik qiymatlar inline (`--accent`, animation-delay); hover inline stilni o'zgartirmaydi", async () => {
+    const user = userEvent.setup()
+    renderFaculty()
+    const card = screen.getByText("Maktabgacha ta'lim").closest('.faculty-card')
+    expect(card).toHaveClass('card', 'faculty-card')
+    expect(card).toHaveAttribute('role', 'button')
+    const before = card.getAttribute('style')
+    expect(before).toMatch(/--accent:/)
+    const props = before.split(';').map(d => d.split(':')[0].trim()).filter(Boolean)
+    expect(props).toEqual(['--accent', 'animation-delay'])
+    await user.hover(card)
+    expect(card.getAttribute('style')).toBe(before)
+    await user.unhover(card)
+    expect(card.getAttribute('style')).toBe(before)
+  })
+
+  it("tab tugmalari klasslar bilan (`kiu-tab-*`)", () => {
+    const { container } = renderFaculty()
+    expect(container.querySelector('.kiu-tab-wrap')).toBeInTheDocument()
+    expect(container.querySelectorAll('.kiu-tab-btn')).toHaveLength(2)
+    expect(container.querySelectorAll('.kiu-tab-badge')).toHaveLength(2)
+  })
+})

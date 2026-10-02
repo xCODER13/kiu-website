@@ -51,10 +51,7 @@ export default function IntroStage({ onStart }) {
       </div>
 
       <div style={{ textAlign: 'center' }}>
-        <button onClick={onStart}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 36px', background: 'var(--gradient-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)', boxShadow: '0 4px 20px color-mix(in srgb, var(--color-brand) 40%, transparent)', transition: 'transform .2s' }}
-          onMouseEnter={e => e.currentTarget.style.transform='translateY(-2px)'}
-          onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}>
+        <button onClick={onStart} className="sh-start">
           <IcPlay s={18} /> {t('sortingHat.intro.start')}
         </button>
       </div>

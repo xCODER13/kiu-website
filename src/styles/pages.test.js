@@ -87,3 +87,87 @@ describe('vacancies/*, news/* manba kodi (Bosqich 5b)', () => {
     }
   })
 })
+
+describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
+  const global = read('src/styles/global.css').replace(/\/\*[\s\S]*?\*\//g, '')
+  const site = read('src/styles/site.css').replace(/\/\*[\s\S]*?\*\//g, '')
+  const tokens = read('src/styles/tokens.css')
+  const exists = f => { try { readFileSync(resolve(process.cwd(), f)); return true } catch { return false } }
+
+  it("`<style>` teglari va CSS-inject yo'q: Home, NewsDetail, Faculty, faculty-styles.js o'chirilgan", () => {
+    for (const f of ['src/pages/Home.jsx', 'src/pages/NewsDetail.jsx', 'src/pages/Faculty.jsx', 'src/pages/faculty/FacultyCard.jsx', 'src/pages/QRCode.jsx'])
+      expect(read(f), f).not.toMatch(/<style[\s>]|createElement\('style'\)/)
+    expect(exists('src/pages/faculty/faculty-styles.js')).toBe(false)
+    expect(read('src/pages/Faculty.jsx')).not.toMatch(/faculty-styles/)
+  })
+
+  it('keyframes pages.css ga ko\'chgan (Home, NewsDetail, Faculty); `spin` va `pulse` global.css da qolgan', () => {
+    for (const k of ['homeCarouselFade', 'homeSkelShimmer', 'homeSectionFadeIn', 'slide-in-right', 'slide-in-left', 'cardFadeIn'])
+      expect(code, k).toMatch(new RegExp(`@keyframes ${k} \\{`))
+    expect(global).toMatch(/@keyframes spin \{/)
+    expect(global).toMatch(/@keyframes pulse \{/)
+  })
+
+  it("Home hero qoidalari `!important`siz; qatlamsiz (global.css) bo'lgani uchun `.stats-grid` ni bosib o'tadi", () => {
+    expect(read('src/pages/Home.jsx')).not.toMatch(/!important/)
+    const hero = global.slice(global.indexOf('.hero-grid {'))
+    expect(hero).not.toMatch(/!important/)
+    expect(hero).toMatch(/\.hero-grid \.stats-grid \{ margin: 0; max-width: 480px; \}/)
+    expect(hero).toMatch(/@media \(max-width: 1080px\)[\s\S]*\.hero-grid \.stats-grid \{ grid-template-columns: repeat\(2, 1fr\); max-width: 320px; \}/)
+    expect(hero).toMatch(/@media \(max-width: 860px\)[\s\S]*\.hero-grid \{ grid-template-columns: 1fr; \}/)
+    // HeroSection'da bu qiymatlar inline emas
+    expect(read('src/pages/home/HeroSection.jsx')).not.toMatch(/gridTemplateColumns|maxWidth: 480/)
+  })
+
+  it("Faculty tab mobil qoidalari `!important`siz; `--card` (e'lon qilinmagan) o'rniga `transparent` (vizual farq 0)", () => {
+    expect(code).not.toMatch(/!important/)
+    expect(code).toMatch(/\.kiu-tab-wrap \{[^}]*background: transparent;/)
+    expect(code).not.toMatch(/var\(--card\)/)
+  })
+
+  it("karta hover'i CSS da: `.card.faculty-card:hover` (3 klass — `.card:is([role=button]):hover` ga teng, tartib hal qiladi)", () => {
+    expect(code).toMatch(/\.card\.faculty-card:hover \{[^}]*border-color: var\(--accent\);/)
+  })
+
+  it("SortingHat: tanlangan variant `data-selected`, hover `:not(:disabled, [data-selected])`; input fokusi `:focus`", () => {
+    expect(code).toMatch(/\.sh-opt\[data-selected="true"\] \{/)
+    expect(code).toMatch(/\.sh-opt:hover:not\(:disabled, \[data-selected="true"\]\)/)
+    expect(code).toMatch(/\.sh-start:hover \{ transform: translateY\(-2px\); \}/)
+    expect(code).toMatch(/\.input--lg:focus \{ border-color: var\(--color-brand\); \}/)
+  })
+
+  it("hover'lar CSS da: galereya o'qlari, orqaga tugmalari, ijtimoiy havola", () => {
+    expect(code).toMatch(/\.gallery-arrow:hover \{ background: rgb\(0 0 0 \/ 0\.7\); \}/)
+    expect(code).toMatch(/\.back-link:hover \{ opacity: 0\.7; \}/)
+    expect(code).toMatch(/\.back-btn:hover \{ opacity: 0\.85; \}/)
+    expect(code).toMatch(/\.social-link:hover \{ opacity: 0\.85; \}/)
+  })
+
+  it("`onMouseEnter/Leave/Focus/Blur` stil uchun ishlatilmaydi (Home news karuseli — faqat pauza mantig'i)", () => {
+    const files = [
+      'src/pages/NewsDetail.jsx', 'src/pages/QRCode.jsx', 'src/pages/faculty/FacultyCard.jsx',
+      'src/pages/sortinghat/IntroStage.jsx', 'src/pages/sortinghat/QuizStage.jsx', 'src/pages/sortinghat/RegisterStage.jsx',
+      'src/components/ApplyModal.jsx', 'src/components/TelegramPanel.jsx',
+    ]
+    for (const f of files) expect(read(f), f).not.toMatch(/onMouse(Enter|Leave)|onFocus|onBlur/)
+    const carousel = read('src/pages/home/NewsCarousel.jsx').match(/onMouse(Enter|Leave)=\{[^}]*\}/g)
+    expect(carousel).toEqual(['onMouseEnter={() => setPaused(true)}', 'onMouseLeave={() => setPaused(false)}'])
+  })
+
+  it("ApplyModal va TelegramPanel: inline stil yo'q, `errorBorder` ishlatilmaydi; klasslar site.css da, token orqali", () => {
+    for (const f of ['src/components/ApplyModal.jsx', 'src/components/TelegramPanel.jsx']) {
+      const src = read(f)
+      expect(src, f).not.toMatch(/style=\{/)
+      expect(src, f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+    }
+    expect(read('src/components/ApplyModal.jsx')).not.toMatch(/errorBorder/)
+    expect(read('src/pages/sortinghat/RegisterStage.jsx')).not.toMatch(/errorBorder/)
+    expect(site).toMatch(/\.modal-overlay \{[^}]*background: var\(--color-overlay\);[^}]*z-index: var\(--z-modal\);/)
+    expect(site).toMatch(/\.modal-alert \{[^}]*color-mix\(in srgb, var\(--color-danger\) 8%, transparent\)/)
+    // Telegram gradienti: ikkala uchi ham token (`-deep` EMAS — u boshqa qiymat, #006aa3)
+    expect(site).toMatch(/\.tg-avatar \{[^}]*linear-gradient\(135deg, var\(--brand-telegram\), var\(--brand-telegram-end\)\)/)
+    expect(site).toMatch(/\.tg-subscribe \{[^}]*linear-gradient\(135deg, var\(--brand-telegram\), var\(--brand-telegram-end\)\)/)
+    expect(tokens).toMatch(/--brand-telegram-end:\s*#0055aa/)
+    expect(tokens).toMatch(/--brand-telegram-deep:\s*#006aa3/)
+  })
+})

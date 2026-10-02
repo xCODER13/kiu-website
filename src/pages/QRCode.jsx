@@ -79,9 +79,7 @@ export default function QRCode() {
                 {/* Xatolik: rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab
                     bloklamaydi — tabnabbing'dan himoya uchun noopener qo'shildi */}
                 <a href={s.url} target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: s.gradient, color: 'var(--color-on-brand)', fontSize: 12, fontWeight: 600, padding: '9px 18px', borderRadius: 9, textDecoration: 'none', transition: 'opacity .2s' }}
-                  onMouseEnter={e => e.currentTarget.style.opacity='.85'}
-                  onMouseLeave={e => e.currentTarget.style.opacity='1'}>
+                  className="social-link" style={{ background: s.gradient }}>
                   {s.icon}
                   {t('qrcode.goTo', { name: s.name })}
                 </a>

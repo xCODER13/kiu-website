@@ -29,3 +29,15 @@ describe('TelegramPanel', () => {
     expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'))
   })
 })
+
+describe('TelegramPanel — inline stillar klassga ko\'chirilgan (Bosqich 5c)', () => {
+  it("`[style]` va `<style>` yo'q; struktura klasslar bilan", () => {
+    const { container } = render(<TelegramPanel />)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+    expect(document.querySelectorAll('style')).toHaveLength(0)
+    expect(container.firstChild).toHaveClass('tg-box')
+    expect(container.querySelectorAll('.tg-msg')).toHaveLength(4)
+    expect(container.querySelector('.tg-live')).toHaveTextContent('LIVE')
+    expect(screen.getByRole('link', { name: /Kanalga obuna bo'lish/ })).toHaveClass('tg-subscribe')
+  })
+})

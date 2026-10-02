@@ -15,7 +15,7 @@ export default function HeroSection() {
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.04, backgroundImage: 'radial-gradient(var(--color-brand) 1px, transparent 1px)', backgroundSize: '26px 26px', pointerEvents: 'none' }} />
 
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-        <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: '2.5rem', alignItems: 'center' }}>
+        <div className="hero-grid">
 
           {/* Chap — matn */}
           <div>
@@ -31,7 +31,7 @@ export default function HeroSection() {
               <NavLink to="/admission"><button className="btn btn-primary">{t('home.hero.ctaAdmission')}</button></NavLink>
               <NavLink to="/faculty"><button className="btn btn-secondary">{t('home.hero.ctaPrograms')}</button></NavLink>
             </div>
-            <div className="stats-grid reveal reveal-delay-4" style={{ margin: 0, maxWidth: 480 }}>
+            <div className="stats-grid reveal reveal-delay-4">
               {config.stats.map((s, i) => (
                 <div key={STAT_KEYS[i]} className="stat-item">
                   <div id={`stat-${i}`} style={{ fontSize: '1.5rem', fontWeight: 700, background: 'var(--gradient-brand-text)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>0</div>
@@ -42,7 +42,7 @@ export default function HeroSection() {
           </div>
 
           {/* O'ng — kampus rasmi (3:2 aspect-ratio — bino to'liq ko'rinadi, kesilmaydi) */}
-          <div className="reveal reveal-delay-2 hero-photo-wrap" style={{ position: 'relative' }}>
+          <div className="reveal reveal-delay-2 hero-photo-wrap">
             <div style={{ position: 'absolute', width: 200, height: 200, borderRadius: '50%', background: 'var(--color-brand)', opacity: 0.12, top: -30, right: -30, filter: 'blur(20px)', pointerEvents: 'none' }} />
             <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', boxShadow: '0 20px 50px color-mix(in srgb, var(--color-brand) 22%, transparent)', border: '1px solid color-mix(in srgb, var(--color-brand) 15%, transparent)', aspectRatio: '3 / 2' }}>
               <img

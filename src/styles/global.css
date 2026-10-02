@@ -232,3 +232,18 @@ details[open] .details-arrow { transform: rotate(180deg); }
 /* Logotip (Logo.jsx): rang currentColor'dan — Light/Dark'da token almashadi */
 .site-logo { display: block; flex-shrink: 0; color: var(--color-brand); }
 .site-logo--footer { color: var(--color-footer-logo); }
+
+/* Home hero (5c). Avval Home.jsx ichidagi <style> da `!important` bilan edi — sababi: (a) HeroSection'dagi inline
+   `gridTemplateColumns`/`maxWidth` va (b) shu faylning qatlamsiz `.stats-grid` qoidasi qatlamli qoidani bosib o'tadi.
+   Endi bazaviy qiymatlar inline'dan CSS'ga ko'chdi va qoidalar shu yerda (qatlamsiz), `.hero-grid .stats-grid`
+   (0,2,0) o'zi `.stats-grid` (0,1,0) dan kuchli — `!important` kerak emas. */
+.hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 2.5rem; align-items: center; }
+.hero-grid .stats-grid { margin: 0; max-width: 480px; }
+.hero-photo-wrap { position: relative; }
+@media (max-width: 1080px) {
+  .hero-grid .stats-grid { grid-template-columns: repeat(2, 1fr); max-width: 320px; }
+}
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-photo-wrap { order: -1; }
+}

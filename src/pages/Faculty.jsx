@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import './faculty/faculty-styles.js'
 import { IC } from './faculty/Icons.jsx'
 import { BAKALAVR, MAGISTRATURA } from './faculty/data'
 import FacultyCard from './faculty/FacultyCard.jsx'
