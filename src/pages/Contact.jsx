@@ -24,7 +24,7 @@ export default function Contact() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {items.map((item, i) => (
                 <div key={item.key} className={`card reveal reveal-delay-${i + 1}`} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div className="cc-icon" style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7c3aed', flexShrink: 0 }}>
+                  <div className="cc-icon" style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-brand)', flexShrink: 0 }}>
                     {item.icon}
                   </div>
                   <div>

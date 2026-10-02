@@ -59,21 +59,21 @@ export default function TelegramPanel() {
 
       {/* Head */}
       <div className="tg-head" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '.9rem 1.1rem', background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #0088cc, #0055aa)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+        <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #0088cc, #0055aa)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0 }}>
           <TgIcon />
         </div>
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: '#1a1a2e' }}>{config.telegram.username}</div>
           <div style={{ fontSize: 11, color: 'var(--muted)' }}>{t('telegram.channel')}</div>
         </div>
-        <span style={{ marginLeft: 'auto', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: '#fff', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20 }}>LIVE</span>
+        <span style={{ marginLeft: 'auto', background: 'linear-gradient(135deg, var(--color-brand), var(--color-brand-hover))', color: 'var(--color-on-brand)', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 20 }}>LIVE</span>
       </div>
 
       {/* Messages */}
       <div style={{ padding: '1rem 1.1rem', display: 'flex', flexDirection: 'column', gap: 9 }}>
         {posts.map(p => (
           <div key={p.id} className="tg-msg" style={{ background: '#faf5ff', borderRadius: '12px 12px 12px 4px', padding: '9px 11px', border: '1px solid var(--border)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <div className="tg-msg-icon" style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#7c3aed', flexShrink: 0, border: '1px solid var(--border)' }}>
+            <div className="tg-msg-icon" style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-brand)', flexShrink: 0, border: '1px solid var(--border)' }}>
               <PostIcon type={p.type} />
             </div>
             <div style={{ flex: 1 }}>
@@ -89,7 +89,7 @@ export default function TelegramPanel() {
         {/* rel="noreferrer" yolg'iz o'zi window.opener'ni kafolatlab bloklamaydi —
             noopener ham qo'shildi (tabnabbing'dan himoya, Documents.jsx'dagi bilan bir xil tuzatish) */}
         <a href={config.telegram.url} target="_blank" rel="noopener noreferrer"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'linear-gradient(135deg, #0088cc, #0055aa)', color: '#fff', fontSize: 12, fontWeight: 600, padding: '8px 18px', borderRadius: 8, textDecoration: 'none' }}>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'linear-gradient(135deg, #0088cc, #0055aa)', color: 'var(--color-on-brand)', fontSize: 12, fontWeight: 600, padding: '8px 18px', borderRadius: 8, textDecoration: 'none' }}>
           <TgIcon />
           {t('telegram.subscribe')}
         </a>

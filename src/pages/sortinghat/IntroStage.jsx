@@ -29,7 +29,7 @@ export default function IntroStage({ onStart }) {
       </div>
 
       {/* how it works */}
-      <div className="card" style={{ marginBottom: '1.5rem', borderColor: 'rgba(124,58,237,.25)' }}>
+      <div className="card" style={{ marginBottom: '1.5rem', borderColor: 'color-mix(in srgb, var(--color-brand) 25%, transparent)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: '1rem' }}>
           <IcBulb s={20} />
           <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', fontFamily: 'var(--font-body)' }}>{t('sortingHat.intro.howTitle')}</h3>
@@ -41,7 +41,7 @@ export default function IntroStage({ onStart }) {
           { n: '4', t: t('sortingHat.intro.steps.4.title'), d: t('sortingHat.intro.steps.4.desc') },
         ].map((s, i) => (
           <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: i < 3 ? '0.7rem' : 0 }}>
-            <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{s.n}</div>
+            <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{s.n}</div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{s.t}</div>
               <div style={{ fontSize: 11, color: 'var(--muted)' }}>{s.d}</div>
@@ -52,7 +52,7 @@ export default function IntroStage({ onStart }) {
 
       <div style={{ textAlign: 'center' }}>
         <button onClick={onStart}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 36px', background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)', boxShadow: '0 4px 20px rgba(124,58,237,.4)', transition: 'transform .2s' }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 36px', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', color: 'var(--color-on-brand)', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)', boxShadow: '0 4px 20px color-mix(in srgb, var(--color-brand) 40%, transparent)', transition: 'transform .2s' }}
           onMouseEnter={e => e.currentTarget.style.transform='translateY(-2px)'}
           onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}>
           <IcPlay s={18} /> {t('sortingHat.intro.start')}

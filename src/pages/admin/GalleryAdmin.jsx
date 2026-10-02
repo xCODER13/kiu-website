@@ -74,8 +74,8 @@ export default function GalleryAdmin() {
       </div>
 
       {open && (
-        <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#7c3aed' }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : 'Yangi albom'}</h3>
+        <div style={{ ...card, marginBottom: '1.5rem', borderColor: 'var(--color-brand)' }}>
+          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-brand)', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : 'Yangi albom'}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <div><label style={lbl}>Nomi *</label><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="1-kampus" style={inp} /></div>
@@ -84,7 +84,7 @@ export default function GalleryAdmin() {
 
             <div>
               <label style={lbl}>Rasmlar ({imagePreviews.length} ta) *</label>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #7c3aed', color: '#7c3aed', background: 'rgba(124,58,237,.05)' }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed var(--color-brand)', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 5%, transparent)' }}>
                 {Ic.photo}
                 Rasm qo'shish
                 <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleFileSelect} style={{ display: 'none' }} />
@@ -97,20 +97,20 @@ export default function GalleryAdmin() {
                 {imagePreviews.map((p, i) => (
                   <div key={i} style={{ position: 'relative' }}>
                     <img src={p.url} alt={`rasm-${i + 1}`} loading="lazy" style={{ width: 90, height: 70, objectFit: 'cover', borderRadius: 8, border: '2px solid ' + (p.isNew ? '#7c3aed' : '#e5e7eb'), display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
-                    {p.isNew && <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 9, fontWeight: 700, background: '#7c3aed', color: '#fff', padding: '1px 5px', borderRadius: 10 }}>YANGI</span>}
-                    <button onClick={() => removeImage(i)} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', textAlign: 'center', padding: 0 }}>×</button>
+                    {p.isNew && <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 9, fontWeight: 700, background: 'var(--color-brand)', color: 'var(--color-on-brand)', padding: '1px 5px', borderRadius: 10 }}>YANGI</span>}
+                    <button onClick={() => removeImage(i)} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: 'var(--color-danger)', color: 'var(--color-on-brand)', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', textAlign: 'center', padding: 0 }}>×</button>
                   </div>
                 ))}
               </div>
             )}
 
-            <div style={{ padding: '0.75rem', background: 'rgba(124,58,237,.05)', borderRadius: 8, border: '1px solid rgba(124,58,237,.15)', fontSize: 12, color: 'var(--muted)' }}>
+            <div style={{ padding: '0.75rem', background: 'color-mix(in srgb, var(--color-brand) 5%, transparent)', borderRadius: 8, border: '1px solid color-mix(in srgb, var(--color-brand) 15%, transparent)', fontSize: 12, color: 'var(--muted)' }}>
               Bir albomga bir nechta rasm qo'shish mumkin — masalan bir binoning turli burchaklardan olingan suratlari.
             </div>
 
             {uploading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#7c3aed' }}>
-                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--color-brand)' }}>
+                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: 'var(--color-brand)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
                 Saqlanmoqda...
               </div>
             )}

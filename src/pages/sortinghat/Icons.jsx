@@ -1,13 +1,13 @@
 // ── SVG ICONS ──────────────────────────────────────────────
 export const IcHat = () => (
   <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="80" height="80">
-    <ellipse cx="40" cy="66" rx="28" ry="8" fill="#4f46e5" opacity=".35"/>
-    <ellipse cx="40" cy="60" rx="30" ry="9" fill="#7c3aed"/>
-    <path d="M40 8 L64 58 H16 Z" fill="#4f46e5"/>
+    <ellipse cx="40" cy="66" rx="28" ry="8" fill="var(--color-brand-hover)" opacity=".35"/>
+    <ellipse cx="40" cy="60" rx="30" ry="9" fill="var(--color-brand)"/>
+    <path d="M40 8 L64 58 H16 Z" fill="var(--color-brand-hover)"/>
     <path d="M40 8 L56 48 H24 Z" fill="#6d28d9"/>
-    <rect x="11" y="57" width="58" height="8" rx="4" fill="#7c3aed"/>
-    <path d="M35 36 Q40 30 45 36 Q40 33 35 36Z" fill="#C8960C" opacity=".9"/>
-    <circle cx="40" cy="11" r="4" fill="#C8960C"/>
+    <rect x="11" y="57" width="58" height="8" rx="4" fill="var(--color-brand)"/>
+    <path d="M35 36 Q40 30 45 36 Q40 33 35 36Z" fill="var(--color-accent)" opacity=".9"/>
+    <circle cx="40" cy="11" r="4" fill="var(--color-accent)"/>
     <circle cx="40" cy="11" r="2" fill="#fff" opacity=".5"/>
   </svg>
 )
@@ -19,7 +19,7 @@ export const IcStar = ({ s = 14, c = '#C8960C' }) => (
 )
 
 export const IcQuestion = () => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10"/>
     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
     <line x1="12" y1="17" x2="12.01" y2="17"/>
@@ -96,7 +96,7 @@ export const IcFile = ({ s = 16 }) => (
 )
 
 export const IcBulb = ({ s = 28 }) => (
-  <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="9" y1="18" x2="15" y2="18"/>
     <line x1="10" y1="22" x2="14" y2="22"/>
     <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>

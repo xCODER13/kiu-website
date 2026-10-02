@@ -147,7 +147,7 @@ export default function Stats() {
       <div style={{ ...card, marginBottom: 12 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginBottom: 12 }}>
           <div style={sectionCardTitle}>
-            <span style={{ color: '#7c3aed' }}>{Ic.stats}</span>
+            <span style={{ color: 'var(--color-brand)' }}>{Ic.stats}</span>
             Arizalar trendi
           </div>
           <div style={{ display: 'flex', gap: 6 }} role="group" aria-label="Vaqt oralig'ini tanlash">
@@ -174,8 +174,8 @@ export default function Stats() {
               dateLabel={dateLabel}
             />
             <div style={{ display: 'flex', gap: 16, marginTop: 8, fontSize: 11, color: 'var(--muted)' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: '#059669', display: 'inline-block' }} />Qabul arizalari</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4f46e5', display: 'inline-block' }} />Vakansiya arizalari</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-success)', display: 'inline-block' }} />Qabul arizalari</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-brand-hover)', display: 'inline-block' }} />Vakansiya arizalari</span>
             </div>
           </>
         )}
@@ -199,7 +199,7 @@ export default function Stats() {
         </div>
 
         <div style={card}>
-          <div style={sectionCardTitle}><span style={{ color: '#7c3aed' }}>{Ic.teach}</span>Sehrli shlyapa yo'nalish tavsiyalari</div>
+          <div style={sectionCardTitle}><span style={{ color: 'var(--color-brand)' }}>{Ic.teach}</span>Sehrli shlyapa yo'nalish tavsiyalari</div>
           {sortingHatError ? <p style={errorText}>Yuklashda xatolik yuz berdi.</p>
             : !sortingHat ? <p style={loadingText}>Yuklanmoqda...</p>
             : (
@@ -211,7 +211,7 @@ export default function Stats() {
         </div>
 
         <div style={card}>
-          <div style={sectionCardTitle}><span style={{ color: '#059669' }}>{Ic.apps}</span>Eng ko'p ariza tushgan yo'nalishlar</div>
+          <div style={sectionCardTitle}><span style={{ color: 'var(--color-success)' }}>{Ic.apps}</span>Eng ko'p ariza tushgan yo'nalishlar</div>
           {appFacultiesError ? <p style={errorText}>Yuklashda xatolik yuz berdi.</p>
             : !appFaculties ? <p style={loadingText}>Yuklanmoqda...</p>
             : (

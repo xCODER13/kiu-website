@@ -46,14 +46,14 @@ export default function HomeNewsCarousel({ items }) {
 
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1.75rem 2rem', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {item.category && (
-          <span style={{ alignSelf: 'flex-start', fontSize: 10, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: '#fff', background: catColor, padding: '3px 11px', borderRadius: 20 }}>
+          <span style={{ alignSelf: 'flex-start', fontSize: 10, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-on-brand)', background: catColor, padding: '3px 11px', borderRadius: 20 }}>
             {getCategoryLabel(item.category, t)}
           </span>
         )}
-        <h3 lang="uz" style={{ fontSize: 'clamp(1.1rem, 2.6vw, 1.5rem)', fontWeight: 700, color: '#fff', lineHeight: 1.3, maxWidth: 560 }}>
+        <h3 lang="uz" style={{ fontSize: 'clamp(1.1rem, 2.6vw, 1.5rem)', fontWeight: 700, color: 'var(--color-on-brand)', lineHeight: 1.3, maxWidth: 560 }}>
           {item.title}
         </h3>
-        <NavLink to={`/news/${item._id}`} style={{ marginTop: 6, alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: '#fff', background: 'rgba(255,255,255,.15)', border: '1px solid rgba(255,255,255,.3)', padding: '7px 16px', borderRadius: 8, backdropFilter: 'blur(6px)', textDecoration: 'none' }}>
+        <NavLink to={`/news/${item._id}`} style={{ marginTop: 6, alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: 'var(--color-on-brand)', background: 'rgba(255,255,255,.15)', border: '1px solid rgba(255,255,255,.3)', padding: '7px 16px', borderRadius: 8, backdropFilter: 'blur(6px)', textDecoration: 'none' }}>
           {t('home.news.more')}
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </NavLink>

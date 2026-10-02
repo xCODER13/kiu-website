@@ -15,7 +15,7 @@ export default function NewsTab({
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--muted)' }}>
-        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--color-brand)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
         {t('common.loading')}
         <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
       </div>
@@ -47,7 +47,7 @@ export default function NewsTab({
           <TelegramPanel />
         </div>
         <a href="https://t.me/kiu_uz" target="_blank" rel="noreferrer"
-          style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginTop: '0.75rem', display: 'inline-block' }}>
+          style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-brand)', marginTop: '0.75rem', display: 'inline-block' }}>
           {t('news.allNews')}
         </a>
       </div>
@@ -58,7 +58,7 @@ export default function NewsTab({
           {error && (
             <div style={{
               textAlign: 'center', padding: '0.75rem', marginBottom: '1rem',
-              background: 'rgba(124,58,237,.06)', borderRadius: 10, fontSize: 13,
+              background: 'color-mix(in srgb, var(--color-brand) 6%, transparent)', borderRadius: 10, fontSize: 13,
               color: 'var(--muted)', border: '1px solid var(--border)',
             }}>
               {t('news.offline')}
@@ -122,8 +122,8 @@ export default function NewsTab({
                 <div style={{ textAlign: 'center' }}>
                   <button onClick={() => setVisibleCount(v => v + 6)} style={{
                     padding: '10px 28px',
-                    background: 'linear-gradient(135deg,#7c3aed,#4f46e5)',
-                    color: '#fff', border: 'none', borderRadius: 10,
+                    background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))',
+                    color: 'var(--color-on-brand)', border: 'none', borderRadius: 10,
                     fontSize: 13, fontWeight: 600, cursor: 'pointer',
                     fontFamily: 'var(--font-body)',
                   }}>

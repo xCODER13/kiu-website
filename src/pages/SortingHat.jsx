@@ -72,7 +72,7 @@ export default function SortingHat() {
       chalkash va E2E testlarda ham "button" sifatida topilib, aslida
       havola ekanligi bilinmay qolishiga olib keladi. Endi NavLink o'zi
       to'g'ridan-to'g'ri pill ko'rinishida (ichida qo'shimcha button yo'q). */}
-  <NavLink to="/admission" className="section-badge" style={{ textDecoration: 'none', position: 'absolute', top: '1rem', left: '1rem', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'rgba(124,58,237,.25)', color: '#7c3aed', border: '1px solid rgba(124,58,237,.2)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+  <NavLink to="/admission" className="section-badge" style={{ textDecoration: 'none', position: 'absolute', top: '1rem', left: '1rem', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', background: 'color-mix(in srgb, var(--color-brand) 25%, transparent)', color: 'var(--color-brand)', border: '1px solid color-mix(in srgb, var(--color-brand) 20%, transparent)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="19" y1="12" x2="5" y2="12"/>
       <polyline points="12 19 5 12 12 5"/>
@@ -82,7 +82,7 @@ export default function SortingHat() {
 
   <div style={{ position: 'relative', zIndex: 1 }}>
     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}><IcHat /></div>
-    <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: '#7c3aed', background: 'rgba(124,58,237,.25)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid rgba(124,58,237,.2)' }}>
+    <div className="section-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.72rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 25%, transparent)', padding: '5px 14px', borderRadius: 20, marginBottom: '1rem', border: '1px solid color-mix(in srgb, var(--color-brand) 20%, transparent)' }}>
       <IcStar s={11} c="#7c3aed" /> {t('sortingHat.badge')} <IcStar s={11} c="#7c3aed" />
     </div>
     <h1 style={{ fontSize: '2rem', color: '#1a1a2e', marginBottom: '0.6rem', fontFamily: 'var(--font-body)', fontWeight: 700 }}>

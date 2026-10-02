@@ -59,7 +59,7 @@ export default function Admission({ onApply }) {
           {/* Banner */}
           <div className="reveal" style={{ background: 'linear-gradient(135deg, #1a1a2e, #2d1b69)', borderRadius: 16, padding: '2.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
             <div>
-              <h2 style={{ color: '#fff', fontSize: '1.4rem', marginBottom: '.35rem' }}>
+              <h2 style={{ color: 'var(--color-on-brand)', fontSize: '1.4rem', marginBottom: '.35rem' }}>
                 {t('admission.banner')}
               </h2>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,.6)' }}>
@@ -88,10 +88,10 @@ export default function Admission({ onApply }) {
           <div className="grid-auto">
             {STEPS.map((s, i) => (
               <div key={s.key} className={`card reveal reveal-delay-${i + 1}`}>
-                <div className="step-icon" style={{ width: 42, height: 42, borderRadius: 10, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10, color: '#7c3aed' }}>
+                <div className="step-icon" style={{ width: 42, height: 42, borderRadius: 10, background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10, color: 'var(--color-brand)' }}>
                   {s.icon}
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 9px', borderRadius: 20, display: 'inline-block', marginBottom: 8 }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 10%, transparent)', padding: '2px 9px', borderRadius: 20, display: 'inline-block', marginBottom: 8 }}>
                   {t('admission.stepN', { n: i + 1 })}
                 </span>
                 <h3 style={{ fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)', marginBottom: 3 }}>

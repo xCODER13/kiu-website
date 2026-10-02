@@ -65,15 +65,15 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 .btn:hover { opacity: 0.88; transform: translateY(-1px); }
 .btn-primary {
   background: linear-gradient(135deg, var(--purple), var(--purple-2));
-  color: #fff;
-  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+  color: var(--color-on-brand);
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--color-brand) 30%, transparent);
 }
 .btn-secondary {
   background: #fff;
   color: var(--purple);
   border: 1.5px solid var(--purple);
 }
-.btn-gold { background: var(--gold); color: #fff; }
+.btn-gold { background: var(--gold); color: var(--color-on-brand); }
 
 /* Cards */
 .card {
@@ -85,7 +85,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 }
 .card:hover {
   border-color: var(--purple);
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-brand) 10%, transparent);
   transform: translateY(-2px);
 }
 
@@ -121,8 +121,8 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
   background: #fff;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 30px rgba(124, 58, 237, 0.12);
-  border: 1px solid rgba(124, 58, 237, 0.1);
+  box-shadow: 0 4px 30px color-mix(in srgb, var(--color-brand) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-brand) 10%, transparent);
 }
 .stat-item {
   padding: 1.1rem;
@@ -157,8 +157,8 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 /* Til almashtirgich (UZ | EN) */
 .lang-switch { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .lang-switch-item { font-size: 11px; font-weight: 600; letter-spacing: .04em; padding: 6px 9px; color: var(--muted); line-height: 1.2; transition: background .2s, color .2s; }
-a.lang-switch-item:hover { color: #7c3aed; background: rgba(124,58,237,.08); }
-.lang-switch-item.active { background: #7c3aed; color: #fff; }
+a.lang-switch-item:hover { color: var(--color-brand); background: color-mix(in srgb, var(--color-brand) 8%, transparent); }
+.lang-switch-item.active { background: var(--color-brand); color: var(--color-on-brand); }
 .lang-switch--menu { align-self: flex-start; margin-bottom: .5rem; }
 .lang-switch--menu .lang-switch-item { font-size: 13px; padding: 8px 16px; }
 
@@ -187,7 +187,7 @@ a.lang-switch-item:hover { color: #7c3aed; background: rgba(124,58,237,.08); }
   --bg-2:         #1a1a2e;
   --text:         #e8e8f0;
   --muted:        #9ca3af;
-  --border:       rgba(124, 58, 237, 0.25);
+  --border:       color-mix(in srgb, var(--color-brand) 25%, transparent);
   --purple-pale:  #1e1b4b;
   --purple-light: #2d1b69;
 }
@@ -202,12 +202,12 @@ a.lang-switch-item:hover { color: #7c3aed; background: rgba(124,58,237,.08); }
 
 [data-theme="dark"] nav {
   background: rgba(15,15,26,0.97) !important;
-  border-bottom-color: rgba(124,58,237,0.2) !important;
+  border-bottom-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
 }
 
 [data-theme="dark"] .card {
   background: #1a1a2e !important;
-  border-color: rgba(124,58,237,0.2) !important;
+  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   color: #e8e8f0;
 }
 
@@ -234,7 +234,7 @@ a.lang-switch-item:hover { color: #7c3aed; background: rgba(124,58,237,.08); }
 
 [data-theme="dark"] .tg-box {
   background: #1a1a2e !important;
-  border-color: rgba(124,58,237,0.2) !important;
+  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
 }
 
 [data-theme="dark"] .tg-box p,
@@ -242,43 +242,43 @@ a.lang-switch-item:hover { color: #7c3aed; background: rgba(124,58,237,.08); }
 
 [data-theme="dark"] .stats-grid {
   background: #1a1a2e !important;
-  border-color: rgba(124,58,237,0.2) !important;
+  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
 }
 
-[data-theme="dark"] .stat-item { border-color: rgba(124,58,237,0.2) !important; }
+[data-theme="dark"] .stat-item { border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important; }
 [data-theme="dark"] .stat-l { color: #9ca3af !important; }
 [data-theme="dark"] .fac-icon,
 [data-theme="dark"] .cc-icon,
 [data-theme="dark"] .step-icon {
   background: linear-gradient(135deg, #2d1b69, #1e1b4b) !important;
-  border-color: rgba(124,58,237,0.3) !important;
+  border-color: color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
 }
 
 [data-theme="dark"] .tg-head {
   background: linear-gradient(135deg, #1e1b4b, #2d1b69) !important;
-  border-bottom-color: rgba(124,58,237,0.2) !important;
+  border-bottom-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
 }
 
 [data-theme="dark"] .tg-msg {
   background: #2d1b69 !important;
-  border-color: rgba(124,58,237,0.2) !important;
+  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
 }
 
 [data-theme="dark"] .tg-msg p { color: #e8e8f0 !important; }
 
 [data-theme="dark"] .tg-foot {
-  border-top-color: rgba(124,58,237,0.2) !important;
+  border-top-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   background: #1a1a2e !important;
 }
 [data-theme="dark"] .tg-msg-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
-  border-color: rgba(124, 58, 237, 0.3) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .tg-msg {
-  background: rgba(124, 58, 237, 0.15) !important;
-  border-color: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
 }
 
 [data-theme="dark"] .tg-msg p { color: #e8e8f0 !important; }
@@ -291,45 +291,45 @@ a.lang-switch-item:hover { color: #7c3aed; background: rgba(124,58,237,.08); }
 [data-theme="dark"] .tg-head div { color: #e8e8f0 !important; }
 [data-theme="dark"] .tg-head span { color: #9ca3af !important; }
 [data-theme="dark"] .fac-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
-  border: 1px solid rgba(124, 58, 237, 0.3) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .cc-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
-  border: 1px solid rgba(124, 58, 237, 0.3) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .step-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
-  border: 1px solid rgba(124, 58, 237, 0.3) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
   color: #a78bfa !important;
 }
 [data-theme="dark"] .fac-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .cc-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .step-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .nav-logo-mark,
 [data-theme="dark"] img[alt="KIU logo"] {
-  background: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   border-radius: 8px;
 }
 [data-theme="dark"] .nav-logo-img {
-  background: rgba(124, 58, 237, 0.15) !important;
-  border: 1px solid rgba(124, 58, 237, 0.3) !important;
+  background: color-mix(in srgb, var(--color-brand) 15%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
 }
 [data-theme="dark"] .nav-logo-img {
   background: transparent !important;
@@ -346,34 +346,34 @@ a.lang-switch-item:hover { color: #7c3aed; background: rgba(124,58,237,.08); }
   background: #c4b5fd !important;
 }
 [data-theme="dark"] .achieve-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
-  border: 1px solid rgba(124, 58, 237, 0.3) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--color-brand) 30%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .vacancy-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .about-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .hemis-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .doc-icon {
-  background: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
   color: #a78bfa !important;
 }
 
 [data-theme="dark"] .partner-flag {
-  background: rgba(124, 58, 237, 0.15) !important;
-  border-color: rgba(124, 58, 237, 0.2) !important;
+  background: color-mix(in srgb, var(--color-brand) 15%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-brand) 20%, transparent) !important;
 }
 
 [data-theme="dark"] .teacher-avatar {
@@ -469,7 +469,7 @@ details[open] .details-arrow { transform: rotate(180deg); }
    joriy sahifa ustidan hover qilinsa ham to'liq purple ko'rinadi */
 .nav-group-item:hover {
   background: var(--purple);
-  color: #fff;
+  color: var(--color-on-brand);
   border-left-color: var(--purple);
   font-weight: 600;
 }

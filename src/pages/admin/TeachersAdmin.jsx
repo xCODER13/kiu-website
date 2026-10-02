@@ -86,8 +86,8 @@ export default function TeachersAdmin() {
       </div>
 
       {open && (
-        <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#7c3aed' }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : "Yangi o'qituvchi"}</h3>
+        <div style={{ ...card, marginBottom: '1.5rem', borderColor: 'var(--color-brand)' }}>
+          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-brand)', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : "Yangi o'qituvchi"}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div><label style={lbl}>To'liq ism *</label><input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Familiya Ism Sharif" style={inp} /></div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -97,15 +97,15 @@ export default function TeachersAdmin() {
 
             <div>
               <label style={lbl}>Foto (ixtiyoriy)</label>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #7c3aed', color: '#7c3aed', background: 'rgba(124,58,237,.05)' }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed var(--color-brand)', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 5%, transparent)' }}>
                 {Ic.photo}
                 {imagePreview ? 'Fotoni almashtirish' : "Foto qo'shish"}
                 <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageSelect} style={{ display: 'none' }} />
               </label>
               {imagePreview && (
                 <div style={{ position: 'relative', display: 'inline-block', marginLeft: 10, verticalAlign: 'middle' }}>
-                  <img src={imagePreview} alt="foto" loading="lazy" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '2px solid #7c3aed', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
-                  <button onClick={removeImage} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
+                  <img src={imagePreview} alt="foto" loading="lazy" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '2px solid var(--color-brand)', display: 'block' }} onError={e => e.target.style.opacity = '0.3'} />
+                  <button onClick={removeImage} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -4, right: -4, width: 18, height: 18, borderRadius: '50%', background: 'var(--color-danger)', color: 'var(--color-on-brand)', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', padding: 0 }}>×</button>
                 </div>
               )}
               <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 3 }}>JPEG, PNG, WebP · maks 5 MB · rasm bo'lmasa 2-harfli avatar ko'rsatiladi</div>
@@ -118,8 +118,8 @@ export default function TeachersAdmin() {
               </select>
             </div>
             {uploading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#7c3aed' }}>
-                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--color-brand)' }}>
+                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: 'var(--color-brand)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
                 Saqlanmoqda...
               </div>
             )}
@@ -136,18 +136,18 @@ export default function TeachersAdmin() {
         {teachers.map((t, i) => (
           <div key={t._id} style={card}>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: '0.75rem' }}>
-              <div style={{ width: 42, height: 42, borderRadius: '50%', overflow: 'hidden', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+              <div style={{ width: 42, height: 42, borderRadius: '50%', overflow: 'hidden', background: colors[i % colors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
                 {t.image
                   ? <img src={t.image} alt={t.name} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={ev => { ev.target.style.display = 'none' }} />
                   : (t.avatar || t.name?.slice(0,2).toUpperCase())}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.name}</div>
-                <div style={{ fontSize: 11, color: '#7c3aed' }}>{t.role}</div>
+                <div style={{ fontSize: 11, color: 'var(--color-brand)' }}>{t.role}</div>
               </div>
             </div>
             <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 4 }}>{t.dept}</div>
-            {t.email && <div style={{ fontSize: 11, color: '#7c3aed', marginBottom: '0.75rem' }}>{t.email}</div>}
+            {t.email && <div style={{ fontSize: 11, color: 'var(--color-brand)', marginBottom: '0.75rem' }}>{t.email}</div>}
             <div style={{ display: 'flex', gap: 6 }}>
               <button style={bE} onClick={() => {
                 setEdit(t._id)

@@ -39,8 +39,8 @@ export default function FAQ() {
                 onClick={() => setOpen(open === i ? null : i)}
                 style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.1rem 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: 12 }}
               >
-                <span style={{ fontSize: 14, fontWeight: 600, color: open === i ? '#7c3aed' : 'var(--text)' }}>{faq.q}</span>
-                <div style={{ width: 24, height: 24, borderRadius: '50%', background: open === i ? 'linear-gradient(135deg,#7c3aed,#4f46e5)' : 'var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all .2s' }}>
+                <span style={{ fontSize: 14, fontWeight: 600, color: open === i ? 'var(--color-brand)' : 'var(--text)' }}>{faq.q}</span>
+                <div style={{ width: 24, height: 24, borderRadius: '50%', background: open === i ? 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))' : 'var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all .2s' }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={open === i ? '#fff' : '#7c3aed'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     {open === i ? <polyline points="18 15 12 9 6 15"/> : <polyline points="6 9 12 15 18 9"/>}
                   </svg>

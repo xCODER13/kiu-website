@@ -78,14 +78,14 @@ function ImageCarousel({ imgs, title }) {
         `}</style>
 
         {/* Counter */}
-        <div style={{ position: 'absolute', top: 12, right: 14, background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 12, fontWeight: 500, padding: '3px 10px', borderRadius: 20, backdropFilter: 'blur(4px)' }}>
+        <div style={{ position: 'absolute', top: 12, right: 14, background: 'rgba(0,0,0,.45)', color: 'var(--color-on-brand)', fontSize: 12, fontWeight: 500, padding: '3px 10px', borderRadius: 20, backdropFilter: 'blur(4px)' }}>
           {cur + 1} / {imgs.length}
         </div>
 
         {/* Arrows */}
-        <button onClick={prev} aria-label={t('news.prevImage')} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
+        <button onClick={prev} aria-label={t('news.prevImage')} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: 'var(--color-on-brand)', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
           onMouseEnter={e => e.target.style.background='rgba(0,0,0,.7)'} onMouseLeave={e => e.target.style.background='rgba(0,0,0,.45)'}>‹</button>
-        <button onClick={next} aria-label={t('news.nextImage')} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: '#fff', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
+        <button onClick={next} aria-label={t('news.nextImage')} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', width: 38, height: 38, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,.45)', color: 'var(--color-on-brand)', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)', transition: 'background .15s' }}
           onMouseEnter={e => e.target.style.background='rgba(0,0,0,.7)'} onMouseLeave={e => e.target.style.background='rgba(0,0,0,.45)'}>›</button>
       </div>
 
@@ -137,7 +137,7 @@ export default function NewsDetail() {
     <div style={{ textAlign: 'center', padding: '6rem 2rem', color: 'var(--muted)' }}>
       <div style={{
         width: 36, height: 36,
-        border: '3px solid var(--border)', borderTopColor: '#7c3aed',
+        border: '3px solid var(--border)', borderTopColor: 'var(--color-brand)',
         borderRadius: '50%', animation: 'spin 0.8s linear infinite',
         margin: '0 auto 14px',
       }} />
@@ -154,8 +154,8 @@ export default function NewsDetail() {
       </svg>
       <p style={{ fontSize: 15, marginBottom: 20 }}>{t('news.notFound')}</p>
       <button onClick={() => navigate('/news')} style={{
-        padding: '9px 22px', background: 'linear-gradient(135deg,#7c3aed,#4f46e5)',
-        color: '#fff', border: 'none', borderRadius: 10, cursor: 'pointer',
+        padding: '9px 22px', background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))',
+        color: 'var(--color-on-brand)', border: 'none', borderRadius: 10, cursor: 'pointer',
         fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)',
       }}>
         {t('news.backArrow')}
@@ -180,7 +180,7 @@ export default function NewsDetail() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
               background: 'none', border: 'none', cursor: 'pointer',
-              color: '#7c3aed', fontSize: 13, fontWeight: 600,
+              color: 'var(--color-brand)', fontSize: 13, fontWeight: 600,
               padding: 0, fontFamily: 'var(--font-body)', transition: 'opacity .2s',
             }}
             onMouseEnter={e => e.currentTarget.style.opacity = '.7'}
@@ -262,8 +262,8 @@ export default function NewsDetail() {
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '10px 22px', borderRadius: 10,
-                background: 'linear-gradient(135deg,#7c3aed,#4f46e5)',
-                color: '#fff', border: 'none', cursor: 'pointer',
+                background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))',
+                color: 'var(--color-on-brand)', border: 'none', cursor: 'pointer',
                 fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)',
                 transition: 'opacity .2s',
               }}

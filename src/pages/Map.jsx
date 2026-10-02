@@ -15,14 +15,14 @@ export default function Map() {
         <div className="container">
           <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
             <div className="card reveal" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0, fontSize: 16, fontWeight: 700 }}>1</div>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, var(--color-brand), var(--color-brand-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0, fontSize: 16, fontWeight: 700 }}>1</div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>{t('map.campus', { n: 1 })}</div>
                 <div style={{ fontSize: 12, color: 'var(--muted)' }}>{t('university.address1')}</div>
               </div>
             </div>
             <div className="card reveal reveal-delay-1" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #4f46e5, #0088cc)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0, fontSize: 16, fontWeight: 700 }}>2</div>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, var(--color-brand-hover), #0088cc)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0, fontSize: 16, fontWeight: 700 }}>2</div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>{t('map.campus', { n: 2 })}</div>
                 <div style={{ fontSize: 12, color: 'var(--muted)' }}>{t('university.address2')}</div>

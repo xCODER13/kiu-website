@@ -81,8 +81,8 @@ export default function NewsAdmin() {
         <button style={bP} onClick={() => { setOpen(!open); setEdit(null); clear(); setForm({ title: '', content: '', category: 'Umumiy', image: '', shortsUrl: '' }) }}>{Ic.add} Yangi</button>
       </div>
       {open && (
-        <div style={{ ...card, marginBottom: '1.5rem', borderColor: '#7c3aed' }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: '#7c3aed', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : 'Yangi yangilik'}</h3>
+        <div style={{ ...card, marginBottom: '1.5rem', borderColor: 'var(--color-brand)' }}>
+          <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-brand)', marginBottom: '1rem' }}>{editing ? 'Tahrirlash' : 'Yangi yangilik'}</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div><label style={lbl}>Sarlavha *</label><input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Yangilik sarlavhasi" style={inp} /></div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -94,7 +94,7 @@ export default function NewsAdmin() {
               </div>
               <div>
                 <label style={lbl}>Rasmlar ({imagePreviews.length} ta)</label>
-                <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed #7c3aed', color: '#7c3aed', background: 'rgba(124,58,237,.05)' }}>
+                <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600, border: '1px dashed var(--color-brand)', color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 5%, transparent)' }}>
                   {Ic.photo}
                   Rasm qo'shish
                   <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleFileSelect} style={{ display: 'none' }} />
@@ -107,8 +107,8 @@ export default function NewsAdmin() {
                 {imagePreviews.map((p, i) => (
                   <div key={i} style={{ position: 'relative' }}>
                     <img src={p.url} alt={`rasm-${i+1}`} loading="lazy" style={{ width: 90, height: 70, objectFit: 'cover', borderRadius: 8, border: '2px solid ' + (p.isNew ? '#7c3aed' : '#e5e7eb'), display: 'block' }} onError={e => e.target.style.opacity='0.3'} />
-                    {p.isNew && <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 9, fontWeight: 700, background: '#7c3aed', color: '#fff', padding: '1px 5px', borderRadius: 10 }}>YANGI</span>}
-                    <button onClick={() => removeImage(i)} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: '#dc2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', textAlign: 'center', padding: 0 }}>×</button>
+                    {p.isNew && <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 9, fontWeight: 700, background: 'var(--color-brand)', color: 'var(--color-on-brand)', padding: '1px 5px', borderRadius: 10 }}>YANGI</span>}
+                    <button onClick={() => removeImage(i)} aria-label="Rasmni olib tashlash" style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', background: 'var(--color-danger)', color: 'var(--color-on-brand)', border: 'none', cursor: 'pointer', fontSize: 12, lineHeight: '18px', textAlign: 'center', padding: 0 }}>×</button>
                   </div>
                 ))}
               </div>
@@ -116,8 +116,8 @@ export default function NewsAdmin() {
             <div><label style={lbl}>YouTube Shorts URL</label><input value={form.shortsUrl} onChange={e => setForm({ ...form, shortsUrl: e.target.value })} placeholder="https://youtube.com/shorts/VIDEO_ID" style={inp} /></div>
             <div><label style={lbl}>Matn</label><textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={4} style={{ ...inp, resize: 'vertical' }} /></div>
             {uploading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#7c3aed' }}>
-                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--color-brand)' }}>
+                <div style={{ width: 14, height: 14, border: '2px solid #ede9fe', borderTopColor: 'var(--color-brand)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
                 Saqlanmoqda...
               </div>
             )}
@@ -140,7 +140,7 @@ export default function NewsAdmin() {
               <div key={n._id} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', gap: 8, marginBottom: 4, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 10, color: '#7c3aed', background: 'rgba(124,58,237,.1)', padding: '2px 8px', borderRadius: 20 }}>{n.category || 'Umumiy'}</span>
+                    <span style={{ fontSize: 10, color: 'var(--color-brand)', background: 'color-mix(in srgb, var(--color-brand) 10%, transparent)', padding: '2px 8px', borderRadius: 20 }}>{n.category || 'Umumiy'}</span>
                     <span style={{ fontSize: 10, color: 'var(--muted)' }}>{new Date(n.createdAt).toLocaleDateString('uz-UZ')}</span>
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 3 }}>{n.title}</div>

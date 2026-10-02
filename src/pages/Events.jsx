@@ -170,12 +170,12 @@ export default function Events() {
         <div className="container">
           {loading && (
             <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--muted)' }}>
-              <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: '#7c3aed', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+              <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--color-brand)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
               {t('common.loading')}
             </div>
           )}
           {error && (
-            <div style={{ textAlign: 'center', padding: '0.75rem', marginBottom: '1rem', background: 'rgba(124,58,237,.06)', borderRadius: 10, fontSize: 13, color: 'var(--muted)', border: '1px solid var(--border)' }}>
+            <div style={{ textAlign: 'center', padding: '0.75rem', marginBottom: '1rem', background: 'color-mix(in srgb, var(--color-brand) 6%, transparent)', borderRadius: 10, fontSize: 13, color: 'var(--muted)', border: '1px solid var(--border)' }}>
               {t('events.offline')}
             </div>
           )}
@@ -205,7 +205,7 @@ export default function Events() {
                         onError={ev => { ev.target.style.display = 'none' }}
                       />
                     ) : (
-                      <div style={{ width: 56, height: 56, borderRadius: 12, background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+                      <div style={{ width: 56, height: 56, borderRadius: 12, background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--color-on-brand)', flexShrink: 0 }}>
                         <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>{fd.day}</div>
                         <div style={{ fontSize: 10, opacity: .8 }}>{fd.monthShort}</div>
                       </div>
