@@ -300,3 +300,55 @@ describe('Bosqich 6.11b: Yangiliklar, Yangilik sahifasi, karusel, Telegram panel
       expect(read(f), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|getCategoryColor/i)
   })
 })
+
+describe('Bosqich 6.11c1: umumiy primitivlar + About, Xalqaro, Hujjatlar, Yutuqlar', () => {
+  const tokens = read('src/styles/tokens.css')
+  const inline = f => (read(f).match(/style=\{/g) ?? []).length
+
+  it("yangi tokenlar: banner matni Light `#ecd0e1` / Dark `#c3b9be` (ikkala Dark blokda), oltin-on-dark `#e6c04f`", () => {
+    expect(tokens).toMatch(/--color-banner-text:\s*#ecd0e1/)
+    expect((tokens.match(/--color-banner-text:\s*#c3b9be/g) ?? []).length).toBe(2)
+    expect(tokens).toMatch(/--color-accent-on-dark:\s*#e6c04f/)
+  })
+
+  it("`.reveal` o'rami va hover ajratilgan: `.card.card--lift` hover — brand chegara + wine glow, ko'tarilish faqat `no-preference` da", () => {
+    expect(code).toMatch(/\.rv-item > \.card \{ flex: 1; min-width: 0; \}/)
+    expect(code).toMatch(/\.card\.card--lift:hover,\s*\.card\.card--lift:focus-visible \{[^}]*border-color: var\(--color-brand\);[^}]*var\(--shadow-card-hover\)/)
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.card\.card--lift:hover,\s*\.card\.card--lift:focus-visible \{ transform: translateY\(-3px\); \}/)
+  })
+
+  it("wine banner: Qabul banneri bilan bir xil fon (`--gradient-banner`) + oltin hairline; statistika 40 px/800 oltin", () => {
+    expect(code).toMatch(/\.wine-banner \{[^}]*background: var\(--gradient-banner\);/)
+    expect(code).toMatch(/\.wine-banner::before \{[^}]*var\(--gradient-hairline\)/)
+    expect(code).toMatch(/\.wine-stat__value \{[^}]*font-size: 2\.5rem;[^}]*font-weight: 800;[^}]*var\(--color-accent-on-dark\)/)
+  })
+
+  it("bo'lim sarlavhasi 30 px/800 + 40×3 px oltin chiziq; `.page-block` oraliq `.section-title` dan keyin (qoida tartibi)", () => {
+    expect(code).toMatch(/\.section-title \{[^}]*font-size: 1\.875rem;[^}]*font-weight: 800;/)
+    expect(code).toMatch(/\.section-title::after \{[^}]*width: 40px;[^}]*height: 3px;[^}]*var\(--color-accent\)/)
+    expect(code).toMatch(/\.section-title\.page-block \{ margin-top: 56px; \}/)
+  })
+
+  it("aniq ustun soni (yetim qator yo'q): 4/3/2 ustun, 12 ustunli to'r (3+2 va 4+3), ≤1000 px da 2, ≤640 px da 1 ustun", () => {
+    expect(code).toMatch(/\.cards-4 \{ display: grid; grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/)
+    expect(code).toMatch(/\.grid-12 > \.col-4 \{ grid-column: span 4; \}/)
+    expect(code).toMatch(/@media \(max-width: 1000px\) \{\s*\.cards-4 \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/)
+    expect(code).toMatch(/@media \(max-width: 640px\) \{\s*\.cards-2, \.cards-3, \.cards-4, \.grid-12 \{ grid-template-columns: minmax\(0, 1fr\); \}/)
+  })
+
+  it("avatar — bitta wine gradient + halqa va glow; plitka brand-subtle; pill brand-subtle", () => {
+    expect(code).toMatch(/\.avatar-wine \{[^}]*linear-gradient\(135deg, var\(--color-brand-fill\), var\(--color-brand-hover\)\)[^}]*var\(--glow-brand\)/)
+    expect(code).toMatch(/\.tile \{[^}]*background: var\(--color-brand-subtle\);[^}]*color: var\(--color-brand\);/)
+    expect(code).toMatch(/\.pill-brand \{[^}]*background: var\(--color-brand-subtle\);/)
+  })
+
+  it("About/International/Documents/Achievements: inline style yo'q, hex/rgba yo'q, `PageHero` ishlatiladi; eski `.achieve-icon`/`.doc-icon` yo'q", () => {
+    for (const f of ['About', 'International', 'Documents', 'Achievements']) {
+      const path = `src/pages/${f}.jsx`
+      expect(inline(path), f).toBe(0)
+      expect(read(path), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|achieve-icon|doc-icon|gradient-dark/i)
+      expect(read(path), f).toMatch(/PageHero/)
+    }
+  })
+})
+

@@ -26,3 +26,23 @@ describe('Documents (public)', () => {
     expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'))
   })
 })
+
+describe('Documents — qayta dizayn (Bosqich 6.11c1)', () => {
+  it("havolaning o'zi karta (`a.card.doc-card`): ichma-ich interaktiv element yo'q; 'PDF' belgisi va 'Hujjatni ochish'; inline stil yo'q", () => {
+    const { container } = render(<Documents />)
+    const links = screen.getAllByRole('link')
+    links.forEach(a => {
+      expect(a).toHaveClass('card', 'doc-card')
+      expect(a.querySelector('button, a')).toBeNull()
+      expect(a).toHaveTextContent('Hujjatni ochish')
+    })
+    expect(container.querySelectorAll('.doc-card .pill-brand')).toHaveLength(6)
+    expect(container.querySelectorAll('.cards-3')).toHaveLength(1)
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+
+  it("hero ichida `ContentLangNote` (uz'da bo'sh), h1 — hero ichida", () => {
+    render(<Documents />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Normativ hujjatlar' }).closest('.inner-hero')).not.toBeNull()
+  })
+})
