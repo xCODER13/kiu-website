@@ -1,3 +1,6 @@
+/* global process */
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
@@ -237,12 +240,14 @@ describe('Stats — batafsil statistika (band 6)', () => {
     })
     setup()
     const title = await screen.findByText("Eng ko'p ariza tushgan yo'nalishlar")
-    // sarlavha -> karta -> setka
-    let grid = title
-    while (grid && grid.style?.display !== 'grid') grid = grid.parentElement
+    // sarlavha -> karta -> setka. Bosqich 6b: ustunlar endi inline emas, `.adm-rank-grid` klassida
+    // (jsdom stylesheet'ni hisoblamaydi) — shuning uchun klass va CSS qoidasi alohida tekshiriladi.
+    const grid = title.closest('.adm-rank-grid')
     expect(grid).not.toBeNull()
     expect(grid.children).toHaveLength(4)
-    expect(grid.style.gridTemplateColumns).toContain('50%')
+    const rule = readFileSync(resolve(process.cwd(), 'src/styles/admin.css'), 'utf8').match(/\.adm-rank-grid \{[^}]*\}/)?.[0] ?? ''
+    expect(rule).toContain('display: grid')
+    expect(rule).toContain('calc(50% - 8px)')
   })
 
   it("Ariza yo'nalishlari xato bersa faqat shu karta xato ko'rsatadi, qolganlari ishlaydi", async () => {
@@ -315,5 +320,45 @@ describe('Stats — batafsil statistika (band 6)', () => {
     expect(await screen.findByText('Yuklashda xatolik yuz berdi.')).toBeInTheDocument() // faqat top-news xato
     expect(spy).toHaveBeenCalled()
     spy.mockRestore()
+  })
+
+  it("KPI kartalari: har biri o'z `data-tone` rangida (4.4), qiymat matn rangida, inline stil yo'q", async () => {
+    mockApi({
+      'GET /stats': { newsCount: 5, shortsCount: 8, eventsCount: 2, teachersCount: 10, appsCount: 3, vacancyApps: 1, galleryCount: 4 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
+    })
+    const { container } = setup()
+    await screen.findByText("Eng ko'p ariza tushgan yo'nalishlar")
+    const tones = [...container.querySelectorAll('.adm-kpi')].map(k => [k.querySelector('.adm-kpi-label').textContent, k.dataset.tone])
+    expect(tones).toEqual([
+      ['Yangiliklar', 'blue'], ['Youtube shorts', 'orange'], ['Tadbirlar', 'emerald'], ["O'qituvchilar", 'indigo'],
+      ['Qabul arizalari', 'amber'], ['Vakansiya arizalari', 'cyan'], ['Galereya', 'lime'],
+    ])
+    // Faqat grafik geometriyasi (`width/height`) inline qoladi; rang, joylashuv va hover — CSS da
+    expect([...container.querySelectorAll('[style]')].filter(el => /color|background|border|display|flex|grid/.test(el.getAttribute('style')))).toHaveLength(0)
+  })
+
+  it("reyting grafiklari va trend o'z `--stat-*` rangida (4.4: Yangiliklar ko'k, Tadbirlar zumrad, Sehrli shlyapa binafsha, Qabul amber)", async () => {
+    mockApi({
+      'GET /stats': { newsCount: 1 },
+      'GET /stats/applications-trend?granularity=day': TREND_DAY,
+      'GET /stats/top-news?limit=10': TOP_NEWS,
+      'GET /stats/top-events?limit=10': TOP_EVENTS,
+      'GET /stats/sortinghat-faculties': SORTINGHAT,
+      'GET /stats/applications-faculties': APP_FACULTIES,
+    })
+    const { container } = setup()
+    await screen.findByText("Eng ko'p ariza tushgan yo'nalishlar")
+    const titles = [...container.querySelectorAll('.adm-rank-grid .adm-card-title')].map(t => [t.textContent, t.dataset.tone])
+    expect(titles).toEqual([
+      ["Eng ko'p ko'rilgan yangiliklar", 'blue'], ["Eng ko'p ko'rilgan tadbirlar", 'emerald'],
+      ["Sehrli shlyapa yo'nalish tavsiyalari", 'violet'], ["Eng ko'p ariza tushgan yo'nalishlar", 'amber'],
+    ])
+    // Trend legend dog'lari seriya ranglari bilan mos (oldin `--color-success`/`--color-brand-hover` edi — chiziqdan farq qilardi)
+    expect([...container.querySelectorAll('.adm-legend-item')].map(i => [i.textContent, i.dataset.tone])).toEqual([['Qabul arizalari', 'amber'], ['Vakansiya arizalari', 'cyan']])
   })
 })

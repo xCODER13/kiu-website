@@ -1,6 +1,8 @@
 import { Ic } from './Icons.jsx'
 
-export const STATUS_COLORS = { new: '#7c3aed', reviewed: '#d97706', accepted: '#059669', rejected: '#dc2626' }
+// Holat → status badge klassi (4.4): `new` brend (binafsha) rangi emas, `info`; qolganlari warning/success/danger.
+// Rang tokenlar orqali (tema bilan almashadi), badge har doim matn bilan ko'rsatiladi.
+export const STATUS_BADGE = { new: 'badge-info', reviewed: 'badge-warning', accepted: 'badge-success', rejected: 'badge-danger' }
 export const STATUS_LABELS = { new: 'Yangi', reviewed: "Ko'rildi", accepted: 'Qabul qilindi', rejected: 'Rad etildi' }
 
 export const NAV = [

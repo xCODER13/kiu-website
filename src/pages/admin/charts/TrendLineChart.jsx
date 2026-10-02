@@ -5,21 +5,10 @@ import { scaleTime, scaleLinear } from '@visx/scale'
 import { LinePath, Circle } from '@visx/shape'
 import { AxisBottom, AxisLeft } from '@visx/axis'
 import { GridRows } from '@visx/grid'
-import { useTooltip, TooltipWithBounds, defaultStyles } from '@visx/tooltip'
+import { useTooltip, TooltipWithBounds } from '@visx/tooltip'
 import { localPoint } from '@visx/event'
 
 const MARGIN = { top: 12, right: 16, bottom: 28, left: 34 }
-const tooltipStyles = {
-  ...defaultStyles,
-  background: 'var(--color-bg)',
-  color: 'var(--text, var(--color-text))',
-  border: '1px solid var(--color-border)',
-  borderRadius: 8,
-  padding: '8px 10px',
-  fontSize: 11,
-  boxShadow: '0 4px 16px rgba(0,0,0,.12)',
-}
-
 // visx — past darajadagi kutubxona (D3 primitivlariga yaqin), shuning uchun
 // bu komponent barcha o'lchash/scale/tooltip mantig'ini o'z ichiga oladi va
 // Stats.jsx tomonidan faqat {date, ...seriesQiymatlari} massivi bilan chaqiriladi.
@@ -74,8 +63,8 @@ function Chart({ width, height, data, series, dateLabel }) {
   if (data.length === 0) return null
 
   return (
-    <div style={{ position: 'relative' }}>
-      <svg width={width} height={height} onMouseMove={handleMove} onMouseLeave={hideTooltip} style={{ overflow: 'visible' }}>
+    <div className="adm-chart-box">
+      <svg className="adm-chart-svg--visible" width={width} height={height} onMouseMove={handleMove} onMouseLeave={hideTooltip}>
         <Group left={MARGIN.left} top={MARGIN.top}>
           <GridRows scale={yScale} width={innerWidth} height={innerHeight} stroke="var(--color-border)" strokeDasharray="3,3" numTicks={4} />
           {series.map(s => (
@@ -100,11 +89,12 @@ function Chart({ width, height, data, series, dateLabel }) {
         </Group>
       </svg>
       {tooltipData && (
-        <TooltipWithBounds left={tooltipLeft} top={tooltipTop} style={tooltipStyles}>
-          <div style={{ fontWeight: 600, marginBottom: 4 }}>{dateLabel(tooltipData.date, true)}</div>
+        // `unstyled` — visx'ning standart (oq fon, kulrang matn) stillari o'chiriladi; ko'rinish `.adm-tooltip` da
+        <TooltipWithBounds left={tooltipLeft} top={tooltipTop} unstyled className="adm-tooltip">
+          <div className="adm-tooltip-title">{dateLabel(tooltipData.date, true)}</div>
           {series.map(s => (
-            <div key={s.key} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: s.color, display: 'inline-block' }} />
+            <div key={s.key} className="adm-tooltip-row">
+              <span className="adm-tooltip-dot" style={{ background: s.color }} />
               {s.label}: <strong>{tooltipData[s.key] || 0}</strong>
             </div>
           ))}
@@ -116,7 +106,7 @@ function Chart({ width, height, data, series, dateLabel }) {
 
 export default function TrendLineChart({ data, series, height = 240, dateLabel }) {
   return (
-    <div style={{ width: '100%', height }}>
+    <div className="adm-chart-frame" style={{ height }}>
       <ParentSize>
         {({ width }) => (width > 0 ? <Chart width={width} height={height} data={data} series={series} dateLabel={dateLabel} /> : null)}
       </ParentSize>

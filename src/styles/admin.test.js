@@ -72,3 +72,55 @@ describe('tokens.css: --color-danger-on-dark', () => {
     expect(tokens.match(/--color-danger-on-dark:/g)).toHaveLength(1)
   })
 })
+
+describe('Bosqich 6b: statistika va grafiklar', () => {
+  const tokens = strip(read('src/styles/tokens.css'))
+  const STAT = ['blue', 'orange', 'emerald', 'indigo', 'amber', 'cyan', 'lime', 'violet']
+
+  it("`--stat-*` (8) va `--chart-1…6` Light'da va Dark'ning ikkala blokida e'lon qilingan", () => {
+    for (const n of [...STAT.map(x => `--stat-${x}`), ...[1, 2, 3, 4, 5, 6].map(i => `--chart-${i}`)]) {
+      expect(tokens.match(new RegExp(`${n}:`, 'g')), n).toHaveLength(3)
+    }
+  })
+
+  it('`data-tone` har bir `--stat-*` ni `--kpi-c` ga bog\'laydi', () => {
+    for (const t of STAT) expect(code).toMatch(new RegExp(`\\[data-tone="${t}"\\]\\s*\\{ --kpi-c: var\\(--stat-${t}\\); \\}`))
+  })
+
+  it("KPI: rang chiziq va ikonkada (`--kpi-c`), qiymat matni `--color-text` da; ikonka foni `color-mix`", () => {
+    expect(code).toMatch(/\.adm-kpi \{[^}]*border-left: 3px solid var\(--kpi-c\)/)
+    expect(code).toMatch(/\.adm-kpi-value \{[^}]*color: var\(--color-text\)/)
+    expect(code).toMatch(/\.adm-kpi-icon \{[^}]*background: color-mix\(in srgb, var\(--kpi-c\) 10%, transparent\)/)
+  })
+
+  it('KPI hover CSS da (oldin JS onMouseEnter/Leave)', () => {
+    expect(code).toMatch(/\.adm-kpi:hover \{ transform: translateY\(-2px\); \}/)
+    expect(read('src/pages/admin/Stats.jsx')).not.toMatch(/onMouse(Enter|Leave)/)
+  })
+
+  it("`.adm-status-select` rangi `data-status` → status tokeni; badge klasslari STATUS_BADGE da", () => {
+    expect(code).toMatch(/\[data-status="new"\]\s*\{ --st: var\(--color-info\); \}/)
+    expect(code).toMatch(/\[data-status="rejected"\]\s*\{ --st: var\(--color-danger\); \}/)
+    const consts = read('src/pages/admin/shared/constants.js')
+    expect(consts).toMatch(/STATUS_BADGE = \{ new: 'badge-info', reviewed: 'badge-warning', accepted: 'badge-success', rejected: 'badge-danger' \}/)
+    expect(consts).not.toMatch(/STATUS_COLORS|#[0-9a-f]{6}/i)
+  })
+
+  it("Stats, ApplicationsAdmin va grafiklarda hex rang va `style` rang/joylashuvi yo'q", () => {
+    for (const f of ['Stats.jsx', 'ApplicationsAdmin.jsx', 'charts/RankedBarChart.jsx', 'charts/TrendLineChart.jsx']) {
+      const src = strip(read(`src/pages/admin/${f}`))
+      expect(src, f).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+      expect(src, f).not.toMatch(/rgba?\(/)
+    }
+    // inline qolganlar — faqat geometriya (`height`, `width`, `top`, `left`, `lineHeight`) va seriya rangi (tooltip nuqtasi)
+    const inline = f => (read(`src/pages/admin/${f}`).match(/style=\{\{[^}]*\}\}/g) ?? [])
+    expect(inline('Stats.jsx')).toHaveLength(0)
+    expect(inline('ApplicationsAdmin.jsx')).toHaveLength(0)
+    expect(inline('charts/TrendLineChart.jsx')).toEqual(['style={{ background: s.color }}', 'style={{ height }}'])
+  })
+
+  it("tooltip visx standart stillarisiz (`unstyled`) va `.adm-tooltip` klassida", () => {
+    expect(read('src/pages/admin/charts/TrendLineChart.jsx')).toMatch(/<TooltipWithBounds[^>]*unstyled[^>]*className="adm-tooltip"/)
+    expect(code).toMatch(/\.adm-tooltip \{[^}]*position: absolute;[^}]*pointer-events: none;/)
+  })
+})

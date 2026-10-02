@@ -124,4 +124,39 @@ describe('ApplicationsAdmin', () => {
     await waitFor(() => expect(alert).toHaveBeenCalledWith('Baza xatosi'))
     expect(screen.getByText('Ali Valiyev')).toBeInTheDocument()
   })
+
+  it("holat badge'i status token klassida (new → info, reviewed → warning, accepted → success), tanlagich `data-status` bilan", async () => {
+    mockApi({ 'GET /applications': [...A, { _id: 'a4', name: 'Rad Etilgan', phone: '+998904444444', status: 'rejected' }].filter(a => a.type !== 'vacancy') })
+    const { container } = render(<ApplicationsAdmin />)
+    await screen.findByText('Ali Valiyev')
+    const badges = [...container.querySelectorAll('.adm-app-head .badge')].map(b => [b.textContent, [...b.classList].find(c => c.startsWith('badge-'))])
+    expect(badges).toEqual([['Yangi', 'badge-info'], ['Qabul qilindi', 'badge-success'], ['Rad etildi', 'badge-danger']])
+    expect([...container.querySelectorAll('select')].map(s => s.dataset.status)).toEqual(['new', 'accepted', 'rejected'])
+    expect(container.querySelectorAll('[style]')).toHaveLength(0)
+  })
+
+  it("noma'lum holat badge'i qulamaydi (klass qo'shilmaydi)", async () => {
+    mockApi({ 'GET /applications': [{ _id: 'x', name: 'Noma\'lum', phone: '1', status: 'archived' }] })
+    const { container } = render(<ApplicationsAdmin />)
+    await screen.findByText("Noma'lum")
+    expect(container.querySelector('.adm-app-head .badge').className.trim()).toBe('badge')
+  })
+
+  it("filtr chip'i faol holati `data-active` orqali (inline stil emas)", async () => {
+    mockApi({ 'GET /applications': A })
+    const { container } = render(<ApplicationsAdmin />)
+    await screen.findByText('Ali Valiyev')
+    const chips = () => [...container.querySelectorAll('.adm-chip')].map(c => c.dataset.active)
+    expect(chips()).toEqual(['true', 'false', 'false', 'false', 'false'])
+    await userEvent.click(screen.getByRole('button', { name: /^Yangi \(/ }))
+    expect(chips()).toEqual(['false', 'true', 'false', 'false', 'false'])
+  })
+
+  it("holat tanlagichi ariza egasi nomi bilan nomlangan (axe select-name)", async () => {
+    mockApi({ 'GET /applications': A })
+    render(<ApplicationsAdmin />)
+    await screen.findByText('Ali Valiyev')
+    expect(screen.getByRole('combobox', { name: 'Ali Valiyev: ariza holati' })).toBeInTheDocument()
+    for (const sel of screen.getAllByRole('combobox')) expect(sel).toHaveAccessibleName(/: ariza holati$/)
+  })
 })

@@ -25,19 +25,18 @@ function Chart({ width, height, data, color }) {
   const xScale = useMemo(() => scaleLinear({ domain: [0, maxValue], range: [0, innerWidth], nice: true }), [maxValue, innerWidth])
 
   return (
-    <div style={{ position: 'relative', width, height }}>
+    <div className="adm-chart-box" style={{ width, height }}>
       {/* Yorliqlar — har bir ustunning tepasida, o'z qatorida */}
       {data.map((d, i) => (
-        <div key={i} title={d.label} style={{
-          position: 'absolute', left: MARGIN.left, top: MARGIN.top + i * (ROW_HEIGHT + ROW_GAP),
+        // Faqat geometriya inline (qator joyi konstantalardan hisoblanadi); ko'rinish `.adm-bar-label` da
+        <div key={i} title={d.label} className="adm-bar-label" style={{
+          left: MARGIN.left, top: MARGIN.top + i * (ROW_HEIGHT + ROW_GAP),
           height: LABEL_HEIGHT, width: innerWidth, lineHeight: `${LABEL_HEIGHT}px`,
-          fontSize: 12, color: 'var(--text)', fontWeight: 500,
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {d.label}
         </div>
       ))}
-      <svg width={width} height={height} style={{ display: 'block' }}>
+      <svg className="adm-chart-svg" width={width} height={height}>
         <Group left={MARGIN.left} top={MARGIN.top}>
           {data.map((d, i) => {
             const barY = i * (ROW_HEIGHT + ROW_GAP) + LABEL_HEIGHT
@@ -46,7 +45,7 @@ function Chart({ width, height, data, color }) {
               <Group key={i}>
                 <rect x={0} y={barY} width={innerWidth} height={BAR_HEIGHT} rx={5} fill="var(--color-surface-2)" />
                 <Bar x={0} y={barY} width={barWidth} height={BAR_HEIGHT} rx={5} fill={color} />
-                <text x={innerWidth + 8} y={barY + BAR_HEIGHT / 2} dy="0.35em" fontSize={11} fontWeight={700} fill="var(--text)">
+                <text x={innerWidth + 8} y={barY + BAR_HEIGHT / 2} dy="0.35em" fontSize={11} fontWeight={700} fill="var(--color-text)">
                   {d.value}
                 </text>
               </Group>
@@ -58,9 +57,9 @@ function Chart({ width, height, data, color }) {
   )
 }
 
-export default function RankedBarChart({ data, color = '#7c3aed', emptyLabel = "Ma'lumot yo'q" }) {
+export default function RankedBarChart({ data, color = 'var(--color-brand)', emptyLabel = "Ma'lumot yo'q" }) {
   if (data.length === 0) {
-    return <p style={{ fontSize: 12, color: 'var(--muted)', textAlign: 'center', padding: '1.5rem 0' }}>{emptyLabel}</p>
+    return <p className="adm-chart-empty">{emptyLabel}</p>
   }
 
   // MUHIM: `ParentSize` grafikni o'zining ichidagi ABSOLUTE konteynerda chizadi, shuning
@@ -70,7 +69,7 @@ export default function RankedBarChart({ data, color = '#7c3aed', emptyLabel = "
   // (TrendLineChart ham xuddi shunday qiladi). Balandlik faqat qatorlar soniga bog'liq.
   const height = chartHeight(data.length)
   return (
-    <div style={{ width: '100%', height }}>
+    <div className="adm-chart-frame" style={{ height }}>
       <ParentSize>
         {({ width }) => (width > 0 ? <Chart width={width} height={height} data={data} color={color} /> : null)}
       </ParentSize>
