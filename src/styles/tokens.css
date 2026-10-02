@@ -1,0 +1,137 @@
+/*
+ * Design token'lar — BOSQICH 0 (vizual o'zgarishsiz).
+ *
+ * Qiymatlar HOZIRGI (purple) palitradan olingan, shuning uchun sayt ko'rinishi
+ * o'zgarmaydi. Palitra almashishi (Bosqich 2) faqat shu fayldagi qiymatlarni
+ * o'zgartiradi, komponentlarga tegilmaydi.
+ *
+ * Tuzilma (3 qatlam):
+ *   1. Xom (primitive)  — --violet-600, --gray-500 ...   faqat shu faylda
+ *   2. Semantik         — --color-brand, --color-text ... komponentlar shuni ishlatadi
+ *   3. Komponent        — kerak bo'lsa, o'sha komponent CSS'ida
+ *
+ * Qatlam tartibi shu yerda (birinchi yuklanadigan fayl) e'lon qilinadi:
+ * @layer tartibi birinchi uchragan joyda qotadi. Qatlamsiz (mavjud) qoidalar
+ * har doim qatlamlilardan ustun, shuning uchun hozirgi stillar o'zgarmaydi.
+ */
+@layer reset, tokens, base, components, utilities;
+
+@layer tokens {
+  :root {
+    /* ── 1. Xom qiymatlar (hozirgi palitra) ───────────────────────── */
+    --white:      #ffffff;
+    --violet-600: #7c3aed;
+    --violet-100: #ede9fe;
+    --violet-50:  #faf5ff;
+    --indigo-600: #4f46e5;
+    --lavender-100: #f0eeff;
+    --gold-600:   #c8960c;
+    --ink-900:    #1a1a2e;
+    --gray-500:   #6b7280;
+    --gray-400:   #9ca3af;
+    --night-950:  #0f0f1a;
+    --night-900:  #1a1a2e;
+    --mist-100:   #e8e8f0;
+    --violet-950: #1e1b4b;
+    --violet-900: #2d1b69;
+
+    /* ── 2. Semantik rang (Light) ─────────────────────────────────── */
+    --color-bg:            var(--white);
+    --color-surface-2:     var(--violet-50);
+    --color-text:          var(--ink-900);
+    --color-text-muted:    var(--gray-500);
+    --color-border:        var(--lavender-100);
+
+    --color-brand:         var(--violet-600);
+    --color-brand-hover:   var(--indigo-600);
+    --color-brand-subtle:  var(--violet-50);
+    --color-brand-subtle-2: var(--violet-100);
+    --color-on-brand:      var(--white);
+
+    --color-accent:        var(--gold-600);
+    --color-on-accent:     var(--white);
+
+    /* Holat ranglari: JSX'da hozir eng ko'p ishlatiladigan qiymatlar.
+       "-bg" qiymatlari yangi (hozircha hech qayerda ishlatilmaydi). */
+    --color-success:       #059669;
+    --color-success-bg:    #ecfdf5;
+    --color-warning:       #d97706;
+    --color-warning-bg:    #fffbeb;
+    --color-danger:        #dc2626;
+    --color-danger-bg:     #fef2f2;
+    --color-info:          #2563eb;
+    --color-info-bg:       #eff6ff;
+
+    /* ── Tipografiya ──────────────────────────────────────────────── */
+    /* Hozirgi stek saqlandi (vizual farq 0); system-ui zaxirasi Bosqich 2 da. */
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+
+    --text-2xs:  0.6875rem;
+    --text-xs:   0.75rem;
+    --text-sm:   0.8125rem;
+    --text-base: 0.9375rem;
+    --text-md:   1rem;
+    --text-lg:   1.125rem;
+    --text-xl:   1.25rem;
+    --text-h2:   clamp(1.5rem, 1.1rem + 1.5vw, 2rem);
+    --text-h1:   clamp(2rem, 1.3rem + 3vw, 3.2rem);
+
+    --leading-body:  1.6;
+    --leading-tight: 1.2;
+
+    --weight-regular:  400;
+    --weight-medium:   500;
+    --weight-semibold: 600;
+    --weight-bold:     700;
+
+    /* ── Spacing (4px asos) ───────────────────────────────────────── */
+    --space-1:  0.25rem;
+    --space-2:  0.5rem;
+    --space-3:  0.75rem;
+    --space-4:  1rem;
+    --space-5:  1.25rem;
+    --space-6:  1.5rem;
+    --space-8:  2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+
+    /* ── Radius ───────────────────────────────────────────────────── */
+    --radius-sm:   6px;
+    --radius-md:   8px;
+    --radius-lg:   10px;
+    --radius-xl:   14px;   /* hozirgi --radius */
+    --radius-2xl:  16px;
+    --radius-pill: 999px;
+
+    /* ── Shadow ───────────────────────────────────────────────────── */
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+    --shadow-md: 0 1px 2px rgb(28 22 26 / 0.05), 0 10px 26px rgb(28 22 26 / 0.06);
+    --shadow-lg: 0 14px 36px rgb(0 0 0 / 0.12);
+    --shadow-brand: 0 4px 15px rgb(124 58 237 / 0.3);   /* hozirgi .btn-primary soyasi */
+
+    /* ── z-index ──────────────────────────────────────────────────── */
+    --z-raised:      1;
+    --z-mobile-menu: 99;
+    --z-sticky:      100;
+    --z-dropdown:    110;
+    --z-popover:     200;
+    --z-modal:       1000;
+    --z-toast:       1100;
+
+    /* ── Motion ───────────────────────────────────────────────────── */
+    --duration-fast: 150ms;
+    --duration-base: 200ms;
+    --ease-out:      cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* ── Semantik rang (Dark) — hozirgi `[data-theme="dark"]` qiymatlari ── */
+  [data-theme="dark"] {
+    --color-bg:             var(--night-950);
+    --color-surface-2:      var(--night-900);
+    --color-text:           var(--mist-100);
+    --color-text-muted:     var(--gray-400);
+    --color-border:         rgb(124 58 237 / 0.25);
+    --color-brand-subtle:   var(--violet-950);
+    --color-brand-subtle-2: var(--violet-900);
+  }
+}
