@@ -73,7 +73,7 @@ h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
   color: var(--purple);
   border: 1.5px solid var(--purple);
 }
-.btn-gold { background: var(--gold); color: var(--color-on-brand); }
+.btn-gold { background: var(--gold); color: var(--color-on-accent); }
 
 /* Cards */
 .card {

@@ -38,13 +38,13 @@ export default function Login() {
   }
 
   return (
-    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dark ? '#0f0f1a' : 'linear-gradient(135deg, #faf5ff, #ede9fe)' }}>
-      <div style={{ background: dark ? '#1a1a2e' : '#fff', borderRadius: 16, padding: '2.5rem', width: '100%', maxWidth: 400, border: dark ? '1px solid rgba(255,255,255,.1)' : '1px solid var(--border)' }}>
+    <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: dark ? '#0f0f1a' : 'var(--gradient-hero-soft)' }}>
+      <div style={{ background: dark ? '#1a1a2e' : 'var(--color-bg)', borderRadius: 16, padding: '2.5rem', width: '100%', maxWidth: 400, border: dark ? '1px solid rgba(255,255,255,.1)' : '1px solid var(--border)' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ width: 56, height: 56, borderRadius: 14, background: 'linear-gradient(135deg,var(--color-brand),var(--color-brand-hover))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'var(--color-on-brand)' }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </div>
-          <h2 style={{ fontSize: '1.3rem', color: dark ? '#fff' : '#1a1a2e', marginBottom: 4 }}>Admin Panel</h2> 
+          <h2 style={{ fontSize: '1.3rem', color: dark ? '#fff' : 'var(--color-text)', marginBottom: 4 }}>Admin Panel</h2> 
           <p style={{ fontSize: 13, color: 'var(--muted)' }}>KIU boshqaruv tizimi</p>
         </div>
 
@@ -53,7 +53,7 @@ export default function Login() {
             placeholder="Login"
             value={form.username}
             onChange={e => setForm({ ...form, username: e.target.value })}
-            style={{ padding: '10px 14px', border: dark ? '1px solid rgba(255,255,255,.15)' : '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', background: dark ? 'rgba(255,255,255,.07)' : '#fff', color: dark ? '#fff' : '#1a1a2e' }}
+            style={{ padding: '10px 14px', border: dark ? '1px solid rgba(255,255,255,.15)' : '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', background: dark ? 'rgba(255,255,255,.07)' : 'var(--color-bg)', color: dark ? '#fff' : 'var(--color-text)' }}
           />
           <div style={{ position: 'relative' }}>
             <input
@@ -61,10 +61,10 @@ export default function Login() {
              placeholder="Parol"
              value={form.password}
              onChange={e => setForm({ ...form, password: e.target.value })}
-             style={{ width: '100%', padding: '10px 40px 10px 14px', border: dark ? '1px solid rgba(255,255,255,.15)' : '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', background: dark ? 'rgba(255,255,255,.07)' : '#fff', color: dark ? '#fff' : '#1a1a2e', boxSizing: 'border-box' }}
+             style={{ width: '100%', padding: '10px 40px 10px 14px', border: dark ? '1px solid rgba(255,255,255,.15)' : '1px solid var(--border)', borderRadius: 10, fontSize: 13, outline: 'none', background: dark ? 'rgba(255,255,255,.07)' : 'var(--color-bg)', color: dark ? '#fff' : 'var(--color-text)', boxSizing: 'border-box' }}
              />
              <button type="button" onClick={() => setShowPass(!showPass)} aria-label={showPass ? "Parolni berkitish" : "Parolni ko'rsatish"}
-              style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex' }}>
+              style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)', display: 'flex' }}>
               {showPass ? (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
               ) : (
