@@ -19,7 +19,7 @@ test.describe('Ariza topshirish (public)', () => {
     ])
 
     await expect(page.getByText('Ariza yuborildi!')).toBeVisible()
-    await page.getByRole('button', { name: 'Yopish' }).click()
+    await page.getByRole('button', { name: 'Yopish', exact: true }).click()
     await expect(page.getByText('Ariza yuborildi!')).not.toBeVisible()
   })
 

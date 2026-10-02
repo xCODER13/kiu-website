@@ -1,20 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --purple:     #7c3aed;
-  --purple-2:   #4f46e5;
-  --purple-light: #ede9fe;
-  --purple-pale:  #faf5ff;
-  --gold:       #C8960C;
-  --text:       #1a1a2e;
-  --muted:      #6b7280;
-  --border:     #f0eeff;
-  --bg:         #ffffff;
-  --bg-2:       #faf5ff;
-  --navy:       #7c3aed;
-  --radius:     14px;
-  --font-body:  'Plus Jakarta Sans', sans-serif;
-  --font-display: 'Plus Jakarta Sans', sans-serif;
+  /* Eski nomlar → yangi token'lar (src/styles/tokens.css). Qiymatlar o'zgarmagan.
+     Eski nomlar Bosqich 1 da JSX/CSS'dan olib tashlanadi, shundan so'ng alias ham o'chadi. */
+  --purple:       var(--color-brand);
+  --purple-2:     var(--color-brand-hover);
+  --purple-light: var(--color-brand-subtle-2);
+  --purple-pale:  var(--color-brand-subtle);
+  --gold:         var(--color-accent);
+  --text:         var(--color-text);
+  --muted:        var(--color-text-muted);
+  --border:       var(--color-border);
+  --bg:           var(--color-bg);
+  --bg-2:         var(--color-surface-2);
+  --navy:         var(--color-brand);
+  --radius:       var(--radius-xl);
+  --font-body:    var(--font-sans);
+  --font-display: var(--font-sans);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -179,7 +181,7 @@ a.lang-switch-item:hover { color: #7c3aed; background: rgba(124,58,237,.08); }
   .stat-item:nth-child(1),
   .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
 }
-/* Dark mode */
+/* Dark mode (eski nomlar; Bosqich 3 da token'larga o'tadi) */
 [data-theme="dark"] {
   --bg:           #0f0f1a;
   --bg-2:         #1a1a2e;
