@@ -9,7 +9,7 @@ export default function ResultStage({ result, onRestart }) {
   return (
     <div>
       {/* result header */}
-      <div className="card" style={{ textAlign: 'center', marginBottom: '1.5rem', padding: '1.75rem', background: 'linear-gradient(135deg,color-mix(in srgb, var(--color-brand) 8%, transparent),rgba(79,70,229,.08))', borderColor: 'color-mix(in srgb, var(--color-brand) 25%, transparent)' }}>
+      <div className="card" style={{ textAlign: 'center', marginBottom: '1.5rem', padding: '1.75rem', background: 'linear-gradient(135deg,color-mix(in srgb, var(--color-brand) 8%, transparent),color-mix(in srgb, var(--color-brand-hover) 8%, transparent))', borderColor: 'color-mix(in srgb, var(--color-brand) 25%, transparent)' }}>
         <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: '0.75rem' }}>
           <IcStar s={20} />
           <IcHat />
@@ -79,7 +79,7 @@ export default function ResultStage({ result, onRestart }) {
       })}
 
       {/* bottom CTA */}
-      <div className="card" style={{ background: 'linear-gradient(135deg,color-mix(in srgb, var(--color-brand) 6%, transparent),rgba(79,70,229,.06))', borderColor: 'color-mix(in srgb, var(--color-brand) 20%, transparent)', textAlign: 'center', padding: '1.5rem' }}>
+      <div className="card" style={{ background: 'linear-gradient(135deg,color-mix(in srgb, var(--color-brand) 6%, transparent),color-mix(in srgb, var(--color-brand-hover) 6%, transparent))', borderColor: 'color-mix(in srgb, var(--color-brand) 20%, transparent)', textAlign: 'center', padding: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}><IcBulb s={26} /></div>
         <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.7, marginBottom: '1rem' }}>
           <Trans i18nKey="sortingHat.result.cta" components={{ b: <strong style={{ color: 'var(--color-brand)' }} /> }} />

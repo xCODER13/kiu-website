@@ -1,24 +1,47 @@
 /*
- * Design token'lar — BOSQICH 0 (vizual o'zgarishsiz).
+ * Design token'lar.
  *
- * Qiymatlar HOZIRGI (purple) palitradan olingan, shuning uchun sayt ko'rinishi
- * o'zgarmaydi. Palitra almashishi (Bosqich 2) faqat shu fayldagi qiymatlarni
- * o'zgartiradi, komponentlarga tegilmaydi.
+ * Bosqich 2b: Light tema WINE palitrasiga o'tdi. Dark tema va `data-palette="purple"`
+ * zaxirasi ESKI (purple) qiymatlarni saqlaydi — Dark Bosqich 3 da qayta quriladi.
+ * Palitra almashishi faqat shu fayldagi qiymatlarni o'zgartiradi, komponentlarga tegilmaydi.
  *
  * Tuzilma (3 qatlam):
- *   1. Xom (primitive)  — --violet-600, --gray-500 ...   faqat shu faylda
+ *   1. Xom (primitive)  — --wine-700, --neutral-600 ...   faqat shu faylda
  *   2. Semantik         — --color-brand, --color-text ... komponentlar shuni ishlatadi
  *   3. Komponent        — kerak bo'lsa, o'sha komponent CSS'ida
  *
  * Qatlam tartibi shu yerda (birinchi yuklanadigan fayl) e'lon qilinadi:
  * @layer tartibi birinchi uchragan joyda qotadi. Qatlamsiz (mavjud) qoidalar
- * har doim qatlamlilardan ustun, shuning uchun hozirgi stillar o'zgarmaydi.
+ * har doim qatlamlilardan ustun.
  */
 @layer reset, tokens, base, components, utilities;
 
 @layer tokens {
   :root {
-    /* ── 1. Xom qiymatlar (hozirgi palitra) ───────────────────────── */
+    /* ── 1a. Xom qiymatlar: wine + neytral (yangi palitra) ─────────── */
+    --wine-50:  #fdf2f8;
+    --wine-100: #fae4f1;
+    --wine-200: #f5cbe4;
+    --wine-300: #e9a8d0;
+    --wine-400: #d77eb6;
+    --wine-500: #be539a;
+    --wine-600: #9f337e;
+    --wine-700: #7f2063;
+    --wine-800: #631a4d;
+    --wine-900: #461336;
+
+    --neutral-0:   #ffffff;
+    --neutral-50:  #f9f6f7;
+    --neutral-100: #f3eff1;
+    --neutral-200: #e7e1e4;
+    --neutral-600: #645b60;
+    --neutral-900: #1c161a;
+
+    --gold-500:  #d4af37;
+    --dark-bg:   #120c10;   /* Dark sahifa foni — to'q media yuzalari uchun ham */
+    --dark-deep: #0d080b;
+
+    /* ── 1b. ESKI (purple) xom qiymatlar — Dark va zaxira palitra uchun; Bosqich 3 da Dark yangilanadi ── */
     --white:      #ffffff;
     --violet-600: #7c3aed;
     --violet-100: #ede9fe;
@@ -43,48 +66,47 @@
     --plum-1000:  #0d0b1e;
     --gray-100:   #f3f4f6;
 
-    /* ── 2. Semantik rang (Light) ─────────────────────────────────── */
-    --color-bg:            var(--white);
-    --color-surface-2:     var(--violet-50);
-    --color-text:          var(--ink-900);
-    --color-text-muted:    var(--gray-500);
-    --color-border:        var(--lavender-100);
+    /* ── 2. Semantik rang (Light, wine) ───────────────────────────── */
+    --color-bg:            var(--neutral-0);
+    --color-surface-2:     var(--neutral-50);
+    --color-text:          var(--neutral-900);
+    --color-text-muted:    var(--neutral-600);
+    --color-border:        var(--neutral-200);
 
-    --color-brand:         var(--violet-600);
-    --color-brand-hover:   var(--indigo-600);
-    --color-brand-subtle:  var(--violet-50);
-    --color-brand-subtle-2: var(--violet-100);
-    --color-on-brand:      var(--white);
+    --color-brand:         var(--wine-700);
+    --color-brand-hover:   var(--wine-800);
+    --color-brand-subtle:  var(--wine-50);
+    --color-brand-subtle-2: var(--wine-100);
+    --color-on-brand:      var(--neutral-0);
 
-    --color-accent:        var(--gold-600);
-    --color-on-accent:     var(--white);
+    --color-accent:        var(--gold-500);
+    --color-on-accent:     var(--neutral-900);
 
     /* Doim to'q yuzalar (footer, to'q hero, karusel) ustidagi ranglar — tema bilan almashmaydi */
-    --color-on-dark:             var(--gray-100);
-    --color-on-dark-muted:       var(--gray-400);
-    --color-brand-on-dark:       var(--violet-400);
-    --color-brand-on-dark-hover: var(--violet-200);
-    --color-media-bg:            var(--plum-950);
+    --color-on-dark:             var(--neutral-100);
+    --color-on-dark-muted:       #b1a8ad;
+    --color-brand-on-dark:       var(--wine-300);
+    --color-brand-on-dark-hover: var(--wine-200);
+    --color-media-bg:            var(--dark-bg);
 
     /* Gradientlar */
-    --gradient-hero:      linear-gradient(135deg, var(--violet-50) 0%, var(--violet-100) 40%, var(--indigo-100) 100%);
-    --gradient-hero-soft: linear-gradient(135deg, var(--violet-50), var(--violet-100));
-    --gradient-dark:      linear-gradient(135deg, var(--ink-900), var(--violet-900));
+    --gradient-hero:      linear-gradient(135deg, var(--wine-50) 0%, var(--wine-100) 40%, var(--wine-200) 100%);
+    --gradient-hero-soft: linear-gradient(135deg, var(--wine-50), var(--wine-100));
+    --gradient-dark:      linear-gradient(135deg, var(--neutral-900), var(--wine-900));
     --gradient-brand:     linear-gradient(135deg, var(--color-brand), var(--color-brand-hover));
-    --gradient-footer:    linear-gradient(135deg, var(--ink-900), var(--navy-800));
-    --gradient-sidebar:   linear-gradient(180deg, var(--ink-900) 0%, var(--navy-800) 100%);
-    --gradient-media:     linear-gradient(135deg, var(--plum-900), var(--plum-950) 60%, var(--plum-1000));
+    --gradient-footer:    linear-gradient(135deg, var(--neutral-900), var(--wine-900));
+    --gradient-sidebar:   linear-gradient(180deg, var(--neutral-900) 0%, var(--wine-900) 100%);
+    --gradient-media:     linear-gradient(135deg, var(--wine-900), var(--dark-bg) 60%, var(--dark-deep));
 
-    /* Holat ranglari: JSX'da hozir eng ko'p ishlatiladigan qiymatlar.
-       "-bg" qiymatlari yangi (hozircha hech qayerda ishlatilmaydi). */
-    --color-success:       #059669;
-    --color-success-bg:    #ecfdf5;
-    --color-warning:       #d97706;
-    --color-warning-bg:    #fffbeb;
-    --color-danger:        #dc2626;
-    --color-danger-bg:     #fef2f2;
-    --color-info:          #2563eb;
-    --color-info-bg:       #eff6ff;
+    /* Holat ranglari (matn bilan birga ishlatiladi; faqat rangga tayanilmaydi) */
+    --color-success:       #21763c;
+    --color-success-bg:    #e9f1ec;
+    --color-warning:       #915c08;
+    --color-warning-bg:    #f4efe6;
+    --color-danger:        #c81e1e;
+    --color-danger-bg:     #fbeaea;
+    --color-info:          #026a9d;
+    --color-info-bg:       #e6f0f5;
 
     /* ── Tipografiya ──────────────────────────────────────────────── */
     /* Hozirgi stek saqlandi (vizual farq 0); system-ui zaxirasi Bosqich 2 da. */
@@ -131,7 +153,7 @@
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
     --shadow-md: 0 1px 2px rgb(28 22 26 / 0.05), 0 10px 26px rgb(28 22 26 / 0.06);
     --shadow-lg: 0 14px 36px rgb(0 0 0 / 0.12);
-    --shadow-brand: 0 4px 15px rgb(124 58 237 / 0.3);   /* hozirgi .btn-primary soyasi */
+    --shadow-brand: 0 4px 15px color-mix(in srgb, var(--color-brand) 30%, transparent);
 
     /* ── z-index ──────────────────────────────────────────────────── */
     --z-raised:      1;
@@ -148,8 +170,57 @@
     --ease-out:      cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* ── Semantik rang (Dark) — hozirgi `[data-theme="dark"]` qiymatlari ── */
+  /* ── ESKI (purple) qiymatlar ───────────────────────────────────────
+     Dark tema Bosqich 3 gacha o'zgarmaydi, shuning uchun brend/aksent/holat/gradient
+     qiymatlari bu yerda eskicha. `data-palette="purple"` (index.html) bilan Light ham
+     shu qiymatlarga qaytadi — revert'siz, bir atribut bilan. */
+  :root[data-palette="purple"],
   [data-theme="dark"] {
+    --color-brand:         var(--violet-600);
+    --color-brand-hover:   var(--indigo-600);
+    --color-on-brand:      var(--white);
+    --color-accent:        var(--gold-600);
+    --color-on-accent:     var(--white);
+
+    --color-on-dark:             var(--gray-100);
+    --color-on-dark-muted:       var(--gray-400);
+    --color-brand-on-dark:       var(--violet-400);
+    --color-brand-on-dark-hover: var(--violet-200);
+    --color-media-bg:            var(--plum-950);
+
+    --gradient-hero:      linear-gradient(135deg, var(--violet-50) 0%, var(--violet-100) 40%, var(--indigo-100) 100%);
+    --gradient-hero-soft: linear-gradient(135deg, var(--violet-50), var(--violet-100));
+    --gradient-dark:      linear-gradient(135deg, var(--ink-900), var(--violet-900));
+    --gradient-footer:    linear-gradient(135deg, var(--ink-900), var(--navy-800));
+    --gradient-sidebar:   linear-gradient(180deg, var(--ink-900) 0%, var(--navy-800) 100%);
+    --gradient-media:     linear-gradient(135deg, var(--plum-900), var(--plum-950) 60%, var(--plum-1000));
+
+    --color-success:       #059669;
+    --color-success-bg:    #ecfdf5;
+    --color-warning:       #d97706;
+    --color-warning-bg:    #fffbeb;
+    --color-danger:        #dc2626;
+    --color-danger-bg:     #fef2f2;
+    --color-info:          #2563eb;
+    --color-info-bg:       #eff6ff;
+
+    --shadow-brand: 0 4px 15px rgb(124 58 237 / 0.3);
+  }
+
+  /* Eski Light neytral va tint'lar (faqat zaxira palitra) */
+  :root[data-palette="purple"] {
+    --color-bg:             var(--white);
+    --color-surface-2:      var(--violet-50);
+    --color-text:           var(--ink-900);
+    --color-text-muted:     var(--gray-500);
+    --color-border:         var(--lavender-100);
+    --color-brand-subtle:   var(--violet-50);
+    --color-brand-subtle-2: var(--violet-100);
+  }
+
+  /* Eski Dark neytral va tint'lar (Bosqich 3 gacha) */
+  [data-theme="dark"],
+  :root[data-palette="purple"][data-theme="dark"] {
     --color-bg:             var(--night-950);
     --color-surface-2:      var(--night-900);
     --color-text:           var(--mist-100);

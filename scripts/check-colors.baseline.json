@@ -1,8 +1,8 @@
 {
   "totals": {
-    "hex": 261,
-    "func": 124,
-    "files": 52,
+    "hex": 252,
+    "func": 120,
+    "files": 51,
     "uniqueHex": 80
   },
   "perFile": {
@@ -17,10 +17,6 @@
     "src/index.css": {
       "hex": 12,
       "func": 10
-    },
-    "src/pages/admin/Login.jsx": {
-      "hex": 14,
-      "func": 5
     },
     "src/pages/news/FeaturedCarousel.jsx": {
       "hex": 1,
@@ -53,6 +49,10 @@
     "src/pages/Teachers.jsx": {
       "hex": 12,
       "func": 1
+    },
+    "src/pages/admin/Login.jsx": {
+      "hex": 5,
+      "func": 5
     },
     "src/pages/NewsDetail.jsx": {
       "hex": 2,
@@ -102,10 +102,6 @@
       "hex": 4,
       "func": 0
     },
-    "src/pages/admin/ApplicationsAdmin.jsx": {
-      "hex": 1,
-      "func": 3
-    },
     "src/pages/admin/shared/constants.js": {
       "hex": 4,
       "func": 0
@@ -114,6 +110,10 @@
       "hex": 3,
       "func": 1
     },
+    "src/pages/admin/ApplicationsAdmin.jsx": {
+      "hex": 1,
+      "func": 2
+    },
     "src/pages/admin/shared/styles.js": {
       "hex": 3,
       "func": 0
@@ -121,10 +121,6 @@
     "src/pages/home/utils.js": {
       "hex": 1,
       "func": 2
-    },
-    "src/pages/sortinghat/QuizStage.jsx": {
-      "hex": 2,
-      "func": 1
     },
     "src/pages/sortinghat/RegisterStage.jsx": {
       "hex": 3,
@@ -150,9 +146,9 @@
       "hex": 2,
       "func": 0
     },
-    "src/pages/sortinghat/ResultStage.jsx": {
-      "hex": 0,
-      "func": 2
+    "src/pages/sortinghat/QuizStage.jsx": {
+      "hex": 2,
+      "func": 0
     },
     "src/pages/Testimonials.jsx": {
       "hex": 2,
@@ -216,16 +212,16 @@
     }
   },
   "perValue": {
-    "#fff": 27,
+    "#fff": 24,
     "#0088cc": 14,
     "#059669": 14,
     "#a78bfa": 14,
-    "#1a1a2e": 12,
     "#dc2626": 12,
     "#7c3aed": 11,
     "#e8e8f0": 10,
-    "#9ca3af": 8,
+    "#1a1a2e": 9,
     "#d97706": 8,
+    "#9ca3af": 7,
     "#2d1b69": 6,
     "#4f46e5": 6,
     "#db2777": 6,
@@ -235,18 +231,18 @@
     "#0055aa": 4,
     "#0f0f1a": 4,
     "#2563eb": 4,
-    "#ede9fe": 4,
     "#ffffff": 4,
     "#10b981": 3,
     "#6d28d9": 3,
     "#8b5cf6": 3,
     "#c4b5fd": 3,
     "#e546e5": 3,
+    "#ede9fe": 3,
     "#f11717": 3,
-    "#faf5ff": 3,
     "#000": 2,
     "#1877f2": 2,
     "#e0e7ff": 2,
+    "#faf5ff": 2,
     "#006aa3": 1,
     "#047857": 1,
     "#06bdc7": 1,

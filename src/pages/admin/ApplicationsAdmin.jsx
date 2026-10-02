@@ -93,7 +93,7 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
                   {type === 'vacancy' && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
                       {a.position && <span style={{ fontSize: 11, background: 'color-mix(in srgb, var(--color-brand) 8%, transparent)', color: 'var(--color-brand)', padding: '2px 8px', borderRadius: 20 }}>{a.position}</span>}
-                      {a.faculty && <span style={{ fontSize: 11, background: 'rgba(79,70,229,.08)', color: 'var(--color-brand-hover)', padding: '2px 8px', borderRadius: 20 }}>{a.faculty}</span>}
+                      {a.faculty && <span style={{ fontSize: 11, background: 'color-mix(in srgb, var(--color-brand-hover) 8%, transparent)', color: 'var(--color-brand-hover)', padding: '2px 8px', borderRadius: 20 }}>{a.faculty}</span>}
                       {a.education && <span style={{ fontSize: 11, background: 'rgba(5,150,105,.08)', color: 'var(--color-success)', padding: '2px 8px', borderRadius: 20 }}>{a.education}</span>}
                       {a.experience && <span style={{ fontSize: 11, background: 'rgba(217,119,6,.08)', color: 'var(--color-warning)', padding: '2px 8px', borderRadius: 20 }}>{a.experience}</span>}
                     </div>

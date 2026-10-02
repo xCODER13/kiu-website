@@ -48,7 +48,7 @@ export default function QuizStage({ current, selected, busy, onPick }) {
               style={{
                 width: '100%', padding: '0.9rem 1.1rem', textAlign: 'left',
                 cursor: busy ? 'default' : 'pointer',
-                background: isSel ? 'linear-gradient(135deg,color-mix(in srgb, var(--color-brand) 12%, transparent),rgba(79,70,229,.12))' : 'var(--bg)',
+                background: isSel ? 'linear-gradient(135deg,color-mix(in srgb, var(--color-brand) 12%, transparent),color-mix(in srgb, var(--color-brand-hover) 12%, transparent))' : 'var(--bg)',
                 border: `2px solid ${isSel ? 'var(--color-brand)' : 'var(--border)'}`,
                 borderRadius: 12, fontSize: 13.5, color: 'var(--text)',
                 fontFamily: 'var(--font-body)', transition: 'all .18s',
