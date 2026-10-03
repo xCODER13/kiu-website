@@ -11,7 +11,6 @@ export default function NewsSection({ newsLoading, articles, newsError, featured
   const { t } = useTranslation()
   return (
     <section className="home-news">
-      <span className="dots-shine" aria-hidden="true" />
       <div className="container-wide home-news__inner">
         <div className="reveal home-news__head">
           <span className="section-badge">{t('home.news.badge')}</span>

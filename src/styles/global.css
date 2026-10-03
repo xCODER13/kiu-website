@@ -29,8 +29,6 @@
     font-family: var(--font-body);
     color: var(--text);
     background-color: var(--bg);
-    background-image: var(--gradient-page); /* taxta 3.10: sahifa bo'ylab statik yorug'lik dog'lari */
-    background-repeat: no-repeat;
     -webkit-font-smoothing: antialiased;
     font-size: 15px;
     line-height: 1.6;
@@ -59,6 +57,25 @@
     body::after { animation: kiuShine 14s ease-in-out infinite; }
   }
   @media (prefers-reduced-motion: reduce) { body::after { display: none; } }
+
+  /* Sahifa foni (6.12d): navbar ostidan pastga va footer ustidan tepaga so'nuvchi gradient (480 px, butun enida bir xil qalinlik).
+     Avval `body` da 3 ta statik radial "dog'" (piksel bilan qotirilgan: qisqa sahifada ko'rinmasdi, uzun sahifada bo'lim fonlari kesib qo'yardi)
+     va hero'ning burchak yorug'ligi bor edi — chap tomon qalin, o'ng tomon yupqa chiqardi. `main` stacking context YARATMAYDI
+     (modal/navbar z-index'iga tegmaydi): `z-index: -1` qatlami nuqtalar qatlami (`body::before`) ustida, mazmun ostida, yaltirash (`body::after`) ostida. */
+  main { position: relative; }
+  main::before,
+  main::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    height: 480px;
+    max-height: 100%;   /* qisqa sahifada main'dan chiqib ketmasin */
+    pointer-events: none;
+  }
+  main::before { top: 0; background: var(--page-fade-top); }
+  main::after { bottom: 0; background: var(--page-fade-bottom); }
   a { text-decoration: none; color: inherit; }
   button { font-family: var(--font-body); cursor: pointer; }
 
