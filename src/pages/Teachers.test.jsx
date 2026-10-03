@@ -127,7 +127,7 @@ describe('Teachers (public)', () => {
   describe('modal', () => {
     const T3 = { _id: 't3', name: 'Karim Soliyev', role: 'Professor', dept: 'Aniq fanlar kafedrasi', avatar: 'KS' }
 
-    it("karta bosilganda modal ochiladi: ism, lavozim, kafedra va kafedradagi o'qituvchilar soni; email yo'q", async () => {
+    it("karta bosilganda modal ochiladi: ism, lavozim va kafedra; hamkasblar soni va email yo'q", async () => {
       mockApi({ 'GET /teachers': [{ ...T1, email: 'ali@kiu.uz' }, T2, T3] })
       const user = userEvent.setup()
       render(<Teachers />)
@@ -135,7 +135,7 @@ describe('Teachers (public)', () => {
       const dialog = screen.getByRole('dialog', { name: 'Ali Valiyev' })
       expect(dialog).toHaveTextContent("O'qituvchi")
       expect(dialog).toHaveTextContent('Aniq fanlar kafedrasi')
-      expect(dialog).toHaveTextContent('2 nafar') // T1 va T3 — bir kafedrada
+      expect(dialog).not.toHaveTextContent('nafar') // kafedradagi o'qituvchilar soni ko'rsatilmaydi
       expect(dialog).not.toHaveTextContent('ali@kiu.uz')
       expect(dialog.querySelector('[style]')).toBeNull()
     })

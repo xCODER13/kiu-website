@@ -5,9 +5,9 @@ import Icon from '../../components/Icon'
 import useModalA11y from '../../hooks/useModalA11y'
 
 // O'qituvchi modali: yo'nalish modali (`.fac-modal*`) bilan bir xil qobiq, tarkibi — bazadagi mavjud maydonlar
-// (rasm/avatar, ism, lavozim, kafedra, kafedradagi o'qituvchilar soni). Email ataylab yo'q (shaxsiy ma'lumot, DESIGN.md qaror 51).
+// (rasm/avatar, ism, lavozim, kafedra). Email ataylab yo'q (shaxsiy ma'lumot, DESIGN.md qaror 51).
 // Portal: sahifa o'rami `fade-up` (transform) ichida `position: fixed` viewport'ga emas, o'ramga nisbatan bo'lib qolardi.
-export default function TeacherModal({ teacher, colleagues, onClose }) {
+export default function TeacherModal({ teacher, onClose }) {
   const { t } = useTranslation()
   const dialogRef = useRef(null)
   const titleId = useId()
@@ -46,13 +46,6 @@ export default function TeacherModal({ teacher, colleagues, onClose }) {
             </div>
             <div className="fac-info__label">{t('teachers.modal.department')}</div>
             <div className="fac-info__value" lang="uz">{teacher.dept}</div>
-          </div>
-          <div className="fac-info__item">
-            <div className="fac-info__icon">
-              <Icon size={20}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></Icon>
-            </div>
-            <div className="fac-info__label">{t('teachers.modal.colleagues')}</div>
-            <div className="fac-info__value">{t('teachers.count', { count: colleagues })}</div>
           </div>
         </div>
       </div>

@@ -457,7 +457,7 @@
     "count_many": "{{count}} человек",
     "count_other": "{{count}} человека",
     "empty": "К этой кафедре не прикреплено ни одного преподавателя",
-    "modal": { "close": "Закрыть", "closeLabel": "Закрыть окно", "department": "Кафедра", "colleagues": "Преподавателей на кафедре" }
+    "modal": { "close": "Закрыть", "closeLabel": "Закрыть окно", "department": "Кафедра" }
   },
   "validation": {
     "required": "Это поле обязательно",

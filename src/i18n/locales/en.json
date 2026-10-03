@@ -445,7 +445,7 @@
     "count_one": "{{count}} person",
     "count_other": "{{count}} people",
     "empty": "No teachers are assigned to this department",
-    "modal": { "close": "Close", "closeLabel": "Close dialog", "department": "Department", "colleagues": "Teachers in department" }
+    "modal": { "close": "Close", "closeLabel": "Close dialog", "department": "Department" }
   },
   "events": {
     "title": "Events calendar",

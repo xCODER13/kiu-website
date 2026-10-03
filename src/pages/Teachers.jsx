@@ -138,7 +138,6 @@ export default function Teachers() {
       {selected && (
         <TeacherModal
           teacher={selected}
-          colleagues={teachersList.filter(x => x.dept === selected.dept).length}
           onClose={() => setSelected(null)}
         />
       )}
