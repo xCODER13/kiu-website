@@ -339,6 +339,24 @@ describe('Bosqich 6.11c1: umumiy primitivlar + About, Xalqaro, Hujjatlar, Yutuql
     expect(code).toMatch(/\.wine-stat__value \{[^}]*font-size: 2\.5rem;[^}]*font-weight: 800;[^}]*var\(--color-accent-on-dark\)/)
   })
 
+  it("banner (D1): Dark `--gradient-banner` taxtadagi 3 qatlam (wine .50 + wine .34 + oltin .12); `--shadow-banner`/`--shadow-carousel` 3 joyda e'lon qilinadi va iste'molchilarga ulangan", () => {
+    const dark = [...tokens.matchAll(/--gradient-banner:\s*([^;]+);/g)].map(m => m[1])
+    expect(dark).toHaveLength(3) // Light + Dark @media + [data-theme=dark]
+    for (const g of dark.slice(1)) {
+      expect(g.match(/radial-gradient\(/g)).toHaveLength(3)
+      expect(g).toMatch(/rgb\(159 51 126 \/ 0\.50\)/)
+      expect(g).toMatch(/55% 130% at 100% 100%[^)]*0\.34/)
+      expect(g).toMatch(/35% 90% at 60% 120%[^)]*rgb\(212 175 55 \/ 0\.12\)/)
+    }
+    expect(tokens.match(/--shadow-banner:/g)).toHaveLength(3)
+    expect(tokens.match(/--shadow-carousel:/g)).toHaveLength(3)
+    // Dark: 1px chegara (inset ring) + inset highlight + tashqi soya
+    expect(tokens).toMatch(/--shadow-banner:\s*inset 0 0 0 1px [^,]+,\s*inset 0 1px 0 rgb\(255 255 255 \/ 0\.06\),\s*0 24px 52px/)
+    for (const sel of ['\\.apply-banner', '\\.wine-banner', '\\.about-page \\.wine-banner', '\\.wine-banner\\.sh-result-banner'])
+      expect(code, sel).toMatch(new RegExp(`${sel} \\{[^}]*box-shadow: var\\(--shadow-banner\\);`))
+    expect(code).toMatch(/\.carousel \{[^}]*box-shadow: var\(--shadow-carousel\);/)
+  })
+
   it("bo'lim sarlavhasi 30 px/800 + 40×3 px oltin chiziq; `.page-block` oraliq `.section-title` dan keyin (qoida tartibi)", () => {
     expect(code).toMatch(/\.section-title \{[^}]*font-size: 1\.875rem;[^}]*font-weight: 800;/)
     expect(code).toMatch(/\.section-title::after \{[^}]*width: 40px;[^}]*height: 3px;[^}]*var\(--color-accent\)/)

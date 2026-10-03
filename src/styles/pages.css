@@ -230,7 +230,7 @@
     padding: 40px 44px;
     border-radius: 22px;
     background: var(--gradient-banner);
-    box-shadow: var(--shadow-photo);
+    box-shadow: var(--shadow-banner);
   }
   .apply-banner::before {
     content: "";
@@ -769,7 +769,7 @@
     overflow: hidden;
     border-radius: 22px;
     background: var(--color-media-bg);
-    box-shadow: var(--shadow-photo);
+    box-shadow: var(--shadow-carousel);
   }
   .carousel::after { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--gradient-hairline); }
   /* Fon rasmi `background-image` — dinamik (inline); rasm yo'q bo'lsa — gradient */
@@ -1179,7 +1179,7 @@
     padding: 2.75rem 3rem;
     border-radius: 22px;
     background: var(--gradient-banner);
-    box-shadow: var(--shadow-photo);
+    box-shadow: var(--shadow-banner);
   }
   .wine-banner::before {
     content: "";
@@ -1256,7 +1256,7 @@
   .card.about-stat { padding: 22px 16px; border-radius: 16px; box-shadow: var(--shadow-card-board); }
   .about-stat__value { font-size: 2.125rem; letter-spacing: -0.02em; }
   .about-stat__label { margin-top: 6px; font-size: 13.5px; line-height: 17px; }
-  .about-page .wine-banner { margin-top: 0; padding: 44px 52px; border-radius: 22px; box-shadow: var(--shadow-photo); }
+  .about-page .wine-banner { margin-top: 0; padding: 44px 52px; border-radius: 22px; box-shadow: var(--shadow-banner); }
   .about-page .wine-banner__title { font-size: 1.875rem; line-height: 1.2; color: var(--color-banner-title); }
   .about-page .wine-banner__text { max-width: 860px; font-size: 1.0625rem; line-height: 1.8; }
   .wine-banner__kicker { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; color: var(--color-accent-on-dark); }
@@ -2632,7 +2632,7 @@
   .sh-opt-arrow { display: flex; flex: none; margin-left: auto; color: var(--color-brand); }
 
   /* ── Result ───────────────────────────────────────────────────────── */
-  .wine-banner.sh-result-banner { margin: 0 0 24px; padding: 36px 40px 34px; border-radius: 22px; box-shadow: var(--shadow-photo); }
+  .wine-banner.sh-result-banner { margin: 0 0 24px; padding: 36px 40px 34px; border-radius: 22px; box-shadow: var(--shadow-banner); }
   .sh-result-banner__hat { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 12px; line-height: 0; }
   .sh-result-banner__hat svg:not(:nth-child(2)) { filter: drop-shadow(0 0 8px var(--glow-accent)); }
   .wine-banner__title.sh-result-banner__title { margin: 0 0 8px; font-size: 1.875rem; line-height: normal; letter-spacing: -0.015em; color: var(--color-banner-title); }
