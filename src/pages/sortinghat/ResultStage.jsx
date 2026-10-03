@@ -9,8 +9,8 @@ const list = (t, key) => {
 }
 
 /* ── Result Stage ──────────────────────────────────────────────
-   6.11d: yo'nalish kartalari bitta brend gradient/rangda (`FACULTIES[k].color/grad` endi stilda ishlatilmaydi — ma'lumot
-   Data.jsx da qoldi). Birinchi karta: tepada oltin hairline + "Eng mos" pill (doimiy); hover/glow — hamma kartada bir xil
+   6.11d: yo'nalish kartalari bitta brend gradient/rangda (`FACULTIES[k]` da `color`/`grad` maydoni yo'q — 6.19 da
+   olib tashlandi). Birinchi karta: tepada oltin hairline + "Eng mos" pill (doimiy); hover/glow — hamma kartada bir xil
    (`.card--lift`). Natija ko'rsatilgach yaratiladi (async yuklashdan keyin) — shuning uchun `.reveal` ishlatilmaydi. */
 export default function ResultStage({ result, onRestart }) {
   const { t } = useTranslation()

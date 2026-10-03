@@ -265,4 +265,11 @@
     border-color: var(--color-brand);
     color: var(--color-brand);
   }
+
+  /* Kontent faqat o'zbekcha ekani haqidagi izoh (ContentLangNote). Oldin inline edi: 12 px / 6 px / --muted (= --color-text-muted) */
+  .content-lang-note {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
 }

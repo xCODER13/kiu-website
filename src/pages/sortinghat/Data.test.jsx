@@ -25,10 +25,11 @@ describe('Sorting Hat ma\'lumotlari', () => {
     const keys = new Set(QUESTIONS.flatMap(q => q.opts.flatMap(o => Object.keys(o.s))))
     for (const k of keys) expect(FACULTIES, `noma'lum yo'nalish kaliti: ${k}`).toHaveProperty(k)
   })
-  it('har yo\'nalishda name, desc, career, subjects, color', () => {
+  it('har yo\'nalishda name, desc, career, subjects (rang maydoni yo\'q — 6.19)', () => {
     for (const [k, f] of Object.entries(FACULTIES)) {
       expect(f.name, k).toBeTruthy()
-      expect(f.color, k).toMatch(/^#[0-9a-f]{6}$/i)
+      expect(f, k).not.toHaveProperty('color')
+      expect(f, k).not.toHaveProperty('grad')
       for (const [lang, loc] of Object.entries({ uz, en })) {
         const t = loc.sortingHat.faculties[k]
         expect(t?.name, `${lang}.${k}.name`).toBeTruthy(); expect(t?.desc, `${lang}.${k}.desc`).toBeTruthy()

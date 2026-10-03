@@ -286,6 +286,12 @@ describe('ContentLangNote', () => {
     renderAt('/en/news', <ContentLangNote />)
     expect(screen.getByText('This content is published in Uzbek.')).toBeInTheDocument()
   })
+  it("inline style yo'q — ko'rinish `.content-lang-note` klassidan", () => {
+    renderAt('/en/news', <ContentLangNote />)
+    const note = screen.getByText('This content is published in Uzbek.')
+    expect(note).toHaveClass('content-lang-note')
+    expect(note).not.toHaveAttribute('style')
+  })
 })
 
 describe('getCategoryLabel', () => {

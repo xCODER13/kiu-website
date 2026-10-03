@@ -158,56 +158,38 @@ export const FACULTIES = {
   it: {
     name: "Dasturiy injiniring",
     icon: FacSvg.it,
-    color: "#7c3aed",
-    grad: "linear-gradient(135deg,#7c3aed,#4f46e5)",
   },
   maktab: {
     name: "Maktabgacha ta'lim",
     icon: FacSvg.maktab,
-    color: "#f59e0b",
-    grad: "linear-gradient(135deg,#f59e0b,#d97706)",
   },
   boshlang: {
     name: "Boshlang'ich ta'lim",
     icon: FacSvg.boshlang,
-    color: "#10b981",
-    grad: "linear-gradient(135deg,#10b981,#059669)",
   },
   psixo: {
     name: "Psixologiya",
     icon: FacSvg.psixo,
-    color: "#8b5cf6",
-    grad: "linear-gradient(135deg,#8b5cf6,#7c3aed)",
   },
   filolog: {
     name: "Filologiya va tillarni o'qitish",
     icon: FacSvg.filolog,
-    color: "#0088cc",
-    grad: "linear-gradient(135deg,#0088cc,#0055aa)",
   },
   neft: {
     name: "Neft va gaz ishi",
     icon: FacSvg.neft,
-    color: "#dc2626",
-    grad: "linear-gradient(135deg,#dc2626,#b91c1c)",
   },
   moliya: {
     name: "Moliya va moliyaviy texnologiyalar",
     icon: FacSvg.moliya,
-    color: "#059669",
-    grad: "linear-gradient(135deg,#059669,#047857)",
   },
   buxgal: {
     name: "Buxgalteriya hisobi",
     icon: FacSvg.buxgal,
-    color: "#2563eb",
-    grad: "linear-gradient(135deg,#2563eb,#1d4ed8)",
   },
   huquq: {
     name: "Milliy g'oya va huquq ta'limi",
     icon: FacSvg.huquq,
-    color: "#6d28d9",
-    grad: "linear-gradient(135deg,#6d28d9,#4c1d95)",
   },
 }
 

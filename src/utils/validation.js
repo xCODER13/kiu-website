@@ -49,8 +49,3 @@ export function validateRequired(value, label = "Bu maydon", t) {
   if (value == null || !String(value).trim()) return t ? t('validation.fieldRequired', { field: label }) : `${label} majburiy`
   return null
 }
-
-// style yordamchisi — xato bo'lsa inputga qizil ramka qo'shadi
-export function errorBorder(hasError, baseStyle) {
-  return hasError ? { ...baseStyle, borderColor: '#dc2626' } : baseStyle
-}
