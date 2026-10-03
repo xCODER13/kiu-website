@@ -867,6 +867,11 @@
   .carousel-nav:hover { background: var(--color-brand-fill); }
   .carousel-nav--prev { left: 24px; }
   .carousel-nav--next { right: 24px; }
+  /* Fokus halqasi: karusel/galereya boshqaruvlari doim to'q yuza (rasm) ustida — Light'dagi bordo halqa 2.1:1 edi (WCAG 2.4.11/1.4.11 ≥ 3:1) */
+  .carousel :focus-visible,
+  .photo-lightbox :focus-visible { outline-color: var(--color-brand-on-dark); }
+  /* Galereya strelkalari — har qanday rasm (och/to'q) ustida: oq halqa + ichki to'q oraliq */
+  .gallery-arrow:focus-visible { outline-color: rgb(255 255 255 / 1); box-shadow: 0 0 0 4px rgb(0 0 0 / 0.6); }
   .carousel-dots { position: absolute; right: 32px; bottom: 30px; display: flex; align-items: center; }
   /* Nuqta: 24px bosish hududi + ichida pill (⌀6px; faol — 24px, oltin) */
   .carousel-dot,
