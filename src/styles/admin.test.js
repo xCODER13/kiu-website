@@ -172,3 +172,22 @@ describe('Bosqich 6c: CRUD sahifalar (shared/styles.js klasslarga o\'tdi)', () =
     }
   })
 })
+
+describe('Bosqich 6.18: admin logotipi', () => {
+  const css = read('src/styles/admin.css')
+
+  it("sidebar logotipi to'q gradient ustida `--color-brand-on-dark`, topbar'da `--color-brand` (hex yo'q)", () => {
+    expect(css).toMatch(/\.adm-logo--side\s*\{\s*color:\s*var\(--color-brand-on-dark\)/)
+    expect(css).toMatch(/\.adm-logo--top\s*\{\s*color:\s*var\(--color-brand\)/)
+  })
+
+  it("yig'ilgan sarlavha logotip va tugmani ustma-ust joylaydi", () => {
+    expect(css).toMatch(/\[data-collapsed="true"\] \.adm-sidebar-head\s*\{[^}]*flex-direction:\s*column/)
+  })
+
+  it("Dashboard va Login umumiy `Logo` komponentini ishlatadi (qo'lda SVG emas)", () => {
+    for (const f of ['Dashboard.jsx', 'Login.jsx'])
+      expect(read(`src/pages/admin/${f}`)).toMatch(/import Logo from '\.\.\/\.\.\/components\/Logo'/)
+  })
+})
+

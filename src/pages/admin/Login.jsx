@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Logo from '../../components/Logo'
 
 export default function Login() {
   const [form, setForm] = useState({ username: '', password: '' })
@@ -41,7 +42,7 @@ export default function Login() {
       <div className="auth-card">
         <div className="auth-head">
           <div className="auth-logo">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <Logo height={30} className="adm-logo" />
           </div>
           <h2 className="auth-title">Admin Panel</h2>
           <p className="auth-sub">KIU boshqaruv tizimi</p>

@@ -102,3 +102,24 @@ describe('Dashboard sessiya boshqaruvi', () => {
     expect(container.querySelector('.adm-topbar .adm-theme-btn')).not.toBeNull()
   })
 })
+
+describe('Dashboard logotipi (6.18)', () => {
+  it("sidebar: ochiq holatda 36 px, yig'ilganda 22 px — har doim bitta nomli logotip; topbar'dagisi dekorativ", async () => {
+    localStorage.setItem('kiu_token', 'ok')
+    const { container } = setup()
+    const logo = await screen.findByRole('img', { name: 'KIU logo' })
+    expect(logo).toHaveAttribute('height', '36')
+    expect(screen.getAllByRole('img', { name: 'KIU logo' })).toHaveLength(1)
+    expect(screen.getByText('Admin')).toBeInTheDocument()
+    // topbar: matn yonida — ekran o'qigich takrorlamasin
+    const top = container.querySelector('.adm-topbar-title svg')
+    expect(top).toHaveAttribute('aria-hidden', 'true')
+    expect(top).not.toHaveAttribute('role')
+
+    await userEvent.click(screen.getByRole('button', { name: "Panelni yig'ish" }))
+    const small = screen.getByRole('img', { name: 'KIU logo' })
+    expect(small).toHaveAttribute('height', '22')
+    expect(screen.queryByText('Boshqaruv paneli')).not.toBeInTheDocument()
+  })
+})
+
