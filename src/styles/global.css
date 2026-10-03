@@ -110,6 +110,24 @@
 }
 .fade-up { animation: fadeUp 0.45s ease both; }
 
+/* Birinchi ekrandagi (hero) kirish: faqat transform. `.reveal` opacity:0 dan JS kuzatuvchi + 0.6s o'tish + kechikishdan keyin chiqadi
+   (o'lchandi: sarlavha DOM'da 435 ms, ko'rinadi 657 ms, to'liq 1145 ms) — LCP elementi shuncha kech chizilardi. */
+@keyframes enterUp {
+  from { transform: translateY(24px); }
+  to   { transform: translateY(0); }
+}
+.enter { animation: enterUp 0.6s ease both; }
+.enter-delay-1 { animation-delay: 0.08s; }
+.enter-delay-2 { animation-delay: 0.16s; }
+.enter-delay-3 { animation-delay: 0.24s; }
+.enter-delay-4 { animation-delay: 0.32s; }
+
+/* Harakatni kamaytirish: kirish animatsiyalari o'chadi, kontent darhol ko'rinadi (qatlamsiz — qatlamli qoidalardan ustun) */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .fade-up, .enter { animation: none; }
+}
+
 /* Mobile nav */
 .desktop-nav { display: flex !important; }
 .mobile-nav  { display: none !important; }

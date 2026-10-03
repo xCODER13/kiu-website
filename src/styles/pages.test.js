@@ -864,3 +864,24 @@ describe('Bosqich 6.12i: modallar (skrollsiz yo\'nalish modali, o\'qituvchi moda
     expect(read('src/pages/teachers/TeacherModal.jsx')).not.toMatch(/style=\{|#[0-9a-f]{3,8}\b|teacher\.email/i)
   })
 })
+
+describe('Bosqich 6.13: a11y (fokus halqasi) va performance (hero kirishi, harakatni kamaytirish)', () => {
+  const code = read('src/styles/pages.css').replace(/\/\*[\s\S]*?\*\//g, '')
+  const global = read('src/styles/global.css').replace(/\/\*[\s\S]*?\*\//g, '')
+
+  it("karusel/lightbox boshqaruvlari to'q yuza ustida: fokus halqasi `--color-brand-on-dark`; galereya strelkasi — oq halqa + to'q oraliq", () => {
+    expect(code).toMatch(/\.carousel :focus-visible,\s*\.photo-lightbox :focus-visible \{ outline-color: var\(--color-brand-on-dark\); \}/)
+    expect(code).toMatch(/\.gallery-arrow:focus-visible \{ outline-color: rgb\(255 255 255 \/ 1\); box-shadow: 0 0 0 4px rgb\(0 0 0 \/ 0\.6\); \}/)
+  })
+
+  it("hero kirishi `.enter`: faqat transform (opacity yo'q) — LCP elementi opacity:0 + JS kuzatuvchi kutmaydi; HeroSection'da `.reveal` yo'q", () => {
+    const kf = global.match(/@keyframes enterUp \{[\s\S]*?\n\}/)?.[0] ?? ''
+    expect(kf).toMatch(/translateY/)
+    expect(kf).not.toMatch(/opacity/)
+    expect(read('src/pages/home/HeroSection.jsx')).not.toMatch(/className="[^"]*\breveal\b/)
+  })
+
+  it("`prefers-reduced-motion: reduce` da `.reveal` darhol ko'rinadi, `.fade-up` va `.enter` animatsiyasiz", () => {
+    expect(global).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\.reveal \{ opacity: 1; transform: none; transition: none; \}\s*\.fade-up, \.enter \{ animation: none; \}/)
+  })
+})

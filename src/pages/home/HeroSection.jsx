@@ -6,7 +6,8 @@ import Icon from '../../components/Icon'
 // config.stats tartibi bilan mos: label matnlari i18n'da (home.stats.<kalit>)
 const STAT_KEYS = ['students', 'teachers', 'programs', 'founded']
 
-// "HERO" bo'limi (spec 6.10). Barcha uslublar `pages.css` da (`.home-hero*`, `.stat-tile*`), inline stil yo'q.
+// "HERO" bo'limi (spec 6.10). Kirish animatsiyasi `.enter` (global.css) — faqat transform: `.reveal` kabi opacity:0 + JS kuzatuvchi
+// kutmaydi, shuning uchun sarlavha va rasm birinchi chizilishdayoq ko'rinadi (LCP). Barcha uslublar `pages.css` da (`.home-hero*`, `.stat-tile*`), inline stil yo'q.
 // stat-${i} id'lari orkestrator (Home.jsx)dagi useEffect statistika
 // hisoblagichi tomonidan document.getElementById orqali topiladi.
 export default function HeroSection() {
@@ -23,18 +24,18 @@ export default function HeroSection() {
 
           {/* Chap — matn */}
           <div className="home-hero__text">
-            <span className="reveal hero-badge">
+            <span className="enter hero-badge">
               <span className="hero-badge__dot" aria-hidden="true" />
               {t('home.hero.badge', { from: config.admission.year, to: parseInt(config.admission.year) + 1 })}
             </span>
-            <h1 className="reveal reveal-delay-1 home-hero__title">{head}<span className="hl-brand">{tail}</span></h1>
-            <p className="reveal reveal-delay-2 home-hero__lead">{t('home.hero.lead')}</p>
+            <h1 className="enter enter-delay-1 home-hero__title">{head}<span className="hl-brand">{tail}</span></h1>
+            <p className="enter enter-delay-2 home-hero__lead">{t('home.hero.lead')}</p>
             {/* Havola tugma ko'rinishida (avval `<a><button>` — ichma-ich interaktiv element edi) */}
-            <div className="reveal reveal-delay-3 home-hero__cta">
+            <div className="enter enter-delay-3 home-hero__cta">
               <NavLink to="/admission" className="btn btn-primary btn-cta btn-glow">{t('home.hero.ctaAdmission')} <Icon size={18} strokeWidth={1.8}><path d="M5 12h14M13 6l6 6-6 6" /></Icon></NavLink>
               <NavLink to="/faculty" className="btn btn-accent btn-cta btn-glow">{t('home.hero.ctaPrograms')} <Icon size={18} strokeWidth={1.8}><path d="M5 12h14M13 6l6 6-6 6" /></Icon></NavLink>
             </div>
-            <div className="reveal reveal-delay-4 home-stats">
+            <div className="enter enter-delay-4 home-stats">
               {config.stats.map((s, i) => (
                 <div key={STAT_KEYS[i]} className={`stat-tile${STAT_KEYS[i] === 'founded' ? ' stat-2022' : ''}`} data-stat={STAT_KEYS[i]}>
                   <div id={`stat-${i}`} className="stat-tile__num">0</div>
@@ -45,7 +46,7 @@ export default function HeroSection() {
           </div>
 
           {/* O'ng — kampus rasmi (3:2 — bino to'liq ko'rinadi). Orqasida yumshoq wine va oltin dog' (`::before/::after`) */}
-          <div className="reveal reveal-delay-2 home-hero__photo">
+          <div className="enter enter-delay-2 home-hero__photo">
             <div className="home-hero__frame">
               <img
                 src="/gallery/Asosiy-kampus.png"
