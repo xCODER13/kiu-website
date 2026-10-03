@@ -286,6 +286,8 @@
     background: var(--color-surface-3);
     box-shadow: var(--shadow-card-board);
   }
+  /* `card--lift` (hover: brand chegara + glow + ko'tarilish) fonni gradientga almashtirmasin — tinch holat taxtadagidek qoladi */
+  .card.card--lift.step-card { background: var(--color-surface-3); }
   .step-head { display: flex; align-items: center; justify-content: space-between; width: 100%; }
   .step-icon {
     display: flex;
