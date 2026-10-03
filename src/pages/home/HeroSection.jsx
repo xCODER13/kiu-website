@@ -18,7 +18,6 @@ export default function HeroSection() {
   const tail = cut > 0 ? name.slice(cut + 1) : name
   return (
     <section className="home-hero">
-      <span className="dots-shine" aria-hidden="true" />
       <div className="container-wide">
         <div className="home-hero__grid">
 

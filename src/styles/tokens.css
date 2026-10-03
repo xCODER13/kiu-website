@@ -183,6 +183,8 @@
     --shadow-tile-active:    0 6px 16px rgb(127 32 99 / 0.4);
     --shadow-card-board:     0 1px 2px rgb(28 22 26 / 0.05), 0 10px 26px rgb(28 22 26 / 0.06);
     --shadow-photo:          0 24px 52px rgb(127 32 99 / 0.22), 0 0 0 1px rgb(127 32 99 / 0.12);
+    --shadow-banner:         0 24px 52px rgb(127 32 99 / 0.22), 0 0 0 1px rgb(127 32 99 / 0.12);   /* to'q wine banner (Light = fotosurat soyasi)  */
+    --shadow-carousel:       var(--shadow-photo);                                                  /* asosiy karusel (Yangiliklar) */
     --shadow-stat-tile:      0 1px 2px rgb(28 22 26 / 0.05), 0 8px 20px rgb(127 32 99 / 0.08);
     --stat-tile-border:      var(--color-border);
     --pill-bg:               rgb(127 32 99 / 0.08);
@@ -193,6 +195,7 @@
     --ring-avatar:           rgb(127 32 99 / 0.14);              /* rahbar avatari halqasi */
     --tab-wrap-glow:         rgb(127 32 99 / 0.08);
     --band-bg:               #fbf4f8;                              /* hero va yangiliklar bandi asosi */
+    --band-tint:             rgb(175 35 115 / 0.05);               /* `--band-bg` ning yarim shaffof ekvivalenti: oq (#fff) ustida #fbf4f8 beradi; ichki hero nuqtalarni yopmasin */
     --dot-shine:             rgb(212 175 55 / 0.32);
     --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, #fae4f1 0%, #fdf2f8 70%);   /* rasm yo'q joyda (karusel, karta) */
     --gradient-band-hero:    radial-gradient(60% 110% at 8% -10%, rgb(127 32 99 / 0.13) 0%, rgb(127 32 99 / 0) 70%),
@@ -404,10 +407,10 @@
       --color-star:            #e6c04f;
       --color-qr-border:       rgb(233 168 208 / 0.35);
       --color-banner-bg:      var(--dark-deep);
-      --gradient-banner:      radial-gradient(60% 110% at 0% 0%, rgb(159 51 126 / 0.40), transparent 62%),
-                              radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),
-                              radial-gradient(40% 80% at 60% 0%, rgb(127 32 99 / 0.22), transparent 70%),
-                              var(--dark-deep);
+      --gradient-banner:      radial-gradient(75% 150% at 0% 0%, rgb(159 51 126 / 0.50) 0%, rgb(127 32 99 / 0.18) 45%, rgb(127 32 99 / 0) 75%),
+                              radial-gradient(55% 130% at 100% 100%, rgb(127 32 99 / 0.34) 0%, rgb(127 32 99 / 0) 70%),
+                              radial-gradient(35% 90% at 60% 120%, rgb(212 175 55 / 0.12) 0%, rgb(212 175 55 / 0) 70%),
+                              var(--dark-deep);   /* taxta (D1): wine .50 + wine .34 + oltin .12 */
       --hero-dot:             rgb(233 168 208 / 0.10);
       --gradient-hero-glow:   radial-gradient(60% 90% at 12% 0%, rgb(159 51 126 / 0.28), transparent 70%),
                               radial-gradient(50% 80% at 92% 8%, rgb(212 175 55 / 0.10), transparent 70%);
@@ -433,6 +436,8 @@
       --shadow-tile-active:    0 6px 16px rgb(127 32 99 / 0.4);
       --shadow-card-board:     inset 0 1px 0 rgb(255 255 255 / 0.06), 0 10px 28px rgb(0 0 0 / 0.35);
       --shadow-photo:          0 24px 56px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(233 168 208 / 0.18);
+      --shadow-banner:         inset 0 0 0 1px rgb(233 168 208 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 52px rgb(0 0 0 / 0.45);   /* taxta (D1): 1px chegara + inset highlight + soya */
+      --shadow-carousel:       0 24px 52px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(233 168 208 / 0.14);
       --shadow-stat-tile:      inset 0 1px 0 rgb(255 255 255 / 0.07);
       --stat-tile-border:      var(--color-border-strong);
       --pill-bg:               rgb(233 168 208 / 0.10);
@@ -443,6 +448,7 @@
       --ring-avatar:           rgb(233 168 208 / 0.18);
       --tab-wrap-glow:         rgb(0 0 0 / 0.30);
       --band-bg:               var(--dark-surface-2);
+      --band-tint:             rgb(218 192 196 / 0.05);               /* `--band-bg` ning yarim shaffof ekvivalenti: --dark-bg (#120c10) ustida #1c1519 beradi */
       --dot-shine:             rgb(255 226 140 / 0.28);
       --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, rgb(159 51 126 / 0.55), rgb(56 19 45) 70%);
       --gradient-band-hero:    radial-gradient(70% 120% at 12% -10%, rgb(159 51 126 / 0.42) 0%, rgb(127 32 99 / 0.14) 45%, rgb(18 12 16 / 0) 75%);
@@ -555,10 +561,10 @@
     --color-star:            #e6c04f;
     --color-qr-border:       rgb(233 168 208 / 0.35);
     --color-banner-bg:      var(--dark-deep);
-    --gradient-banner:      radial-gradient(60% 110% at 0% 0%, rgb(159 51 126 / 0.40), transparent 62%),
-                            radial-gradient(50% 100% at 100% 100%, rgb(212 175 55 / 0.14), transparent 60%),
-                            radial-gradient(40% 80% at 60% 0%, rgb(127 32 99 / 0.22), transparent 70%),
-                            var(--dark-deep);
+    --gradient-banner:      radial-gradient(75% 150% at 0% 0%, rgb(159 51 126 / 0.50) 0%, rgb(127 32 99 / 0.18) 45%, rgb(127 32 99 / 0) 75%),
+                            radial-gradient(55% 130% at 100% 100%, rgb(127 32 99 / 0.34) 0%, rgb(127 32 99 / 0) 70%),
+                            radial-gradient(35% 90% at 60% 120%, rgb(212 175 55 / 0.12) 0%, rgb(212 175 55 / 0) 70%),
+                            var(--dark-deep);   /* taxta (D1): wine .50 + wine .34 + oltin .12 */
     --hero-dot:             rgb(233 168 208 / 0.10);
     --gradient-hero-glow:   radial-gradient(60% 90% at 12% 0%, rgb(159 51 126 / 0.28), transparent 70%),
                             radial-gradient(50% 80% at 92% 8%, rgb(212 175 55 / 0.10), transparent 70%);
@@ -584,6 +590,8 @@
     --shadow-tile-active:    0 6px 16px rgb(127 32 99 / 0.4);
     --shadow-card-board:     inset 0 1px 0 rgb(255 255 255 / 0.06), 0 10px 28px rgb(0 0 0 / 0.35);
     --shadow-photo:          0 24px 56px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(233 168 208 / 0.18);
+    --shadow-banner:         inset 0 0 0 1px rgb(233 168 208 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 52px rgb(0 0 0 / 0.45);   /* taxta (D1): 1px chegara + inset highlight + soya */
+    --shadow-carousel:       0 24px 52px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(233 168 208 / 0.14);
     --shadow-stat-tile:      inset 0 1px 0 rgb(255 255 255 / 0.07);
     --stat-tile-border:      var(--color-border-strong);
     --pill-bg:               rgb(233 168 208 / 0.10);
@@ -594,6 +602,7 @@
     --ring-avatar:           rgb(233 168 208 / 0.18);
     --tab-wrap-glow:         rgb(0 0 0 / 0.30);
     --band-bg:               var(--dark-surface-2);
+    --band-tint:             rgb(218 192 196 / 0.05);               /* `--band-bg` ning yarim shaffof ekvivalenti: --dark-bg (#120c10) ustida #1c1519 beradi */
     --dot-shine:             rgb(255 226 140 / 0.28);
     --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, rgb(159 51 126 / 0.55), rgb(56 19 45) 70%);
     --gradient-band-hero:    radial-gradient(70% 120% at 12% -10%, rgb(159 51 126 / 0.42) 0%, rgb(127 32 99 / 0.14) 45%, rgb(18 12 16 / 0) 75%);

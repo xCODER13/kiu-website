@@ -189,13 +189,18 @@ describe('Bosqich 6.11a: umumiy ichki hero, Qabul, Yo\'nalishlar', () => {
   const global = read('src/styles/global.css').replace(/\/\*[\s\S]*?\*\//g, '')
   const inline = f => (read(f).match(/style=\{\{/g) ?? []).length
 
-  it("hero `.inner-hero`: nuqtali qatlam (`::before`), pastda so'nish (`::after`), h1 `clamp` ≤ 3rem/800, ta'rif 1.125rem", () => {
-    // 6.12a: fon — taxta qatlamlari (`--gradient-band-hero` + `--band-bg`), nuqtalar (twinkle) va 170 px so'nish
-    expect(code).toMatch(/\.inner-hero \{[^}]*background-color: var\(--band-bg\);[^}]*background-image: var\(--gradient-band-hero\);/)
-    expect(code).toMatch(/\.inner-hero::before \{[^}]*var\(--hero-dot\)/)
-    expect(code).toMatch(/\.inner-hero::after \{[^}]*height: 170px;[^}]*var\(--color-bg\)/)
-    expect(read('src/components/PageHero.jsx')).toMatch(/dots-shine/)
+  it("hero `.inner-hero`: fon — yarim shaffof `::before` (wine/oltin radial + `--band-tint`), pastda 170 px `mask-image` so'nishi; O'Z nuqtalari yo'q (sahifa bo'ylab yagona `body` qatlami), h1 `clamp` ≤ 3rem/800, ta'rif 1.125rem", () => {
+    // 6.12c: hero fon opaque emas (`background-color` yo'q) — body nuqtalari/yaltirashi ko'rinadi, so'nish nuqtalarni yopmaydi
+    const hero = code.match(/\.inner-hero \{[^}]*\}/)[0]
+    expect(hero).not.toMatch(/background/)
+    expect(code).toMatch(/\.inner-hero::before \{[^}]*background-image: var\(--gradient-band-hero\), linear-gradient\(var\(--band-tint\), var\(--band-tint\)\);/)
+    expect(code).toMatch(/\.inner-hero::before \{[^}]*mask-image: linear-gradient\(180deg, rgb\(0 0 0 \/ 1\) calc\(100% - 170px\), rgb\(0 0 0 \/ 0\) 100%\);/)
+    expect(code).not.toMatch(/\.inner-hero::after/)
+    expect(code).not.toMatch(/\.inner-hero::before \{[^}]*(--hero-dot|radial-gradient\(circle)/)
+    expect(read('src/components/PageHero.jsx')).not.toMatch(/dots-shine/)
     expect(read('src/styles/global.css')).toMatch(/body::before \{ background: radial-gradient\(circle, var\(--hero-dot\)/)
+    // `--band-tint` — `--band-bg` ning yarim shaffof ekvivalenti (Light + ikkala Dark blok)
+    expect((tokens.match(/--band-tint:/g) ?? []).length).toBe(3)
     expect(code).toMatch(/\.inner-hero__title \{[^}]*font-size: clamp\(2rem, [^)]*3rem\);[^}]*font-weight: 800;[^}]*letter-spacing: -0\.025em;/)
     expect(code).toMatch(/\.inner-hero__sub \{[^}]*font-size: 1\.125rem;/)
   })
@@ -332,6 +337,24 @@ describe('Bosqich 6.11c1: umumiy primitivlar + About, Xalqaro, Hujjatlar, Yutuql
     expect(code).toMatch(/\.wine-banner \{[^}]*background: var\(--gradient-banner\);/)
     expect(code).toMatch(/\.wine-banner::before \{[^}]*var\(--gradient-hairline\)/)
     expect(code).toMatch(/\.wine-stat__value \{[^}]*font-size: 2\.5rem;[^}]*font-weight: 800;[^}]*var\(--color-accent-on-dark\)/)
+  })
+
+  it("banner (D1): Dark `--gradient-banner` taxtadagi 3 qatlam (wine .50 + wine .34 + oltin .12); `--shadow-banner`/`--shadow-carousel` 3 joyda e'lon qilinadi va iste'molchilarga ulangan", () => {
+    const dark = [...tokens.matchAll(/--gradient-banner:\s*([^;]+);/g)].map(m => m[1])
+    expect(dark).toHaveLength(3) // Light + Dark @media + [data-theme=dark]
+    for (const g of dark.slice(1)) {
+      expect(g.match(/radial-gradient\(/g)).toHaveLength(3)
+      expect(g).toMatch(/rgb\(159 51 126 \/ 0\.50\)/)
+      expect(g).toMatch(/55% 130% at 100% 100%[^)]*0\.34/)
+      expect(g).toMatch(/35% 90% at 60% 120%[^)]*rgb\(212 175 55 \/ 0\.12\)/)
+    }
+    expect(tokens.match(/--shadow-banner:/g)).toHaveLength(3)
+    expect(tokens.match(/--shadow-carousel:/g)).toHaveLength(3)
+    // Dark: 1px chegara (inset ring) + inset highlight + tashqi soya
+    expect(tokens).toMatch(/--shadow-banner:\s*inset 0 0 0 1px [^,]+,\s*inset 0 1px 0 rgb\(255 255 255 \/ 0\.06\),\s*0 24px 52px/)
+    for (const sel of ['\\.apply-banner', '\\.wine-banner', '\\.about-page \\.wine-banner', '\\.wine-banner\\.sh-result-banner'])
+      expect(code, sel).toMatch(new RegExp(`${sel} \\{[^}]*box-shadow: var\\(--shadow-banner\\);`))
+    expect(code).toMatch(/\.carousel \{[^}]*box-shadow: var\(--shadow-carousel\);/)
   })
 
   it("bo'lim sarlavhasi 30 px/800 + 40×3 px oltin chiziq; `.page-block` oraliq `.section-title` dan keyin (qoida tartibi)", () => {
@@ -576,11 +599,18 @@ describe('Bosqich 6.11c5 + 6.12a: Bosh sahifa (taxta bo\'yicha)', () => {
     expect((tokens.match(/--blob-strength:/g) ?? []).length).toBe(3)
   })
 
-  it("Hero: taxta fon qatlamlari (`--gradient-band-hero` + nuqtalar + yaltirash), 2 ustun 1.05fr/.95fr, plitka fon/son tokenlardan, \"2022\" — oltin", () => {
-    expect(code).toMatch(/\.home-hero \{[^}]*padding: 80px 0 72px;[^}]*background-image: var\(--gradient-band-hero\);/)
+  it("Hero: fon `::before` da (`--gradient-band-hero` + `--band-tint`, pastki so'nish `mask-image`), o'z nuqtalari/opaque foni/`::after` so'nishi YO'Q (sahifaning yagona nuqta qatlami); yangiliklar bandi o'z foni bilan qoladi; 2 ustun 1.05fr/.95fr, plitka fon/son tokenlardan, \"2022\" — oltin", () => {
+    expect(code).toMatch(/\.home-hero \{[^}]*isolation: isolate;[^}]*padding: 80px 0 72px;/)
+    expect(code).not.toMatch(/\.home-hero \{[^}]*background/) // fon faqat `::before` da
+    const before = code.match(/\.home-hero::before \{([^}]*)\}/)?.[1] ?? ''
+    expect(before).toMatch(/background-image: var\(--gradient-band-hero\), linear-gradient\(var\(--band-tint\), var\(--band-tint\)\);/)
+    expect(before).toMatch(/mask-image: linear-gradient\(180deg, rgb\(0 0 0 \/ 1\) calc\(100% - 170px\), rgb\(0 0 0 \/ 0\) 100%\);/)
+    expect(before).not.toMatch(/radial-gradient\(circle/) // o'z nuqtalari yo'q
+    expect(code).not.toMatch(/\.home-hero::after/)
+    expect(read('src/pages/home/HeroSection.jsx')).not.toMatch(/dots-shine/)
     expect(code).toMatch(/\.home-news \{[^}]*background-image: var\(--gradient-band-news\);/)
-    expect(code).toMatch(/\.dots-shine \{/)
-    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{[^}]*\.home-hero::before,\s*\.home-news::before \{ animation: kiuTwinkle 8s/)
+    expect(code).toMatch(/\.dots-shine \{/) // yangiliklar bandida qoladi
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{[^}]*\.home-news::before \{ animation: kiuTwinkle 8s/)
     expect(code).toMatch(/\.stat-tile \{[^}]*background: var\(--stat-tile-bg\);/)
     expect(code).toMatch(/\.stat-tile__num \{[^}]*color: var\(--stat-tile-num\);/)
     expect(code).toMatch(/\.stat-tile\[data-stat="founded"\] \.stat-tile__num \{ color: var\(--color-accent\); \}/)
