@@ -51,6 +51,34 @@ describe('vercel.json: Content-Security-Policy-Report-Only', () => {
   })
 })
 
+describe('vercel.json: boshqa xavfsizlik header\'lari', () => {
+  it("HSTS: kamida 1 yil; `includeSubDomains`/`preload` YO'Q (subdomen'lar HTTPS'ga tayyorligi noma'lum)", () => {
+    const hsts = headers['strict-transport-security']
+    expect(Number(hsts.match(/max-age=(\d+)/)?.[1])).toBeGreaterThanOrEqual(31536000)
+    expect(hsts).not.toMatch(/includeSubDomains|preload/i)
+  })
+
+  it('nosniff, X-Frame-Options (CSP frame-ancestors enforce emas, shuning uchun alohida), Referrer-Policy', () => {
+    expect(headers['x-content-type-options']).toBe('nosniff')
+    expect(headers['x-frame-options']).toBe('SAMEORIGIN')
+    expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin')
+  })
+
+  it("Permissions-Policy: ishlatilmaydigan imkoniyatlar yopiq; iframe'lar (YouTube/Xarita) ishlatadiganlariga tegilmagan", () => {
+    const pp = headers['permissions-policy']
+    for (const f of ['camera', 'microphone', 'geolocation', 'payment', 'usb']) expect(pp).toContain(`${f}=()`)
+    // ShortsTab `allow=` bergan imkoniyatlarni yuqori darajada yopsak, delegatsiya ishlamay qoladi
+    const allowed = read('src/pages/news/ShortsTab.jsx').match(/allow="([^"]+)"/)?.[1].split(';').map(x => x.trim()) ?? []
+    expect(allowed.length).toBeGreaterThan(0)
+    for (const f of allowed) expect(pp).not.toMatch(new RegExp(`(^|[\\s,])${f}=`))
+  })
+
+  it("barcha header'lar bitta `/(.*)` qoidada; SPA rewrite saqlangan", () => {
+    expect(cfg.headers).toHaveLength(1)
+    expect(cfg.rewrites).toEqual([{ source: '/(.*)', destination: '/' }])
+  })
+})
+
 describe('index.html: CSP bilan mos', () => {
   it("inline hodisa handler (`onload=` va h.k.) va inline <script> yo'q; skriptlar tashqi fayl", () => {
     expect(html).not.toMatch(/\son[a-z]+\s*=\s*["']/i)

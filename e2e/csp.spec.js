@@ -21,6 +21,17 @@ test.describe('CSP Report-Only: ommaviy sayt buzilishsiz', () => {
     expect(res.headers()['content-security-policy']).toBeUndefined()
   })
 
+  test("boshqa xavfsizlik header'lari haqiqiy javobda (HTML va statik fayl uchun ham)", async ({ request }) => {
+    for (const path of ['/', '/about', '/fonts-init.js']) {
+      const h = (await request.get(path)).headers()
+      expect(h['strict-transport-security'], path).toMatch(/^max-age=\d+$/)
+      expect(h['x-content-type-options'], path).toBe('nosniff')
+      expect(h['x-frame-options'], path).toBe('SAMEORIGIN')
+      expect(h['referrer-policy'], path).toBe('strict-origin-when-cross-origin')
+      expect(h['permissions-policy'], path).toContain('camera=()')
+    }
+  })
+
   test("Google Fonts CSS'i /fonts-init.js orqali ulanadi (inline onload o'rniga)", async ({ page }) => {
     await mockPublicApi(page)
     await stubExternal(page, new Set())
