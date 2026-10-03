@@ -2181,8 +2181,6 @@
   .vac-alert__text strong { color: var(--color-danger); }
   .btn.vac-submit { width: 100%; justify-content: center; min-height: 52px; font-size: 1rem; }
   .vac-submit-inner { display: inline-flex; align-items: center; gap: 8px; }
-  .vac-spin { animation: spin 1s linear infinite; }
-  @media (prefers-reduced-motion: reduce) { .vac-spin { animation: none; } }
   /* Yuborilmoqda: brend rang saqlanadi, `opacity: .72`, glow yo'q */
   .btn.vac-submit:disabled,
   .btn.vac-submit[aria-busy="true"] { background: var(--color-brand-fill); color: var(--color-on-brand); opacity: 0.72; box-shadow: none; cursor: not-allowed; pointer-events: auto; }

@@ -907,4 +907,10 @@ describe('Bosqich 6.16: taxta farqlari', () => {
     expect(site).toMatch(/\.search-panel \{\s*position: absolute;\s*top: calc\(100% \+ 35px\);/)
     expect(site).toMatch(/@media \(max-width: 768px\) \{\s*\.search-panel \{\s*position: fixed;\s*top: 70px;/)
   })
+
+  it("Vakansiya «Yuborilmoqda...»: matn oldidagi SVG spinner (`.vac-spin`) olib tashlangan; faqat tugmaning `[aria-busy]::after` halqasi qoladi", () => {
+    expect(read('src/pages/vacancies/ApplicationForm.jsx')).not.toMatch(/vac-spin/)
+    expect(css).not.toMatch(/\.vac-spin/)
+    expect(read('src/styles/components.css')).toMatch(/\.btn\[aria-busy="true"\]::after \{/)
+  })
 })
