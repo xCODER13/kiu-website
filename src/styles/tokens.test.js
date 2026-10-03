@@ -39,3 +39,24 @@ describe('tokens.css', () => {
     expect(dark.filter((name) => !defined.has(name))).toEqual([])
   })
 })
+
+describe('6.20: footer gradienti tepadan pastga', () => {
+  const defs = css.match(/--gradient-footer:[^;]*;/g) ?? []
+
+  it("uch joyda (Light, Dark tizim, Dark tanlov) e'lon qilingan", () => {
+    expect(defs).toHaveLength(3)
+  })
+
+  it("hammasi `linear-gradient(180deg, …)`, radial `dog'` yo'q", () => {
+    for (const d of defs) {
+      expect(d).toMatch(/--gradient-footer:\s*linear-gradient\(180deg,/)
+      expect(d).not.toMatch(/radial-gradient/)
+    }
+  })
+
+  it("Dark ikki blokda bir xil qiymat", () => {
+    const norm = (d) => d.replace(/\/\*.*?\*\//g, '').replace(/\s+/g, ' ')
+    expect(norm(defs[1])).toBe(norm(defs[2]))
+  })
+})
+

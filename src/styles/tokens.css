@@ -216,7 +216,7 @@
     --gradient-dark:      linear-gradient(135deg, var(--neutral-900), var(--wine-900));
     --gradient-brand:     linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-hover));
     --gradient-brand-text: linear-gradient(135deg, var(--color-brand), var(--color-brand-hover));   /* gradient matn (background-clip) */
-    --gradient-footer:    radial-gradient(60% 130% at 0% 0%, rgb(159 51 126 / 0.38) 0%, rgb(159 51 126 / 0) 70%), var(--wine-900);
+    --gradient-footer:    linear-gradient(180deg, rgb(159 51 126 / 0.38) 0%, rgb(159 51 126 / 0) 100%), var(--wine-900);   /* 6.20: tepadan pastga (oldin radial dog'lar) */
     /* Navbar / til almashtirgich / footer (6.12a) — taxta qiymatlari */
     --shadow-nav:         0 8px 24px rgb(127 32 99 / 0.07);
     --dropdown-bg:        var(--color-bg);
@@ -360,10 +360,7 @@
       --chart-6:        #008300;
 
       --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
-      --gradient-footer:      radial-gradient(75% 150% at 0% 0%, rgb(159 51 126 / 0.55) 0%, rgb(127 32 99 / 0.20) 45%, rgb(127 32 99 / 0) 75%),
-                                radial-gradient(55% 120% at 100% 100%, rgb(127 32 99 / 0.38) 0%, rgb(127 32 99 / 0) 70%),
-                                radial-gradient(35% 90% at 62% 115%, rgb(212 175 55 / 0.12) 0%, rgb(212 175 55 / 0) 70%),
-                                var(--dark-deep);
+      --gradient-footer:      linear-gradient(180deg, rgb(159 51 126 / 0.55) 0%, rgb(127 32 99 / 0.20) 55%, rgb(127 32 99 / 0) 100%), var(--dark-deep);   /* 6.20: tepadan pastga (oldin 3 ta radial dog') */
       --shadow-nav:           0 10px 30px rgb(0 0 0 / 0.35);
       --dropdown-bg:          var(--color-surface-3);
       --shadow-dropdown:      0 22px 56px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.06);
@@ -512,10 +509,7 @@
     --chart-6:        #008300;
 
     --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
-    --gradient-footer:      radial-gradient(75% 150% at 0% 0%, rgb(159 51 126 / 0.55) 0%, rgb(127 32 99 / 0.20) 45%, rgb(127 32 99 / 0) 75%),
-                              radial-gradient(55% 120% at 100% 100%, rgb(127 32 99 / 0.38) 0%, rgb(127 32 99 / 0) 70%),
-                              radial-gradient(35% 90% at 62% 115%, rgb(212 175 55 / 0.12) 0%, rgb(212 175 55 / 0) 70%),
-                              var(--dark-deep);
+    --gradient-footer:      linear-gradient(180deg, rgb(159 51 126 / 0.55) 0%, rgb(127 32 99 / 0.20) 55%, rgb(127 32 99 / 0) 100%), var(--dark-deep);   /* 6.20: tepadan pastga (oldin 3 ta radial dog') */
     --shadow-nav:           0 10px 30px rgb(0 0 0 / 0.35);
     --dropdown-bg:          var(--color-surface-3);
     --shadow-dropdown:      0 22px 56px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.06);

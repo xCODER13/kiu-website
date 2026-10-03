@@ -288,7 +288,7 @@
   .mobile-menu-apply { padding: 12px; margin-top: 1rem; }
 
   /* ── Footer (6.12a — taxtaga moslangan) ───────────────────────────────
-     Asos va rang qiymatlari — `--footer-*` / `--gradient-footer` (Light: wine-900 + nur; Dark: uch qatlam).
+     Asos va rang qiymatlari — `--footer-*` / `--gradient-footer` (tepadan pastga chiziqli gradient: Light — wine-900 ustida wine nuri; Dark — dark-deep ustida; 6.20).
      Tepada oltin hairline, 4 ustun (brend 300 px + 1 : 1 : 1.5), pastda ajratgich, mualliflik va "tepaga" tugmasi. */
   .site-footer { background: var(--gradient-footer); color: var(--footer-text); }
   .footer-hairline { height: var(--footer-hairline-h); background: var(--gradient-hairline); }
