@@ -198,6 +198,9 @@
     --halo-photo:           linear-gradient(135deg, rgb(127 32 99) 0%, rgb(212 175 55) 50%, rgb(127 32 99) 100%);   /* Home rasmlari atrofidagi yupqa gradient halo */
     --halo-opacity:         0.55;
     --shadow-frame:         0 22px 48px rgb(127 32 99 / 0.20);                                                   /* Home rasm ramkasi: hoshiyasiz yumshoq soya */
+    --gradient-dialog:      linear-gradient(180deg, var(--color-surface-3), var(--color-surface-3));   /* modal va qidiruv paneli foni (taxta: Apply-*, Search-*) */
+    --shadow-dialog:        0 30px 80px rgb(28 10 22 / 0.40);
+    --color-dialog-border:  var(--color-border);
 
     /* Tugma yorug'ligi (glow) */
     --glow-brand:         rgb(127 32 99 / 0.30);
@@ -443,6 +446,9 @@
       --halo-photo:           linear-gradient(135deg, rgb(190 83 154) 0%, rgb(212 175 55) 50%, rgb(159 51 126) 100%);
       --halo-opacity:         0.62;
       --shadow-frame:         0 22px 52px rgb(0 0 0 / 0.50);
+      --gradient-dialog:      linear-gradient(180deg, #241c21 0%, var(--dark-surface-2) 50%);
+      --shadow-dialog:        inset 0 1px 0 rgb(255 255 255 / 0.07), 0 30px 80px rgb(0 0 0 / 0.60);
+      --color-dialog-border:  var(--color-border-strong);
 
       --cat-chip-mix:         18%;
       --cat-ph-1:             22%;
@@ -591,6 +597,9 @@
     --halo-photo:           linear-gradient(135deg, rgb(190 83 154) 0%, rgb(212 175 55) 50%, rgb(159 51 126) 100%);
     --halo-opacity:         0.62;
     --shadow-frame:         0 22px 52px rgb(0 0 0 / 0.50);
+    --gradient-dialog:      linear-gradient(180deg, #241c21 0%, var(--dark-surface-2) 50%);
+    --shadow-dialog:        inset 0 1px 0 rgb(255 255 255 / 0.07), 0 30px 80px rgb(0 0 0 / 0.60);
+    --color-dialog-border:  var(--color-border-strong);
 
     --cat-chip-mix:         18%;
     --cat-ph-1:             22%;
