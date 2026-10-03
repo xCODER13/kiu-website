@@ -135,6 +135,19 @@ describe('Search (qidiruv)', () => {
     expect(container.querySelectorAll('[style]')).toHaveLength(0)
   })
 
+  it("6.12f: ikonkalar `currentColor` (qattiq `var(--…)` stroke yo'q), natija qatorida chevron, 'topilmadi'da plitka", async () => {
+    const user = userEvent.setup()
+    const { container } = renderSearch()
+    await openSearch(user)
+    expect(container.querySelectorAll('svg[stroke^="var("]')).toHaveLength(0)
+    await user.type(screen.getByRole('combobox'), 'qabul')
+    expect(container.querySelectorAll('.search-option .search-option-go').length).toBeGreaterThan(0)
+    await user.clear(screen.getByRole('combobox'))
+    await user.type(screen.getByRole('combobox'), 'zzzzqq')
+    expect(container.querySelector('.search-empty .search-empty-tile svg')).not.toBeNull()
+    expect(container.querySelectorAll('svg[stroke^="var("]')).toHaveLength(0)
+  })
+
   it("tanlangan natija `aria-selected=\"true\"` (CSS shu atribut bo'yicha bo'yaydi)", async () => {
     const user = userEvent.setup()
     renderSearch()
