@@ -444,7 +444,8 @@
     "offline": "Could not connect to the server",
     "count_one": "{{count}} person",
     "count_other": "{{count}} people",
-    "empty": "No teachers are assigned to this department"
+    "empty": "No teachers are assigned to this department",
+    "modal": { "close": "Close", "closeLabel": "Close dialog", "department": "Department", "colleagues": "Teachers in department" }
   },
   "events": {
     "title": "Events calendar",
