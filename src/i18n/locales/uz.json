@@ -455,7 +455,8 @@
     "offline": "Serverga ulanib bo'lmadi",
     "count_one": "{{count}} nafar",
     "count_other": "{{count}} nafar",
-    "empty": "Bu kafedraga biriktirilgan o'qituvchi topilmadi"
+    "empty": "Bu kafedraga biriktirilgan o'qituvchi topilmadi",
+    "modal": { "close": "Yopish", "closeLabel": "Oynani yopish", "department": "Kafedra" }
   },
   "events": {
     "title": "Tadbirlar taqvimi",

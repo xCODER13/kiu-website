@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Teachers from './Teachers'
 import { mockApi } from '../test/helpers'
@@ -122,5 +122,63 @@ describe('Teachers (public)', () => {
     fireEvent.error(img)
     expect(img).toHaveAttribute('data-broken', 'true')
     expect(document.body.querySelector('[style]')).toBeNull()
+  })
+
+  describe('modal', () => {
+    const T3 = { _id: 't3', name: 'Karim Soliyev', role: 'Professor', dept: 'Aniq fanlar kafedrasi', avatar: 'KS' }
+
+    it("karta bosilganda modal ochiladi: ism, lavozim va kafedra; hamkasblar soni va email yo'q", async () => {
+      mockApi({ 'GET /teachers': [{ ...T1, email: 'ali@kiu.uz' }, T2, T3] })
+      const user = userEvent.setup()
+      render(<Teachers />)
+      await user.click(await screen.findByText('Ali Valiyev'))
+      const dialog = screen.getByRole('dialog', { name: 'Ali Valiyev' })
+      expect(dialog).toHaveTextContent("O'qituvchi")
+      expect(dialog).toHaveTextContent('Aniq fanlar kafedrasi')
+      expect(dialog).not.toHaveTextContent('nafar') // kafedradagi o'qituvchilar soni ko'rsatilmaydi
+      expect(dialog).not.toHaveTextContent('ali@kiu.uz')
+      expect(dialog.querySelector('[style]')).toBeNull()
+    })
+
+    it("klaviatura: Enter bilan ochiladi, Esc bilan yopiladi va fokus kartaga qaytadi", async () => {
+      mockApi({ 'GET /teachers': [T1] })
+      const user = userEvent.setup()
+      render(<Teachers />)
+      await screen.findByText('Ali Valiyev')
+      const card = screen.getByRole('button', { name: /Ali Valiyev/ })
+      card.focus()
+      await user.keyboard('{Enter}')
+      expect(screen.getByRole('dialog')).toBeInTheDocument()
+      await user.keyboard('{Escape}')
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      expect(card).toHaveFocus()
+    })
+
+    it("yopish tugmasi va fon (overlay) modalni yopadi; modal ichiga bosish yopmaydi", async () => {
+      mockApi({ 'GET /teachers': [T1] })
+      const user = userEvent.setup()
+      render(<Teachers />)
+      await user.click(await screen.findByText('Ali Valiyev'))
+      await user.click(screen.getByRole('dialog'))
+      expect(screen.getByRole('dialog')).toBeInTheDocument()
+      await user.click(screen.getByRole('button', { name: 'Oynani yopish' }))
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      await user.click(screen.getByText('Ali Valiyev'))
+      await user.click(document.querySelector('.fac-modal-overlay'))
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
+
+    it("rasm bo'lmasa bosh harflar, bo'lsa dekorativ rasm (alt bo'sh) ko'rsatiladi; XSS matn DOM'ga HTML bo'lib tushmaydi", async () => {
+      mockApi({ 'GET /teachers': [T3, { ...T2, name: '<img src=x onerror=alert(1)>' }] })
+      const user = userEvent.setup()
+      render(<Teachers />)
+      await user.click(await screen.findByText('Karim Soliyev'))
+      expect(within(screen.getByRole('dialog')).getByText('KS')).toBeInTheDocument()
+      await user.keyboard('{Escape}')
+      await user.click(screen.getByText('<img src=x onerror=alert(1)>'))
+      const dlg = screen.getByRole('dialog')
+      expect(dlg.querySelector('img[alt=""]')).not.toBeNull()
+      expect(dlg.querySelectorAll('img[onerror]')).toHaveLength(0)
+    })
   })
 })

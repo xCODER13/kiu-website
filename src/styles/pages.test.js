@@ -846,3 +846,21 @@ describe('Bosqich 6.12h: Dark karta gradienti (taxta bo\'yicha)', () => {
     expect(code).toMatch(/\.card\.faq-card\[data-open="true"\] \{[^}]*background: var\(--gradient-card-open\);/)
   })
 })
+
+describe('Bosqich 6.12i: modallar (skrollsiz yo\'nalish modali, o\'qituvchi modali)', () => {
+  const code = read('src/styles/pages.css').replace(/\/\*[\s\S]*?\*\//g, '')
+
+  it("yo'nalish modali ixcham: padding 1.25rem 1.5rem, past ekranlarda (`max-height: 780px`) qo'shimcha ixchamlik; kenglik taxtadagi 580 px", () => {
+    expect(code).toMatch(/\.fac-modal \{[^}]*max-width: 580px;[^}]*padding: 1\.25rem 1\.5rem;/)
+    expect(code).toMatch(/@media \(max-height: 780px\) and \(min-width: 521px\) \{[^}]*\.fac-modal \{ padding: 1rem 1\.25rem; \}/)
+  })
+
+  it("o'qituvchi modali: yo'nalish modali qobig'i (`.fac-modal*`), 440 px, 104 px avatar; faqat token (hex yo'q)", () => {
+    expect(code).toMatch(/\.fac-modal\.t-modal \{ max-width: 440px; \}/)
+    expect(code).toMatch(/\.avatar-wine\.t-modal__avatar \{[^}]*width: 104px;[^}]*height: 104px;/)
+    expect(code).toMatch(/\.card\.teacher-card \{ cursor: pointer; \}/)
+    const block = code.slice(code.indexOf('.fac-modal.t-modal'), code.indexOf('.fac-info.t-modal__info') + 120)
+    expect(block).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+    expect(read('src/pages/teachers/TeacherModal.jsx')).not.toMatch(/style=\{|#[0-9a-f]{3,8}\b|teacher\.email/i)
+  })
+})

@@ -4,6 +4,7 @@ import useApi from '../hooks/useApi'
 import ContentLangNote from '../i18n/ContentLangNote'
 import PageHero from '../components/PageHero'
 import Icon from '../components/Icon'
+import TeacherModal from './teachers/TeacherModal'
 
 function KafedraSidebar({ teachers, activeKafedra, onSelect }) {
   const { t } = useTranslation()
@@ -56,6 +57,7 @@ export default function Teachers() {
     []
   )
   const [activeKafedra, setActiveKafedra] = useState(null)
+  const [selected, setSelected] = useState(null)
 
   // useApi noto'g'ri shakldagi (array bo'lmagan) javob bersa ham qulamasin
   const teachersList = Array.isArray(teachers) ? teachers : []
@@ -100,7 +102,18 @@ export default function Teachers() {
                 <div className="teachers-grid">
                   {filtered.map((tc, i) => (
                     <div key={tc._id || tc.id} className={`rv-item reveal reveal-delay-${(i % 3) + 1}`}>
-                      <div className="card card--lift teacher-card">
+                      {/* Karta modalni ochadi; `role=button` + Enter/Space — klaviatura va ekran o'quvchi uchun (FacultyCard bilan bir xil naqsh) */}
+                      <div
+                        className="card card--lift teacher-card"
+                        role="button"
+                        tabIndex={0}
+                        aria-haspopup="dialog"
+                        aria-label={tc.name}
+                        onClick={() => setSelected(tc)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(tc) }
+                        }}
+                      >
                         {/* Rasm yuklanmasa yoki bo'lmasa — bosh harflar ko'rinib turadi (rasm ustida yotadi) */}
                         <div className="avatar-wine teacher-card__avatar">
                           <span aria-hidden="true">{tc.avatar || tc.name?.slice(0, 2).toUpperCase()}</span>
@@ -121,6 +134,13 @@ export default function Teachers() {
           </div>
         </div>
       </section>
+
+      {selected && (
+        <TeacherModal
+          teacher={selected}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </div>
   )
 }
