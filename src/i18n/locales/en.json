@@ -796,6 +796,7 @@
     "comment": "Additional comment",
     "commentPlaceholder": "Write here if you have any questions...",
     "error": "Something went wrong while submitting your application. Please check your internet connection and try again.",
+    "failedTitle": "Application not sent.",
     "submit": "Submit",
     "sending": "Sending...",
     "successTitle": "Application submitted!",

@@ -172,8 +172,17 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
     }
     expect(read('src/components/ApplyModal.jsx')).not.toMatch(/errorBorder/)
     expect(read('src/pages/sortinghat/RegisterStage.jsx')).not.toMatch(/errorBorder/)
-    expect(site).toMatch(/\.modal-overlay \{[^}]*background: var\(--color-overlay\);[^}]*z-index: var\(--z-modal\);/)
-    expect(site).toMatch(/\.modal-alert \{[^}]*color-mix\(in srgb, var\(--color-danger\) 8%, transparent\)/)
+    expect(site).toMatch(/\.modal-overlay \{[^}]*z-index: var\(--z-modal\);[^}]*background: var\(--color-modal-overlay\);[^}]*backdrop-filter: blur\(8px\);/)
+    expect(site).toMatch(/\.modal-alert \{[^}]*color-mix\(in srgb, var\(--color-danger\) 7%, transparent\)/)
+    // 6.12e: ariza modali taxtaga moslandi (520 px, radius 22, oltin hairline, 52 px tugma, brend rangli yuborilmoqda holati)
+    expect(site).toMatch(/\.modal-dialog \{[^}]*max-width: 520px;[^}]*border-radius: 22px;[^}]*background: var\(--color-surface-3\);/)
+    expect(site).toMatch(/\.modal-dialog::before \{[^}]*height: 3px;[^}]*var\(--gradient-hairline\)/)
+    expect(site).toMatch(/\.modal-close \{[^}]*width: 38px;[^}]*height: 38px;[^}]*border-radius: 50%;/)
+    expect(site).toMatch(/\.btn\.modal-submit \{[^}]*min-height: 52px;/)
+    expect(site).toMatch(/\.btn\.modal-submit:disabled \{[^}]*var\(--color-brand-fill\);[^}]*opacity: 0\.72;/)
+    expect(site).toMatch(/\.modal-success-icon \{[^}]*width: 84px;/)
+    expect(read('src/components/ApplyModal.jsx')).toMatch(/input--lg/)
+    expect(read('src/components/ApplyModal.jsx')).not.toMatch(/input--form|label--form|field-error--form/)
     // Telegram gradienti: ikkala uchi ham token (`-deep` EMAS — u boshqa qiymat, #006aa3).
     // 6.11b: gradient faqat kanal belgisida (avatar) qoldi; "Obuna" tugmasi — umumiy `.btn-primary` (wine), `.tg-subscribe` o'z fonini bermaydi.
     // 6.12b: taxtada avatar — tekis #0088cc (gradient yo'q)

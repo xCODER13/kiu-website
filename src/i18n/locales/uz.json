@@ -798,6 +798,7 @@
     "comment": "Qo'shimcha izoh",
     "commentPlaceholder": "Savollaringiz bo'lsa yozing...",
     "error": "Arizani yuborishda xatolik yuz berdi. Internet aloqasini tekshirib, qayta urinib ko'ring.",
+    "failedTitle": "Ariza yuborilmadi.",
     "submit": "Yuborish",
     "sending": "Yuborilmoqda...",
     "successTitle": "Ariza yuborildi!",
