@@ -657,6 +657,8 @@
   .modal-title { margin: 0 0 8px; padding-right: 44px; font-size: 1.75rem; font-weight: 800; line-height: 1.2; letter-spacing: -0.015em; color: var(--color-text); }
   .modal-sub { margin: 0 0 24px; font-size: 0.96875rem; line-height: 1.6; color: var(--color-text-muted); }
   .modal-form { display: flex; flex-direction: column; gap: 18px; }
+  .modal-form .modal-fields { display: flex; flex-direction: column; gap: 18px; min-width: 0; margin: 0; padding: 0; border: 0; }
+  .modal-dialog:focus { outline: 2px solid transparent; } /* dasturiy fokus (yuborilayotganda) — ko'rinmaydi, High Contrast da chiziladi */
   .modal-form .label.label--lg { font-size: 0.875rem; }
   .modal-form .req { margin-left: 3px; color: var(--color-danger); }
   .modal-form .input.input--lg { font-size: 1rem; font-weight: 500; }

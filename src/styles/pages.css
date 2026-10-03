@@ -263,11 +263,9 @@
     gap: 12px;
     padding: 28px 24px;
     border-radius: 16px;
-    background: var(--color-surface-3);
+    background: var(--gradient-card);
     box-shadow: var(--shadow-card-board);
   }
-  /* `card--lift` (hover: brand chegara + glow + ko'tarilish) fonni gradientga almashtirmasin — tinch holat taxtadagidek qoladi */
-  .card.card--lift.step-card { background: var(--color-surface-3); }
   .step-head { display: flex; align-items: center; justify-content: space-between; width: 100%; }
   .step-icon {
     display: flex;
@@ -1372,8 +1370,9 @@
 
   /* ── Ko'p so'raladigan savollar ───────────────────────────────────── */
   .faq-list { display: flex; flex-direction: column; gap: 14px; }
-  .card.faq-card { padding: 0; border-radius: 18px; background: var(--color-surface-3); box-shadow: var(--shadow-card-board); overflow: hidden; }
+  .card.faq-card { padding: 0; border-radius: 18px; background: var(--gradient-card); box-shadow: var(--shadow-card-board); overflow: hidden; }
   .card.faq-card[data-open="true"] {
+    background: var(--gradient-card-open);
     border-color: var(--color-brand);
     box-shadow: var(--shadow-card-hover);
   }

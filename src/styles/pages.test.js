@@ -818,3 +818,25 @@ describe('Bosqich 6.12g: kichik farqlar (taxta bo\'yicha)', () => {
     expect(hat).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
   })
 })
+
+describe('Bosqich 6.12h: Dark karta gradienti (taxta bo\'yicha)', () => {
+  const tokens = read('src/styles/tokens.css')
+  const code = read('src/styles/pages.css').replace(/\/\*[\s\S]*?\*\//g, '')
+
+  it("`--gradient-card` Dark'da taxtadagi to'xtash nuqtalari bilan (0 % → 60 %), ikkala Dark blokda", () => {
+    const dark = tokens.match(/--gradient-card:\s*linear-gradient\(180deg, var\(--dark-surface-4\) 0%, var\(--dark-surface-3\) 60%\);/g) ?? []
+    expect(dark).toHaveLength(2)
+  })
+
+  it("`--gradient-card-open` 3 joyda: Light tekis, Dark taxtadagi `#32282f → #2b2227`", () => {
+    expect((tokens.match(/--gradient-card-open:/g) ?? []).length).toBe(3)
+    expect((tokens.match(/--gradient-card-open:\s*linear-gradient\(180deg, #32282f 0%, #2b2227 60%\);/g) ?? []).length).toBe(2)
+  })
+
+  it("Qabul qadam kartasi va FAQ kartasi `--gradient-card` ishlatadi (tekis `surface-3` emas); ochiq FAQ `--gradient-card-open`", () => {
+    expect(code).toMatch(/\.card\.step-card \{[^}]*background: var\(--gradient-card\);/)
+    expect(code).not.toMatch(/\.card\.card--lift\.step-card/)
+    expect(code).toMatch(/\.card\.faq-card \{[^}]*background: var\(--gradient-card\);/)
+    expect(code).toMatch(/\.card\.faq-card\[data-open="true"\] \{[^}]*background: var\(--gradient-card-open\);/)
+  })
+})
