@@ -616,8 +616,8 @@
     overflow-y: auto;
     padding: 1rem;
     background: var(--color-modal-overlay);
-    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
   .modal-dialog {
     position: relative;

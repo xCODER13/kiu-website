@@ -74,6 +74,8 @@ test.describe('CSP Report-Only: ommaviy sayt buzilishsiz', () => {
     await page.keyboard.press('Escape')
     await page.getByRole('button', { name: 'Ariza topshirish' }).first().click()
     await expect(page.getByRole('dialog')).toBeVisible()
+    // Production build'da (minify'dan keyin) modal orqasi xiralashishi — standart `backdrop-filter` tashlab yuborilmagan (6.16)
+    await expect(page.locator('.modal-overlay').first()).toHaveCSS('backdrop-filter', /blur\(8px\)/)
     await collect()
 
     // Video (YouTube iframe) — Yangiliklar → Video

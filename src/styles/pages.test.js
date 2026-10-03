@@ -885,3 +885,16 @@ describe('Bosqich 6.13: a11y (fokus halqasi) va performance (hero kirishi, harak
     expect(global).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\.reveal \{ opacity: 1; transform: none; transition: none; \}\s*\.fade-up, \.enter \{ animation: none; \}/)
   })
 })
+
+describe('Bosqich 6.16: taxta farqlari', () => {
+  const sources = ['src/styles/pages.css', 'src/styles/site.css'].map(read).join('\n')
+
+  it("`backdrop-filter`: prefiksli (`-webkit-`) birinchi, standart oxirida — aks holda Vite/Lightning CSS standartini tashlab yuboradi va Chrome'da modal orqasi xiralashmaydi", () => {
+    const rules = [...sources.matchAll(/\{[^{}]*backdrop-filter[^{}]*\}/g)].map(m => m[0])
+    expect(rules.length).toBeGreaterThan(4)
+    for (const r of rules) {
+      if (!r.includes('-webkit-backdrop-filter')) continue
+      expect(r.indexOf('-webkit-backdrop-filter'), r).toBeLessThan(r.search(/[^-]backdrop-filter/))
+    }
+  })
+})
