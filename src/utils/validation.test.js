@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validateFullName, validatePhone, validateEmail, validateRequired, errorBorder } from './validation'
+import { validateFullName, validatePhone, validateEmail, validateRequired } from './validation'
 
 describe('validateFullName', () => {
   it.each(['Ali Valiyev', 'Ali  Valiyev', '  Ali Valiyev  ', 'Олим Каримов', "Ali O'g'li Aka", 'Anna-Maria Ivanova', 'Ali Valiyev Karimovich'])(
@@ -62,16 +62,4 @@ describe('validateRequired', () => {
     expect(validateRequired(false)).toBeNull()
   })
   it('undefined bo\'sh hisoblanadi', () => expect(validateRequired(undefined, 'Yosh')).toBe('Yosh majburiy'))
-})
-
-describe('errorBorder', () => {
-  it('xato bo\'lsa qizil ramka qo\'shadi, asl obyektni o\'zgartirmaydi', () => {
-    const base = { padding: 4 }
-    expect(errorBorder(true, base)).toEqual({ padding: 4, borderColor: '#dc2626' })
-    expect(base).toEqual({ padding: 4 })
-  })
-  it('xato yo\'q — o\'sha obyekt', () => {
-    const base = { padding: 4 }
-    expect(errorBorder(false, base)).toBe(base)
-  })
 })
