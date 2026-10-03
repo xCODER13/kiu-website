@@ -2207,10 +2207,9 @@
      Faqat token (hex yo'q). Taxta: hero (1.05 : .95, ora 56), "Biz haqimizda", afzalliklar (4 karta), yangiliklar (karusel 380 px
      + 3 karta), kontent kengligi 1200 px. Fon qatlamlari — 3.10: hero va yangiliklar bandi o'z foni + nuqtalar + yaltirash. */
 
-  /* ── Bo'lim foni: nuqtali to'r (+ yaltirash) — hero va yangiliklar bandi ─ */
-  .home-hero,
+  /* ── Bo'lim foni: nuqtali to'r (+ yaltirash) — yangiliklar bandi ─────────
+     Hero bu yerda emas: u sahifaning yagona nuqta qatlamidan foydalanadi (pastdagi "Hero" bo'limi, 6.12c). */
   .home-news { position: relative; isolation: isolate; background-color: var(--band-bg); }
-  .home-hero::before,
   .home-news::before {
     content: "";
     position: absolute;
@@ -2231,7 +2230,6 @@
     mask-repeat: no-repeat;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .home-hero::before,
     .home-news::before { animation: kiuTwinkle 8s ease-in-out infinite; }
     .dots-shine { animation: kiuShine 14s ease-in-out infinite; }
   }
@@ -2240,9 +2238,20 @@
   @keyframes kiuShine { 0% { mask-position: 0% 0; } 100% { mask-position: 100% 0; } }
 
   /* ── Hero ─────────────────────────────────────────────────────────── */
-  .home-hero { overflow: hidden; padding: 80px 0 72px; background-image: var(--gradient-band-hero); }
-  /* Pastda sahifa foniga so'nadi (170 px) — qattiq chegara yo'q */
-  .home-hero::after { content: ""; position: absolute; inset: auto 0 0; height: 170px; z-index: -1; background: linear-gradient(0deg, var(--color-bg) 0, transparent 100%); }
+  /* 6.12c: ichki hero bilan bir xil usul (qarang `.inner-hero`). Hero'ning o'z nuqtalari, opaque foni va fon ustidagi so'nish qatlami
+     YO'Q — aks holda so'nish nuqtalarni yopib, hero tagida nuqtasiz zona va fon sakrashi paydo bo'lardi. Fon yarim shaffof
+     (`--band-tint`), pastki 170 px so'nish `mask-image` bilan; nuqtalar/yaltirash — `global.css` dagi yagona qatlam. */
+  .home-hero { position: relative; isolation: isolate; overflow: hidden; padding: 80px 0 72px; }
+  .home-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--gradient-band-hero), linear-gradient(var(--band-tint), var(--band-tint));
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 1) calc(100% - 170px), rgb(0 0 0 / 0) 100%);
+    mask-image: linear-gradient(180deg, rgb(0 0 0 / 1) calc(100% - 170px), rgb(0 0 0 / 0) 100%);
+  }
   .home-hero__grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
   .home-hero__text,
   .home-hero__photo { min-width: 0; }

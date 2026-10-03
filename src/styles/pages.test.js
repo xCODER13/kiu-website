@@ -599,11 +599,18 @@ describe('Bosqich 6.11c5 + 6.12a: Bosh sahifa (taxta bo\'yicha)', () => {
     expect((tokens.match(/--blob-strength:/g) ?? []).length).toBe(3)
   })
 
-  it("Hero: taxta fon qatlamlari (`--gradient-band-hero` + nuqtalar + yaltirash), 2 ustun 1.05fr/.95fr, plitka fon/son tokenlardan, \"2022\" — oltin", () => {
-    expect(code).toMatch(/\.home-hero \{[^}]*padding: 80px 0 72px;[^}]*background-image: var\(--gradient-band-hero\);/)
+  it("Hero: fon `::before` da (`--gradient-band-hero` + `--band-tint`, pastki so'nish `mask-image`), o'z nuqtalari/opaque foni/`::after` so'nishi YO'Q (sahifaning yagona nuqta qatlami); yangiliklar bandi o'z foni bilan qoladi; 2 ustun 1.05fr/.95fr, plitka fon/son tokenlardan, \"2022\" — oltin", () => {
+    expect(code).toMatch(/\.home-hero \{[^}]*isolation: isolate;[^}]*padding: 80px 0 72px;/)
+    expect(code).not.toMatch(/\.home-hero \{[^}]*background/) // fon faqat `::before` da
+    const before = code.match(/\.home-hero::before \{([^}]*)\}/)?.[1] ?? ''
+    expect(before).toMatch(/background-image: var\(--gradient-band-hero\), linear-gradient\(var\(--band-tint\), var\(--band-tint\)\);/)
+    expect(before).toMatch(/mask-image: linear-gradient\(180deg, rgb\(0 0 0 \/ 1\) calc\(100% - 170px\), rgb\(0 0 0 \/ 0\) 100%\);/)
+    expect(before).not.toMatch(/radial-gradient\(circle/) // o'z nuqtalari yo'q
+    expect(code).not.toMatch(/\.home-hero::after/)
+    expect(read('src/pages/home/HeroSection.jsx')).not.toMatch(/dots-shine/)
     expect(code).toMatch(/\.home-news \{[^}]*background-image: var\(--gradient-band-news\);/)
-    expect(code).toMatch(/\.dots-shine \{/)
-    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{[^}]*\.home-hero::before,\s*\.home-news::before \{ animation: kiuTwinkle 8s/)
+    expect(code).toMatch(/\.dots-shine \{/) // yangiliklar bandida qoladi
+    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{[^}]*\.home-news::before \{ animation: kiuTwinkle 8s/)
     expect(code).toMatch(/\.stat-tile \{[^}]*background: var\(--stat-tile-bg\);/)
     expect(code).toMatch(/\.stat-tile__num \{[^}]*color: var\(--stat-tile-num\);/)
     expect(code).toMatch(/\.stat-tile\[data-stat="founded"\] \.stat-tile__num \{ color: var\(--color-accent\); \}/)
