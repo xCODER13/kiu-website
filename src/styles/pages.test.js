@@ -403,7 +403,7 @@ describe('Bosqich 6.11c2: Hemis, FAQ, Sharhlar, Aloqa, Xarita, QR kodlar, 404', 
     expect(code).toMatch(/\.card\.faq-card\[data-open="true"\] \{[^}]*border-color: var\(--color-brand\);[^}]*var\(--shadow-card-hover\)/)
     expect(code).toMatch(/\.faq-card__q\[aria-expanded="true"\] \.faq-card__chev \{[^}]*transform: rotate\(180deg\)/)
     expect(code).toMatch(/prefers-reduced-motion: reduce\) \{ \.faq-card__chev \{ transition: none; \} \}/)
-    expect(code).toMatch(/\.faq-card__a \{[^}]*max-width: 736px;[^}]*line-height: 1\.8;/)
+    expect(code).toMatch(/\.faq-card__a \{[^}]*max-width: 680px;[^}]*line-height: 1\.8;/)
   })
 
   it("sharh: yulduz rangi `--color-star`; matn 16.5 px kursivsiz; muallif pastda `margin-top: auto` + ajratgich", () => {
@@ -745,5 +745,53 @@ describe('Bosqich 6.11d: Sehrli shlyapa', () => {
     }
     expect(read('src/pages/sortinghat/ResultStage.jsx')).not.toMatch(/fac\.(color|grad)/)
     expect(read('src/pages/sortinghat/IntroStage.jsx')).not.toMatch(/INFO_CARD/)
+  })
+})
+
+describe('Bosqich 6.12g: kichik farqlar (taxta bo\'yicha)', () => {
+  const site = read('src/styles/site.css')
+
+  it("Xalqaro banneri: globus ikonkasi (yulduz emas), 20 px", () => {
+    const src = read('src/pages/International.jsx')
+    expect(src).toMatch(/<Icon size=\{20\}><circle cx="12" cy="12" r="10"\/><line x1="2" y1="12" x2="22" y2="12"\/>/)
+    expect(src).not.toMatch(/<polygon points="12 2 15\.09/)
+  })
+
+  it("Qabul qadam plitkasi va FAQ chevron doirasi: chegara `--tile-border` (Dark'da pushti, Light'da shaffof); ochiq FAQ chevronida chegara yo'q", () => {
+    expect(code).toMatch(/\.step-icon \{[^}]*border: 1px solid var\(--tile-border\);/)
+    expect(code).toMatch(/\.faq-card__chev \{[^}]*border: 1px solid var\(--tile-border\);/)
+    expect(code).toMatch(/\.faq-card__q\[aria-expanded="true"\] \.faq-card__chev \{[^}]*border-color: transparent;/)
+    expect(read('src/pages/FAQ.jsx')).toMatch(/<svg width="18" height="18"[^>]*strokeWidth="2\.4"/)
+  })
+
+  it("404 havola ikonkalari: Yangiliklar — qalam, Bog'lanish — telefon, Qabul — ikki qatorli hujjat", () => {
+    const src = read('src/pages/NotFound.jsx')
+    expect(src).toMatch(/\['news', '\/news', <><path d="M12 20h9"/)
+    expect(src).toMatch(/\['contact', '\/contact', <path d="M22 16\.92v3/)
+    expect(src).toMatch(/\['admission'[^\n]*<line x1="16" y1="13" x2="8" y2="13"[^\n]*<line x1="16" y1="17" x2="8" y2="17"/)
+  })
+
+  it("Sharhlar: iqtibos ikonkasi 1.8 chiziq, taxtadagi shakl", () => {
+    expect(read('src/pages/Testimonials.jsx')).toMatch(/<Icon size=\{22\} strokeWidth=\{1\.8\}><path d="M3 21c3 0 7-1 7-8V5c0-1\.25-\.756/)
+  })
+
+  it("Navbar: ochiq guruh triggeri (hover/fokus) — wine tus + brend matn; oddiy havola hover'i neytral qoladi", () => {
+    expect(site).toMatch(/\.nav-group:hover \.nav-group-trigger,\s*\.nav-group:focus-within \.nav-group-trigger \{[^}]*background: var\(--color-brand-subtle\);[^}]*color: var\(--color-brand\);/)
+    expect(site).toMatch(/\.nav-link:hover \{[^}]*background: var\(--color-surface-2\);/)
+  })
+
+  it("FAQ javobi: eng ko'pi 680 px", () => {
+    expect(code).toMatch(/\.faq-card__a \{[^}]*max-width: 680px;/)
+  })
+
+  it("Sehrli shlyapa rasmi: tekis ranglar (gradient yo'q), oltin bog'ich va uchi, oq nuqta; hex yo'q", () => {
+    const src = read('src/pages/sortinghat/Icons.jsx')
+    const hat = src.slice(src.indexOf('export const IcHat'), src.indexOf('export const IcStar'))
+    expect(hat).not.toMatch(/linearGradient|url\(#|useId/)
+    expect(hat).toMatch(/<path d="M40 8 L64 58 H16 Z" fill="var\(--color-brand-hover\)"/)
+    expect(hat).toMatch(/<path d="M40 8 L56 48 H24 Z" fill="var\(--wine-900\)" opacity="\.85"/)
+    expect(hat).toMatch(/<rect x="11" y="57" width="58" height="8" rx="4" fill="var\(--color-brand-fill\)"/)
+    expect(hat).toMatch(/<circle cx="40" cy="11" r="2" fill="var\(--color-on-brand\)" opacity="\.5"/)
+    expect(hat).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
   })
 })

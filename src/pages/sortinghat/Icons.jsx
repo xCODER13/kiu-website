@@ -1,31 +1,21 @@
-import { useId } from 'react'
-
 // ── SVG ICONS ──────────────────────────────────────────────
 // Hammasi dekorativ (`aria-hidden`) va rangi tokendan/`currentColor` dan keladi — o'rab turgan element
 // (plitka, pill, matn) rangni belgilaydi. Qattiq hex yo'q (6.11d).
 
-// Shlyapa: tanasi `--color-brand-fill` → `--color-brand-hover` gradienti, belbog' va uchi oltin.
-// Gradient id'si `useId` dan (sahifada ikki shlyapa bo'lganda — hero va natija banneri — to'qnashmasligi uchun).
-export const IcHat = ({ s = 80 }) => {
-  const gid = `hat${useId().replace(/:/g, '')}`
-  return (
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width={s} height={s} aria-hidden="true">
-      <defs>
-        <linearGradient id={gid} x1="16" y1="8" x2="64" y2="58" gradientUnits="userSpaceOnUse">
-          <stop stopColor="var(--color-brand-fill)" />
-          <stop offset="1" stopColor="var(--color-brand-hover)" />
-        </linearGradient>
-      </defs>
-      <ellipse cx="40" cy="66" rx="28" ry="8" fill="var(--color-brand-hover)" opacity=".35" />
-      <ellipse cx="40" cy="60" rx="30" ry="9" fill={`url(#${gid})`} />
-      <path d="M40 8 L64 58 H16 Z" fill={`url(#${gid})`} />
-      <path d="M40 8 L56 48 H24 Z" fill="var(--color-brand-fill)" opacity=".55" />
-      <rect x="11" y="55" width="58" height="8" rx="4" fill="var(--color-accent)" />
-      <path d="M35 36 Q40 30 45 36 Q40 33 35 36Z" fill="var(--color-accent)" opacity=".9" />
-      <circle cx="40" cy="11" r="4" fill="var(--color-accent)" />
-    </svg>
-  )
-}
+// Shlyapa (taxta "SortingHat-*"): to'liq tekis ranglar — qalpoq `--color-brand-hover`, ichki soya `--wine-900`,
+// qirra va belbog' `--color-brand-fill`; bant, bog'ich va uchi oltin (+ uchida oq nuqta). Gradient yo'q.
+export const IcHat = ({ s = 80 }) => (
+  <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width={s} height={s} aria-hidden="true">
+    <ellipse cx="40" cy="66" rx="28" ry="8" fill="var(--color-brand-fill)" opacity=".3" />
+    <ellipse cx="40" cy="60" rx="30" ry="9" fill="var(--color-brand-fill)" />
+    <path d="M40 8 L64 58 H16 Z" fill="var(--color-brand-hover)" />
+    <path d="M40 8 L56 48 H24 Z" fill="var(--wine-900)" opacity=".85" />
+    <rect x="11" y="57" width="58" height="8" rx="4" fill="var(--color-brand-fill)" />
+    <path d="M35 36 Q40 30 45 36 Q40 33 35 36Z" fill="var(--color-accent)" />
+    <circle cx="40" cy="11" r="4" fill="var(--color-accent)" />
+    <circle cx="40" cy="11" r="2" fill="var(--color-on-brand)" opacity=".5" />
+  </svg>
+)
 
 // Yulduz: standart rang — oltin (`--color-accent`); matn yonida ishlatilganda `c="currentColor"`
 export const IcStar = ({ s = 14, c = 'var(--color-accent)' }) => (

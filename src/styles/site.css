@@ -55,11 +55,15 @@
     cursor: pointer;
     transition: background-color 0.15s, color 0.15s;
   }
-  .nav-link:hover,
-  .nav-group:hover .nav-group-trigger,
-  .nav-group:focus-within .nav-group-trigger {
+  .nav-link:hover {
     background: var(--color-surface-2);
     color: var(--color-text);
+  }
+  /* Ochiq guruh triggeri (hover/fokus): wine tus + brend matn (taxta "Navdrop") — neytral kulrang emas */
+  .nav-group:hover .nav-group-trigger,
+  .nav-group:focus-within .nav-group-trigger {
+    background: var(--color-brand-subtle);
+    color: var(--color-brand);
   }
   .nav-link.active,
   .nav-group-trigger[data-active="true"] {

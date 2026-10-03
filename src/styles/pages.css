@@ -275,6 +275,7 @@
     justify-content: center;
     width: 48px;
     height: 48px;
+    border: 1px solid var(--tile-border);
     border-radius: 12px;
     background: var(--color-brand-subtle);
     color: var(--color-brand);
@@ -1403,19 +1404,21 @@
     width: 36px;
     height: 36px;
     flex: none;
+    border: 1px solid var(--tile-border);
     border-radius: 50%;
     background: var(--color-brand-subtle);
     color: var(--color-brand);
     transition: transform 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s;
   }
   .faq-card__q[aria-expanded="true"] .faq-card__chev {
+    border-color: transparent;
     background: var(--color-brand-fill);
     color: var(--color-on-brand);
     box-shadow: 0 4px 12px var(--glow-brand);
     transform: rotate(180deg);
   }
   @media (prefers-reduced-motion: reduce) { .faq-card__chev { transition: none; } }
-  .faq-card__a { max-width: 736px; margin: -4px 0 0; padding: 0 28px 26px; font-size: 1rem; line-height: 1.8; color: var(--color-text-muted); }
+  .faq-card__a { max-width: 680px; margin: -4px 0 0; padding: 0 28px 26px; font-size: 1rem; line-height: 1.8; color: var(--color-text-muted); }
 
   /* ── Talabalar sharhlari ──────────────────────────────────────────── */
   .card.review-card { display: flex; flex-direction: column; margin: 0; padding: 28px 28px 26px; border-radius: 20px; }

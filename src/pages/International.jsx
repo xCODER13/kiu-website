@@ -47,7 +47,7 @@ export default function International() {
           {/* Strategiya banneri (About dagi missiya banneri bilan bir xil) */}
           <div className="wine-banner wine-banner--center reveal">
             <div className="wine-banner__kicker">
-              <Icon size={16}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Icon>
+              <Icon size={20}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></Icon>
               <span>KIU</span>
             </div>
             <h2 className="wine-banner__title">{t('international.strategyTitle')}</h2>
