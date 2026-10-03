@@ -1139,6 +1139,7 @@
     width: 52px;
     height: 52px;
     flex: none;
+    border: 1px solid var(--tile-border);
     border-radius: var(--radius-2xl);
     background: var(--color-brand-subtle);
     color: var(--color-brand);

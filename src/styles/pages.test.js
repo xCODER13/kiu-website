@@ -897,4 +897,8 @@ describe('Bosqich 6.16: taxta farqlari', () => {
       expect(r.indexOf('-webkit-backdrop-filter'), r).toBeLessThan(r.search(/[^-]backdrop-filter/))
     }
   })
+
+  it("`.tile`: chegara `--tile-border` (Dark'da pushti, Light'da shaffof) — taxtadagi Dark plitka chegarasi", () => {
+    expect(css).toMatch(/\.tile \{[^}]*border: 1px solid var\(--tile-border\);[^}]*border-radius: var\(--radius-2xl\);/)
+  })
 })
