@@ -38,6 +38,9 @@ class StubResizeObserver {
 beforeEach(() => {
   globalThis.IntersectionObserver = NoopIntersectionObserver
   globalThis.ResizeObserver = StubResizeObserver
+  // jsdom'da `window.scrollTo` yo'q ("Not implemented" shovqini) — ScrollToTop sahifa almashganda chaqiradi.
+  // Kerak bo'lgan testlar o'zining `vi.fn()` / `vi.spyOn` ini beradi.
+  window.scrollTo = () => {}
 })
 
 afterEach(() => {
