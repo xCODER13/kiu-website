@@ -48,3 +48,9 @@ export const E2E_WRONG_PASSWORD = 'Notogri-Parol-000!'
 
 // bcrypt cost 12 — backend o'zi ishlatadigan bilan bir xil (authController.js, changePassword)
 export const E2E_ADMIN_PASSWORD_HASH = bcrypt.hashSync(E2E_ADMIN_PASSWORD, 12)
+
+// CSP E2E (csp.spec.js): production build shu API manziliga bog'lanadi. vercel.json dagi `connect-src` da
+// AYNAN shu origin bo'lishi shart (src/csp.test.js tekshiradi) — Vercel'dagi VITE_API_URL bilan bir xil bo'lsin.
+export const CSP_API_ORIGIN = 'https://kiu-backend-9fwp.onrender.com'
+export const CSP_PORT = 4322
+export const CSP_URL = `http://127.0.0.1:${CSP_PORT}`

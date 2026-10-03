@@ -32,12 +32,14 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Shrift CSS'i render'ni bloklamaydi: preload shu yerda boshlanadi, <link rel="stylesheet"> ni /fonts-init.js qo'shadi.
+         (Avval `onload="…"` inline handler edi — CSP `script-src` (inline'siz) bilan mos kelmaydi.) -->
     <link
       rel="preload"
       as="style"
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <script src="/fonts-init.js" defer></script>
     <noscript>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" />
     </noscript>
