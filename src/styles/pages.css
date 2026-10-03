@@ -139,37 +139,28 @@
      Faqat token (hex yo'q); yangi ranglar tokens.css da (`--color-accent-text`, `--gradient-banner`, `--hero-dot` ...).
      `.page-hero` (Yangiliklar, Vakansiyalar) hozircha o'zgarmagan — ular o'z guruhida `.inner-hero` ga o'tadi. */
 
-  /* ── Umumiy: ichki sahifa hero'si ─────────────────────────────────── */
+  /* ── Umumiy: ichki sahifa hero'si ───────────────────────────────────
+     6.12c: hero'ning O'Z nuqta to'ri yo'q — sahifa bo'ylab yagona (viewport'ga qotirilgan) `body::before/::after` qatlami
+     hero ichidan ham ko'rinadi. Sabab: avval hero opaque fon + o'z nuqtalari + fon ustidagi so'nish qatlami edi →
+     (1) so'nish nuqtalarni yopib qo'yardi, (2) hero va sahifa to'rlari fazasi mos tushmasdi, (3) hero'da yaltirash yo'q edi.
+     Endi hero fon qatlamlari yarim shaffof (`--band-tint` oq/to'q fonda `--band-bg` ni beradi), pastdagi 170 px so'nish — `mask-image`
+     (nuqtalar so'nmaydi, faqat fon rangi sahifaga o'tadi). Nuqtalar, twinkle va yaltirash `global.css` da, bitta qatlam. */
   .inner-hero {
     position: relative;
     isolation: isolate;
     overflow: hidden;
     padding: 64px 0 56px;
     text-align: center;
-    background-color: var(--band-bg);
-    background-image: var(--gradient-band-hero);   /* taxta 3.10: wine (chap-yuqori) + oltin (o'ng-pastki) yorug'lik */
   }
-  /* Nuqtali qatlam (6.12a: taxtadagi `kiu-dots` — twinkle + yaltirash `.dots-shine`) */
   .inner-hero::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
-    background-image: radial-gradient(circle, var(--hero-dot) 1px, transparent 1.4px);
-    background-size: 22px 22px;
+    background-image: var(--gradient-band-hero), linear-gradient(var(--band-tint), var(--band-tint));   /* taxta 3.10: wine (chap-yuqori) + oltin (o'ng-pastki) yorug'lik */
     pointer-events: none;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .inner-hero::before { animation: kiuTwinkle 8s ease-in-out infinite; }
-  }
-  /* Pastda sahifa foniga so'nadi (170 px) */
-  .inner-hero::after {
-    content: "";
-    position: absolute;
-    inset: auto 0 0;
-    height: 170px;
-    z-index: -1;
-    background: linear-gradient(0deg, var(--color-bg) 0, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 1) calc(100% - 170px), rgb(0 0 0 / 0) 100%);
+    mask-image: linear-gradient(180deg, rgb(0 0 0 / 1) calc(100% - 170px), rgb(0 0 0 / 0) 100%);
   }
   /* Taxta: badge → h1 → ta'rif oralig'i 16 px (gap), h1/p marginsiz */
   .inner-hero__inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }

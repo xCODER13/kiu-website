@@ -189,13 +189,18 @@ describe('Bosqich 6.11a: umumiy ichki hero, Qabul, Yo\'nalishlar', () => {
   const global = read('src/styles/global.css').replace(/\/\*[\s\S]*?\*\//g, '')
   const inline = f => (read(f).match(/style=\{\{/g) ?? []).length
 
-  it("hero `.inner-hero`: nuqtali qatlam (`::before`), pastda so'nish (`::after`), h1 `clamp` ≤ 3rem/800, ta'rif 1.125rem", () => {
-    // 6.12a: fon — taxta qatlamlari (`--gradient-band-hero` + `--band-bg`), nuqtalar (twinkle) va 170 px so'nish
-    expect(code).toMatch(/\.inner-hero \{[^}]*background-color: var\(--band-bg\);[^}]*background-image: var\(--gradient-band-hero\);/)
-    expect(code).toMatch(/\.inner-hero::before \{[^}]*var\(--hero-dot\)/)
-    expect(code).toMatch(/\.inner-hero::after \{[^}]*height: 170px;[^}]*var\(--color-bg\)/)
-    expect(read('src/components/PageHero.jsx')).toMatch(/dots-shine/)
+  it("hero `.inner-hero`: fon — yarim shaffof `::before` (wine/oltin radial + `--band-tint`), pastda 170 px `mask-image` so'nishi; O'Z nuqtalari yo'q (sahifa bo'ylab yagona `body` qatlami), h1 `clamp` ≤ 3rem/800, ta'rif 1.125rem", () => {
+    // 6.12c: hero fon opaque emas (`background-color` yo'q) — body nuqtalari/yaltirashi ko'rinadi, so'nish nuqtalarni yopmaydi
+    const hero = code.match(/\.inner-hero \{[^}]*\}/)[0]
+    expect(hero).not.toMatch(/background/)
+    expect(code).toMatch(/\.inner-hero::before \{[^}]*background-image: var\(--gradient-band-hero\), linear-gradient\(var\(--band-tint\), var\(--band-tint\)\);/)
+    expect(code).toMatch(/\.inner-hero::before \{[^}]*mask-image: linear-gradient\(180deg, rgb\(0 0 0 \/ 1\) calc\(100% - 170px\), rgb\(0 0 0 \/ 0\) 100%\);/)
+    expect(code).not.toMatch(/\.inner-hero::after/)
+    expect(code).not.toMatch(/\.inner-hero::before \{[^}]*(--hero-dot|radial-gradient\(circle)/)
+    expect(read('src/components/PageHero.jsx')).not.toMatch(/dots-shine/)
     expect(read('src/styles/global.css')).toMatch(/body::before \{ background: radial-gradient\(circle, var\(--hero-dot\)/)
+    // `--band-tint` — `--band-bg` ning yarim shaffof ekvivalenti (Light + ikkala Dark blok)
+    expect((tokens.match(/--band-tint:/g) ?? []).length).toBe(3)
     expect(code).toMatch(/\.inner-hero__title \{[^}]*font-size: clamp\(2rem, [^)]*3rem\);[^}]*font-weight: 800;[^}]*letter-spacing: -0\.025em;/)
     expect(code).toMatch(/\.inner-hero__sub \{[^}]*font-size: 1\.125rem;/)
   })

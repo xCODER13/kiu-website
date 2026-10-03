@@ -193,6 +193,7 @@
     --ring-avatar:           rgb(127 32 99 / 0.14);              /* rahbar avatari halqasi */
     --tab-wrap-glow:         rgb(127 32 99 / 0.08);
     --band-bg:               #fbf4f8;                              /* hero va yangiliklar bandi asosi */
+    --band-tint:             rgb(175 35 115 / 0.05);               /* `--band-bg` ning yarim shaffof ekvivalenti: oq (#fff) ustida #fbf4f8 beradi; ichki hero nuqtalarni yopmasin */
     --dot-shine:             rgb(212 175 55 / 0.32);
     --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, #fae4f1 0%, #fdf2f8 70%);   /* rasm yo'q joyda (karusel, karta) */
     --gradient-band-hero:    radial-gradient(60% 110% at 8% -10%, rgb(127 32 99 / 0.13) 0%, rgb(127 32 99 / 0) 70%),
@@ -443,6 +444,7 @@
       --ring-avatar:           rgb(233 168 208 / 0.18);
       --tab-wrap-glow:         rgb(0 0 0 / 0.30);
       --band-bg:               var(--dark-surface-2);
+      --band-tint:             rgb(218 192 196 / 0.05);               /* `--band-bg` ning yarim shaffof ekvivalenti: --dark-bg (#120c10) ustida #1c1519 beradi */
       --dot-shine:             rgb(255 226 140 / 0.28);
       --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, rgb(159 51 126 / 0.55), rgb(56 19 45) 70%);
       --gradient-band-hero:    radial-gradient(70% 120% at 12% -10%, rgb(159 51 126 / 0.42) 0%, rgb(127 32 99 / 0.14) 45%, rgb(18 12 16 / 0) 75%);
@@ -594,6 +596,7 @@
     --ring-avatar:           rgb(233 168 208 / 0.18);
     --tab-wrap-glow:         rgb(0 0 0 / 0.30);
     --band-bg:               var(--dark-surface-2);
+    --band-tint:             rgb(218 192 196 / 0.05);               /* `--band-bg` ning yarim shaffof ekvivalenti: --dark-bg (#120c10) ustida #1c1519 beradi */
     --dot-shine:             rgb(255 226 140 / 0.28);
     --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, rgb(159 51 126 / 0.55), rgb(56 19 45) 70%);
     --gradient-band-hero:    radial-gradient(70% 120% at 12% -10%, rgb(159 51 126 / 0.42) 0%, rgb(127 32 99 / 0.14) 45%, rgb(18 12 16 / 0) 75%);
