@@ -921,3 +921,20 @@ describe('Bosqich 6.16: taxta farqlari', () => {
     expect(block).not.toMatch(/#[0-9a-f]{3,8}\b/i)
   })
 })
+
+describe('Bosqich 6.17: Vakansiya «Umumiy talablar» kartasi — taxta', () => {
+  it("`.card.vac-req-card`: `--gradient-card` fon va `--shadow-card-board` soya (taxtadagi o'lchangan qiymatlar); hover/lift yo'q — karta bosilmaydi", () => {
+    expect(css).toMatch(/\.card\.vac-req-card \{[^}]*padding: 32px 36px;[^}]*border-radius: 18px;[^}]*background: var\(--gradient-card\);[^}]*box-shadow: var\(--shadow-card-board\);[^}]*\}/)
+    expect(css).not.toMatch(/\.vac-req-card[^{]*:hover/)
+    expect(read('src/pages/vacancies/InfoTab.jsx')).not.toMatch(/vac-req-card[^"]*card--lift/)
+  })
+
+  it("tokenlar taxtaga teng: Light soya `0 1px 2px .05 + 0 10px 26px .06`; Dark — `inset 0 1px .06` + `0 10px 28px .35`, gradient `#2c2429 → #271f24 60%`", () => {
+    const tokens = read('src/styles/tokens.css')
+    expect(tokens).toMatch(/--shadow-card-board:\s*0 1px 2px rgb\(28 22 26 \/ 0\.05\), 0 10px 26px rgb\(28 22 26 \/ 0\.06\);/)
+    expect(tokens).toMatch(/--shadow-card-board:\s*inset 0 1px 0 rgb\(255 255 255 \/ 0\.06\), 0 10px 28px rgb\(0 0 0 \/ 0\.35\);/)
+    expect(tokens).toMatch(/--gradient-card:\s*linear-gradient\(180deg, var\(--dark-surface-4\) 0%, var\(--dark-surface-3\) 60%\);/)
+    expect(tokens).toMatch(/--dark-surface-4:\s*#2c2429;/)
+    expect(tokens).toMatch(/--dark-surface-3:\s*#271f24;/)
+  })
+})
