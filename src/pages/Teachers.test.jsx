@@ -75,13 +75,14 @@ describe('Teachers (public)', () => {
     expect(document.querySelector('img[src="x"]')).toBeNull()
   })
 
-  // ── 6.11c3 ──────────────────────────────────────────────────────────────
-  it("elektron pochta kartada ko'rsatiladi (taxta 6.12b) — `mailto:` havola sifatida", async () => {
+  // ── Himoya: o'qituvchi emaili ommaviy saytda ko'rsatilmaydi (DESIGN.md qaror 51) ──
+  it("elektron pochta ommaviy kartada ko'rsatilmaydi — API qaytarsa ham (mailto yo'q)", async () => {
     mockApi({ 'GET /teachers': [{ ...T1, email: 'ali@kiu.uz' }] })
     render(<Teachers />)
     await screen.findByText('Ali Valiyev')
-    expect(screen.getByText(/ali@kiu\.uz/)).toBeInTheDocument()
-    expect(document.querySelector('a.teacher-card__email')).toHaveAttribute('href', 'mailto:ali@kiu.uz')
+    expect(screen.queryByText(/ali@kiu\.uz/)).toBeNull()
+    expect(document.querySelector('.teacher-card__email')).toBeNull()
+    expect(document.querySelector('a[href^="mailto:"]')).toBeNull()
   })
 
   it("kafedra tugmalari `aria-pressed` + `data-active` bilan; hisoblagich ko'rsatiladi", async () => {

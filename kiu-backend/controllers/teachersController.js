@@ -3,9 +3,13 @@ const { fail } = require('../middleware/errorHandler')
 const { applyPagination } = require('../utils/pagination')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 
+// Bazada eski `email` qiymatlari qolgan bo'lishi mumkin (Mongoose strict rejimi ularni o'chirmaydi) —
+// shuning uchun har bir javobdan aniq chiqarib tashlanadi (scripts/unset-teacher-email.js bilan DB ham tozalanadi).
+const HIDE = '-email'
+
 async function getAll(req, res) {
   try {
-    const q = Teacher.find().sort({ createdAt: -1 })
+    const q = Teacher.find().select(HIDE).sort({ createdAt: -1 })
     applyPagination(q, req.query)
     res.json(await q)
   } catch (e) { fail(req, res, 500, e) }
@@ -27,8 +31,9 @@ async function create(req, res) {
   try {
     const resolved = await resolveImage(req)
     uploadedPaths = resolved.uploadedPaths
-    const { name, role, dept, avatar, email } = req.body
-    res.json(await Teacher.create({ name, role, dept, avatar, email, image: resolved.image }))
+    const { name, role, dept, avatar } = req.body
+    const created = await Teacher.create({ name, role, dept, avatar, image: resolved.image })
+    res.json(created)
   } catch (e) {
     if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
     fail(req, res, 400, e)
@@ -40,8 +45,8 @@ async function update(req, res) {
   try {
     const resolved = await resolveImage(req)
     uploadedPaths = resolved.uploadedPaths
-    const { name, role, dept, avatar, email } = req.body
-    const updated = await Teacher.findByIdAndUpdate(req.params.id, { name, role, dept, avatar, email, image: resolved.image }, { new: true, runValidators: true })
+    const { name, role, dept, avatar } = req.body
+    const updated = await Teacher.findByIdAndUpdate(req.params.id, { name, role, dept, avatar, image: resolved.image }, { new: true, runValidators: true }).select(HIDE)
     if (!updated) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
       return res.status(404).json({ error: 'Topilmadi' })

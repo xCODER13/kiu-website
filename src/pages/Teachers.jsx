@@ -111,12 +111,7 @@ export default function Teachers() {
                         <h2 className="teacher-card__name" lang="uz">{tc.name}</h2>
                         <div className="pill-brand teacher-card__role" lang="uz">{tc.role}</div>
                         <p className="teacher-card__dept" lang="uz">{tc.dept}</p>
-                        {tc.email && (
-                          <a className="teacher-card__email" href={`mailto:${tc.email}`}>
-                            <Icon size={16}><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></Icon>
-                            <span>{tc.email}</span>
-                          </a>
-                        )}
+                        {/* Email ataylab ko'rsatilmaydi (shaxsiy ma'lumot — spam/phishing xavfi, DESIGN.md qaror 51) */}
                       </div>
                     </div>
                   ))}
