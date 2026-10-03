@@ -174,9 +174,6 @@
     --stat-tile-bg:          var(--color-surface-3);
     --stat-tile-num:         var(--color-brand);
     --campus-label-bg:       rgb(70 19 54 / 0.78);
-    --blob-wine:             rgb(127 32 99);                  /* rasm orqasidagi dog' (shaffoflik CSS da) */
-    --blob-gold:             rgb(212 175 55);
-    --blob-strength:         1;                               /* dog'lar shaffofligi ko'paytuvchisi (Dark'da kamayadi) */
     --shadow-card-active:    0 0 0 4px rgb(127 32 99 / 0.10), 0 18px 38px rgb(127 32 99 / 0.20);
     --gradient-card-active:  linear-gradient(180deg, var(--neutral-0), var(--wine-50));
     --border-card-active:    var(--color-brand);
@@ -194,19 +191,13 @@
     --tile-border:           transparent;                       /* ikonka plitkasi chegarasi (Dark'da pushti) */
     --ring-avatar:           rgb(127 32 99 / 0.14);              /* rahbar avatari halqasi */
     --tab-wrap-glow:         rgb(127 32 99 / 0.08);
-    --band-bg:               #fbf4f8;                              /* hero va yangiliklar bandi asosi */
-    --band-tint:             rgb(175 35 115 / 0.05);               /* `--band-bg` ning yarim shaffof ekvivalenti: oq (#fff) ustida #fbf4f8 beradi; ichki hero nuqtalarni yopmasin */
     --dot-shine:             rgb(212 175 55 / 0.32);
     --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, #fae4f1 0%, #fdf2f8 70%);   /* rasm yo'q joyda (karusel, karta) */
-    --gradient-band-hero:    radial-gradient(60% 110% at 8% -10%, rgb(127 32 99 / 0.13) 0%, rgb(127 32 99 / 0) 70%),
-                             radial-gradient(45% 90% at 100% 110%, rgb(212 175 55 / 0.16) 0%, rgb(212 175 55 / 0) 70%);
-    --gradient-band-news:    linear-gradient(0deg, rgb(70 19 54 / 0.40) 0, rgb(70 19 54 / 0) 200px),
-                             linear-gradient(180deg, rgb(255 255 255) 0, rgb(255 255 255 / 0) 180px),
-                             radial-gradient(60% 110% at 8% -10%, rgb(127 32 99 / 0.13) 0%, rgb(127 32 99 / 0) 70%),
-                             radial-gradient(45% 90% at 100% 110%, rgb(212 175 55 / 0.16) 0%, rgb(212 175 55 / 0) 70%);
-    --gradient-page:         radial-gradient(660px 500px at 105% 900px, rgb(127 32 99 / 0.12), rgb(127 32 99 / 0) 72%),
-                             radial-gradient(600px 440px at -5% 1500px, rgb(212 175 55 / 0.17), rgb(212 175 55 / 0) 72%),
-                             radial-gradient(600px 420px at 100% 2250px, rgb(127 32 99 / 0.09), rgb(127 32 99 / 0) 72%);
+    --page-fade-top:        linear-gradient(180deg, rgb(127 32 99 / 0.12) 0%, rgb(127 32 99 / 0) 100%);   /* navbar ostidan pastga (480 px), butun enida bir xil */
+    --page-fade-bottom:     linear-gradient(0deg, rgb(127 32 99 / 0.12) 0%, rgb(212 175 55 / 0.06) 200px, rgb(127 32 99 / 0) 480px);   /* footer ustidan tepaga (480 px) */
+    --halo-photo:           linear-gradient(135deg, rgb(127 32 99) 0%, rgb(212 175 55) 50%, rgb(127 32 99) 100%);   /* Home rasmlari atrofidagi yupqa gradient halo */
+    --halo-opacity:         0.55;
+    --shadow-frame:         0 22px 48px rgb(127 32 99 / 0.20);                                                   /* Home rasm ramkasi: hoshiyasiz yumshoq soya */
 
     /* Tugma yorug'ligi (glow) */
     --glow-brand:         rgb(127 32 99 / 0.30);
@@ -428,8 +419,6 @@
       --stat-tile-bg:          rgb(39 31 36 / 0.72);
       --stat-tile-num:         var(--color-brand);
       --campus-label-bg:       rgb(18 12 16 / 0.72);
-      --blob-wine:             rgb(159 51 126);
-      --blob-strength:         1;
       --shadow-card-active:    inset 0 1px 0 rgb(255 255 255 / 0.09), 0 0 0 4px rgb(159 51 126 / 0.18), 0 18px 40px rgb(127 32 99 / 0.4);
       --gradient-card-active:  linear-gradient(180deg, #33242f 0%, #2a1f27 60%);
       --border-card-active:    rgb(233 168 208 / 0.55);
@@ -447,17 +436,13 @@
       --tile-border:           rgb(233 168 208 / 0.25);
       --ring-avatar:           rgb(233 168 208 / 0.18);
       --tab-wrap-glow:         rgb(0 0 0 / 0.30);
-      --band-bg:               var(--dark-surface-2);
-      --band-tint:             rgb(218 192 196 / 0.05);               /* `--band-bg` ning yarim shaffof ekvivalenti: --dark-bg (#120c10) ustida #1c1519 beradi */
       --dot-shine:             rgb(255 226 140 / 0.28);
       --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, rgb(159 51 126 / 0.55), rgb(56 19 45) 70%);
-      --gradient-band-hero:    radial-gradient(70% 120% at 12% -10%, rgb(159 51 126 / 0.42) 0%, rgb(127 32 99 / 0.14) 45%, rgb(18 12 16 / 0) 75%);
-      --gradient-band-news:    linear-gradient(0deg, rgb(13 8 11 / 0.85) 0, rgb(13 8 11 / 0) 200px),
-                               linear-gradient(180deg, rgb(18 12 16) 0, rgb(18 12 16 / 0) 180px),
-                               radial-gradient(70% 100% at 12% 45%, rgb(159 51 126 / 0.24) 0%, rgb(127 32 99 / 0.09) 45%, rgb(18 12 16 / 0) 75%);
-      --gradient-page:         radial-gradient(700px 520px at 105% 900px, rgb(159 51 126 / 0.22), rgb(159 51 126 / 0) 72%),
-                               radial-gradient(620px 460px at -5% 1500px, rgb(212 175 55 / 0.10), rgb(212 175 55 / 0) 72%),
-                               radial-gradient(640px 440px at 100% 2250px, rgb(127 32 99 / 0.18), rgb(127 32 99 / 0) 72%);
+      --page-fade-top:        linear-gradient(180deg, rgb(159 51 126 / 0.22) 0%, rgb(159 51 126 / 0) 100%);
+      --page-fade-bottom:     linear-gradient(0deg, rgb(159 51 126 / 0.20) 0%, rgb(212 175 55 / 0.05) 200px, rgb(159 51 126 / 0) 480px);
+      --halo-photo:           linear-gradient(135deg, rgb(190 83 154) 0%, rgb(212 175 55) 50%, rgb(159 51 126) 100%);
+      --halo-opacity:         0.62;
+      --shadow-frame:         0 22px 52px rgb(0 0 0 / 0.50);
 
       --cat-chip-mix:         18%;
       --cat-ph-1:             22%;
@@ -582,8 +567,6 @@
     --stat-tile-bg:          rgb(39 31 36 / 0.72);
     --stat-tile-num:         var(--color-brand);
     --campus-label-bg:       rgb(18 12 16 / 0.72);
-    --blob-wine:             rgb(159 51 126);
-    --blob-strength:         1;
     --shadow-card-active:    inset 0 1px 0 rgb(255 255 255 / 0.09), 0 0 0 4px rgb(159 51 126 / 0.18), 0 18px 40px rgb(127 32 99 / 0.4);
     --gradient-card-active:  linear-gradient(180deg, #33242f 0%, #2a1f27 60%);
     --border-card-active:    rgb(233 168 208 / 0.55);
@@ -601,17 +584,13 @@
     --tile-border:           rgb(233 168 208 / 0.25);
     --ring-avatar:           rgb(233 168 208 / 0.18);
     --tab-wrap-glow:         rgb(0 0 0 / 0.30);
-    --band-bg:               var(--dark-surface-2);
-    --band-tint:             rgb(218 192 196 / 0.05);               /* `--band-bg` ning yarim shaffof ekvivalenti: --dark-bg (#120c10) ustida #1c1519 beradi */
     --dot-shine:             rgb(255 226 140 / 0.28);
     --gradient-board-ph:     radial-gradient(90% 140% at 0% 0%, rgb(159 51 126 / 0.55), rgb(56 19 45) 70%);
-    --gradient-band-hero:    radial-gradient(70% 120% at 12% -10%, rgb(159 51 126 / 0.42) 0%, rgb(127 32 99 / 0.14) 45%, rgb(18 12 16 / 0) 75%);
-    --gradient-band-news:    linear-gradient(0deg, rgb(13 8 11 / 0.85) 0, rgb(13 8 11 / 0) 200px),
-                             linear-gradient(180deg, rgb(18 12 16) 0, rgb(18 12 16 / 0) 180px),
-                             radial-gradient(70% 100% at 12% 45%, rgb(159 51 126 / 0.24) 0%, rgb(127 32 99 / 0.09) 45%, rgb(18 12 16 / 0) 75%);
-    --gradient-page:         radial-gradient(700px 520px at 105% 900px, rgb(159 51 126 / 0.22), rgb(159 51 126 / 0) 72%),
-                             radial-gradient(620px 460px at -5% 1500px, rgb(212 175 55 / 0.10), rgb(212 175 55 / 0) 72%),
-                             radial-gradient(640px 440px at 100% 2250px, rgb(127 32 99 / 0.18), rgb(127 32 99 / 0) 72%);
+    --page-fade-top:        linear-gradient(180deg, rgb(159 51 126 / 0.22) 0%, rgb(159 51 126 / 0) 100%);
+    --page-fade-bottom:     linear-gradient(0deg, rgb(159 51 126 / 0.20) 0%, rgb(212 175 55 / 0.05) 200px, rgb(159 51 126 / 0) 480px);
+    --halo-photo:           linear-gradient(135deg, rgb(190 83 154) 0%, rgb(212 175 55) 50%, rgb(159 51 126) 100%);
+    --halo-opacity:         0.62;
+    --shadow-frame:         0 22px 52px rgb(0 0 0 / 0.50);
 
     --cat-chip-mix:         18%;
     --cat-ph-1:             22%;
