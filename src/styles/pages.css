@@ -286,6 +286,8 @@
     background: var(--color-surface-3);
     box-shadow: var(--shadow-card-board);
   }
+  /* `card--lift` (hover: brand chegara + glow + ko'tarilish) fonni gradientga almashtirmasin — tinch holat taxtadagidek qoladi */
+  .card.card--lift.step-card { background: var(--color-surface-3); }
   .step-head { display: flex; align-items: center; justify-content: space-between; width: 100%; }
   .step-icon {
     display: flex;
@@ -686,7 +688,8 @@
   .news-load-more { min-width: 200px; }
   .news-more .btn.news-load-more { min-height: 46px; padding: 12px 32px; border-color: var(--color-brand-fill); background: var(--color-brand-fill); color: var(--color-on-brand); font-size: 0.9375rem; font-weight: 600; line-height: 1; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 8px 20px var(--glow-brand); }
 
-  /* ── Kartochka: hover/fokus CSS da (toifa rangidagi chegara + wine soya) ── */
+  /* ── Kartochka: hover/fokus CSS da (barcha toifalarda bir xil chegara — "Umumiy" toifasi rangi `--chart-1` + wine soya) ──
+     Toifa rangi (`--cat`) faqat chip/placeholder uchun qoladi; chegara toifaga qarab o'zgarmaydi (xCODER so'rovi). */
   .card.news-card {
     display: flex;
     flex-direction: column;
@@ -698,7 +701,7 @@
   }
   .card.news-card:hover,
   .card.news-card:focus-within {
-    border-color: var(--cat);
+    border-color: var(--chart-1);
     box-shadow: var(--shadow-card-hover);
   }
   .news-card-img,

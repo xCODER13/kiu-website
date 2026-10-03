@@ -88,14 +88,17 @@ export default function Admission({ onApply }) {
 
           {/* Steps */}
           <div className="steps-grid">
+            {/* `.reveal` o'ramda, hover (`card--lift`) ichidagi kartada — transform to'qnashmasin (boshqa sahifalardagi kabi) */}
             {STEPS.map((s, i) => (
-              <div key={s.key} className={`card step-card reveal reveal-delay-${i + 1}`}>
-                <div className="step-head">
-                  <div className="step-icon">{s.icon}</div>
-                  <span className="step-badge">{t('admission.stepN', { n: i + 1 })}</span>
+              <div key={s.key} className={`rv-item reveal reveal-delay-${i + 1}`}>
+                <div className="card card--lift step-card">
+                  <div className="step-head">
+                    <div className="step-icon">{s.icon}</div>
+                    <span className="step-badge">{t('admission.stepN', { n: i + 1 })}</span>
+                  </div>
+                  <h3 className="step-title">{t(`admission.steps.${s.key}.title`)}</h3>
+                  <p className="step-desc">{t(`admission.steps.${s.key}.desc`)}</p>
                 </div>
-                <h3 className="step-title">{t(`admission.steps.${s.key}.title`)}</h3>
-                <p className="step-desc">{t(`admission.steps.${s.key}.desc`)}</p>
               </div>
             ))}
           </div>

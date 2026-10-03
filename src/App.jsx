@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ApplyModal from './components/ApplyModal'
+import ScrollToTop from './components/ScrollToTop'
 import { isTokenValid } from './utils/auth'
 import useAnalytics from './hooks/useAnalytics'
 import useTheme from './hooks/useTheme'
@@ -288,6 +289,7 @@ function AppContent() {
   return (
     <>
       <ScrollReveal />
+      <ScrollToTop />
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/admin/login" element={<Login />} />

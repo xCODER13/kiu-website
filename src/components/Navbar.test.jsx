@@ -26,6 +26,10 @@ describe('Navbar', () => {
   it("universitet nomi va barcha asosiy havolalar ko'rsatiladi", () => {
     renderNavbar()
     expect(screen.getByText(config.university.name)).toBeInTheDocument()
+    // Universitet nomi tagida "Rasmiy veb-sayti" yozuvi (xCODER so'rovi)
+    const sub = screen.getByText('Rasmiy veb-sayti')
+    expect(sub).toHaveClass('nav-brand-sub')
+    expect(sub.previousElementSibling).toHaveTextContent(config.university.name)
     expect(screen.getAllByRole('link', { name: "Yo'nalishlar" }).length).toBeGreaterThan(0)
     expect(screen.getAllByRole('link', { name: 'Qabul' }).length).toBeGreaterThan(0)
   })

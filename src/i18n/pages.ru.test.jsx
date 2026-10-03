@@ -37,6 +37,8 @@ describe('Navbar (RU)', () => {
   it('brend, havolalar va tugmalar ruscha; havolalar /ru prefiksli; o\'zbekcha matn yo\'q', () => {
     at('/ru/faculty', <Navbar {...props} />)
     expect(screen.getByText('Каршинский международный университет')).toBeInTheDocument()
+    expect(screen.getByText('Официальный сайт')).toBeInTheDocument()
+    expect(screen.queryByText('Rasmiy veb-sayti')).not.toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: 'Направления' })[0]).toHaveAttribute('href', '/ru/faculty')
     expect(screen.getAllByRole('link', { name: 'Приём' })[0]).toHaveAttribute('href', '/ru/admission')
     expect(screen.getAllByRole('button', { name: 'Подать заявку' }).length).toBeGreaterThan(0)
@@ -160,9 +162,11 @@ describe('Faculty (RU)', () => {
 })
 
 describe('FAQ (RU)', () => {
-  it('savollar ruscha, JSON-LD (FAQPage) ham ruscha', () => {
+  it('savollar ruscha, JSON-LD (FAQPage) ham ruscha', async () => {
     at('/ru/faq', <FAQ />)
-    // 6.12b: birinchi savol dastlab ochiq (taxta)
+    // Dastlab hamma savol yopiq; bosilganda ruscha javob ochiladi
+    expect(screen.queryByText(/Приём ежегодно проходит с 1 июля по 20 августа/)).not.toBeInTheDocument()
+    await userEvent.click(screen.getByText('Когда начинается приём?'))
     expect(screen.getByText(/Приём ежегодно проходит с 1 июля по 20 августа/)).toBeInTheDocument()
     const ld = JSON.parse(document.head.querySelector('script#jsonld-faq').textContent)
     expect(ld['@type']).toBe('FAQPage')

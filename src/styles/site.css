@@ -24,8 +24,10 @@
   }
   .nav-brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
   .nav-brand-text { display: flex; align-items: center; gap: 12px; }
-  .nav-brand-divider { width: 1px; height: 30px; background: var(--color-border-strong); }
+  .nav-brand-divider { width: 1px; height: 40px; background: var(--color-border-strong); }
+  .nav-brand-title { display: flex; flex-direction: column; gap: 2px; }
   .nav-brand-name { max-width: 6rem; text-wrap: balance; font-size: 12px; font-weight: 500; line-height: 1.3; color: var(--color-text-muted); }
+  .nav-brand-sub { font-size: 11px; font-weight: 600; line-height: 1.3; letter-spacing: 0.01em; color: var(--color-brand); white-space: nowrap; }
 
   .nav-links { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }
   .nav-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
@@ -311,7 +313,7 @@
     color: var(--footer-social-fg);
     transition: color 0.15s, border-color 0.15s;
   }
-  .footer-social-link:hover { color: var(--color-on-brand); border-color: var(--color-accent-on-dark-border); }
+  .footer-social-link:hover, .footer-social-link:focus-visible { color: var(--color-accent-on-dark); border-color: var(--color-accent-on-dark-border); }
   .footer-heading {
     margin: 0 0 17px;
     font-size: 12.5px;
@@ -322,7 +324,7 @@
   }
   .footer-links { display: flex; flex-direction: column; gap: 11px; }
   .footer-link { font-size: 14.5px; line-height: 1.4; color: var(--footer-link); text-decoration: none; transition: color 0.15s; }
-  .footer-link:hover { color: var(--color-on-brand); }
+  .footer-link:hover, .footer-link:focus-visible { color: var(--color-accent-on-dark); }
   .footer-rows { display: flex; flex-direction: column; gap: 12px; }
   .footer-row { display: flex; align-items: flex-start; gap: 12px; margin: 0; font-size: 14px; line-height: 1.45; color: var(--footer-text); }
   .footer-row__text { padding-top: 7px; }
@@ -361,7 +363,7 @@
     text-decoration: none;
     transition: color 0.15s;
   }
-  .footer-media-link:hover { color: var(--color-on-brand); }
+  .footer-media-link:hover, .footer-media-link:focus-visible { color: var(--color-accent-on-dark); }
   .footer-media-link:hover .footer-tile--gold { background: var(--footer-gold-bg-hover); }
   .footer-bottom {
     display: flex;

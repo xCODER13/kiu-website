@@ -31,15 +31,17 @@ describe('pages.css', () => {
   })
 
   // 6.11b: hover/fokus qiymatlari qayta dizayn qilindi (toifa rangidagi chegara + wine glow tokeni); tugma hover'i `.btn-primary` dan keladi.
-  it("hover'lar CSS da (oldin JS `onMouseEnter/Leave` edi): karta — `--cat` chegara + `--shadow-card-hover`, karusel o'qi — `--color-brand-fill`", () => {
-    expect(code).toMatch(/\.card\.news-card:hover,\s*\.card\.news-card:focus-within \{[^}]*border-color: var\(--cat\);[^}]*box-shadow: var\(--shadow-card-hover\);/)
+  it("hover'lar CSS da (oldin JS `onMouseEnter/Leave` edi): karta — barcha toifada bir xil `--chart-1` (Umumiy) chegara + `--shadow-card-hover`, karusel o'qi — `--color-brand-fill`", () => {
+    expect(code).toMatch(/\.card\.news-card:hover,\s*\.card\.news-card:focus-within \{[^}]*border-color: var\(--chart-1\);[^}]*box-shadow: var\(--shadow-card-hover\);/)
+    // toifaga qarab o'zgarmaydi: kartaning hover/fokus qoidasida `--cat` chegarasi yo'q
+    expect(code).not.toMatch(/\.card\.news-card:(hover|focus-within)[^{]*\{[^}]*border-color: var\(--cat\)/)
     expect(code).toMatch(/\.carousel-nav:hover \{ background: var\(--color-brand-fill\); \}/)
     expect(code).toMatch(/\.btn\.news-card-btn \{/)
     // taxta 6.12b: karusel "Batafsil" — shisha (glass) tugma, `.btn.carousel-more` (hover'i `.btn` dan)
     expect(code).toMatch(/\.btn\.carousel-more \{/)
   })
 
-  it("karta hover'i `.card:is(.card-link):hover` dan kuchli (`.card.news-card`, 3 klass) — toifa rangidagi chegara umumiy brand chegarasini bosib o'tadi", () => {
+  it("karta hover'i `.card:is(.card-link):hover` dan kuchli (`.card.news-card`, 3 klass) — `--chart-1` chegara umumiy brand chegarasini bosib o'tadi", () => {
     expect(code).toMatch(/\.card\.news-card \{/)
     expect(code).toMatch(/\.card\.news-card:hover/)
   })

@@ -65,6 +65,7 @@ describe('til routing', () => {
     renderAt('/en')
     await screen.findByText('HOME')
     expect(screen.getAllByRole('link', { name: 'Programs' }).length).toBeGreaterThan(0)
+    expect(screen.getByText('Official website')).toBeInTheDocument()
     expect(screen.getByText('All rights reserved.', { exact: false })).toBeInTheDocument()
   })
 
