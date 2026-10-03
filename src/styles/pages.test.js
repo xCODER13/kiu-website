@@ -913,4 +913,11 @@ describe('Bosqich 6.16: taxta farqlari', () => {
     expect(css).not.toMatch(/\.vac-spin/)
     expect(read('src/styles/components.css')).toMatch(/\.btn\[aria-busy="true"\]::after \{/)
   })
+
+  it("video poster (taxta «NewsVideo»): doira «play» 62 px, oq .16 fon va .34 chegara; faqat token/oq-qora rgb (hex yo'q); fokus halqasi ichkarida (frame `overflow:hidden`)", () => {
+    const block = css.slice(css.indexOf('.shorts-thumb {'), css.indexOf('.shorts-play__disc { transition: none; }') + 60)
+    expect(block).toMatch(/\.shorts-play__disc \{[^}]*width: 62px;[^}]*height: 62px;[^}]*background: rgb\(255 255 255 \/ 0\.16\);[^}]*border: 1px solid rgb\(255 255 255 \/ 0\.34\);/)
+    expect(block).toMatch(/\.shorts-play:focus-visible \{ outline-color: var\(--color-brand-on-dark\); outline-offset: -4px; \}/)
+    expect(block).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
 })

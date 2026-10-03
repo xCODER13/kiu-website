@@ -955,6 +955,13 @@
     background: linear-gradient(160deg, var(--wine-900) 0%, var(--dark-bg) 70%, var(--dark-deep) 100%);
   }
   .shorts-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  /* 6.16 (taxta "NewsVideo"): poster + doira "play" (62 px, oq .16 fon, .34 chegara); iframe faqat bosilganda */
+  .shorts-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .shorts-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; background: transparent; color: rgb(255 255 255 / 1); cursor: pointer; }
+  .shorts-play__disc { display: flex; align-items: center; justify-content: center; width: 62px; height: 62px; border-radius: 50%; background: rgb(255 255 255 / 0.16); border: 1px solid rgb(255 255 255 / 0.34); box-shadow: 0 4px 16px rgb(0 0 0 / 0.35); transition: background 0.2s ease; }
+  .shorts-play:hover .shorts-play__disc { background: rgb(255 255 255 / 0.28); }
+  .shorts-play:focus-visible { outline-color: var(--color-brand-on-dark); outline-offset: -4px; }
+  @media (prefers-reduced-motion: reduce) { .shorts-play__disc { transition: none; } }
   .shorts-body { padding: 14px 18px 18px; }
   .shorts-title { margin: 0; font-size: var(--text-base); font-weight: 600; line-height: 1.45; color: var(--color-text); }
   /* YouTube qizili oq fonda 4.5:1 dan past → havola matni brend rangida; qizil faqat kanal belgisida */

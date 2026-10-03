@@ -81,6 +81,8 @@ test.describe('CSP Report-Only: ommaviy sayt buzilishsiz', () => {
     // Video (YouTube iframe) — Yangiliklar → Video
     await page.goto('/news')
     await page.getByRole('button', { name: /^Video/ }).click()
+    await expect(page.locator('img.shorts-thumb').first()).toBeAttached() // poster (i.ytimg.com)
+    await page.locator('.shorts-play').first().click() // iframe faqat bosilganda (6.16)
     await expect(page.locator('iframe[src*="youtube.com/embed"]').first()).toBeAttached()
     await collect()
 
@@ -90,7 +92,7 @@ test.describe('CSP Report-Only: ommaviy sayt buzilishsiz', () => {
     await collect()
 
     // Tashqi originlar faqat siyosatda ruxsat etilganlar (qo'shimcha kafolat — kutilmagan uchinchi tomon yo'q)
-    const allowed = /^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|www\.youtube\.com|maps\.google\.com|www\.google\.com|www\.googletagmanager\.com|api\.qrserver\.com|[a-z0-9-]+\.supabase\.co|kiu-backend-9fwp\.onrender\.com)$/
+    const allowed = /^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|www\.youtube\.com|i\.ytimg\.com|maps\.google\.com|www\.google\.com|www\.googletagmanager\.com|api\.qrserver\.com|[a-z0-9-]+\.supabase\.co|kiu-backend-9fwp\.onrender\.com)$/
     const unexpected = [...seen].filter(o => !allowed.test(o))
     expect(unexpected, "kutilmagan tashqi origin").toEqual([])
     expect(violations, 'CSP buzilishlari').toEqual([])

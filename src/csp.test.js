@@ -43,6 +43,11 @@ describe('vercel.json: Content-Security-Policy-Report-Only', () => {
     expect(policy).not.toMatch(/(^|[\s;])\*([\s;]|$)|\shttp:/)
   })
 
+  it("img-src: `https:` (YouTube miniatyurasi i.ytimg.com — 6.16 video posteri) ruxsat etilgan; ShortsTab shu manzildan oladi", () => {
+    expect(dir('img-src')).toContain(' https:')
+    expect(read('src/pages/news/ShortsTab.jsx')).toContain('https://i.ytimg.com/vi/')
+  })
+
   it("iframe: faqat YouTube (Shorts) va Google Maps", () => {
     expect(dir('frame-src')).toBe('frame-src https://www.youtube.com https://maps.google.com https://www.google.com')
     // kodda ishlatiladigan iframe manbalari siyosatda bor

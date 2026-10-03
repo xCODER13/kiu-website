@@ -223,6 +223,37 @@ describe('News — inline stillar klassga ko\'chirilgan (Bosqich 5b, 6.11b)', ()
     expect(container.querySelectorAll('[style]')).toHaveLength(0)
   })
 
+  it("Video kartasi (taxta): avval poster + play tugmasi, iframe yo'q; bosilganda iframe (autoplay) yuklanadi va fokus unga o'tadi", async () => {
+    mockApi({ 'GET /news': [A1, SHORT1] })
+    const user = userEvent.setup()
+    const { container } = renderNews()
+    await screen.findByRole('heading', { level: 3, name: 'Birinchi yangilik' })
+    await user.click(screen.getByRole('button', { name: /Video/ }))
+
+    expect(container.querySelector('iframe')).toBeNull()
+    expect(container.querySelector('img.shorts-thumb').getAttribute('src')).toBe('https://i.ytimg.com/vi/abc123XYZ/hqdefault.jpg')
+    const play = screen.getByRole('button', { name: /Qisqa video 1/ })
+    expect(play).toHaveClass('shorts-play')
+
+    await user.click(play)
+    const frame = container.querySelector('iframe')
+    expect(frame.getAttribute('src')).toBe('https://www.youtube.com/embed/abc123XYZ?rel=0&modestbranding=1&autoplay=1')
+    expect(frame).toHaveAttribute('title', 'Qisqa video 1')
+    expect(container.querySelector('.shorts-play')).toBeNull()
+    expect(document.activeElement).toBe(frame)
+  })
+
+  it("Video kartasi: videoId URL'ga `encodeURIComponent` bilan qo'yiladi (iframe va miniatyura)", async () => {
+    mockApi({ 'GET /news': [A1, { ...SHORT1, videoId: 'a/b?c' }] })
+    const user = userEvent.setup()
+    const { container } = renderNews()
+    await screen.findByRole('heading', { level: 3, name: 'Birinchi yangilik' })
+    await user.click(screen.getByRole('button', { name: /Video/ }))
+    expect(container.querySelector('img.shorts-thumb').getAttribute('src')).toBe('https://i.ytimg.com/vi/a%2Fb%3Fc/hqdefault.jpg')
+    await user.click(screen.getByRole('button', { name: /Qisqa video 1/ }))
+    expect(container.querySelector('iframe').getAttribute('src')).toContain('/embed/a%2Fb%3Fc?')
+  })
+
   it("yuklanish holati: `.spinner` klassi va `<style>` yo'q", () => {
     vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})))
     const { container } = renderNews()

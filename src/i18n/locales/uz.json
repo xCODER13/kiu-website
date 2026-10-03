@@ -570,6 +570,7 @@
     "channelGo": "Kanalga o'tish",
     "channelSub": "Qisqa videolar va universitet hayotidan lavhalar",
     "watch": "YouTube da ko'rish →",
+    "playVideo": "Videoni ijro etish: {{title}}",
     "back": "Yangiliklarga qaytish",
     "notFound": "Yangilik topilmadi",
     "notFoundHint": "Bu yangilik o'chirilgan yoki havola noto'g'ri bo'lishi mumkin.",
