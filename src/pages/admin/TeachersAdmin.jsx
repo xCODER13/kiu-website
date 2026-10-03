@@ -14,7 +14,7 @@ const KAFEDRALAR = [
 
 export default function TeachersAdmin() {
   const [teachers, setTeachers] = useState([])
-  const [form, setForm]         = useState({ name: '', role: '', dept: '', email: '', avatar: '', image: '' })
+  const [form, setForm]         = useState({ name: '', role: '', dept: '', avatar: '', image: '' })
   const [editing, setEdit]      = useState(null)
   const [open, setOpen]         = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -39,7 +39,6 @@ export default function TeachersAdmin() {
     fd.append('name', form.name)
     fd.append('role', form.role)
     fd.append('dept', form.dept)
-    fd.append('email', form.email)
     fd.append('avatar', form.avatar)
     fd.append('existingImage', form.image || '')
     if (imageFile) fd.append('imageFile', imageFile)
@@ -53,7 +52,7 @@ export default function TeachersAdmin() {
       if (editing) setTeachers(p => p.map(t => t._id === editing ? data : t))
       else setTeachers(p => [data, ...p])
 
-      setForm({ name: '', role: '', dept: '', email: '', avatar: '', image: '' })
+      setForm({ name: '', role: '', dept: '', avatar: '', image: '' })
       setImageFile(null); setImagePreview(null)
       setEdit(null); setOpen(false)
     } catch {
@@ -80,7 +79,7 @@ export default function TeachersAdmin() {
         <h2 className="adm-page-title">O'qituvchilar ({teachers.length})</h2>
         <button className="adm-btn adm-btn--primary" onClick={() => {
           setOpen(!open); setEdit(null)
-          setForm({ name: '', role: '', dept: '', email: '', avatar: '', image: '' })
+          setForm({ name: '', role: '', dept: '', avatar: '', image: '' })
           setImageFile(null); setImagePreview(null)
         }}>{Ic.add} Yangi</button>
       </div>
@@ -148,11 +147,10 @@ export default function TeachersAdmin() {
               </div>
             </div>
             <div className="adm-teacher-dept">{t.dept}</div>
-            {t.email && <div className="adm-teacher-email">{t.email}</div>}
             <div className="adm-actions">
               <button className="adm-btn adm-btn--edit" onClick={() => {
                 setEdit(t._id)
-                setForm({ name: t.name, role: t.role, dept: t.dept, email: t.email || '', avatar: t.avatar || '', image: t.image || '' })
+                setForm({ name: t.name, role: t.role, dept: t.dept, avatar: t.avatar || '', image: t.image || '' })
                 setImageFile(null)
                 setImagePreview(t.image || null)
                 setOpen(true)

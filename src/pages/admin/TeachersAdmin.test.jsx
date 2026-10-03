@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import TeachersAdmin from './TeachersAdmin'
 import { mockApi, rowOf } from '../../test/helpers'
 
-const T1 = { _id: 't1', name: 'Karimov Ali Vali', role: 'Dotsent', dept: 'Aniq fanlar kafedrasi', email: 'ali@kiu.uz', avatar: 'KA', image: 'https://s/t1.jpg' }
+const T1 = { _id: 't1', name: 'Karimov Ali Vali', role: 'Dotsent', dept: 'Aniq fanlar kafedrasi', avatar: 'KA', image: 'https://s/t1.jpg' }
 
 beforeEach(() => {
   vi.stubGlobal('alert', vi.fn())
@@ -19,12 +19,12 @@ describe('TeachersAdmin', () => {
     expect(await screen.findByText("Hali o'qituvchi qo'shilmagan")).toBeInTheDocument()
   })
 
-  it('kartada ism, lavozim, kafedra, email', async () => {
-    mockApi({ 'GET /teachers': [T1] })
+  it('kartada ism, lavozim, kafedra; email ko\'rsatilmaydi', async () => {
+    mockApi({ 'GET /teachers': [{ ...T1, email: 'ali@kiu.uz' }] })
     render(<TeachersAdmin />)
     expect(await screen.findByText('Karimov Ali Vali')).toBeInTheDocument()
     expect(screen.getByText('Dotsent')).toBeInTheDocument()
-    expect(screen.getByText('ali@kiu.uz')).toBeInTheDocument()
+    expect(screen.queryByText('ali@kiu.uz')).toBeNull()
   })
 
   it('rasm yo\'q — avatar harflari yoki ismning bosh 2 harfi (katta harfda)', async () => {
@@ -85,12 +85,12 @@ describe('TeachersAdmin', () => {
   })
 
   it('server xatosi — alert', async () => {
-    mockApi({ 'GET /teachers': [T1], 'PUT /teachers/t1': { status: 400, body: { error: 'Email noto\'g\'ri' } } })
+    mockApi({ 'GET /teachers': [T1], 'PUT /teachers/t1': { status: 400, body: { error: 'Saqlashda xatolik' } } })
     const user = userEvent.setup()
     render(<TeachersAdmin />)
     await user.click(await screen.findByRole('button', { name: /Tahrir/ }))
     await user.click(screen.getByRole('button', { name: /Saqlash/ }))
-    await waitFor(() => expect(alert).toHaveBeenCalledWith("Email noto'g'ri"))
+    await waitFor(() => expect(alert).toHaveBeenCalledWith('Saqlashda xatolik'))
   })
 
   it('o\'chirish (tasdiq bilan)', async () => {

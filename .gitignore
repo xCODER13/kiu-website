@@ -31,6 +31,10 @@ kiu-backend/.env.*
 !kiu-backend/.env.test.example
 dist/
 
+# DB zaxira fayllari (shaxsiy ma'lumot bo'lishi mumkin — gitga tushmasin)
+kiu-backend/backups/
+*-backup.json
+
 # Playwright E2E
 /test-results/
 /playwright-report/
