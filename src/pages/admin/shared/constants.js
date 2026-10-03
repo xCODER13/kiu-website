@@ -11,7 +11,7 @@ export const NAV = [
   { to: '/admin/events',       label: 'Tadbirlar',        icon: Ic.events  },
   { to: '/admin/teachers',     label: "O'qituvchilar",    icon: Ic.teach   },
   { to: '/admin/gallery',      label: 'Galereya',         icon: Ic.gallery },
-  { to: '/admin/applications', label: 'Qabul arizalari',  icon: Ic.apps    },
+  { to: '/admin/applications', label: 'Qabul arizalari',  icon: Ic.clipboard },
   { to: '/admin/vacancies',    label: 'Vakansiyalar',     icon: Ic.vacancy },
   { to: '/admin/profile',      label: 'Profil',           icon: Ic.profile },
 ]

@@ -13,10 +13,15 @@ import GalleryAdmin from './GalleryAdmin.jsx'
 import ApplicationsAdmin from './ApplicationsAdmin.jsx'
 import ProfileAdmin from './ProfileAdmin.jsx'
 
+const COLLAPSED_KEY = 'kiu_admin_collapsed'
+
 // ── MAIN ──
 export default function Dashboard() {
   const navigate    = useNavigate()
-  const [collapsed, setCollapsed] = useState(false)
+  // Yig'ilgan holat qayta kirganda ham saqlanadi (brauzer saqlashi yopiq bo'lsa — ochiq holat)
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem(COLLAPSED_KEY) === '1' } catch { return false }
+  })
   const [dark, setDark] = useTheme()
   const [search, setSearch] = useState('')
   const tk = localStorage.getItem('kiu_token')
@@ -24,6 +29,12 @@ export default function Dashboard() {
   useEffect(() => { if (!tk) navigate('/admin/login') }, [tk, navigate])
   // Sessiya tugasa (401) — loginga qaytaramiz
   useEffect(() => installUnauthorizedHandler(() => navigate('/admin/login')), [navigate])
+
+  function toggleCollapsed() {
+    const next = !collapsed
+    setCollapsed(next)
+    try { localStorage.setItem(COLLAPSED_KEY, next ? '1' : '0') } catch { /* saqlash yopiq — faqat shu sessiya */ }
+  }
 
   const filteredNav = NAV.filter(n => search === '' || n.label.toLowerCase().includes(search.toLowerCase()))
 
@@ -44,8 +55,9 @@ export default function Dashboard() {
               </div>
             )}
           </div>
-          <button className="adm-collapse-btn" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Panelni ochish' : 'Panelni yig\'ish'}>
-            {collapsed ? Ic.menu : Ic.close}
+          <button className="adm-collapse-btn" onClick={toggleCollapsed} aria-expanded={!collapsed}
+            aria-label={collapsed ? 'Panelni ochish' : 'Panelni yig\'ish'}>
+            {collapsed ? Ic.panelRight : Ic.panelLeft}
           </button>
         </div>
 
@@ -63,7 +75,7 @@ export default function Dashboard() {
         <nav className="adm-nav">
           {filteredNav.map(item => (
             <NavLink key={item.to} to={item.to} end={item.to === '/admin'} className="adm-nav-link"
-              aria-label={item.label} title={collapsed ? item.label : undefined}>
+              aria-label={item.label} data-tip={collapsed ? item.label : undefined}>
               <span className="adm-nav-icon">{item.icon}</span>
               {!collapsed && <span className="adm-nav-label">{item.label}</span>}
             </NavLink>
@@ -75,14 +87,16 @@ export default function Dashboard() {
 
         {/* Bottom */}
         <div className="adm-sidebar-foot">
-          <button className="adm-side-action" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}>
+          <button className="adm-side-action" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}
+            data-tip={collapsed ? (dark ? "Yorug' rejim" : "Qorong'u rejim") : undefined}>
             {dark ? Ic.sun : Ic.moon}
             {!collapsed && (dark ? 'Yorug\' rejim' : 'Qorong\'u rejim')}
           </button>
-          <NavLink to="/" className="adm-side-action" aria-label="Saytga qaytish">
+          <NavLink to="/" className="adm-side-action" aria-label="Saytga qaytish" data-tip={collapsed ? 'Saytga qaytish' : undefined}>
             {Ic.home}{!collapsed && 'Saytga qaytish'}
           </NavLink>
-          <button className="adm-side-action is-danger" onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }} aria-label="Tizimdan chiqish">
+          <button className="adm-side-action is-danger" onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }} aria-label="Tizimdan chiqish"
+            data-tip={collapsed ? 'Chiqish' : undefined}>
             {Ic.logout}{!collapsed && 'Chiqish'}
           </button>
         </div>
@@ -99,7 +113,7 @@ export default function Dashboard() {
           </div>
           <div className="adm-topbar-tools">
             {/* Dark mode */}
-            <button className="adm-theme-btn" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}>
+            <button className="icon-btn adm-theme-btn" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}>
               {dark ? Ic.sun : Ic.moon}
             </button>
           </div>

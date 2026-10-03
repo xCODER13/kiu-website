@@ -119,6 +119,45 @@ describe('Login', () => {
   })
 })
 
+describe('Login: qulaylik va xato banneri (6.21)', () => {
+  it("maydonlar yorliqli (`label for`), sarlavha `h1`, parol menejeri uchun `autocomplete`", () => {
+    setup()
+    expect(screen.getByRole('heading', { level: 1, name: 'Admin Panel' })).toHaveClass('auth-title')
+    const login = screen.getByLabelText('Login')
+    const pass = screen.getByLabelText('Parol')
+    expect(login).toHaveAttribute('autocomplete', 'username')
+    expect(login).toHaveAttribute('autocapitalize', 'off')
+    expect(login).toHaveAttribute('name', 'username')
+    expect(pass).toHaveAttribute('autocomplete', 'current-password')
+    expect(pass).toHaveAttribute('name', 'password')
+  })
+
+  it("xato `role=\"alert\"` bannerida, ikonka bilan; yangi urinishda yo'qoladi", async () => {
+    respond({ error: 'xato' })
+    const user = userEvent.setup()
+    setup(); await fill(user)
+    await user.click(screen.getByRole('button', { name: 'Kirish' }))
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveClass('auth-error')
+    expect(alert.querySelector('svg')).not.toBeNull()
+    expect(alert).toHaveTextContent('xato')
+  })
+
+  it("yuborish paytida maydonlar tahrirlanmaydi (`readOnly` — fokus yo'qolmaydi), tugma `aria-busy`", async () => {
+    let resolve
+    vi.stubGlobal('fetch', vi.fn(() => new Promise(r => { resolve = r })))
+    const user = userEvent.setup()
+    setup(); await fill(user)
+    await user.click(screen.getByRole('button', { name: 'Kirish' }))
+    expect(screen.getByLabelText('Login')).toHaveAttribute('readonly')
+    expect(screen.getByLabelText('Parol')).toHaveAttribute('readonly')
+    expect(screen.getByRole('button', { name: 'Kirmoqda...' })).toHaveAttribute('aria-busy', 'true')
+    resolve({ json: () => Promise.resolve({ error: 'x' }) })
+    await screen.findByText('x')
+    expect(screen.getByLabelText('Login')).not.toHaveAttribute('readonly')
+  })
+})
+
 describe('Login logotipi (6.18)', () => {
   it("kirish kartasida KIU logotipi bor (qulf ikonkasi o'rniga)", () => {
     setup()
