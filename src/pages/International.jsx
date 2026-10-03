@@ -41,11 +41,15 @@ export default function International() {
     <div className="fade-up">
       <PageHero title={t('international.title')} sub={t('international.subtitle')} />
 
-      <section className="page-body">
-        <div className="container-wide">
+      <section className="page-body intl-page">
+        <div className="container-wide intl-flow">
 
           {/* Strategiya banneri (About dagi missiya banneri bilan bir xil) */}
           <div className="wine-banner wine-banner--center reveal">
+            <div className="wine-banner__kicker">
+              <Icon size={16}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Icon>
+              <span>KIU</span>
+            </div>
             <h2 className="wine-banner__title">{t('international.strategyTitle')}</h2>
             <p className="wine-banner__text">{t('international.strategyText')}</p>
             <div className="wine-stats">
@@ -58,20 +62,26 @@ export default function International() {
             </div>
           </div>
 
-          <h2 className="section-title page-block reveal">{t('international.opportunitiesTitle')}</h2>
+          <div>
+          <h2 className="section-title reveal">{t('international.opportunitiesTitle')}</h2>
           <div className="grid-12">
             {OPPORTUNITIES.map((item, i) => (
               <div key={item.id} className={`rv-item ${OPP_COL[i]} reveal reveal-delay-${(i % 4) + 1}`}>
                 <div className="card card--lift feature-card">
                   <div className="tile"><Icon>{item.icon}</Icon></div>
-                  <h3 className="feature-card__title">{t(`international.opportunities.${item.id}.title`)}</h3>
-                  <p className="feature-card__desc">{t(`international.opportunities.${item.id}.desc`)}</p>
+                  <div>
+                    <h3 className="feature-card__title">{t(`international.opportunities.${item.id}.title`)}</h3>
+                    <p className="feature-card__desc">{t(`international.opportunities.${item.id}.desc`)}</p>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <h2 className="section-title page-block reveal">{t('international.partnersTitle')}</h2>
+          </div>
+
+          <div>
+          <h2 className="section-title reveal">{t('international.partnersTitle')}</h2>
           <div className="grid-12">
             {PARTNERS.map((p, i) => (
               <div key={p.id} className={`rv-item ${PARTNER_COL[i]} reveal reveal-delay-${(i % 4) + 1}`}>
@@ -87,17 +97,23 @@ export default function International() {
             ))}
           </div>
 
-          <h2 className="section-title page-block reveal">{t('international.exchangeTitle')}</h2>
+          </div>
+
+          <div>
+          <h2 className="section-title reveal">{t('international.exchangeTitle')}</h2>
           <div className="cards-2">
             {EXCHANGE.map((item, i) => (
               <div key={item.id} className={`rv-item reveal reveal-delay-${i + 1}`}>
                 <div className="card card--lift feature-card feature-card--lg">
                   <div className="tile tile--60"><Icon size={26}>{item.icon}</Icon></div>
-                  <h3 className="feature-card__title">{t(`international.exchange.${item.id}.title`)}</h3>
-                  <p className="feature-card__desc">{t(`international.exchange.${item.id}.desc`)}</p>
+                  <div>
+                    <h3 className="feature-card__title">{t(`international.exchange.${item.id}.title`)}</h3>
+                    <p className="feature-card__desc">{t(`international.exchange.${item.id}.desc`)}</p>
+                  </div>
                 </div>
               </div>
             ))}
+          </div>
           </div>
         </div>
       </section>

@@ -120,7 +120,7 @@ describe("Bazadan keladigan sahifalar (RU): interfeys ruscha, kontent o'zbekcha"
     expect(screen.getByText(NOTE)).toBeInTheDocument()
     expect(screen.getAllByText('Общие').length).toBeGreaterThan(0)
     expect(screen.queryByText('Yangiliklar')).not.toBeInTheDocument()
-    await user.click(screen.getAllByText('Подробнее →')[0])
+    await user.click(screen.getAllByText('Подробнее')[0])
     expect(screen.getByTestId('loc').textContent).toMatch(/^\/ru\/news\/n[12]$/)
   })
 })

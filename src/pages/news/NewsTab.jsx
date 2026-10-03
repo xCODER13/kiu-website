@@ -33,36 +33,29 @@ export default function NewsTab({
   }
 
   return (
-    <>
-      {/* FEATURED CAROUSEL — rounded corners, inside container */}
-      {featured.length > 0 && (
-        <div className="container">
-          <FeaturedCarousel items={featured} />
-        </div>
-      )}
+    <section className="page-body">
+      <div className="container news-flow">
+        {/* FEATURED CAROUSEL — rounded corners */}
+        {featured.length > 0 && <FeaturedCarousel items={featured} />}
 
-      {/* TELEGRAM BANNER — rounded, below carousel */}
-      <div className="container news-telegram">
+        {/* TELEGRAM PANEL + barcha yangiliklar havolasi */}
         <div className="news-telegram-box">
           <TelegramPanel />
         </div>
         <a href={config.telegram.url} target="_blank" rel="noopener noreferrer" className="news-all-link">
           {t('news.allNews')}
         </a>
-      </div>
 
-      {/* NEWS GRID SECTION */}
-      <section className="section">
-        <div className="container">
-          {error && (
-            <div className="news-offline">
-              {t('news.offline')}
-            </div>
-          )}
+        {error && (
+          <div className="news-offline">
+            {t('news.offline')}
+          </div>
+        )}
 
-          {/* Search */}
+        {/* Qidiruv + toifa filtri */}
+        <div className="news-filters">
           <div className="news-search">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
               className="news-search-icon" aria-hidden="true">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
@@ -72,7 +65,6 @@ export default function NewsTab({
             />
           </div>
 
-          {/* Category filter */}
           {categories.length > 1 && (
             <div className="news-cats">
               {categories.map(cat => {
@@ -80,7 +72,7 @@ export default function NewsTab({
                 return (
                   // Toifa rangi ma'lumotdan keladi → faqat `--cat` o'zgaruvchisi (inline); faol holat `data-active` (CSS)
                   <button key={cat} type="button" onClick={() => { setActiveCategory(cat); setVisibleCount(6) }}
-                    className="news-cat" data-active={isActive}
+                    className="news-cat" data-active={isActive} data-all={cat === 'all'}
                     style={{ '--cat': cat === 'all' ? 'var(--color-brand)' : getCategoryToken(cat) }}>
                     <span className="news-cat-dot" aria-hidden="true" />
                     {cat === 'all' ? t('news.all') : getCategoryLabel(cat, t)}
@@ -92,31 +84,30 @@ export default function NewsTab({
               })}
             </div>
           )}
-
-          {/* News grid */}
-          {filtered.length === 0 ? (
-            <div className="news-noresults">
-              {t('news.noResults', { query: search })}
-            </div>
-          ) : (
-            <>
-              <div className="news-grid">
-                {filtered.slice(0, visibleCount).map(n => (
-                  <NewsCard key={n._id} item={n} />
-                ))}
-              </div>
-              {visibleCount < filtered.length && (
-                <div className="news-more">
-                  <button type="button" onClick={() => setVisibleCount(v => v + 6)} className="btn btn-secondary news-load-more">
-                    {t('news.loadMore', { count: filtered.length - visibleCount })}
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-
         </div>
-      </section>
-    </>
+
+        {/* News grid */}
+        {filtered.length === 0 ? (
+          <div className="news-noresults">
+            {t('news.noResults', { query: search })}
+          </div>
+        ) : (
+          <>
+            <div className="news-grid">
+              {filtered.slice(0, visibleCount).map(n => (
+                <NewsCard key={n._id} item={n} />
+              ))}
+            </div>
+            {visibleCount < filtered.length && (
+              <div className="news-more">
+                <button type="button" onClick={() => setVisibleCount(v => v + 6)} className="btn btn-secondary news-load-more">
+                  {t('news.loadMore', { count: filtered.length - visibleCount })}
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </section>
   )
 }

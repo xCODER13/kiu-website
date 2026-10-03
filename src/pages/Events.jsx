@@ -169,7 +169,7 @@ export default function Events() {
   return (
     <div className="fade-up">
       <PageHero title={t('events.title')} sub={t('events.subtitle')} note={<ContentLangNote />} />
-      <section className="section">
+      <section className={`page-body${error && !loading && !(Array.isArray(events) && events.length) ? ' page-body--offline' : ''}`}>
         <div className="container container--920">
           {loading && (
             <div className="page-loading">
@@ -210,7 +210,7 @@ export default function Events() {
                       </div>
                       <div className="ev-body">
                         <div className="ev-head">
-                          <h3 className="ev-title" lang="uz">{e.title}</h3>
+                          <h2 className="ev-title" lang="uz">{e.title}</h2>
                           <TypeChip typeInfo={ti} />
                         </div>
                         {fd.full && <div className="ev-when"><CalendarIcon />{fd.full}</div>}

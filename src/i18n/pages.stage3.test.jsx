@@ -114,7 +114,7 @@ describe('Bazadan keladigan sahifalar (EN): interfeys inglizcha, kontent o\'zbek
     expect(screen.getByText(NOTE)).toBeInTheDocument()
     expect(screen.getAllByText('General').length).toBeGreaterThan(0)
     expect(screen.queryByText('Yangiliklar')).not.toBeInTheDocument()
-    await user.click(screen.getAllByText('Read more →')[0])
+    await user.click(screen.getAllByText('Read more')[0])
     expect(screen.getByTestId('loc').textContent).toMatch(/^\/en\/news\/n[12]$/)
   })
 })

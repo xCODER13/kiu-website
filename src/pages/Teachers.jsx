@@ -65,19 +65,19 @@ export default function Teachers() {
     <div className="fade-up">
       <PageHero title={t('teachers.title')} sub={t('teachers.subtitle')} note={<ContentLangNote />} />
 
-      <section className="section">
+      <section className="page-body">
         <div className="container container-wide">
-          {error && (
-            <div className="notice-banner" role="status">
-              <Icon size={20}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></Icon>
-              <span>{t('teachers.offline')}</span>
-            </div>
-          )}
-
           <div className="teachers-layout">
             <KafedraSidebar teachers={teachers} activeKafedra={activeKafedra} onSelect={setActiveKafedra} />
 
             <div className="teachers-main">
+              {error && (
+                <div className="notice-banner" role="status">
+                  <Icon size={20}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></Icon>
+                  <span>{t('teachers.offline')}</span>
+                </div>
+              )}
+
               {activeKafedra && (
                 <div className="kafedra-selected">
                   {activeKafedra} <span>— {t('teachers.count', { count: filtered.length })}</span>
@@ -108,9 +108,15 @@ export default function Teachers() {
                             <img src={tc.image} alt={tc.name} loading="lazy" onError={ev => { ev.currentTarget.dataset.broken = 'true' }} />
                           )}
                         </div>
-                        <h3 className="teacher-card__name" lang="uz">{tc.name}</h3>
+                        <h2 className="teacher-card__name" lang="uz">{tc.name}</h2>
                         <div className="pill-brand teacher-card__role" lang="uz">{tc.role}</div>
                         <p className="teacher-card__dept" lang="uz">{tc.dept}</p>
+                        {tc.email && (
+                          <a className="teacher-card__email" href={`mailto:${tc.email}`}>
+                            <Icon size={16}><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></Icon>
+                            <span>{tc.email}</span>
+                          </a>
+                        )}
                       </div>
                     </div>
                   ))}

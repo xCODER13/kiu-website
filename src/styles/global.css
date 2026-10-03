@@ -37,6 +37,28 @@
     overflow-x: hidden;
   }
   img { max-width: 100%; display: block; }
+  /* Sahifa bo'ylab nuqtali to'r (taxta 3.10 — ildiz `kiu-dots`): viewport'ga qotirilgan (fixed) — sahifa uzunligidan qat'i nazar
+     bitta qatlam; kontent (z-index: -1 dan yuqori) va bo'lim fonlari uning ustida. Animatsiya faqat `no-preference` da. */
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  body::before { background: radial-gradient(circle, var(--hero-dot) 1px, transparent 1.4px) 0 0 / 22px 22px; }
+  body::after {
+    background: radial-gradient(circle, var(--dot-shine) 1px, transparent 1.5px) 0 0 / 22px 22px;
+    mask-image: linear-gradient(105deg, transparent 38%, rgb(0 0 0 / 1) 50%, transparent 62%);
+    mask-size: 260% 100%;
+    mask-repeat: no-repeat;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    body::before { animation: kiuTwinkle 8s ease-in-out infinite; }
+    body::after { animation: kiuShine 14s ease-in-out infinite; }
+  }
+  @media (prefers-reduced-motion: reduce) { body::after { display: none; } }
   a { text-decoration: none; color: inherit; }
   button { font-family: var(--font-body); cursor: pointer; }
 

@@ -27,8 +27,8 @@ export default function Contact() {
   return (
     <div className="fade-up">
       <PageHero title={t('contact.title')} sub={t('contact.subtitle')} />
-      <section className="section">
-        <div className="container">
+      <section className="page-body">
+        <div className="container-wide">
           <div className="contact-grid">
             <div className="contact-list">
               {ITEMS.map((item, i) => (

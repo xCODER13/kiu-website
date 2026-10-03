@@ -23,13 +23,13 @@ export default function FAQ() {
   // useMemo: useJsonLd barqaror referensga tayanadi (har render'da script qayta yaratilmasin)
   const schema = useMemo(() => buildFaqSchema(faqs), [faqs])
   useJsonLd('jsonld-faq', schema)
-  const [open, setOpen] = useState(null)   // bir vaqtda faqat bitta savol ochiq
+  const [open, setOpen] = useState(0)   // bir vaqtda faqat bitta savol ochiq; taxtada birinchisi dastlab ochiq
 
   return (
     <div className="fade-up">
       <PageHero title={t('faq.title')} sub={t('faq.subtitle')} />
 
-      <section className="section">
+      <section className="page-body">
         <div className="container container--820 faq-list">
           {faqs.map((faq, i) => {
             const isOpen = open === i

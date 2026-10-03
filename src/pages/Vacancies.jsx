@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { validateFullName, validatePhone, validateEmail, validateRequired } from '../utils/validation'
 import PageHero from '../components/PageHero'
-import Icon from '../components/Icon'
 import InfoTab from './vacancies/InfoTab'
 import ApplicationForm from './vacancies/ApplicationForm'
 
@@ -64,13 +63,13 @@ export default function Vacancies() {
   }
 
   const tabs = [
-    { key: 'info', label: t('vacancies.tabs.info'), icon: <><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></> },
-    { key: 'form', label: t('vacancies.tabs.form'), icon: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" /></> },
+    { key: 'info', label: t('vacancies.tabs.info') },
+    { key: 'form', label: t('vacancies.tabs.form') },
   ]
 
   return (
     <div className="fade-up">
-      <PageHero badge={t('vacancies.badge')} title={t('vacancies.title')} sub={t('vacancies.subtitle')}>
+      <PageHero badge={t('vacancies.badge')} title={t('vacancies.title')} sub={t('vacancies.subtitle')} className="vac-hero">
         {/* Tab almashtirgich (pill): rol `button` saqlangan, holat — `data-active` + `aria-pressed` */}
         <div className="kiu-tab-wrap">
           {tabs.map(tab => (
@@ -82,7 +81,6 @@ export default function Vacancies() {
               aria-pressed={activeTab === tab.key}
               onClick={() => setActiveTab(tab.key)}
             >
-              <span className="kiu-tab-icon"><Icon size={16}>{tab.icon}</Icon></span>
               {tab.label}
             </button>
           ))}

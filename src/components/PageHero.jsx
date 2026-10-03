@@ -2,9 +2,10 @@
    Fon (nuqtali qatlam + wine/oltin radial) va pastdagi so'nish — faqat CSS (`.inner-hero`, pages.css).
    `note` — ta'rif ostidagi kichik izoh (masalan, `<ContentLangNote />`); `children` — hero ichidagi qo'shimcha (tab almashtirgich).
    `title` — matn yoki JSX (masalan, `<Trans>` bilan yil brend rangida). */
-export default function PageHero({ badge, title, sub, note, children }) {
+export default function PageHero({ badge, title, sub, note, children, className = '' }) {
   return (
-    <section className="inner-hero">
+    <section className={`inner-hero${className ? ` ${className}` : ''}`}>
+      <span className="dots-shine" aria-hidden="true" />
       <div className="container inner-hero__inner">
         {badge && (
           <span className="hero-badge">

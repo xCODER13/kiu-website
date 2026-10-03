@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import useNavigate from '../../i18n/useLocalizedNavigate'
 import { getCategoryToken, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
+import { formatDate } from '../../utils/formatDate'
 
 // ── NEWS CARD ── (6.11: kategoriya rangi `--cat` orqali, hover/fokus CSS da)
 export default function NewsCard({ item }) {
@@ -25,7 +26,7 @@ export default function NewsCard({ item }) {
               {getCategoryLabel(item.category, t)}
             </span>
           )}
-          <span className="news-card-date">{new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}</span>
+          <span className="news-card-date">{formatDate(item.createdAt)}</span>
         </div>
         <h3 lang="uz" className="news-card-title">{item.title}</h3>
         {item.content && (
@@ -38,6 +39,7 @@ export default function NewsCard({ item }) {
           </span>
           <button type="button" onClick={() => navigate(`/news/${item._id}`)} className="btn btn-primary btn-sm news-card-btn">
             {t('news.more')}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </div>
       </div>

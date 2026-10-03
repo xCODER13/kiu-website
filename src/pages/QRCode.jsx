@@ -43,7 +43,7 @@ export default function QRCode() {
     <div className="fade-up">
       <PageHero title={t('qrcode.title')} sub={t('qrcode.subtitle')} />
 
-      <section className="section">
+      <section className="page-body">
         <div className="container">
           <div className="cards-4">
             {SOCIALS.map((s, i) => (

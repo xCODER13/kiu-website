@@ -34,7 +34,9 @@ describe('pages.css', () => {
   it("hover'lar CSS da (oldin JS `onMouseEnter/Leave` edi): karta — `--cat` chegara + `--shadow-card-hover`, karusel o'qi — `--color-brand-fill`", () => {
     expect(code).toMatch(/\.card\.news-card:hover,\s*\.card\.news-card:focus-within \{[^}]*border-color: var\(--cat\);[^}]*box-shadow: var\(--shadow-card-hover\);/)
     expect(code).toMatch(/\.carousel-nav:hover \{ background: var\(--color-brand-fill\); \}/)
-    expect(code).not.toMatch(/\.news-card-btn|\.carousel-more/)
+    expect(code).toMatch(/\.btn\.news-card-btn \{/)
+    // taxta 6.12b: karusel "Batafsil" — shisha (glass) tugma, `.btn.carousel-more` (hover'i `.btn` dan)
+    expect(code).toMatch(/\.btn\.carousel-more \{/)
   })
 
   it("karta hover'i `.card:is(.card-link):hover` dan kuchli (`.card.news-card`, 3 klass) — toifa rangidagi chegara umumiy brand chegarasini bosib o'tadi", () => {
@@ -145,7 +147,7 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
   // 6.11b: o'qlar hover'i `--color-brand-fill`, "Orqaga" tepada pill (`.back-link`), pastda `.btn-primary` (alohida `.back-btn:hover` kerak emas).
   it("hover'lar CSS da: galereya o'qlari, tepadagi orqaga havolasi (ijtimoiy havola 6.11c2 da `.btn-primary` ga o'tdi)", () => {
     expect(code).toMatch(/\.gallery-arrow:hover \{ background: var\(--color-brand-fill\); \}/)
-    expect(code).toMatch(/\.back-link:hover \{[^}]*border-color: var\(--color-brand\);[^}]*background: var\(--color-brand-subtle\);/)
+    expect(code).toMatch(/\.back-link:hover \{[^}]*border-color: var\(--color-brand\);[^}]*background: var\(--color-brand-subtle-2\);/)
     expect(code).not.toMatch(/\.social-link/)
   })
 
@@ -172,7 +174,8 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
     expect(site).toMatch(/\.modal-alert \{[^}]*color-mix\(in srgb, var\(--color-danger\) 8%, transparent\)/)
     // Telegram gradienti: ikkala uchi ham token (`-deep` EMAS — u boshqa qiymat, #006aa3).
     // 6.11b: gradient faqat kanal belgisida (avatar) qoldi; "Obuna" tugmasi — umumiy `.btn-primary` (wine), `.tg-subscribe` o'z fonini bermaydi.
-    expect(site).toMatch(/\.tg-avatar \{[^}]*linear-gradient\(135deg, var\(--brand-telegram\), var\(--brand-telegram-end\)\)/)
+    // 6.12b: taxtada avatar — tekis #0088cc (gradient yo'q)
+    expect(site).toMatch(/\.tg-avatar \{[^}]*background: var\(--brand-telegram\);/)
     expect(site).not.toMatch(/\.tg-subscribe/)
     expect(tokens).toMatch(/--brand-telegram-end:\s*#0055aa/)
     expect(tokens).toMatch(/--brand-telegram-deep:\s*#006aa3/)
@@ -185,10 +188,12 @@ describe('Bosqich 6.11a: umumiy ichki hero, Qabul, Yo\'nalishlar', () => {
   const inline = f => (read(f).match(/style=\{\{/g) ?? []).length
 
   it("hero `.inner-hero`: nuqtali qatlam (`::before`), pastda so'nish (`::after`), h1 `clamp` ≤ 3rem/800, ta'rif 1.125rem", () => {
-    expect(code).toMatch(/\.inner-hero \{[^}]*background-image: var\(--gradient-hero-glow\);/)
-    // 6.11c5: qatlamlar Home hero (`.home-hero`) bilan umumiy selektor ro'yxatida
-    expect(code).toMatch(/\.inner-hero::before,\s*\.home-hero::before \{[^}]*var\(--hero-dot\)/)
-    expect(code).toMatch(/\.inner-hero::after,\s*\.home-hero::after \{[^}]*var\(--color-bg\)/)
+    // 6.12a: fon — taxta qatlamlari (`--gradient-band-hero` + `--band-bg`), nuqtalar (twinkle) va 170 px so'nish
+    expect(code).toMatch(/\.inner-hero \{[^}]*background-color: var\(--band-bg\);[^}]*background-image: var\(--gradient-band-hero\);/)
+    expect(code).toMatch(/\.inner-hero::before \{[^}]*var\(--hero-dot\)/)
+    expect(code).toMatch(/\.inner-hero::after \{[^}]*height: 170px;[^}]*var\(--color-bg\)/)
+    expect(read('src/components/PageHero.jsx')).toMatch(/dots-shine/)
+    expect(read('src/styles/global.css')).toMatch(/body::before \{ background: radial-gradient\(circle, var\(--hero-dot\)/)
     expect(code).toMatch(/\.inner-hero__title \{[^}]*font-size: clamp\(2rem, [^)]*3rem\);[^}]*font-weight: 800;[^}]*letter-spacing: -0\.025em;/)
     expect(code).toMatch(/\.inner-hero__sub \{[^}]*font-size: 1\.125rem;/)
   })
@@ -258,7 +263,8 @@ describe('Bosqich 6.11b: Yangiliklar, Yangilik sahifasi, karusel, Telegram panel
     expect(code).toMatch(/\.news-card-cat \{[^}]*color-mix\(in oklab, var\(--cat\) var\(--cat-chip-mix\), transparent\);[^}]*color: var\(--color-text\);/)
     expect(code).toMatch(/\.cat-dot \{[^}]*background: var\(--cat\);/)
     expect(code).toMatch(/\.news-cat\[data-active="true"\] \{[^}]*border-color: var\(--cat\);[^}]*color-mix\(in oklab, var\(--cat\) var\(--cat-chip-mix\), transparent\);/)
-    expect(code).toMatch(/\.news-card-ph \{[^}]*var\(--cat-ph-1\)[^}]*var\(--cat-ph-2\)/)
+    // taxta 6.12b: rasmsiz karta — toifa rangidan radial + chiziqli gradient (16% → 7%)
+    expect(code).toMatch(/\.news-card-ph \{[^}]*radial-gradient[^}]*var\(--cat\) 16%[^}]*var\(--cat\) 7%/)
   })
 
   it("karusel: wine qoplama tokendan, nuqta 24px bosish hududi (faol — oltin), tor ekranda o'qlar tepada; harakat `reduce` da o'chadi", () => {
@@ -376,7 +382,7 @@ describe('Bosqich 6.11c2: Hemis, FAQ, Sharhlar, Aloqa, Xarita, QR kodlar, 404', 
     expect(code).toMatch(/\.card\.faq-card\[data-open="true"\] \{[^}]*border-color: var\(--color-brand\);[^}]*var\(--shadow-card-hover\)/)
     expect(code).toMatch(/\.faq-card__q\[aria-expanded="true"\] \.faq-card__chev \{[^}]*transform: rotate\(180deg\)/)
     expect(code).toMatch(/prefers-reduced-motion: reduce\) \{ \.faq-card__chev \{ transition: none; \} \}/)
-    expect(code).toMatch(/\.faq-card__a \{[^}]*max-width: 680px;[^}]*line-height: 1\.8;/)
+    expect(code).toMatch(/\.faq-card__a \{[^}]*max-width: 736px;[^}]*line-height: 1\.8;/)
   })
 
   it("sharh: yulduz rangi `--color-star`; matn 16.5 px kursivsiz; muallif pastda `margin-top: auto` + ajratgich", () => {
@@ -407,14 +413,14 @@ describe('Bosqich 6.11c2: Hemis, FAQ, Sharhlar, Aloqa, Xarita, QR kodlar, 404', 
     expect(code).toMatch(/\.qr-card__icon \{[^}]*width: 56px;[^}]*height: 56px;[^}]*border-radius: 50%;/)
     for (const k of ['telegram', 'instagram', 'youtube', 'facebook']) expect(code).toMatch(new RegExp(`\\.qr-card__icon--${k} \\{ background: `))
     expect(code).toMatch(/\.qr-card__icon--instagram \{ background: var\(--brand-instagram\); \}/)
-    expect(code).toMatch(/\.qr-card__link \{[^}]*min-height: 46px;[^}]*padding-inline: 12px;/)
+    expect(code).toMatch(/\.qr-card__link \{[^}]*min-height: 46px;[^}]*padding: 12px 16px;/)
     expect(code).toMatch(/\.wine-banner__tile \{[^}]*var\(--color-accent-on-dark-border\)[^}]*var\(--color-accent-on-dark\)/)
   })
 
   it("404: raqam 132 px/800 brand, plitka 116 px radius 34, oltin hairline 72×3, havola pill'i 44 px", () => {
     expect(code).toMatch(/\.notfound__digit \{[^}]*font-size: 8\.25rem;[^}]*font-weight: 800;[^}]*color: var\(--color-brand\);/)
     expect(code).toMatch(/\.notfound__tile \{[^}]*width: 116px;[^}]*height: 116px;[^}]*border-radius: 34px;/)
-    expect(code).toMatch(/\.notfound__rule \{ width: 72px; height: 3px;[^}]*var\(--color-accent\);/)
+    expect(code).toMatch(/\.notfound__rule \{ width: 72px; height: 3px;[^}]*var\(--gradient-hairline\);/)
     expect(code).toMatch(/\.pill-link \{[^}]*min-height: 44px;/)
     expect(code).toMatch(/\.pill-link:hover \{ background: var\(--color-brand-fill\); color: var\(--color-on-brand\); \}/)
   })
@@ -443,7 +449,7 @@ describe('Bosqich 6.11c3: Tadbirlar, O\'qituvchilar, Galereya', () => {
 
   it("Tadbirlar: tur → `--chart-N` (data-type), chip foni `--cat-chip-mix`, matn `--color-text`; 7 tur ham xaritalangan", () => {
     expect(code).toMatch(/\.ev-chip \{[^}]*background: color-mix\(in oklab, var\(--cat\) var\(--cat-chip-mix\), transparent\);[^}]*color: var\(--color-text\);/)
-    const map = { general: 'chart-1', graduation: 'chart-5', sport: 'chart-4', culture: 'chart-3', open: 'chart-2', admission: 'chart-6', science: 'stat-violet' }
+    const map = { general: 'chart-1', graduation: 'chart-2', sport: 'chart-3', culture: 'chart-4', open: 'chart-5', admission: 'chart-5', science: 'chart-6' }
     for (const [type, tok] of Object.entries(map)) expect(code).toMatch(new RegExp(`\\.ev-chip\\[data-type="${type}"\\]\\s*\\{ --cat: var\\(--${tok}\\); \\}`))
   })
 
@@ -462,7 +468,7 @@ describe('Bosqich 6.11c3: Tadbirlar, O\'qituvchilar, Galereya', () => {
     expect(code).toMatch(/\.card\.kafedra-card \{[^}]*position: sticky;[^}]*top: 96px;/)
     expect(code).toMatch(/@media \(max-width: 900px\) \{\s*\.teachers-layout \{ grid-template-columns: minmax\(0, 1fr\); \}\s*\.card\.kafedra-card \{ position: static; \}/)
     expect(code).toMatch(/\.teachers-grid \{[^}]*repeat\(3, minmax\(0, 1fr\)\)/)
-    expect(code).toMatch(/\.kafedra-btn\[data-active="true"\] \{[^}]*border-color: var\(--color-brand\);/)
+    expect(code).toMatch(/\.kafedra-btn\[data-active="true"\] \{[^}]*background: var\(--color-brand-fill\);/)
     expect(code).toMatch(/\.avatar-wine\.teacher-card__avatar \{[^}]*width: 88px;[^}]*height: 88px;/)
     expect(code).toMatch(/\.teacher-card__avatar img\[data-broken="true"\] \{ display: none; \}/)
     expect(read('src/styles/global.css')).not.toMatch(/\.teachers-layout/)
@@ -487,17 +493,17 @@ describe('Bosqich 6.11c3: Tadbirlar, O\'qituvchilar, Galereya', () => {
 
   it("Banner: `.notice-banner` brand-subtle, `data-tone=danger` — `--color-danger` dan color-mix", () => {
     expect(code).toMatch(/\.notice-banner \{[^}]*background: var\(--color-brand-subtle\);/)
-    expect(code).toMatch(/\.notice-banner\[data-tone="danger"\] \{[^}]*color-mix\(in srgb, var\(--color-danger\) 8%, transparent\)/)
+    expect(code).toMatch(/\.notice-banner\[data-tone="danger"\] \{[^}]*color-mix\(in srgb, var\(--color-danger\) 7%, transparent\)/)
   })
 
-  it("Events, Teachers, Gallery: inline style yo'q, hex/rgba yo'q, PageHero ishlatiladi; Teachers email chiqarmaydi; eski `✕` matni yo'q", () => {
+  it("Events, Teachers, Gallery: inline style yo'q, hex/rgba yo'q, PageHero ishlatiladi; Teachers email `mailto` havola sifatida; eski `✕` matni yo'q", () => {
     for (const f of ['Events', 'Teachers', 'Gallery']) {
       const path = `src/pages/${f}.jsx`
       expect(inline(path), f).toBe(0)
       expect(read(path), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|✕/i)
       expect(read(path), f).toMatch(/PageHero/)
     }
-    expect(read('src/pages/Teachers.jsx')).not.toMatch(/\.email|mailto:|KAFEDRALAR/)
+    expect(read('src/pages/Teachers.jsx')).not.toMatch(/KAFEDRALAR/)
     expect(read('src/pages/Gallery.jsx')).toMatch(/useModalA11y/)
   })
 })
@@ -661,7 +667,7 @@ describe('Bosqich 6.11d: Sehrli shlyapa', () => {
   })
 
   it("Konteyner 760 px, Intro setkasi aniq 4 ustun (auto-fit va minmax(128px) yo'q)", () => {
-    expect(code).toMatch(/\.container\.sh-wrap \{ max-width: 760px; \}/)
+    expect(code).toMatch(/\.container\.sh-wrap \{ max-width: 824px; \}/)
     expect(code).toMatch(/\.sh-info \{[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\);[^}]*gap: 16px;/)
     expect(code).not.toMatch(/auto-fit/)
   })
@@ -670,7 +676,8 @@ describe('Bosqich 6.11d: Sehrli shlyapa', () => {
     expect(code).toMatch(/\.sh-opt \{[^}]*padding: 16px 20px;[^}]*border: 2px solid var\(--color-border\);[^}]*border-radius: 14px;[^}]*font-size: 1rem;/)
     expect(code).toMatch(/\.sh-opt\[data-selected="true"\] \{[^}]*background: var\(--color-brand-subtle\);[^}]*box-shadow: 0 0 0 4px var\(--ring-option\);/)
     expect(code).toMatch(/\.sh-opt:hover:not\(:disabled, \[data-selected="true"\]\) \{ border-color: var\(--color-brand\); \}/)
-    expect(code).toMatch(/\.sh-opt-letter \{[^}]*width: 36px;[^}]*height: 36px;/)
+    // taxta: harf doirasi 36 + 2×2 chegara (box-sizing yo'q) = 40 px
+    expect(code).toMatch(/\.sh-opt-letter \{[^}]*width: 40px;[^}]*height: 40px;/)
     expect(code).not.toMatch(/\.sh-opt[^{]*\{[^}]*scale\(/)
   })
 
@@ -681,7 +688,7 @@ describe('Bosqich 6.11d: Sehrli shlyapa', () => {
   })
 
   it("Register: input 52 px, \"Boshlash\" bo'sh holatda kulrang fon emas, `opacity .5` (+ `not-allowed` `.btn` dan)", () => {
-    expect(code).toMatch(/\.sh-register \.input\.input--lg \{ min-height: 52px; font-size: 1rem; \}/)
+    expect(code).toMatch(/\.sh-register \.input\.input--lg \{ min-height: 52px;[^}]*font-size: 1rem;/)
     expect(code).toMatch(/\.btn\.sh-register__submit:disabled \{[^}]*background: var\(--color-brand-fill\);[^}]*opacity: 0\.5;/)
   })
 
@@ -690,8 +697,8 @@ describe('Bosqich 6.11d: Sehrli shlyapa', () => {
     expect(code).toMatch(/\.card\.sh-fac\[data-best="true"\]::before \{[^}]*var\(--gradient-hairline\)/)
     expect(code).toMatch(/\.sh-fac__best \{[^}]*background: var\(--color-accent\);[^}]*color: var\(--color-on-accent\);/)
     expect(code).toMatch(/\.sh-cta \{[^}]*border-radius: 20px;[^}]*background: var\(--color-surface-2\);/)
-    // doimiy "faol" ko'rinish yo'q: glow faqat `.card--lift:hover` dan (Home'dagi tajriba, 6.11c5)
-    expect(code).not.toMatch(/\.card\.sh-fac\[data-best="true"\] \{/)
+    // taxta 6.12b: birinchi (eng mos) karta doimiy brend chegara + glow bilan ajralib turadi
+    expect(code).toMatch(/\.card\.sh-fac\[data-best="true"\] \{[^}]*border-color: var\(--color-brand\);[^}]*var\(--glow-brand\)/)
   })
 
   it("JSX: hex/rgba yo'q, inline faqat dinamik (`--x/--y`, `--pct`), ichma-ich `<button>` yo'q; Data.jsx yo'nalish ranglari stilda ishlatilmaydi", () => {

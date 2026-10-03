@@ -19,7 +19,7 @@ export default function Testimonials() {
     <div className="fade-up">
       <PageHero title={t('testimonials.title')} sub={t('testimonials.subtitle')} />
 
-      <section className="section">
+      <section className="page-body">
         <div className="container">
           <div className="cards-3">
             {REVIEWS.map((r, i) => (

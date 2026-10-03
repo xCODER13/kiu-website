@@ -56,8 +56,8 @@ export default function About() {
     <div className="fade-up">
       <PageHero title={t('about.title')} sub={t('about.subtitle')} />
 
-      <section className="page-body">
-        <div className="container-wide">
+      <section className="page-body about-page">
+        <div className="container-wide about-flow">
           <div className="about-intro">
             <div className="reveal">
               <h2 className="section-title">{t('about.ourUniversity')}</h2>
@@ -76,19 +76,27 @@ export default function About() {
           </div>
 
           <div className="wine-banner reveal">
+            {/* Taxta: sarlavha ustida oltin yulduz + "KIU" yorlig'i (dekorativ ikonka) */}
+            <div className="wine-banner__kicker">
+              <Icon size={20}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Icon>
+              <span>KIU</span>
+            </div>
             <h2 className="wine-banner__title">{t('about.missionTitle')}</h2>
             <p className="wine-banner__text">{t('about.missionText')}</p>
           </div>
 
-          <h2 className="section-title page-block reveal">{t('about.advantagesTitle')}</h2>
+          <div>
+          <h2 className="section-title reveal">{t('about.advantagesTitle')}</h2>
           <div className="cards-4">
             {ADVANTAGES.map((item, i) => (
               <InfoCard key={item.k} delay={(i % 4) + 1} icon={<Icon>{item.icon}</Icon>}
                 title={t(`about.advantages.${item.k}.title`)} desc={t(`about.advantages.${item.k}.desc`)} />
             ))}
           </div>
+          </div>
 
-          <h2 className="section-title page-block reveal">{t('about.leadershipTitle')}</h2>
+          <div>
+          <h2 className="section-title reveal">{t('about.leadershipTitle')}</h2>
           <div className="cards-4">
             {LEADERS.map((p, i) => {
               // Avatar bosh harflari tarjima qilingan ismdan olinadi (Panjiyev Ulug'bek → PU, Панжиев Улугбек → ПУ)
@@ -96,7 +104,7 @@ export default function About() {
               const initials = name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()
               return (
                 <div key={p.k} className={`rv-item reveal reveal-delay-${i + 1}`}>
-                  <div className="card card--lift info-card">
+                  <div className="card card--lift info-card info-card--person">
                     <div className="avatar-wine" aria-hidden="true">{initials}</div>
                     <h3 className="info-card__title">{name}</h3>
                     <div className="pill-brand">{t(`about.leaders.${p.k}.role`)}</div>
@@ -106,14 +114,17 @@ export default function About() {
               )
             })}
           </div>
+          </div>
 
-          <h2 className="section-title page-block reveal">{t('about.infraTitle')}</h2>
+          <div>
+          <h2 className="section-title about-infra-title reveal">{t('about.infraTitle')}</h2>
           <p className="about-text about-text--lead reveal">{t('about.infraText')}</p>
           <div className="cards-4">
             {INFRA.map((item, i) => (
               <InfoCard key={item.k} delay={i + 1} icon={<Icon>{item.icon}</Icon>}
                 title={t(`about.infra.${item.k}.title`)} desc={t(`about.infra.${item.k}.desc`)} />
             ))}
+          </div>
           </div>
         </div>
       </section>
