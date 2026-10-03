@@ -30,7 +30,9 @@ jobs:
 
   # Playwright E2E: haqiqiy backend (kiu-backend) + haqiqiy (vaqtinchalik) test
   # Mongo bilan to'liq foydalanuvchi oqimlarini sinaydi (login, admin CRUD,
-  # ariza yuborish, Sorting Hat). backend-tests (backend-ci.yml) bilan bir xil
+  # ariza yuborish, Sorting Hat). Ommaviy sayt: smoke (public-pages), til (i18n),
+  # oynalar (modals), axe a11y (a11y) — API mock bilan; csp.spec.js — production
+  # build'ni vercel.json header'lari bilan (CSP Report-Only) ochib, 0 buzilishni tekshiradi. backend-tests (backend-ci.yml) bilan bir xil
   # mongo:8.0 service pattern'i ishlatiladi. Rasm yuklash (Supabase) sinovi
   # SUPABASE_URL/SUPABASE_SERVICE_KEY sirlar mavjud bo'lgandagina ishlaydi —
   # aks holda avtomatik o'tkazib yuboriladi (hech qanday kalit hardcode qilinmagan).

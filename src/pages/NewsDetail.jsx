@@ -58,7 +58,7 @@ function ImageCarousel({ imgs, title }) {
   if (!imgs.length) return null
   if (imgs.length === 1) return (
     <div className="gallery gallery--single">
-      <img src={imgs[0]} alt={title} fetchpriority="high" className="gallery-img"
+      <img src={imgs[0]} alt={title} fetchPriority="high" className="gallery-img"
         onError={e => { e.currentTarget.closest('.gallery').dataset.broken = 'true' }} />
     </div>
   )
@@ -69,7 +69,7 @@ function ImageCarousel({ imgs, title }) {
         key={cur}
         src={imgs[cur]}
         alt={`${title} ${cur + 1}`}
-        fetchpriority={cur === 0 ? 'high' : undefined}
+        fetchPriority={cur === 0 ? 'high' : undefined}
         className="gallery-img"
         data-slide={anim ? (dir > 0 ? 'right' : 'left') : undefined}
         onError={e => { e.currentTarget.dataset.broken = 'true' }}

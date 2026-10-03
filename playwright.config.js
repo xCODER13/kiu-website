@@ -9,6 +9,9 @@ import {
   E2E_JWT_SECRET,
   E2E_ADMIN_USERNAME,
   E2E_ADMIN_PASSWORD_HASH,
+  CSP_API_ORIGIN,
+  CSP_PORT,
+  CSP_URL,
 } from './e2e/config.js'
 
 // Backend haqiqiy server.js orqali (Jest emas) ishga tushiriladi, shuning uchun
@@ -36,9 +39,29 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // Vite dev server + haqiqiy backend
+    { name: 'chromium', testIgnore: /csp\.spec\.js/, use: { ...devices['Desktop Chrome'] } },
+    // Production build, vercel.json header'lari bilan (e2e/serve-dist.mjs) — CSP Report-Only regressiyasi
+    { name: 'csp', testMatch: /csp\.spec\.js/, use: { ...devices['Desktop Chrome'], baseURL: CSP_URL } },
   ],
   webServer: [
+    {
+      // CSP testi uchun production build: API manzili siyosatdagi `connect-src` bilan bir xil, GA yoqilgan (skript yo'li tekshiriladi)
+      command: 'npx vite build --outDir dist-csp --emptyOutDir && node e2e/serve-dist.mjs',
+      cwd: '.',
+      url: CSP_URL,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+      stdout: 'pipe',
+      stderr: 'pipe',
+      env: {
+        ...process.env,
+        VITE_API_URL: CSP_API_ORIGIN,
+        VITE_GA_MEASUREMENT_ID: 'G-E2ECSP01',
+        DIST_DIR: 'dist-csp',
+        PORT: String(CSP_PORT),
+      },
+    },
     {
       command: 'node server.js',
       cwd: 'kiu-backend',
