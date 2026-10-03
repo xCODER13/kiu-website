@@ -1,280 +1,42 @@
 {
   "totals": {
-    "hex": 189,
-    "func": 109,
-    "files": 49,
-    "uniqueHex": 72
+    "hex": 6,
+    "func": 80,
+    "files": 6,
+    "uniqueHex": 6
   },
   "perFile": {
-    "src/pages/sortinghat/Data.jsx": {
-      "hex": 27,
-      "func": 0
+    "src/styles/pages.css": {
+      "hex": 0,
+      "func": 53
     },
-    "src/index.css": {
-      "hex": 12,
+    "src/styles/components.css": {
+      "hex": 0,
+      "func": 14
+    },
+    "src/styles/admin.css": {
+      "hex": 0,
       "func": 10
     },
-    "src/pages/news/FeaturedCarousel.jsx": {
-      "hex": 1,
-      "func": 18
-    },
-    "src/pages/QRCode.jsx": {
-      "hex": 17,
-      "func": 2
-    },
-    "src/pages/admin/Stats.jsx": {
-      "hex": 16,
-      "func": 0
-    },
-    "src/pages/Events.jsx": {
-      "hex": 7,
-      "func": 9
-    },
-    "src/pages/Gallery.jsx": {
-      "hex": 10,
-      "func": 6
-    },
-    "src/pages/admin/Dashboard.jsx": {
-      "hex": 2,
-      "func": 12
-    },
-    "src/pages/faculty/data.js": {
-      "hex": 13,
-      "func": 0
-    },
-    "src/pages/Teachers.jsx": {
-      "hex": 12,
-      "func": 1
-    },
-    "src/pages/NewsDetail.jsx": {
-      "hex": 2,
-      "func": 8
-    },
-    "src/pages/sortinghat/Icons.jsx": {
-      "hex": 9,
-      "func": 0
-    },
-    "src/pages/About.jsx": {
-      "hex": 7,
-      "func": 1
-    },
     "src/pages/admin/TeachersAdmin.jsx": {
-      "hex": 7,
+      "hex": 6,
       "func": 0
     },
-    "src/pages/home/NewsCarousel.jsx": {
-      "hex": 1,
-      "func": 6
-    },
-    "src/utils/newsCategories.js": {
-      "hex": 7,
-      "func": 0
-    },
-    "src/pages/news/ShortsTab.jsx": {
-      "hex": 4,
-      "func": 2
-    },
-    "src/components/Footer.jsx": {
-      "hex": 0,
-      "func": 5
-    },
-    "src/pages/faculty/FacultyModal.jsx": {
-      "hex": 1,
-      "func": 4
-    },
-    "src/components/ApplyModal.jsx": {
-      "hex": 1,
-      "func": 3
-    },
-    "src/components/TelegramPanel.jsx": {
-      "hex": 4,
-      "func": 0
-    },
-    "src/pages/admin/shared/constants.js": {
-      "hex": 4,
-      "func": 0
-    },
-    "src/pages/Faculty.jsx": {
-      "hex": 3,
-      "func": 1
-    },
-    "src/pages/admin/ApplicationsAdmin.jsx": {
-      "hex": 1,
-      "func": 2
-    },
-    "src/pages/admin/shared/styles.js": {
-      "hex": 3,
-      "func": 0
-    },
-    "src/pages/home/utils.js": {
-      "hex": 1,
-      "func": 2
-    },
-    "src/pages/sortinghat/RegisterStage.jsx": {
-      "hex": 3,
-      "func": 0
-    },
-    "src/pages/admin/NewsAdmin.jsx": {
-      "hex": 1,
-      "func": 1
-    },
-    "src/pages/admin/ProfileAdmin.jsx": {
+    "src/styles/site.css": {
       "hex": 0,
       "func": 2
-    },
-    "src/pages/home/AboutSection.jsx": {
-      "hex": 0,
-      "func": 2
-    },
-    "src/pages/International.jsx": {
-      "hex": 0,
-      "func": 2
-    },
-    "src/pages/news/TelegramBanner.jsx": {
-      "hex": 2,
-      "func": 0
-    },
-    "src/pages/sortinghat/QuizStage.jsx": {
-      "hex": 2,
-      "func": 0
-    },
-    "src/pages/Testimonials.jsx": {
-      "hex": 2,
-      "func": 0
-    },
-    "src/pages/vacancies/ApplicationForm.jsx": {
-      "hex": 0,
-      "func": 2
-    },
-    "src/pages/vacancies/InfoTab.jsx": {
-      "hex": 1,
-      "func": 1
-    },
-    "src/components/Search.jsx": {
-      "hex": 0,
-      "func": 1
-    },
-    "src/pages/admin/charts/RankedBarChart.jsx": {
-      "hex": 1,
-      "func": 0
-    },
-    "src/pages/admin/charts/TrendLineChart.jsx": {
-      "hex": 0,
-      "func": 1
-    },
-    "src/pages/Admission.jsx": {
-      "hex": 0,
-      "func": 1
-    },
-    "src/pages/faculty/FacultyCard.jsx": {
-      "hex": 0,
-      "func": 1
-    },
-    "src/pages/FAQ.jsx": {
-      "hex": 1,
-      "func": 0
-    },
-    "src/pages/home/HeroSection.jsx": {
-      "hex": 0,
-      "func": 1
-    },
-    "src/pages/Map.jsx": {
-      "hex": 1,
-      "func": 0
-    },
-    "src/pages/news/NewsCard.jsx": {
-      "hex": 0,
-      "func": 1
-    },
-    "src/pages/news/NewsTab.jsx": {
-      "hex": 1,
-      "func": 0
-    },
-    "src/pages/SortingHat.jsx": {
-      "hex": 1,
-      "func": 0
     },
     "src/styles/global.css": {
       "hex": 0,
       "func": 1
-    },
-    "src/utils/validation.js": {
-      "hex": 1,
-      "func": 0
     }
   },
   "perValue": {
-    "#fff": 21,
-    "#0088cc": 14,
-    "#059669": 14,
-    "#dc2626": 12,
-    "#7c3aed": 11,
-    "#d97706": 8,
-    "#4f46e5": 6,
-    "#db2777": 6,
-    "#f59e0b": 6,
-    "#ff0000": 6,
-    "#0055aa": 4,
-    "#2563eb": 4,
-    "#10b981": 3,
-    "#6d28d9": 3,
-    "#8b5cf6": 3,
-    "#e546e5": 3,
-    "#ede9fe": 3,
-    "#f11717": 3,
-    "#000": 2,
-    "#1877f2": 2,
-    "#1a1a2e": 2,
-    "#e0e7ff": 2,
-    "#faf5ff": 2,
-    "#006aa3": 1,
-    "#047857": 1,
-    "#06bdc7": 1,
-    "#08060d": 1,
-    "#0891b2": 1,
-    "#08b310": 1,
-    "#0d5dbf": 1,
-    "#0d9488": 1,
-    "#0ea5e9": 1,
-    "#0f766e": 1,
-    "#16171d": 1,
-    "#16a34a": 1,
-    "#1c2cb9": 1,
-    "#1d4ed8": 1,
-    "#1f2028": 1,
-    "#29a6f8": 1,
-    "#2e303a": 1,
-    "#3abd31": 1,
-    "#416c2a": 1,
-    "#4c1d95": 1,
-    "#6b6375": 1,
-    "#793bac": 1,
-    "#92400e": 1,
-    "#94a3b8": 1,
-    "#9ca3af": 1,
-    "#a16207": 1,
-    "#aa3bff": 1,
-    "#ae0895": 1,
-    "#b91c1c": 1,
-    "#bc1888": 1,
-    "#c084fc": 1,
-    "#c8960c": 1,
-    "#cc0000": 1,
-    "#cc2366": 1,
-    "#cd7f32": 1,
-    "#d7690f": 1,
-    "#d7bb04": 1,
-    "#dc2743": 1,
-    "#e1306c": 1,
-    "#e3dd2c": 1,
-    "#e5e4e7": 1,
-    "#e6683c": 1,
-    "#ea580c": 1,
-    "#f09433": 1,
-    "#f0ec0b": 1,
-    "#f33218": 1,
-    "#f3f4f6": 1,
-    "#f4f3ec": 1,
-    "#f87171": 1
+    "#0088cc": 1,
+    "#059669": 1,
+    "#4f46e5": 1,
+    "#7c3aed": 1,
+    "#d97706": 1,
+    "#db2777": 1
   }
 }
