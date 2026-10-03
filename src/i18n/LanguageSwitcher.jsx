@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LANGS, switchLangPath } from './locale'
 import useLocale from './useLocale'
+import { loadLocale } from './index'
 
 // UZ | EN almashtirgich. Har til — haqiqiy <a href> (to'g'ridan-to'g'ri ochish, "yangi
 // oynada ochish" va qidiruv tizimlari uchun ishlaydi), joriy til esa bosilmaydigan belgi.
@@ -33,6 +34,8 @@ export default function LanguageSwitcher({ className = '', onNavigate }) {
             aria-label={t(`lang.${code}`)}
             title={t(`lang.${code}`)}
             onClick={onNavigate}
+            onPointerEnter={() => loadLocale(code).catch(() => {})}
+            onFocus={() => loadLocale(code).catch(() => {})}
           >
             {label}
           </Link>

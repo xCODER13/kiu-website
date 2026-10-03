@@ -3,7 +3,12 @@ import '@testing-library/jest-dom/vitest'
 import { afterEach, beforeEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
 // Global i18n nusxasi (uz) — Provider'siz render qilinadigan komponent testlari o'zbekcha matn ko'rsin
-import '../i18n'
+import i18n from '../i18n'
+import en from '../i18n/locales/en.json'
+import ru from '../i18n/locales/ru.json'
+// en/ru ilovada lazy yuklanadi; testlarda sinxron render uchun oldindan qo'shiladi (lazy mantiq i18n/lazy.test.jsx da)
+i18n.addResourceBundle('en', 'translation', en)
+i18n.addResourceBundle('ru', 'translation', ru)
 
 // jsdom'da IntersectionObserver yo'q, App esa (ScrollReveal) uni ishlatadi.
 // Standart: hech narsa qilmaydigan stub. Kerak bo'lgan testlar o'zining boshqariladigan
