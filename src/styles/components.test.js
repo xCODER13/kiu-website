@@ -52,3 +52,14 @@ describe('global.css', () => {
     expect(global).toMatch(/@layer base \{[\s\S]*?\ba \{/)
   })
 })
+
+describe('6.19: ContentLangNote — inline style klassga ko\'chdi', () => {
+  it('`.content-lang-note` qoidasi token orqali: 12 px, 6 px, --color-text-muted (hex yo\'q)', () => {
+    const rule = css.match(/\.content-lang-note\s*\{([^}]*)\}/)?.[1] ?? ''
+    expect(rule).toMatch(/margin-top:\s*6px/)
+    expect(rule).toMatch(/font-size:\s*12px/)
+    expect(rule).toMatch(/color:\s*var\(--color-text-muted\)/)
+    expect(rule).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+})
+
