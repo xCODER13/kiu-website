@@ -158,7 +158,11 @@ describe("Faculty — qayta dizayn (Bosqich 6.11a)", () => {
     expect(within(stats).getByText("12 850 000 so'm")).toBeInTheDocument()
   })
 
-  it("regressiya: hamma kartada `style` dagi qiymatlar rangsiz (data.js dagi `color` stilga qo'yilmaydi)", () => {
+  it("data.js: yo'nalishlarda rang maydoni yo'q (6.19: ma'lumotdagi hex hech qachon chizilmagan)", () => {
+    for (const f of [...BAKALAVR, ...MAGISTRATURA]) expect(f, f.id).not.toHaveProperty('color')
+  })
+
+  it("regressiya: hamma kartada `style` dagi qiymatlar rangsiz (data.js da rang maydoni yo'q)", () => {
     const { container } = renderFaculty()
     const cards = container.querySelectorAll('.faculty-card')
     expect(cards).toHaveLength(BAKALAVR.length)

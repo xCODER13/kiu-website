@@ -22,8 +22,8 @@ export default function FacultyCard({ f: program, index, onClick }) {
           onClick()
         }
       }}
-      // Faqat dinamik qiymat: kirish animatsiyasi kechikishi. Rang endi hamma yo'nalishda bitta (brand) —
-      // `color` maydoni data.js da qoladi, lekin stilga qo'yilmaydi (6.11, 10.4 CSS injection qoidasi)
+      // Faqat dinamik qiymat: kirish animatsiyasi kechikishi. Rang hamma yo'nalishda bitta (brand);
+      // data.js da rang maydoni yo'q (6.11, 10.4 CSS injection qoidasi; maydon 6.19 da olib tashlandi)
       style={{ animationDelay: `${index * 0.05}s` }}
     >
       <div className="fac-icon">{IC[f.icon](24)}</div>
