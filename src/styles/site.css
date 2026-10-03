@@ -555,62 +555,102 @@
     }
   }
 
-  /* ── Ariza modali: ApplyModal (5c) ────────────────────────────────── */
+  /* ── Ariza modali: ApplyModal (5c; 6.12e — taxta "Apply-*" bo'yicha) ───
+     520 px, radius 22, tepada 3 px oltin hairline (FacultyModal bilan bir xil sirt), orqa fon `--color-modal-overlay` + blur.
+     Maydonlar umumiy forma tizimidan (`.input--lg`, `.label--lg`, `.select-wrap`, `.field-error--lg` — pages.css). */
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: var(--color-overlay);
     z-index: var(--z-modal);
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
     padding: 1rem;
+    background: var(--color-modal-overlay);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
   .modal-dialog {
     position: relative;
     width: 100%;
-    max-width: 480px;
-    padding: 2rem;
-    border-radius: 16px;
-    background: var(--color-bg);
+    max-width: 520px;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    padding: 36px 36px 32px;
+    border: 1px solid var(--color-dialog-border);
+    border-radius: 22px;
+    background: var(--gradient-dialog);
+    box-shadow: var(--shadow-dialog);
+  }
+  .modal-dialog::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--gradient-hairline);
+    pointer-events: none;
   }
   .modal-close {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: var(--color-text-muted);
-  }
-  .modal-title { font-size: 1.4rem; margin-bottom: 0.35rem; color: var(--color-text); }
-  .modal-sub { font-size: 13px; color: var(--color-text-muted); margin-bottom: 1.5rem; }
-  .modal-form { display: flex; flex-direction: column; gap: 12px; }
-  .modal-alert {
-    font-size: 12.5px;
-    color: var(--color-danger);
-    background: color-mix(in srgb, var(--color-danger) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-danger) 25%, transparent);
-    border-radius: 10px;
-    padding: 10px 14px;
-  }
-  .modal-submit { width: 100%; justify-content: center; padding: 12px; margin-top: 4px; }
-  .modal-success { text-align: center; padding: 2rem 0; }
-  .modal-success-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: var(--gradient-hero-soft);
+    top: 22px;
+    right: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
-    color: var(--color-brand);
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 50%;
+    background: var(--color-surface-3);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background-color var(--duration-base), color var(--duration-base), border-color var(--duration-base);
   }
-  .modal-success-title { font-size: 1.3rem; color: var(--color-text); margin-bottom: 0.5rem; }
-  .modal-success-text { font-size: 13px; color: var(--color-text-muted); margin-bottom: 1.5rem; }
-  .modal-success .btn { margin: 0 auto; }
+  .modal-close:hover { background: var(--color-brand-subtle); color: var(--color-brand); border-color: var(--color-brand); }
+  .modal-title { margin: 0 0 8px; padding-right: 44px; font-size: 1.75rem; font-weight: 800; line-height: 1.2; letter-spacing: -0.015em; color: var(--color-text); }
+  .modal-sub { margin: 0 0 24px; font-size: 0.96875rem; line-height: 1.6; color: var(--color-text-muted); }
+  .modal-form { display: flex; flex-direction: column; gap: 18px; }
+  .modal-form .label.label--lg { font-size: 0.875rem; }
+  .modal-form .req { margin-left: 3px; color: var(--color-danger); }
+  .modal-form .input.input--lg { font-size: 1rem; font-weight: 500; }
+  .modal-form .input.input--lg.input--area { min-height: 96px; padding: 14px 16px; line-height: 1.5; }
+  .modal-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--color-danger) 7%, transparent);
+    font-size: 0.90625rem;
+    line-height: 1.55;
+    color: var(--color-text);
+  }
+  .modal-alert > svg { flex: none; margin-top: 1px; color: var(--color-danger); }
+  .modal-alert b { color: var(--color-danger); }
+  .btn.modal-submit { width: 100%; min-height: 52px; gap: 10px; border-radius: 12px; font-size: 1rem; font-weight: 700; }
+  /* Yuborilmoqda: brend rang saqlanadi (umumiy `disabled` kulrang EMAS), spinner (`.btn[aria-busy]::after`) matn oldida */
+  .btn.modal-submit:disabled { background: var(--color-brand-fill); color: var(--color-on-brand); opacity: 0.72; }
+  .btn.modal-submit[aria-busy="true"]::after { order: -1; width: 18px; height: 18px; }
+  .modal-privacy { margin: 0; font-size: 0.8125rem; line-height: 1.6; color: var(--color-text-muted); text-align: center; }
+  .modal-privacy > svg { display: inline-block; margin-right: 7px; vertical-align: -2px; }
+  .modal-success { padding: 12px 0 4px; text-align: center; }
+  .modal-success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-hover));
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-brand-fill) 10%, transparent), 0 12px 28px var(--glow-brand);
+    color: var(--color-on-brand);
+  }
+  .modal-success-title { margin: 0 0 10px; font-size: 1.875rem; font-weight: 800; letter-spacing: -0.015em; color: var(--color-text); }
+  .modal-success-text { margin: 0 0 28px; font-size: 1.03125rem; line-height: 1.7; color: var(--color-text-muted); }
+  .modal-success .btn { min-height: 52px; margin: 0 auto; padding: 0 40px; border-radius: 12px; font-size: 1rem; font-weight: 700; }
 
   /* ── Telegram paneli: TelegramPanel (5c; 6.11b qayta dizayn) ───────────
      Sarlavha — brand-subtle; LIVE — wine to'ldirma + oltin nuqta; xabarlar — 2×2 to'r (tor joyda `data-layout="single"` — 1 ustun).
