@@ -411,7 +411,7 @@
   .search { position: relative; }
   .search-panel {
     position: absolute;
-    top: calc(100% + 10px);
+    top: calc(100% + 35px); /* tugma ostidan 35 px (xCODER, 6.16: avval 10 px) */
     right: 0;
     width: 460px;
     background: var(--gradient-dialog);
@@ -616,8 +616,8 @@
     overflow-y: auto;
     padding: 1rem;
     background: var(--color-modal-overlay);
-    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
   .modal-dialog {
     position: relative;

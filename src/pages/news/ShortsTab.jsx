@@ -1,9 +1,46 @@
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // "SHORTS TAB" bo'limi — News.jsx'dan o'zgarishsiz ko'chirilgan.
 // Hardcode FALLBACK_SHORTS olib tashlandi (2026-09-30, a3b632e) — video ro'yxati
 // endi to'liq backend/admin panelga bog'liq. Bo'sh bo'lsa NewsTab.jsx'dagi bilan
 // bir xil naqshda (ikonka + matn) bo'sh holat ko'rsatiladi.
+// Video kartasi (6.16, taxta "NewsVideo"): avval poster + doira "play" tugmasi; iframe (va YouTube'ga so'rovlar)
+// faqat bosilganda yuklanadi — sahifa tezroq, uchinchi tomonga kamroq so'rov. Poster — videoning o'z miniatyurasi
+// (yuklanmasa, taxtadagi to'q gradient fon qoladi).
+function ShortFrame({ short }) {
+  const { t } = useTranslation()
+  const [playing, setPlaying] = useState(false)
+  const frameRef = useRef(null)
+  const id = encodeURIComponent(short.videoId)
+
+  // Tugma yo'qolgach fokus yo'qolmasin — iframe'ga o'tkaziladi
+  useEffect(() => { if (playing) frameRef.current?.focus() }, [playing])
+
+  return (
+    <div className="shorts-frame">
+      {playing ? (
+        <iframe
+          ref={frameRef}
+          src={`https://www.youtube.com/embed/${id}?rel=0&modestbranding=1&autoplay=1`}
+          title={short.title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        />
+      ) : (
+        <>
+          <img className="shorts-thumb" src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" />
+          <button type="button" className="shorts-play" onClick={() => setPlaying(true)} aria-label={t('news.playVideo', { title: short.title })}>
+            <span className="shorts-play__disc" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon fill="currentColor" points="9 6 18 12 9 18 9 6" /></svg>
+            </span>
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+
 export default function ShortsTab({ shorts }) {
   const { t } = useTranslation()
   return (
@@ -30,14 +67,7 @@ export default function ShortsTab({ shorts }) {
         <div className="shorts-grid">
           {shorts.map(s => (
             <div key={s._id || s.id} className="card shorts-card">
-              <div className="shorts-frame">
-                <iframe
-                  src={`https://www.youtube.com/embed/${s.videoId}?rel=0&modestbranding=1`}
-                  title={s.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
+              <ShortFrame short={s} />
               <div className="shorts-body">
                 <p className="shorts-title">{s.title}</p>
                 <a href={`https://youtube.com/shorts/${s.videoId}`} target="_blank" rel="noopener noreferrer" className="shorts-watch">

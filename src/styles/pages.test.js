@@ -885,3 +885,39 @@ describe('Bosqich 6.13: a11y (fokus halqasi) va performance (hero kirishi, harak
     expect(global).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\.reveal \{ opacity: 1; transform: none; transition: none; \}\s*\.fade-up, \.enter \{ animation: none; \}/)
   })
 })
+
+describe('Bosqich 6.16: taxta farqlari', () => {
+  const sources = ['src/styles/pages.css', 'src/styles/site.css'].map(read).join('\n')
+
+  it("`backdrop-filter`: prefiksli (`-webkit-`) birinchi, standart oxirida — aks holda Vite/Lightning CSS standartini tashlab yuboradi va Chrome'da modal orqasi xiralashmaydi", () => {
+    const rules = [...sources.matchAll(/\{[^{}]*backdrop-filter[^{}]*\}/g)].map(m => m[0])
+    expect(rules.length).toBeGreaterThan(4)
+    for (const r of rules) {
+      if (!r.includes('-webkit-backdrop-filter')) continue
+      expect(r.indexOf('-webkit-backdrop-filter'), r).toBeLessThan(r.search(/[^-]backdrop-filter/))
+    }
+  })
+
+  it("`.tile`: chegara `--tile-border` (Dark'da pushti, Light'da shaffof) — taxtadagi Dark plitka chegarasi", () => {
+    expect(css).toMatch(/\.tile \{[^}]*border: 1px solid var\(--tile-border\);[^}]*border-radius: var\(--radius-2xl\);/)
+  })
+
+  it("qidiruv paneli (desktop): tugma ostidan 35 px (avval 10 px); mobil (`top: 70px`, `position: fixed`) o'zgarmagan", () => {
+    const site = read('src/styles/site.css')
+    expect(site).toMatch(/\.search-panel \{\s*position: absolute;\s*top: calc\(100% \+ 35px\);/)
+    expect(site).toMatch(/@media \(max-width: 768px\) \{\s*\.search-panel \{\s*position: fixed;\s*top: 70px;/)
+  })
+
+  it("Vakansiya «Yuborilmoqda...»: matn oldidagi SVG spinner (`.vac-spin`) olib tashlangan; faqat tugmaning `[aria-busy]::after` halqasi qoladi", () => {
+    expect(read('src/pages/vacancies/ApplicationForm.jsx')).not.toMatch(/vac-spin/)
+    expect(css).not.toMatch(/\.vac-spin/)
+    expect(read('src/styles/components.css')).toMatch(/\.btn\[aria-busy="true"\]::after \{/)
+  })
+
+  it("video poster (taxta «NewsVideo»): doira «play» 62 px, oq .16 fon va .34 chegara; faqat token/oq-qora rgb (hex yo'q); fokus halqasi ichkarida (frame `overflow:hidden`)", () => {
+    const block = css.slice(css.indexOf('.shorts-thumb {'), css.indexOf('.shorts-play__disc { transition: none; }') + 60)
+    expect(block).toMatch(/\.shorts-play__disc \{[^}]*width: 62px;[^}]*height: 62px;[^}]*background: rgb\(255 255 255 \/ 0\.16\);[^}]*border: 1px solid rgb\(255 255 255 \/ 0\.34\);/)
+    expect(block).toMatch(/\.shorts-play:focus-visible \{ outline-color: var\(--color-brand-on-dark\); outline-offset: -4px; \}/)
+    expect(block).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+})

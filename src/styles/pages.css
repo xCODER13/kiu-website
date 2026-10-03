@@ -453,8 +453,8 @@
     overflow-y: auto;
     padding: 0.75rem 1rem;
     background: var(--color-modal-overlay);
-    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
   .fac-modal {
     position: relative;
@@ -955,6 +955,13 @@
     background: linear-gradient(160deg, var(--wine-900) 0%, var(--dark-bg) 70%, var(--dark-deep) 100%);
   }
   .shorts-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+  /* 6.16 (taxta "NewsVideo"): poster + doira "play" (62 px, oq .16 fon, .34 chegara); iframe faqat bosilganda */
+  .shorts-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .shorts-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; background: transparent; color: rgb(255 255 255 / 1); cursor: pointer; }
+  .shorts-play__disc { display: flex; align-items: center; justify-content: center; width: 62px; height: 62px; border-radius: 50%; background: rgb(255 255 255 / 0.16); border: 1px solid rgb(255 255 255 / 0.34); box-shadow: 0 4px 16px rgb(0 0 0 / 0.35); transition: background 0.2s ease; }
+  .shorts-play:hover .shorts-play__disc { background: rgb(255 255 255 / 0.28); }
+  .shorts-play:focus-visible { outline-color: var(--color-brand-on-dark); outline-offset: -4px; }
+  @media (prefers-reduced-motion: reduce) { .shorts-play__disc { transition: none; } }
   .shorts-body { padding: 14px 18px 18px; }
   .shorts-title { margin: 0; font-size: var(--text-base); font-weight: 600; line-height: 1.45; color: var(--color-text); }
   /* YouTube qizili oq fonda 4.5:1 dan past → havola matni brend rangida; qizil faqat kanal belgisida */
@@ -1139,6 +1146,7 @@
     width: 52px;
     height: 52px;
     flex: none;
+    border: 1px solid var(--tile-border);
     border-radius: var(--radius-2xl);
     background: var(--color-brand-subtle);
     color: var(--color-brand);
@@ -1724,8 +1732,8 @@
     overflow-y: auto;
     padding: 0.75rem 1rem;
     background: var(--color-modal-overlay);
-    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
   .ev-modal {
     position: relative;
@@ -1961,8 +1969,8 @@
     z-index: var(--z-modal);
     padding: 24px;
     background: var(--color-lightbox-bg);
-    backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
   }
   .photo-lightbox__dialog { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
   .photo-lightbox__btn {
@@ -2180,8 +2188,6 @@
   .vac-alert__text strong { color: var(--color-danger); }
   .btn.vac-submit { width: 100%; justify-content: center; min-height: 52px; font-size: 1rem; }
   .vac-submit-inner { display: inline-flex; align-items: center; gap: 8px; }
-  .vac-spin { animation: spin 1s linear infinite; }
-  @media (prefers-reduced-motion: reduce) { .vac-spin { animation: none; } }
   /* Yuborilmoqda: brend rang saqlanadi, `opacity: .72`, glow yo'q */
   .btn.vac-submit:disabled,
   .btn.vac-submit[aria-busy="true"] { background: var(--color-brand-fill); color: var(--color-on-brand); opacity: 0.72; box-shadow: none; cursor: not-allowed; pointer-events: auto; }
