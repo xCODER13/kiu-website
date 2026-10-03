@@ -37,6 +37,8 @@ describe('Navbar (RU)', () => {
   it('brend, havolalar va tugmalar ruscha; havolalar /ru prefiksli; o\'zbekcha matn yo\'q', () => {
     at('/ru/faculty', <Navbar {...props} />)
     expect(screen.getByText('Каршинский международный университет')).toBeInTheDocument()
+    expect(screen.getByText('Официальный сайт')).toBeInTheDocument()
+    expect(screen.queryByText('Rasmiy veb-sayti')).not.toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: 'Направления' })[0]).toHaveAttribute('href', '/ru/faculty')
     expect(screen.getAllByRole('link', { name: 'Приём' })[0]).toHaveAttribute('href', '/ru/admission')
     expect(screen.getAllByRole('button', { name: 'Подать заявку' }).length).toBeGreaterThan(0)

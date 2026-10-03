@@ -128,7 +128,10 @@ export default function Navbar({ dark, setDark, onApply }) {
           <Logo height={36} />
           <span className="nav-brand-text">
             <span className="nav-brand-divider" aria-hidden="true" />
-            <span className="nav-brand-name">{t('university.name')}</span>
+            <span className="nav-brand-title">
+              <span className="nav-brand-name">{t('university.name')}</span>
+              <span className="nav-brand-sub">{t('nav.officialSite')}</span>
+            </span>
           </span>
         </NavLink>
 
