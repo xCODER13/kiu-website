@@ -24,9 +24,10 @@ describe('site.css', () => {
     expect(code).not.toMatch(/outline:\s*(none|0)\b/)
   })
 
-  it('footer havolalari hover — CSS da (oldin JS onMouseEnter edi)', () => {
-    expect(code).toMatch(/\.footer-link:hover \{ color: var\(--color-on-brand\); \}/)
-    expect(code).toMatch(/\.footer-media-link:hover \{ color: var\(--color-on-brand\); \}/)
+  it("footer havolalari hover/fokusda oltin (`--color-accent-on-dark`) — CSS da (oldin JS onMouseEnter edi)", () => {
+    expect(code).toMatch(/\.footer-link:hover, \.footer-link:focus-visible \{ color: var\(--color-accent-on-dark\); \}/)
+    expect(code).toMatch(/\.footer-media-link:hover, \.footer-media-link:focus-visible \{ color: var\(--color-accent-on-dark\); \}/)
+    expect(code).toMatch(/\.footer-social-link:hover, \.footer-social-link:focus-visible \{ color: var\(--color-accent-on-dark\);/)
   })
 
   it("faol holat: NavLink `active` klassi va trigger `data-active` bo'yicha", () => {
