@@ -15,17 +15,17 @@ const FEATURES = [
 export default function AboutSection() {
   const { t } = useTranslation()
   return (
-    <section className="section home-about">
+    <section className="home-about">
       <div className="container-wide">
         <div className="home-about__grid">
           {/* Chap — matn */}
-          <div>
+          <div className="home-about__text-col">
             <span className="reveal section-badge">{t('home.about.badge')}</span>
-            <h2 className="reveal reveal-delay-1 section-title">{t('home.about.title')}</h2>
+            <h2 className="reveal reveal-delay-1 home-h2">{t('home.about.title')}</h2>
             <p className="reveal reveal-delay-2 home-about__text">{t('home.about.p1')}</p>
             <p className="reveal reveal-delay-3 home-about__text">{t('home.about.p2')}</p>
-            <div className="reveal reveal-delay-4">
-              <NavLink to="/about" className="btn btn-primary btn-lg">{t('home.about.more')}</NavLink>
+            <div className="reveal reveal-delay-4 home-about__more">
+              <NavLink to="/about" className="btn btn-primary btn-cta">{t('home.about.more')} <Icon size={18} strokeWidth={1.8}><path d="M5 12h14M13 6l6 6-6 6" /></Icon></NavLink>
             </div>
           </div>
 
@@ -46,7 +46,7 @@ export default function AboutSection() {
           {FEATURES.map((f, i) => (
             <div key={f.k} className={`rv-item reveal reveal-delay-${Math.min(i + 1, 4)}`}>
               <div className="card card--lift home-feature">
-                <div className="tile tile--46"><Icon size={22}>{f.icon}</Icon></div>
+                <div className="tile tile--46"><Icon size={22} strokeWidth={1.8}>{f.icon}</Icon></div>
                 <h3 className="home-feature__title">{t(`home.about.features.${f.k}.title`)}</h3>
                 <p className="home-feature__desc">{t(`home.about.features.${f.k}.desc`)}</p>
               </div>

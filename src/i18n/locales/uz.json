@@ -77,6 +77,7 @@
     }
   },
   "footer": {
+    "toTop": "Tepaga qaytish",
     "about": "Xalqaro standartlarda ta'lim va ilmiy tadqiqot markazi. {{year}} yildan buyon Qashqadaryo viloyatida sifatli ta'lim.",
     "university": "Universitet",
     "students": "Talabalar",

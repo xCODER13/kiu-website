@@ -11,8 +11,14 @@ const STAT_KEYS = ['students', 'teachers', 'programs', 'founded']
 // hisoblagichi tomonidan document.getElementById orqali topiladi.
 export default function HeroSection() {
   const { t } = useTranslation()
+  // Sarlavhaning oxirgi so'zi brend rangida (taxta: "Qarshi Xalqaro <Universiteti>")
+  const name = t('university.name')
+  const cut = name.lastIndexOf(' ')
+  const head = cut > 0 ? name.slice(0, cut + 1) : ''
+  const tail = cut > 0 ? name.slice(cut + 1) : name
   return (
     <section className="home-hero">
+      <span className="dots-shine" aria-hidden="true" />
       <div className="container-wide">
         <div className="home-hero__grid">
 
@@ -22,12 +28,12 @@ export default function HeroSection() {
               <span className="hero-badge__dot" aria-hidden="true" />
               {t('home.hero.badge', { from: config.admission.year, to: parseInt(config.admission.year) + 1 })}
             </span>
-            <h1 className="reveal reveal-delay-1 home-hero__title">{t('university.name')}</h1>
+            <h1 className="reveal reveal-delay-1 home-hero__title">{head}<span className="hl-brand">{tail}</span></h1>
             <p className="reveal reveal-delay-2 home-hero__lead">{t('home.hero.lead')}</p>
             {/* Havola tugma ko'rinishida (avval `<a><button>` — ichma-ich interaktiv element edi) */}
             <div className="reveal reveal-delay-3 home-hero__cta">
-              <NavLink to="/admission" className="btn btn-primary btn-lg">{t('home.hero.ctaAdmission')}</NavLink>
-              <NavLink to="/faculty" className="btn btn-accent btn-lg">{t('home.hero.ctaPrograms')}</NavLink>
+              <NavLink to="/admission" className="btn btn-primary btn-cta btn-glow">{t('home.hero.ctaAdmission')} <Icon size={18} strokeWidth={1.8}><path d="M5 12h14M13 6l6 6-6 6" /></Icon></NavLink>
+              <NavLink to="/faculty" className="btn btn-accent btn-cta btn-glow">{t('home.hero.ctaPrograms')} <Icon size={18} strokeWidth={1.8}><path d="M5 12h14M13 6l6 6-6 6" /></Icon></NavLink>
             </div>
             <div className="reveal reveal-delay-4 home-stats">
               {config.stats.map((s, i) => (

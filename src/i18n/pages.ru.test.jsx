@@ -37,7 +37,6 @@ describe('Navbar (RU)', () => {
   it('brend, havolalar va tugmalar ruscha; havolalar /ru prefiksli; o\'zbekcha matn yo\'q', () => {
     at('/ru/faculty', <Navbar {...props} />)
     expect(screen.getByText('Каршинский международный университет')).toBeInTheDocument()
-    expect(screen.getByText(`${config.university.website} — Официальный сайт`)).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: 'Направления' })[0]).toHaveAttribute('href', '/ru/faculty')
     expect(screen.getAllByRole('link', { name: 'Приём' })[0]).toHaveAttribute('href', '/ru/admission')
     expect(screen.getAllByRole('button', { name: 'Подать заявку' }).length).toBeGreaterThan(0)
@@ -90,8 +89,8 @@ describe('Home (RU)', () => {
     at('/ru', <Home />)
     expect(await screen.findByText('Последние новости')).toBeInTheDocument()
     expect(screen.getByText('Этот материал опубликован на узбекском языке.')).toBeInTheDocument()
-    expect(screen.getAllByText('Birinchi yangilik')[0]).toHaveAttribute('lang', 'uz')
-    expect(screen.getByText('02.01.2026')).toBeInTheDocument()
+    expect(screen.getAllByText('Birinchi yangilik')[0].closest('[lang]')).toHaveAttribute('lang', 'uz')
+    expect(screen.getAllByText('02.01.2026').length).toBeGreaterThan(0)
     const detailLinks = screen.getAllByRole('link').filter(a => a.getAttribute('href')?.includes('/news/'))
     expect(detailLinks.length).toBeGreaterThan(0)
     detailLinks.forEach(a => expect(a.getAttribute('href')).toMatch(/^\/ru\/news\/n[12]$/))

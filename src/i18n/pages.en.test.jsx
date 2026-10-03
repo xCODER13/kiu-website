@@ -22,7 +22,6 @@ describe('Navbar (EN)', () => {
   it("brend, havolalar va tugmalar inglizcha; havolalar /en prefiksli", () => {
     at('/en/faculty', <Navbar {...props} />)
     expect(screen.getByText('Karshi International University')).toBeInTheDocument()
-    expect(screen.getByText(`${config.university.website} — Official website`)).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: 'Programs' })[0]).toHaveAttribute('href', '/en/faculty')
     expect(screen.getAllByRole('link', { name: 'Admission' })[0]).toHaveAttribute('href', '/en/admission')
     expect(screen.getAllByRole('button', { name: 'Apply now' }).length).toBeGreaterThan(0)
@@ -95,17 +94,16 @@ describe('Home (EN)', () => {
   it("yangiliklar: bo'lim inglizcha, sarlavhalar o'zbekcha (lang=uz) va izoh bor, havolalar /en/news/:id", async () => {
     mockApi({ 'GET /news': [N1, N2] })
     at('/en', <Home />)
-    expect(await screen.findByText('Read more')).toBeInTheDocument()
-    expect(screen.getByText('Latest news')).toBeInTheDocument()
+    expect(await screen.findByText('Latest news')).toBeInTheDocument()
     expect(screen.getByText('This content is published in Uzbek.')).toBeInTheDocument()
     // Karusel + karta: sarlavha o'zgarishsiz (baza kontenti), lang="uz" bilan
     const title = screen.getAllByText('Birinchi yangilik')[0]
-    expect(title).toHaveAttribute('lang', 'uz')
+    expect(title.closest('[lang]')).toHaveAttribute('lang', 'uz')
     // kategoriya yorlig'i tarjima qilingan
     expect(screen.getAllByText('General').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Education').length).toBeGreaterThan(0)
     // sana inglizcha (en-GB: kun/oy/yil)
-    expect(screen.getByText('02/01/2026')).toBeInTheDocument()
+    expect(screen.getAllByText('02/01/2026').length).toBeGreaterThan(0)
     const detailLinks = screen.getAllByRole('link').filter(a => a.getAttribute('href')?.includes('/news/'))
     expect(detailLinks.length).toBeGreaterThan(0)
     detailLinks.forEach(a => expect(a.getAttribute('href')).toMatch(/^\/en\/news\/n[12]$/))
@@ -127,7 +125,7 @@ describe('Home (EN)', () => {
   it("o'zbekcha Home o'zgarishsiz: izoh chiqmaydi, havola prefikssiz, sana uz-UZ", async () => {
     mockApi({ 'GET /news': [N1, N2] })
     at('/', <Home />)
-    await screen.findByText('Batafsil')
+    await screen.findByText("So'nggi yangiliklar")
     expect(screen.queryByText('This content is published in Uzbek.')).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: "Batafsil ma'lumot" })).toHaveAttribute('href', '/about')
     expect(within(document.body).getAllByText('Umumiy').length).toBeGreaterThan(0)

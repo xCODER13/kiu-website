@@ -5,79 +5,236 @@
    Faqat token ishlatiladi; istisno — soyadagi `rgb(0 0 0 / a)` va to'q yuza ustidagi `rgb(255 255 255 / a)`. */
 
 @layer components {
-  /* ── Navbar (5a) ──────────────────────────────────────────────────── */
+  /* ── Navbar (6.12a — taxtaga moslangan) ───────────────────────────────
+     76 px, bitta qator: chapda logo + nom, o'rtada havolalar, o'ngda qidiruv / til / tema / "Ariza".
+     Faol havola — brand-subtle fon + navbar chizig'i ustida oltin 3 px chiziq. Mobil menyu 1180 px dan pastda. */
   .site-nav {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.85rem 2rem;
+    gap: 24px;
+    min-height: 76px;
+    padding: 0 40px;
     border-bottom: 1px solid var(--color-border);
     position: sticky;
     top: 0;
-    background: color-mix(in srgb, var(--color-bg) 97%, transparent);
+    background: var(--nav-bg);
+    box-shadow: var(--shadow-nav);
     backdrop-filter: blur(10px);
     z-index: var(--z-sticky);
   }
-  .nav-brand { display: flex; align-items: center; gap: 10px; }
-  .nav-brand-name { font-size: 13px; font-weight: 600; color: var(--color-text); }
-  .nav-brand-sub { font-size: 11px; color: var(--color-text-muted); }
+  .nav-brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .nav-brand-text { display: flex; align-items: center; gap: 12px; }
+  .nav-brand-divider { width: 1px; height: 30px; background: var(--color-border-strong); }
+  .nav-brand-name { max-width: 6rem; text-wrap: balance; font-size: 12px; font-weight: 500; line-height: 1.3; color: var(--color-text-muted); }
 
-  .nav-links { display: flex; align-items: center; gap: 16px; }
-  .nav-actions { display: flex; align-items: center; gap: 8px; }
+  .nav-links { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; }
+  .nav-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .nav-divider { width: 1px; height: 28px; margin: 0 2px; background: var(--color-border); }
 
   /* Havola va guruh triggeri: faol holat — NavLink `active` klassini o'zi qo'yadi, trigger — `data-active` */
-  .nav-link {
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--color-text);
-    padding-bottom: 3px;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-  }
+  .nav-link,
   .nav-group-trigger {
-    display: flex;
+    position: relative;
+    display: inline-flex;
     align-items: center;
+    gap: 5px;
+    height: 40px;
+    padding: 0 9px;
+    border: 0;
+    border-radius: 10px;
     background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    text-decoration: none;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 400;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .nav-link:hover,
+  .nav-group:hover .nav-group-trigger,
+  .nav-group:focus-within .nav-group-trigger {
+    background: var(--color-surface-2);
     color: var(--color-text);
-    padding: 0 0 3px;
   }
   .nav-link.active,
   .nav-group-trigger[data-active="true"] {
-    font-weight: 600;
+    background: var(--color-brand-subtle);
     color: var(--color-brand);
-    border-bottom-color: var(--color-brand);
   }
-  .icon-chevron { margin-left: 4px; flex-shrink: 0; }
+  .nav-link.active::after,
+  .nav-group-trigger[data-active="true"]::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -19px;
+    width: 22px;
+    height: 3px;
+    margin-left: -11px;
+    border-radius: 2px;
+    background: var(--color-accent);
+  }
+  .icon-chevron { flex-shrink: 0; transition: transform 0.15s; }
+  .nav-group:hover .icon-chevron,
+  .nav-group:focus-within .icon-chevron { transform: rotate(180deg); }
+  .mobile-menu-summary .icon-chevron { margin-left: 4px; }
 
-  /* Tema / qidiruv / menyu tugmasi. 6.11 da `.icon-btn` (40 px) ga almashadi; hozir hozirgi ko'rinish saqlangan */
-  .nav-icon-btn {
-    display: flex;
+  /* Til almashtirgich (UZ | RU | EN): 40 px, kapsula; faol element — oq (Dark'da yuza) "tugma" */
+  .lang-switch {
+    display: inline-flex;
     align-items: center;
-    background: none;
+    gap: 2px;
+    height: 40px;
+    padding: 3px;
     border: 1px solid var(--color-border);
-    border-radius: 8px;
-    padding: 7px 9px;
+    border-radius: 10px;
+    background: var(--color-surface-2);
+    box-sizing: border-box;
+  }
+  .lang-switch-item {
+    padding: 6px 9px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--color-text-muted);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  a.lang-switch-item:hover { color: var(--color-brand); }
+  .lang-switch-item.active { background: var(--lang-active-bg); color: var(--lang-active-fg); box-shadow: var(--lang-active-shadow); }
+  .lang-switch--menu { align-self: flex-start; margin-bottom: 0.5rem; }
+  .lang-switch--menu .lang-switch-item { font-size: 13px; padding: 8px 16px; }
+
+  /* Tema / qidiruv / menyu tugmasi: 40 px, radius 10 */
+  .nav-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: none;
     cursor: pointer;
     color: var(--color-text-muted);
-    transition: all 0.2s;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
   }
+  .nav-icon-btn:hover { background: var(--color-brand-subtle); color: var(--color-brand); }
   .nav-icon-btn[aria-expanded="true"] {
-    background: color-mix(in srgb, var(--color-brand) 8%, transparent);
+    background: var(--color-brand-subtle);
     border-color: var(--color-brand);
     color: var(--color-brand);
   }
   .nav-icon-btn--menu {
-    padding: 6px 10px;
+    width: auto;
+    padding: 0 12px;
     color: var(--color-text);
     font-size: 20px;
     line-height: 1;
     transition: none;
+  }
+
+  /* Dropdown guruhlari (spec 6.6): hover / fokus bilan ochiladi. Panel ko'rinadigan qutisi trigger'dan 24 px past —
+     oradagi `padding-top` hover ko'prigi: uni olib tashlamang, aks holda kursor panelga o'tguncha menyu yopiladi. */
+  .nav-group { position: relative; }
+  .nav-group-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 264px;
+    padding-top: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+    pointer-events: none;
+    z-index: var(--z-dropdown);
+  }
+  .nav-group:hover .nav-group-panel,
+  .nav-group:focus-within .nav-group-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-group-panel { transform: none; transition: none; }
+  }
+  /* SPA navigatsiyasidan keyin sichqoncha joyidan qimirlamasa `:hover` "true" bo'lib qoladi — element bosilganda
+     Navbar.jsx shu klassni qo'yib panelni majburan yopadi (chetga chiqilganda olib tashlanadi). `!important` — ataylab:
+     holatni majburan yopish, specificity urushi emas. */
+  .nav-group.force-closed .nav-group-panel {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  .nav-group-panel-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 11px 8px 8px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    background: var(--dropdown-bg);
+    box-shadow: var(--shadow-dropdown);
+  }
+  .nav-group-panel-inner::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--gradient-hairline);
+  }
+  .nav-group-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 44px;
+    padding: 0 16px 0 14px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--color-text);
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .nav-group-item svg { flex-shrink: 0; color: var(--color-brand); transition: color 0.15s; }
+  .nav-group-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 11px;
+    bottom: 11px;
+    width: 3px;
+    border-radius: 2px;
+    background: transparent;
+  }
+  .nav-group-item:focus-visible { outline-offset: -2px; outline-color: var(--color-brand); }
+  /* Joriy sahifa: brend fon + chap brend chiziq. Hover har doim ustun (to'liq to'ldiriladi, chiziq — oltin). */
+  .nav-group-item.active { background: var(--color-brand-subtle-2); color: var(--color-brand); font-weight: 700; }
+  .nav-group-item.active::before { background: var(--color-brand); }
+  .nav-group-item:hover { background: var(--color-brand-fill); color: var(--color-on-brand); font-weight: 600; }
+  .nav-group-item:hover svg { color: var(--color-on-brand); }
+  .nav-group-item:hover::before { background: var(--color-accent); }
+
+  /* Torroq ekranlar: 1181–1439 px — havolalar ixchamlashadi (taxta 1440 px uchun chizilgan); ≤ 1180 px — hamburger menyu */
+  @media (max-width: 1439px) {
+    .site-nav { gap: 16px; padding: 0 24px; }
+    .nav-link, .nav-group-trigger { padding: 0 6px; font-size: 13px; gap: 4px; }
+    .nav-actions { gap: 8px; }
+  }
+  @media (max-width: 1339px) {
+    .nav-brand-text { display: none; }
+  }
+  @media (max-width: 1180px) {
+    .site-nav { min-height: 0; padding: 0.85rem 2rem; }
+    .nav-actions { margin-left: auto; }
   }
 
   /* Mobil menyu: `top` — dinamik (header balandligi), JSX da inline qoladi */
@@ -124,51 +281,122 @@
   .mobile-menu-sublink.active { font-weight: 600; color: var(--color-brand); }
   .mobile-menu-apply { padding: 12px; margin-top: 1rem; }
 
-  /* ── Footer (5a) ──────────────────────────────────────────────────── */
-  .site-footer { background: var(--gradient-footer); padding: 2.5rem 0 0; }
+  /* ── Footer (6.12a — taxtaga moslangan) ───────────────────────────────
+     Asos va rang qiymatlari — `--footer-*` / `--gradient-footer` (Light: wine-900 + nur; Dark: uch qatlam).
+     Tepada oltin hairline, 4 ustun (brend 300 px + 1 : 1 : 1.5), pastda ajratgich, mualliflik va "tepaga" tugmasi. */
+  .site-footer { background: var(--gradient-footer); color: var(--footer-text); }
+  .footer-hairline { height: var(--footer-hairline-h); background: var(--gradient-hairline); }
+  .footer-wrap { width: min(1200px, 100% - 80px); margin-inline: auto; }
   .footer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 2rem;
-    padding-bottom: 1.5rem;
+    grid-template-columns: 300px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: 48px;
+    padding: 56px 0 40px;
   }
-  .footer-title { font-size: 1rem; font-weight: 700; color: var(--color-on-brand); margin: 12px 0 8px; }
-  .footer-about { font-size: 13px; color: var(--color-on-dark-muted); line-height: 1.7; margin-bottom: 16px; }
-  .footer-social { display: flex; gap: 10px; }
+  .footer-brand { display: flex; flex-direction: column; gap: 16px; }
+  .footer-brandline { display: flex; align-items: center; gap: 14px; }
+  .footer-brandline__sep { width: 1px; height: 32px; background: var(--footer-line); }
+  .footer-title { margin: 0; max-width: 7.5rem; font-size: 12.5px; font-weight: 500; line-height: 1.3; color: var(--footer-text); }
+  .footer-about { margin: 0; font-size: 14px; line-height: 1.65; color: var(--footer-text); }
+  .footer-social { display: flex; gap: 10px; margin-top: 4px; }
   .footer-social-link {
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    background: rgb(255 255 255 / 0.08);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-on-dark-muted);
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--footer-social-border);
+    border-radius: 10px;
+    background: var(--footer-social-bg);
+    color: var(--footer-social-fg);
+    transition: color 0.15s, border-color 0.15s;
   }
-  .footer-heading { font-size: 13px; font-weight: 600; color: var(--color-on-dark); margin-bottom: 10px; }
-  .footer-link { display: block; font-size: 13px; color: var(--color-on-dark-muted); margin-bottom: 6px; }
-  .footer-link:hover { color: var(--color-brand-on-dark); }
-  .footer-text { font-size: 13px; color: var(--color-on-dark-muted); margin-bottom: 6px; }
-  .footer-text--last { margin-bottom: 16px; }
-  .footer-media { display: flex; flex-direction: column; gap: 6px; }
+  .footer-social-link:hover { color: var(--color-on-brand); border-color: var(--color-accent-on-dark-border); }
+  .footer-heading {
+    margin: 0 0 17px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent-on-dark);
+  }
+  .footer-links { display: flex; flex-direction: column; gap: 11px; }
+  .footer-link { font-size: 14.5px; line-height: 1.4; color: var(--footer-link); text-decoration: none; transition: color 0.15s; }
+  .footer-link:hover { color: var(--color-on-brand); }
+  .footer-rows { display: flex; flex-direction: column; gap: 12px; }
+  .footer-row { display: flex; align-items: flex-start; gap: 12px; margin: 0; font-size: 14px; line-height: 1.45; color: var(--footer-text); }
+  .footer-row__text { padding-top: 7px; }
+  .footer-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--footer-tile-border);
+    border-radius: 10px;
+    background: var(--footer-tile-bg);
+    color: var(--footer-tile-fg);
+    box-sizing: content-box; /* taxta: 34 px ichki + 1 px chegara */
+    transition: background-color 0.15s;
+  }
+  /* Media havolalari: oltin plitka (aloqa qatorlaridagi pushti plitkadan ajralib turadi) */
+  .footer-tile--gold {
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    border-color: var(--footer-gold-border);
+    background: var(--footer-gold-bg);
+    color: var(--color-accent-on-dark);
+  }
+  .footer-media { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--footer-line); }
   .footer-media-link {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--color-brand-on-dark);
+    gap: 12px;
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--footer-link);
+    text-decoration: none;
+    transition: color 0.15s;
   }
-  .footer-media-link:hover { color: var(--color-brand-on-dark-hover); }
+  .footer-media-link:hover { color: var(--color-on-brand); }
+  .footer-media-link:hover .footer-tile--gold { background: var(--footer-gold-bg-hover); }
   .footer-bottom {
-    padding-top: 1rem;
-    padding-bottom: 1.25rem;
-    border-top: 1px solid rgb(255 255 255 / 0.08);
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--color-on-dark-muted);
+    gap: 12px;
+    padding: 22px 0 26px;
+    border-top: 1px solid var(--footer-line);
+    font-size: 13px;
+    color: var(--footer-bottom);
+  }
+  .footer-top {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    box-shadow: 0 6px 18px var(--glow-accent);
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+  .footer-top:hover { background: var(--color-accent-hover); }
+  @media (max-width: 1024px) {
+    .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .footer-brand { grid-column: 1 / -1; }
+  }
+  @media (max-width: 640px) {
+    .footer-wrap { width: calc(100% - 40px); }
+    .footer-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 40px 0 28px; }
   }
 
   /* ── Qidiruv (5a) ─────────────────────────────────────────────────── */

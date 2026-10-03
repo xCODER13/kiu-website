@@ -20,7 +20,8 @@ describe('Home (smoke test)', () => {
   it("qulamasdan render bo'ladi va asosiy (hero) tarkib ko'rsatiladi", () => {
     mockApi({ 'GET /news': [] })
     renderHome()
-    expect(screen.getByText(config.university.name)).toBeInTheDocument()
+    // Sarlavhaning oxirgi so'zi brend rangidagi alohida `span` (6.12a) — matn bo'laklarga bo'lingan
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(config.university.name)
     expect(screen.getByText('Qabul haqida')).toBeInTheDocument()
     expect(screen.getByText("Qarshi Xalqaro Universiteti haqida")).toBeInTheDocument()
   })
@@ -35,7 +36,7 @@ describe('Home (smoke test)', () => {
   it('muvaffaqiyatli javobda karusel va so\'nggi yangilik kartalari ko\'rsatiladi', async () => {
     mockApi({ 'GET /news': [N1, N2] })
     renderHome()
-    expect(await screen.findByText('Batafsil')).toBeInTheDocument()
+    expect(await screen.findByRole('region', { name: "So'nggi yangiliklar" })).toBeInTheDocument()
     expect(screen.getAllByText('Birinchi yangilik').length).toBeGreaterThan(0)
     expect(screen.getByText('Ikkinchi yangilik')).toBeInTheDocument()
   })
@@ -124,18 +125,21 @@ describe('Home — qayta dizayn (Bosqich 6.11c5)', () => {
     expect(container.querySelectorAll('a.news-card button')).toHaveLength(0)
   })
 
-  it("Karusel: `role=region`, tugmalar nomli, nuqta `aria-current`, \"Batafsil\" — havola; strelka keyingi yangilikka o'tadi", async () => {
+  it("Karusel: `role=region`, tugmalar nomli, nuqta `aria-current`; butun slayd — bitta havola (hisoblagich va \"Batafsil\" yo'q, 6.12a); strelka keyingi yangilikka o'tadi", async () => {
     mockApi({ 'GET /news': NEWS })
     const { container } = renderHome()
     const region = await screen.findByRole('region', { name: "So'nggi yangiliklar" })
-    expect(within(region).getByRole('link', { name: /Batafsil/ })).toHaveAttribute('href', '/news/n1')
+    const link = within(region).getByRole('link')
+    expect(link).toHaveClass('carousel-title__link')
+    expect(link).toHaveAttribute('href', '/news/n1')
+    expect(within(region).queryByText(/Batafsil/)).toBeNull()
     expect(within(region).getAllByRole('button').length).toBe(2 + NEWS.length)
     expect(container.querySelectorAll('.carousel-dot[aria-current="true"]')).toHaveLength(1)
-    expect(container.querySelector('.carousel-counter')).toHaveTextContent('01 / 03')
+    expect(container.querySelector('.carousel-counter')).toBeNull()
+    expect(region.querySelector('time.carousel-date')).toBeInTheDocument()
     const user = (await import('@testing-library/user-event')).default.setup()
     await user.click(within(region).getByRole('button', { name: 'Keyingi' }))
-    expect(within(region).getByRole('link', { name: /Batafsil/ })).toHaveAttribute('href', '/news/n2')
-    expect(container.querySelector('.carousel-counter')).toHaveTextContent('02 / 03')
+    expect(within(region).getByRole('link')).toHaveAttribute('href', '/news/n2')
   })
 
   it("Yuklanish: `role=status` + `aria-busy`, skeleton dekorativ; xato — `role=alert`, bo'sh — `role=status`", async () => {

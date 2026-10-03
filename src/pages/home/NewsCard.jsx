@@ -4,7 +4,7 @@ import { getCategoryToken, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 
 // Home uchun ixcham yangilik kartasi (6.11c5): butun karta — bitta havola; tashqi ko'rinish Yangiliklar sahifasi kartasi
-// bilan umumiy (`.card.news-card`, `.cat-dot`). Dinamik qiymatlar: toifa rangi `--cat` (4.4 palitrasi tokeni) va
+// bilan umumiy (`.card.news-card`); Home taxtasi bo'yicha toifa nuqtasiz, tartib: toifa → sarlavha → sana. Dinamik qiymatlar: toifa rangi `--cat` (4.4 palitrasi tokeni) va
 // kirish animatsiyasi kechikishi `--i`; qolgani CSS da.
 export default function HomeNewsCard({ item, index }) {
   const { t } = useTranslation()
@@ -24,16 +24,9 @@ export default function HomeNewsCard({ item, index }) {
           </div>
       }
       <div className="news-card-body">
-        <div className="news-card-meta">
-          {item.category && (
-            <span className="news-card-cat">
-              <span className="cat-dot" aria-hidden="true" />
-              {getCategoryLabel(item.category, t)}
-            </span>
-          )}
-          <span className="news-card-date">{new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}</span>
-        </div>
+        {item.category && <span className="news-card-cat">{getCategoryLabel(item.category, t)}</span>}
         <h3 lang="uz" className="news-card-title">{item.title}</h3>
+        <span className="news-card-date">{new Date(item.createdAt).toLocaleDateString(t('meta.dateLocale'))}</span>
       </div>
     </NavLink>
   )
