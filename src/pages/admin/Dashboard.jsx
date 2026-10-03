@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, NavLink, Routes, Route } from 'react-router-dom'
 import { Ic } from './shared/Icons.jsx'
+import Logo from '../../components/Logo'
 import { NAV } from './shared/constants'
 import { installUnauthorizedHandler } from './shared/api'
 import useTheme from '../../hooks/useTheme'
@@ -34,12 +35,15 @@ export default function Dashboard() {
 
         {/* Logo */}
         <div className="adm-sidebar-head">
-          {!collapsed && (
-            <div>
-              <div className="adm-brand-title">KIU Admin</div>
-              <div className="adm-brand-sub">Boshqaruv paneli</div>
-            </div>
-          )}
+          <div className="adm-brand">
+            <Logo height={collapsed ? 22 : 36} className="adm-logo adm-logo--side" />
+            {!collapsed && (
+              <div>
+                <div className="adm-brand-title">Admin</div>
+                <div className="adm-brand-sub">Boshqaruv paneli</div>
+              </div>
+            )}
+          </div>
           <button className="adm-collapse-btn" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Panelni ochish' : 'Panelni yig\'ish'}>
             {collapsed ? Ic.menu : Ic.close}
           </button>
@@ -90,6 +94,7 @@ export default function Dashboard() {
         {/* Topbar */}
         <div className="adm-topbar">
           <div className="adm-topbar-title">
+            <Logo height={22} className="adm-logo adm-logo--top" decorative />
             KIU Boshqaruv tizimi · <span className="adm-topbar-accent">admin</span>
           </div>
           <div className="adm-topbar-tools">

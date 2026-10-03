@@ -118,3 +118,13 @@ describe('Login', () => {
     expect(await screen.findByText('xato')).toHaveClass('auth-error')
   })
 })
+
+describe('Login logotipi (6.18)', () => {
+  it("kirish kartasida KIU logotipi bor (qulf ikonkasi o'rniga)", () => {
+    setup()
+    const logo = screen.getByRole('img', { name: 'KIU logo' })
+    expect(logo).toHaveAttribute('height', '30')
+    expect(logo.closest('.auth-logo')).not.toBeNull()
+  })
+})
+
