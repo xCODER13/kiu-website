@@ -23,7 +23,7 @@ export default function FAQ() {
   // useMemo: useJsonLd barqaror referensga tayanadi (har render'da script qayta yaratilmasin)
   const schema = useMemo(() => buildFaqSchema(faqs), [faqs])
   useJsonLd('jsonld-faq', schema)
-  const [open, setOpen] = useState(0)   // bir vaqtda faqat bitta savol ochiq; taxtada birinchisi dastlab ochiq
+  const [open, setOpen] = useState(null)   // bir vaqtda faqat bitta savol ochiq; dastlab hammasi yopiq (xCODER: birinchi savol majburan ochiq turmasin)
 
   return (
     <div className="fade-up">

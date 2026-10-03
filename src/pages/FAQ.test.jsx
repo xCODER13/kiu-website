@@ -4,22 +4,21 @@ import userEvent from '@testing-library/user-event'
 import FAQ from './FAQ'
 
 describe('FAQ (smoke test)', () => {
-  it("qulamasdan render bo'ladi, barcha savollar ko'rsatiladi; taxta bo'yicha faqat birinchi javob dastlab ochiq", () => {
+  it("qulamasdan render bo'ladi, barcha savollar ko'rsatiladi; dastlab hech bir javob ochiq emas", () => {
     render(<FAQ />)
     expect(screen.getByText('Qabul qachon boshlanadi?')).toBeInTheDocument()
-    expect(screen.getByText(/Qabul har yili 1-iyuldan/)).toBeInTheDocument()
-    expect(screen.queryByText(/Qanday hujjatlar kerak\? javob/)).not.toBeInTheDocument()
-    expect(document.querySelectorAll('[aria-expanded="true"]')).toHaveLength(1)
+    expect(screen.queryByText(/Qabul har yili 1-iyuldan/)).not.toBeInTheDocument()
+    expect(document.querySelectorAll('[aria-expanded="true"]')).toHaveLength(0)
   })
 
   it("savolga bosilganda javob ochiladi, qayta bosilganda yopiladi", async () => {
     const user = userEvent.setup()
     render(<FAQ />)
-    expect(screen.getByText(/Qabul har yili 1-iyuldan/)).toBeInTheDocument()
-    await user.click(screen.getByText('Qabul qachon boshlanadi?'))
     expect(screen.queryByText(/Qabul har yili 1-iyuldan/)).not.toBeInTheDocument()
     await user.click(screen.getByText('Qabul qachon boshlanadi?'))
     expect(screen.getByText(/Qabul har yili 1-iyuldan/)).toBeInTheDocument()
+    await user.click(screen.getByText('Qabul qachon boshlanadi?'))
+    expect(screen.queryByText(/Qabul har yili 1-iyuldan/)).not.toBeInTheDocument()
   })
 
   it("xorijiy hamkorlik javobi International sahifasidagi davlatlarga mos (Germaniya yo'q)", async () => {
@@ -40,9 +39,9 @@ describe('FAQ — qayta dizayn (Bosqich 6.11c2)', () => {
     expect(cards.length).toBeGreaterThan(3)
     const first = screen.getByRole('button', { name: /Qabul qachon boshlanadi\?/ })
     const second = screen.getByRole('button', { name: /Qanday hujjatlar kerak\?/ })
-    // taxta: birinchi karta dastlab ochiq, qolganlari yopiq
-    expect(first).toHaveAttribute('aria-expanded', 'true')
-    expect(first.closest('.faq-card')).toHaveAttribute('data-open', 'true')
+    // dastlab hamma karta yopiq (birinchisi ham)
+    expect(first).toHaveAttribute('aria-expanded', 'false')
+    expect(first.closest('.faq-card')).toHaveAttribute('data-open', 'false')
     expect(second).toHaveAttribute('aria-expanded', 'false')
     expect(second.closest('.faq-card')).toHaveAttribute('data-open', 'false')
     await user.click(second)
