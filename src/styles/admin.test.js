@@ -25,9 +25,10 @@ describe('admin.css', () => {
   })
 
   it("yig'ilgan holat ildizdagi `data-collapsed` orqali (sidebar kengligi, bo'limlar, pastki qism)", () => {
-    expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-sidebar \{ width: 60px; \}/)
+    // 6.21: taxta bo'yicha yig'ilgan kenglik 60 → 72 px
+    expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-sidebar \{ width: 72px; \}/)
     expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-nav-link/)
-    expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-sidebar-foot/)
+    // 6.21: pastki qism paddingi (8 px) yig'ilganda ham o'zgarmaydi — alohida qoida kerak emas; amallar o'zi markazlanadi
     expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-side-action/)
   })
 
@@ -70,6 +71,59 @@ describe('tokens.css: --color-danger-on-dark', () => {
   it("to'q yuzalar guruhida, tema bilan almashmaydi", () => {
     const tokens = strip(read('src/styles/tokens.css'))
     expect(tokens.match(/--color-danger-on-dark:/g)).toHaveLength(1)
+  })
+})
+
+describe('6.21: admin qobig\'i va kirish — taxta bo\'yicha', () => {
+  const tokens = strip(read('src/styles/tokens.css'))
+  const tok = n => [...tokens.matchAll(new RegExp(`${n}:\\s*([^;]+);`, 'g'))].map(m => m[1].trim())
+
+  it("sidebar va kirish foni — tepadan pastga (180deg), radial dog' va nuqta yo'q", () => {
+    expect(tok('--gradient-sidebar')).toHaveLength(1)
+    for (const v of [...tok('--gradient-sidebar'), ...tok('--gradient-auth')]) {
+      expect(v).toMatch(/^linear-gradient\(180deg,/)
+      expect(v).not.toMatch(/radial-gradient/)
+    }
+    expect(tok('--gradient-auth')).toHaveLength(3)
+    expect(code).not.toMatch(/radial-gradient/)
+  })
+
+  it('`--shadow-auth` Light + Dark (ikkala blok) da e\'lon qilingan, kartada ishlatiladi', () => {
+    expect(tok('--shadow-auth')).toHaveLength(3)
+    expect(code).toMatch(/\.auth-card \{[^}]*box-shadow: var\(--shadow-auth\)/)
+  })
+
+  it("sidebar o'lchamlari: 240 px (yig'ilgan 72), bo'lim 44 px (yig'ilgan 48), tepada oltin chiziq", () => {
+    expect(code).toMatch(/\.adm-sidebar \{[^}]*width: 240px/)
+    expect(code).toMatch(/\.adm-nav-link \{[^}]*height: 44px/)
+    expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-nav-link \{[^}]*height: 48px/)
+    expect(code).toMatch(/\.adm-sidebar::before \{[^}]*var\(--color-accent\)/)
+  })
+
+  it("bo'lim holatlari: hover va faol (oltin chiziq) bor; fokus halqasi ichkariga (kesilmasin)", () => {
+    expect(code).toMatch(/\.adm-nav-link:hover \{/)
+    expect(code).toMatch(/\.adm-nav-link\.active::before \{[^}]*var\(--color-accent\)/)
+    expect(code).toMatch(/\.adm-nav-link:focus-visible \{ outline-offset: -2px; \}/)
+  })
+
+  it("sidebar ekran balandligida qotadi (sticky, 100vh/100dvh), ro'yxat ichida aylanadi; yig'ilganda ham kesilmaydi", () => {
+    expect(code).toMatch(/\.adm-sidebar \{[^}]*position: sticky;[^}]*top: 0;[^}]*height: 100vh;\s*height: 100dvh;/)
+    expect(code).toMatch(/\.adm-nav \{[^}]*min-height: 0;[^}]*overflow-y: auto;/)
+    expect(code).not.toMatch(/\.adm-nav \{ overflow: visible; \}/)
+    expect(code).not.toMatch(/data-collapsed="true"\] \.adm-sidebar \{[^}]*overflow: visible/)
+  })
+
+  it("yig'ilgandagi tooltip: `position: fixed` qatlam (sidebar kesmaydi), joyi `--tip-y` dan", () => {
+    expect(code).toMatch(/\.adm-tip \{[^}]*position: fixed;[^}]*top: var\(--tip-y, 0\);/)
+    expect(code).not.toMatch(/\[data-tip\]/)
+  })
+
+  it('kirish kartasi: 440 px, radius 22, tepada oltin chiziq; maydon 48 px, tugma 52 px', () => {
+    expect(code).toMatch(/\.auth-card \{[^}]*max-width: 440px/)
+    expect(code).toMatch(/\.auth-card \{[^}]*border-radius: 22px/)
+    expect(code).toMatch(/\.auth-card::before \{[^}]*var\(--color-accent\)/)
+    expect(code).toMatch(/\.auth-input \{[^}]*height: 48px/)
+    expect(code).toMatch(/\.auth-submit \{[^}]*min-height: 52px/)
   })
 })
 

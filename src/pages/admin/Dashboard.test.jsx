@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Dashboard from './Dashboard'
@@ -66,8 +66,12 @@ describe('Dashboard sessiya boshqaruvi', () => {
     await userEvent.click(screen.getByRole('button', { name: "Panelni yig'ish" }))
     expect(shell).toHaveAttribute('data-collapsed', 'true')
     expect(screen.queryByText('Yangiliklar')).not.toBeInTheDocument()
-    // Yorliq ko'rinmaganda ham havola nomi bor (ekran o'qigichlar uchun) va tooltip beradi
-    expect(screen.getByRole('link', { name: 'Yangiliklar' })).toHaveAttribute('title', 'Yangiliklar')
+    // Yorliq ko'rinmaganda ham havola nomi bor (ekran o'qigichlar uchun) va tooltip beradi.
+    // 6.21: native `title` o'rniga taxtadagi maxsus tooltip (hover/fokusda `.adm-tip`) — ikki tooltip chiqmasin
+    const link = screen.getByRole('link', { name: 'Yangiliklar' })
+    expect(link).not.toHaveAttribute('title')
+    await userEvent.hover(link)
+    expect(document.querySelector('.adm-tip')).toHaveTextContent('Yangiliklar')
     await userEvent.click(screen.getByRole('button', { name: 'Panelni ochish' }))
     expect(shell).toHaveAttribute('data-collapsed', 'false')
   })
@@ -100,6 +104,82 @@ describe('Dashboard sessiya boshqaruvi', () => {
     expect(container.querySelector('.adm-topbar input')).toBeNull()
     expect(screen.getAllByPlaceholderText("Bo'lim qidirish...")).toHaveLength(1)
     expect(container.querySelector('.adm-topbar .adm-theme-btn')).not.toBeNull()
+  })
+})
+
+describe('Dashboard qobig\'i (6.21)', () => {
+  it("yig'ish tugmasida `aria-expanded`; holat qayta ochilganda saqlanadi", async () => {
+    localStorage.setItem('kiu_token', 'ok')
+    const first = setup()
+    const btn = await screen.findByRole('button', { name: "Panelni yig'ish" })
+    expect(btn).toHaveAttribute('aria-expanded', 'true')
+    await userEvent.click(btn)
+    expect(screen.getByRole('button', { name: 'Panelni ochish' })).toHaveAttribute('aria-expanded', 'false')
+    expect(localStorage.getItem('kiu_admin_collapsed')).toBe('1')
+    first.unmount()
+
+    const second = setup()
+    await screen.findByRole('button', { name: 'Panelni ochish' })
+    expect(second.container.querySelector('.adm-shell')).toHaveAttribute('data-collapsed', 'true')
+    await userEvent.click(screen.getByRole('button', { name: 'Panelni ochish' }))
+    expect(localStorage.getItem('kiu_admin_collapsed')).toBe('0')
+  })
+
+  it("saqlash yopiq bo'lsa (localStorage xato beradi) — panel ochiq, xatosiz ishlaydi", async () => {
+    localStorage.setItem('kiu_token', 'ok')
+    const get = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(k => {
+      if (k === 'kiu_admin_collapsed') throw new Error('blocked')
+      return 'ok'
+    })
+    const set = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked') })
+    const { container } = setup()
+    await userEvent.click(await screen.findByRole('button', { name: "Panelni yig'ish" }))
+    expect(container.querySelector('.adm-shell')).toHaveAttribute('data-collapsed', 'true')
+    get.mockRestore(); set.mockRestore()
+  })
+
+  it("tooltip faqat yig'ilganda: hover/fokusda chiqadi, ketganda yo'qoladi; pastki amallarda ham; `aria-hidden`", async () => {
+    localStorage.setItem('kiu_token', 'ok')
+    const { container } = setup()
+    await screen.findAllByText('Statistika')
+    // ochiq holat: yorliq ko'rinib turibdi — tooltip yo'q
+    await userEvent.hover(screen.getByRole('link', { name: 'Yangiliklar' }))
+    expect(container.querySelector('.adm-tip')).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: "Panelni yig'ish" }))
+
+    const link = screen.getByRole('link', { name: 'Yangiliklar' })
+    await userEvent.hover(link)
+    const tip = container.querySelector('.adm-tip')
+    expect(tip).toHaveTextContent('Yangiliklar')
+    expect(tip).toHaveAttribute('aria-hidden', 'true')
+    await userEvent.unhover(link)
+    expect(container.querySelector('.adm-tip')).toBeNull()
+
+    await userEvent.hover(screen.getByRole('button', { name: 'Tizimdan chiqish' }))
+    expect(container.querySelector('.adm-tip')).toHaveTextContent('Chiqish')
+    await userEvent.unhover(screen.getByRole('button', { name: 'Tizimdan chiqish' }))
+
+    // klaviatura: fokus — tooltip, blur — yo'qoladi
+    const first = screen.getByRole('link', { name: 'Statistika' })
+    act(() => first.focus())
+    expect(container.querySelector('.adm-tip')).toHaveTextContent('Statistika')
+    act(() => first.blur())
+    expect(container.querySelector('.adm-tip')).toBeNull()
+  })
+
+  it("«Qabul arizalari» o'z ikonkasiga ega (Profil ikonkasidan farq qiladi)", async () => {
+    localStorage.setItem('kiu_token', 'ok')
+    const { container } = setup()
+    await screen.findAllByText('Statistika')
+    const icon = n => container.querySelector(`a[aria-label="${n}"] svg`).innerHTML
+    expect(icon('Qabul arizalari')).not.toBe(icon('Profil'))
+  })
+
+  it("yuqori paneldagi tema tugmasi — umumiy `.icon-btn`", async () => {
+    localStorage.setItem('kiu_token', 'ok')
+    const { container } = setup()
+    await screen.findAllByText('Statistika')
+    expect(container.querySelector('.adm-topbar .adm-theme-btn')).toHaveClass('icon-btn')
   })
 })
 

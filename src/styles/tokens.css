@@ -201,6 +201,7 @@
     --shadow-frame:         0 22px 48px rgb(127 32 99 / 0.20);                                                   /* Home rasm ramkasi: hoshiyasiz yumshoq soya */
     --gradient-dialog:      linear-gradient(180deg, var(--color-surface-3), var(--color-surface-3));   /* modal va qidiruv paneli foni (taxta: Apply-*, Search-*) */
     --shadow-dialog:        0 30px 80px rgb(28 10 22 / 0.40);
+    --shadow-auth:          0 24px 60px rgb(127 32 99 / 0.16), 0 2px 8px rgb(127 32 99 / 0.06);   /* admin kirish kartasi (6.21) */
     --color-dialog-border:  var(--color-border);
 
     /* Tugma yorug'ligi (glow) */
@@ -212,7 +213,7 @@
     /* Gradientlar */
     --gradient-hero:      linear-gradient(135deg, var(--wine-50) 0%, var(--wine-100) 40%, var(--wine-200) 100%);
     --gradient-hero-soft: linear-gradient(135deg, var(--color-brand-subtle), var(--color-brand-subtle-2));
-    --gradient-auth:      var(--gradient-hero-soft);   /* admin login sahifa foni */
+    --gradient-auth:      linear-gradient(180deg, rgb(127 32 99 / 0.14) 0%, rgb(127 32 99 / 0.05) 55%, rgb(127 32 99 / 0) 100%), var(--wine-50);   /* admin kirish foni: tepadan pastga (6.21) */
     --gradient-dark:      linear-gradient(135deg, var(--neutral-900), var(--wine-900));
     --gradient-brand:     linear-gradient(135deg, var(--color-brand-fill), var(--color-brand-hover));
     --gradient-brand-text: linear-gradient(135deg, var(--color-brand), var(--color-brand-hover));   /* gradient matn (background-clip) */
@@ -239,7 +240,7 @@
     --footer-tile-bg:     rgb(255 255 255 / 0.08);
     --footer-tile-border: rgb(245 203 228 / 0.22);
     --footer-tile-fg:     #f5cbe4;
-    --gradient-sidebar:   linear-gradient(180deg, var(--neutral-900) 0%, var(--wine-900) 100%);
+    --gradient-sidebar:   linear-gradient(180deg, rgb(159 51 126 / 0.38) 0%, rgb(159 51 126 / 0) 100%), var(--neutral-900);   /* 6.21: footer kabi tepadan pastga */
     --gradient-media:     radial-gradient(60% 90% at 70% 20%, rgb(159 51 126 / 0.55) 0%, rgb(159 51 126 / 0) 70%), radial-gradient(40% 70% at 95% 90%, rgb(212 175 55 / 0.22) 0%, rgb(212 175 55 / 0) 70%), linear-gradient(135deg, var(--wine-900), var(--dark-bg) 60%, var(--dark-deep));
 
     /* Dekorativ rasm/placeholder xiraligi (Dark'da biroz pasayadi) */
@@ -382,7 +383,7 @@
       --footer-tile-bg:       var(--color-brand-subtle);
       --footer-tile-border:   rgb(233 168 208 / 0.25);
       --footer-tile-fg:       var(--color-brand);
-      --gradient-auth:        linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
+      --gradient-auth:        linear-gradient(180deg, rgb(159 51 126 / 0.45) 0%, rgb(127 32 99 / 0.14) 55%, rgb(127 32 99 / 0) 100%), var(--dark-deep);
       --gradient-brand-text:  linear-gradient(135deg, var(--wine-300), var(--wine-200));
 
       --shadow-brand:         0 4px 15px rgb(159 51 126 / 0.4);
@@ -447,6 +448,7 @@
       --shadow-frame:         0 22px 52px rgb(0 0 0 / 0.50);
       --gradient-dialog:      linear-gradient(180deg, #241c21 0%, var(--dark-surface-2) 50%);
       --shadow-dialog:        inset 0 1px 0 rgb(255 255 255 / 0.07), 0 30px 80px rgb(0 0 0 / 0.60);
+      --shadow-auth:          0 24px 60px rgb(0 0 0 / 0.55);
       --color-dialog-border:  var(--color-border-strong);
 
       --cat-chip-mix:         18%;
@@ -531,7 +533,7 @@
     --footer-tile-bg:       var(--color-brand-subtle);
     --footer-tile-border:   rgb(233 168 208 / 0.25);
     --footer-tile-fg:       var(--color-brand);
-    --gradient-auth:        linear-gradient(135deg, var(--dark-deep), var(--dark-bg));
+    --gradient-auth:        linear-gradient(180deg, rgb(159 51 126 / 0.45) 0%, rgb(127 32 99 / 0.14) 55%, rgb(127 32 99 / 0) 100%), var(--dark-deep);
     --gradient-brand-text:  linear-gradient(135deg, var(--wine-300), var(--wine-200));
 
     --shadow-brand:         0 4px 15px rgb(159 51 126 / 0.4);
@@ -596,6 +598,7 @@
     --shadow-frame:         0 22px 52px rgb(0 0 0 / 0.50);
     --gradient-dialog:      linear-gradient(180deg, #241c21 0%, var(--dark-surface-2) 50%);
     --shadow-dialog:        inset 0 1px 0 rgb(255 255 255 / 0.07), 0 30px 80px rgb(0 0 0 / 0.60);
+    --shadow-auth:          0 24px 60px rgb(0 0 0 / 0.55);
     --color-dialog-border:  var(--color-border-strong);
 
     --cat-chip-mix:         18%;

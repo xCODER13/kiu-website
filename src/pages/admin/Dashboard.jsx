@@ -13,10 +13,15 @@ import GalleryAdmin from './GalleryAdmin.jsx'
 import ApplicationsAdmin from './ApplicationsAdmin.jsx'
 import ProfileAdmin from './ProfileAdmin.jsx'
 
+const COLLAPSED_KEY = 'kiu_admin_collapsed'
+
 // ── MAIN ──
 export default function Dashboard() {
   const navigate    = useNavigate()
-  const [collapsed, setCollapsed] = useState(false)
+  // Yig'ilgan holat qayta kirganda ham saqlanadi (brauzer saqlashi yopiq bo'lsa — ochiq holat)
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem(COLLAPSED_KEY) === '1' } catch { return false }
+  })
   const [dark, setDark] = useTheme()
   const [search, setSearch] = useState('')
   const tk = localStorage.getItem('kiu_token')
@@ -24,6 +29,23 @@ export default function Dashboard() {
   useEffect(() => { if (!tk) navigate('/admin/login') }, [tk, navigate])
   // Sessiya tugasa (401) — loginga qaytaramiz
   useEffect(() => installUnauthorizedHandler(() => navigate('/admin/login')), [navigate])
+
+  // Yig'ilgandagi tooltip: bosilmaydi, faqat ko'rsatadi; joyi — element markazining ekrandagi balandligi
+  const [tip, setTip] = useState(null)
+  const showTip = label => e => {
+    if (!collapsed) return
+    const r = e.currentTarget.getBoundingClientRect()
+    setTip({ label, y: r.top + r.height / 2 })
+  }
+  const hideTip = () => setTip(null)
+  const tipProps = label => ({ onMouseEnter: showTip(label), onFocus: showTip(label), onMouseLeave: hideTip, onBlur: hideTip })
+
+  function toggleCollapsed() {
+    const next = !collapsed
+    setTip(null)
+    setCollapsed(next)
+    try { localStorage.setItem(COLLAPSED_KEY, next ? '1' : '0') } catch { /* saqlash yopiq — faqat shu sessiya */ }
+  }
 
   const filteredNav = NAV.filter(n => search === '' || n.label.toLowerCase().includes(search.toLowerCase()))
 
@@ -44,8 +66,9 @@ export default function Dashboard() {
               </div>
             )}
           </div>
-          <button className="adm-collapse-btn" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? 'Panelni ochish' : 'Panelni yig\'ish'}>
-            {collapsed ? Ic.menu : Ic.close}
+          <button className="adm-collapse-btn" onClick={toggleCollapsed} aria-expanded={!collapsed}
+            aria-label={collapsed ? 'Panelni ochish' : 'Panelni yig\'ish'}>
+            {collapsed ? Ic.panelRight : Ic.panelLeft}
           </button>
         </div>
 
@@ -60,10 +83,10 @@ export default function Dashboard() {
         )}
 
         {/* Nav links */}
-        <nav className="adm-nav">
+        <nav className="adm-nav" onScroll={hideTip}>
           {filteredNav.map(item => (
             <NavLink key={item.to} to={item.to} end={item.to === '/admin'} className="adm-nav-link"
-              aria-label={item.label} title={collapsed ? item.label : undefined}>
+              aria-label={item.label} {...tipProps(item.label)}>
               <span className="adm-nav-icon">{item.icon}</span>
               {!collapsed && <span className="adm-nav-label">{item.label}</span>}
             </NavLink>
@@ -75,18 +98,23 @@ export default function Dashboard() {
 
         {/* Bottom */}
         <div className="adm-sidebar-foot">
-          <button className="adm-side-action" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}>
+          <button className="adm-side-action" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}
+            {...tipProps(dark ? "Yorug' rejim" : "Qorong'u rejim")}>
             {dark ? Ic.sun : Ic.moon}
             {!collapsed && (dark ? 'Yorug\' rejim' : 'Qorong\'u rejim')}
           </button>
-          <NavLink to="/" className="adm-side-action" aria-label="Saytga qaytish">
+          <NavLink to="/" className="adm-side-action" aria-label="Saytga qaytish" {...tipProps('Saytga qaytish')}>
             {Ic.home}{!collapsed && 'Saytga qaytish'}
           </NavLink>
-          <button className="adm-side-action is-danger" onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }} aria-label="Tizimdan chiqish">
+          <button className="adm-side-action is-danger" onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }} aria-label="Tizimdan chiqish" {...tipProps('Chiqish')}>
             {Ic.logout}{!collapsed && 'Chiqish'}
           </button>
         </div>
       </div>
+
+      {collapsed && tip && (
+        <span className="adm-tip" aria-hidden="true" ref={el => { if (el) el.style.setProperty('--tip-y', `${tip.y}px`) }}>{tip.label}</span>
+      )}
 
       {/* ── MAIN ── */}
       <div className="adm-main">
@@ -99,7 +127,7 @@ export default function Dashboard() {
           </div>
           <div className="adm-topbar-tools">
             {/* Dark mode */}
-            <button className="adm-theme-btn" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}>
+            <button className="icon-btn adm-theme-btn" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}>
               {dark ? Ic.sun : Ic.moon}
             </button>
           </div>
