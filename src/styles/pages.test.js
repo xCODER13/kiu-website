@@ -833,6 +833,12 @@ describe('Bosqich 6.12h: Dark karta gradienti (taxta bo\'yicha)', () => {
     expect((tokens.match(/--gradient-card-open:\s*linear-gradient\(180deg, #32282f 0%, #2b2227 60%\);/g) ?? []).length).toBe(2)
   })
 
+  it("qidiruv chip hover'i: to'ldirilgan brend fon + `--color-on-brand` matn va ikonka (xCODER tanlovi, variant B)", () => {
+    const site = read('src/styles/site.css')
+    expect(site).toMatch(/\.search-chip:hover \{[^}]*border-color: var\(--color-brand-fill\);[^}]*background: var\(--color-brand-fill\);[^}]*color: var\(--color-on-brand\);/)
+    expect(site).toMatch(/\.search-chip:hover > svg \{ color: var\(--color-on-brand\); \}/)
+  })
+
   it("Qabul qadam kartasi va FAQ kartasi `--gradient-card` ishlatadi (tekis `surface-3` emas); ochiq FAQ `--gradient-card-open`", () => {
     expect(code).toMatch(/\.card\.step-card \{[^}]*background: var\(--gradient-card\);/)
     expect(code).not.toMatch(/\.card\.card--lift\.step-card/)
