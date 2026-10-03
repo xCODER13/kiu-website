@@ -2040,7 +2040,8 @@
   .vac-benefit__title { margin: 2px 0 6px; font-size: 1.0625rem; font-weight: 700; line-height: normal; color: var(--color-text); }
   .vac-benefit__desc { margin: 0; font-size: 0.90625rem; line-height: 1.6; color: var(--color-text-muted); }
 
-  .card.vac-req-card { padding: 32px 36px; border-radius: 18px; }
+  /* Taxta (6.17): «Umumiy talablar» — Dark'da gradient, ikkala temada taxta soyasi (hover yo'q: bosilmaydi) */
+  .card.vac-req-card { padding: 32px 36px; border-radius: 18px; background: var(--gradient-card); box-shadow: var(--shadow-card-board); }
   .vac-req-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 48px; margin: 0; padding: 0; list-style: none; }
   .vac-req { display: flex; align-items: flex-start; gap: 14px; }
   .vac-req__check {
