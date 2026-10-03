@@ -901,4 +901,10 @@ describe('Bosqich 6.16: taxta farqlari', () => {
   it("`.tile`: chegara `--tile-border` (Dark'da pushti, Light'da shaffof) — taxtadagi Dark plitka chegarasi", () => {
     expect(css).toMatch(/\.tile \{[^}]*border: 1px solid var\(--tile-border\);[^}]*border-radius: var\(--radius-2xl\);/)
   })
+
+  it("qidiruv paneli (desktop): tugma ostidan 35 px (avval 10 px); mobil (`top: 70px`, `position: fixed`) o'zgarmagan", () => {
+    const site = read('src/styles/site.css')
+    expect(site).toMatch(/\.search-panel \{\s*position: absolute;\s*top: calc\(100% \+ 35px\);/)
+    expect(site).toMatch(/@media \(max-width: 768px\) \{\s*\.search-panel \{\s*position: fixed;\s*top: 70px;/)
+  })
 })
