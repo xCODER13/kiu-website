@@ -30,8 +30,19 @@ export default function Dashboard() {
   // Sessiya tugasa (401) — loginga qaytaramiz
   useEffect(() => installUnauthorizedHandler(() => navigate('/admin/login')), [navigate])
 
+  // Yig'ilgandagi tooltip: bosilmaydi, faqat ko'rsatadi; joyi — element markazining ekrandagi balandligi
+  const [tip, setTip] = useState(null)
+  const showTip = label => e => {
+    if (!collapsed) return
+    const r = e.currentTarget.getBoundingClientRect()
+    setTip({ label, y: r.top + r.height / 2 })
+  }
+  const hideTip = () => setTip(null)
+  const tipProps = label => ({ onMouseEnter: showTip(label), onFocus: showTip(label), onMouseLeave: hideTip, onBlur: hideTip })
+
   function toggleCollapsed() {
     const next = !collapsed
+    setTip(null)
     setCollapsed(next)
     try { localStorage.setItem(COLLAPSED_KEY, next ? '1' : '0') } catch { /* saqlash yopiq — faqat shu sessiya */ }
   }
@@ -72,10 +83,10 @@ export default function Dashboard() {
         )}
 
         {/* Nav links */}
-        <nav className="adm-nav">
+        <nav className="adm-nav" onScroll={hideTip}>
           {filteredNav.map(item => (
             <NavLink key={item.to} to={item.to} end={item.to === '/admin'} className="adm-nav-link"
-              aria-label={item.label} data-tip={collapsed ? item.label : undefined}>
+              aria-label={item.label} {...tipProps(item.label)}>
               <span className="adm-nav-icon">{item.icon}</span>
               {!collapsed && <span className="adm-nav-label">{item.label}</span>}
             </NavLink>
@@ -88,19 +99,22 @@ export default function Dashboard() {
         {/* Bottom */}
         <div className="adm-sidebar-foot">
           <button className="adm-side-action" onClick={() => setDark(!dark)} aria-label={dark ? "Yorug' rejimga o'tish" : "Qorong'u rejimga o'tish"}
-            data-tip={collapsed ? (dark ? "Yorug' rejim" : "Qorong'u rejim") : undefined}>
+            {...tipProps(dark ? "Yorug' rejim" : "Qorong'u rejim")}>
             {dark ? Ic.sun : Ic.moon}
             {!collapsed && (dark ? 'Yorug\' rejim' : 'Qorong\'u rejim')}
           </button>
-          <NavLink to="/" className="adm-side-action" aria-label="Saytga qaytish" data-tip={collapsed ? 'Saytga qaytish' : undefined}>
+          <NavLink to="/" className="adm-side-action" aria-label="Saytga qaytish" {...tipProps('Saytga qaytish')}>
             {Ic.home}{!collapsed && 'Saytga qaytish'}
           </NavLink>
-          <button className="adm-side-action is-danger" onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }} aria-label="Tizimdan chiqish"
-            data-tip={collapsed ? 'Chiqish' : undefined}>
+          <button className="adm-side-action is-danger" onClick={() => { localStorage.removeItem('kiu_token'); navigate('/admin/login') }} aria-label="Tizimdan chiqish" {...tipProps('Chiqish')}>
             {Ic.logout}{!collapsed && 'Chiqish'}
           </button>
         </div>
       </div>
+
+      {collapsed && tip && (
+        <span className="adm-tip" aria-hidden="true" ref={el => { if (el) el.style.setProperty('--tip-y', `${tip.y}px`) }}>{tip.label}</span>
+      )}
 
       {/* ── MAIN ── */}
       <div className="adm-main">

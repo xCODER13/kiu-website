@@ -25,8 +25,8 @@ describe('admin.css', () => {
   })
 
   it("yig'ilgan holat ildizdagi `data-collapsed` orqali (sidebar kengligi, bo'limlar, pastki qism)", () => {
-    // 6.21: taxta bo'yicha yig'ilgan kenglik 60 → 72 px (tooltip sidebar'dan chiqishi uchun `overflow: visible`)
-    expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-sidebar \{ width: 72px; overflow: visible; \}/)
+    // 6.21: taxta bo'yicha yig'ilgan kenglik 60 → 72 px
+    expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-sidebar \{ width: 72px; \}/)
     expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-nav-link/)
     // 6.21: pastki qism paddingi (8 px) yig'ilganda ham o'zgarmaydi — alohida qoida kerak emas; amallar o'zi markazlanadi
     expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-side-action/)
@@ -106,10 +106,16 @@ describe('6.21: admin qobig\'i va kirish — taxta bo\'yicha', () => {
     expect(code).toMatch(/\.adm-nav-link:focus-visible \{ outline-offset: -2px; \}/)
   })
 
-  it("yig'ilgandagi tooltip faqat CSS: `data-tip` + hover/fokus; sidebar kesmaydi", () => {
-    expect(code).toMatch(/\[data-tip\]::after \{[^}]*content: attr\(data-tip\)/)
-    expect(code).toMatch(/\[data-tip\]:focus-visible::after/)
-    expect(code).toMatch(/\.adm-shell\[data-collapsed="true"\] \.adm-nav \{ overflow: visible; \}/)
+  it("sidebar ekran balandligida qotadi (sticky, 100vh/100dvh), ro'yxat ichida aylanadi; yig'ilganda ham kesilmaydi", () => {
+    expect(code).toMatch(/\.adm-sidebar \{[^}]*position: sticky;[^}]*top: 0;[^}]*height: 100vh;\s*height: 100dvh;/)
+    expect(code).toMatch(/\.adm-nav \{[^}]*min-height: 0;[^}]*overflow-y: auto;/)
+    expect(code).not.toMatch(/\.adm-nav \{ overflow: visible; \}/)
+    expect(code).not.toMatch(/data-collapsed="true"\] \.adm-sidebar \{[^}]*overflow: visible/)
+  })
+
+  it("yig'ilgandagi tooltip: `position: fixed` qatlam (sidebar kesmaydi), joyi `--tip-y` dan", () => {
+    expect(code).toMatch(/\.adm-tip \{[^}]*position: fixed;[^}]*top: var\(--tip-y, 0\);/)
+    expect(code).not.toMatch(/\[data-tip\]/)
   })
 
   it('kirish kartasi: 440 px, radius 22, tepada oltin chiziq; maydon 48 px, tugma 52 px', () => {

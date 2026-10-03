@@ -18,13 +18,18 @@
   }
 
   /* ── Sidebar (6.21: taxta 240 / 72 px) ─────────────────────────────── */
+  /* Ekran balandligida qotadi (sahifa uzun bo'lsa ham pastki amallar ko'rinadi); sig'masa — ro'yxatning o'zi aylanadi */
   .adm-sidebar {
-    position: relative;
-    z-index: 2; /* yig'ilgan holatdagi tooltip asosiy ustun ustida */
+    position: sticky;
+    top: 0;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
+    align-self: flex-start;
     width: 240px;
+    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     border-right: 1px solid color-mix(in srgb, var(--color-brand-on-dark) 12%, transparent);
     background: var(--gradient-sidebar);
@@ -42,12 +47,12 @@
     background: linear-gradient(90deg, transparent, var(--color-accent) 50%, transparent);
     pointer-events: none;
   }
-  /* Yig'ilganda yorliqlar render qilinmaydi — kesish kerak emas, tooltip esa sidebar'dan tashqariga chiqadi */
-  .adm-shell[data-collapsed="true"] .adm-sidebar { width: 72px; overflow: visible; }
+  .adm-shell[data-collapsed="true"] .adm-sidebar { width: 72px; }
   /* Fokus halqasi to'q gradient ustida: global `--color-focus` (Light'da wine-700) bu yerda ~1.5:1 — ko'rinmaydi */
   .adm-sidebar :focus-visible { outline-color: var(--color-brand-on-dark); }
 
   .adm-sidebar-head {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -132,10 +137,10 @@
   /* Bo'limlar ro'yxati */
   .adm-nav {
     flex: 1;
+    min-height: 0;
     padding: 8px;
     overflow-y: auto;
   }
-  .adm-shell[data-collapsed="true"] .adm-nav { overflow: visible; }
   .adm-nav-link {
     position: relative;
     display: flex;
@@ -195,6 +200,7 @@
 
   /* Sidebar pastki qismi: tema, saytga qaytish, chiqish */
   .adm-sidebar-foot {
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -225,16 +231,17 @@
     background: color-mix(in srgb, var(--color-brand-on-dark) 10%, transparent);
     color: var(--color-on-dark);
   }
-  .adm-shell[data-collapsed="true"] .adm-side-action { position: relative; justify-content: center; padding: 0; }
+  .adm-shell[data-collapsed="true"] .adm-side-action { justify-content: center; padding: 0; }
   .adm-side-action.is-danger { color: var(--color-danger-on-dark); }
   .adm-side-action.is-danger:hover { color: var(--color-danger-on-dark); }
 
-  /* Yig'ilgan holatdagi tooltip (faqat CSS): `data-tip` yig'ilganda beriladi, nom `aria-label` da */
-  .adm-shell[data-collapsed="true"] [data-tip]::after {
-    content: attr(data-tip);
-    position: absolute;
-    top: 50%;
-    left: calc(100% + 12px);
+  /* Yig'ilgan holatdagi tooltip: sidebar (overflow: hidden/auto) kesmasin deb `position: fixed` — joyi JS'da (`--tip-y`) beriladi.
+     Nom ekran o'qigichlar uchun `aria-label` da, shuning uchun qatlam `aria-hidden`. */
+  .adm-tip {
+    position: fixed;
+    top: var(--tip-y, 0);
+    left: 84px; /* yig'ilgan sidebar (72 px) + 12 px */
+    z-index: 5;
     display: flex;
     align-items: center;
     height: 34px;
@@ -247,13 +254,9 @@
     font-weight: 600;
     white-space: nowrap;
     color: var(--color-text);
-    opacity: 0;
     transform: translateY(-50%);
     pointer-events: none;
-    transition: opacity var(--duration-fast);
   }
-  .adm-shell[data-collapsed="true"] [data-tip]:hover::after,
-  .adm-shell[data-collapsed="true"] [data-tip]:focus-visible::after { opacity: 1; }
 
   /* ── Asosiy ustun ──────────────────────────────────────────────────── */
   .adm-main {

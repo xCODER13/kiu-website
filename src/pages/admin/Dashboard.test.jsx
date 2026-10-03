@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Dashboard from './Dashboard'
@@ -67,10 +67,11 @@ describe('Dashboard sessiya boshqaruvi', () => {
     expect(shell).toHaveAttribute('data-collapsed', 'true')
     expect(screen.queryByText('Yangiliklar')).not.toBeInTheDocument()
     // Yorliq ko'rinmaganda ham havola nomi bor (ekran o'qigichlar uchun) va tooltip beradi.
-    // 6.21: native `title` o'rniga taxtadagi maxsus tooltip (CSS `data-tip`) — ikki tooltip chiqmasin
+    // 6.21: native `title` o'rniga taxtadagi maxsus tooltip (hover/fokusda `.adm-tip`) — ikki tooltip chiqmasin
     const link = screen.getByRole('link', { name: 'Yangiliklar' })
-    expect(link).toHaveAttribute('data-tip', 'Yangiliklar')
     expect(link).not.toHaveAttribute('title')
+    await userEvent.hover(link)
+    expect(document.querySelector('.adm-tip')).toHaveTextContent('Yangiliklar')
     await userEvent.click(screen.getByRole('button', { name: 'Panelni ochish' }))
     expect(shell).toHaveAttribute('data-collapsed', 'false')
   })
@@ -137,15 +138,33 @@ describe('Dashboard qobig\'i (6.21)', () => {
     get.mockRestore(); set.mockRestore()
   })
 
-  it("yig'ilganda pastki amallarda ham tooltip (`data-tip`), ochiqda yo'q; nomlari `aria-label` da", async () => {
+  it("tooltip faqat yig'ilganda: hover/fokusda chiqadi, ketganda yo'qoladi; pastki amallarda ham; `aria-hidden`", async () => {
     localStorage.setItem('kiu_token', 'ok')
     const { container } = setup()
     await screen.findAllByText('Statistika')
-    expect(container.querySelectorAll('[data-tip]')).toHaveLength(0)
+    // ochiq holat: yorliq ko'rinib turibdi — tooltip yo'q
+    await userEvent.hover(screen.getByRole('link', { name: 'Yangiliklar' }))
+    expect(container.querySelector('.adm-tip')).toBeNull()
     await userEvent.click(screen.getByRole('button', { name: "Panelni yig'ish" }))
-    expect(container.querySelectorAll('.adm-nav-link[data-tip]')).toHaveLength(8)
-    expect(container.querySelectorAll('.adm-side-action[data-tip]')).toHaveLength(3)
-    expect(screen.getByRole('button', { name: 'Tizimdan chiqish' })).toHaveAttribute('data-tip', 'Chiqish')
+
+    const link = screen.getByRole('link', { name: 'Yangiliklar' })
+    await userEvent.hover(link)
+    const tip = container.querySelector('.adm-tip')
+    expect(tip).toHaveTextContent('Yangiliklar')
+    expect(tip).toHaveAttribute('aria-hidden', 'true')
+    await userEvent.unhover(link)
+    expect(container.querySelector('.adm-tip')).toBeNull()
+
+    await userEvent.hover(screen.getByRole('button', { name: 'Tizimdan chiqish' }))
+    expect(container.querySelector('.adm-tip')).toHaveTextContent('Chiqish')
+    await userEvent.unhover(screen.getByRole('button', { name: 'Tizimdan chiqish' }))
+
+    // klaviatura: fokus — tooltip, blur — yo'qoladi
+    const first = screen.getByRole('link', { name: 'Statistika' })
+    act(() => first.focus())
+    expect(container.querySelector('.adm-tip')).toHaveTextContent('Statistika')
+    act(() => first.blur())
+    expect(container.querySelector('.adm-tip')).toBeNull()
   })
 
   it("«Qabul arizalari» o'z ikonkasiga ega (Profil ikonkasidan farq qiladi)", async () => {
