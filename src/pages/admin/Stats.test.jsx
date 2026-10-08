@@ -362,3 +362,106 @@ describe('Stats — batafsil statistika (band 6)', () => {
     expect([...container.querySelectorAll('.adm-legend-item')].map(i => [i.textContent, i.dataset.tone])).toEqual([['Qabul arizalari', 'amber'], ['Vakansiya arizalari', 'cyan']])
   })
 })
+
+// 6.22: taxta bo'yicha holatlar va koddagi kamchiliklar (`res.ok`, bekor qilish, a11y)
+describe('Stats — holatlar va ishonchlilik (6.22)', () => {
+  const ALL = {
+    'GET /stats': { newsCount: 1 },
+    'GET /stats/applications-trend?granularity=day': TREND_DAY,
+    'GET /stats/top-news?limit=10': TOP_NEWS,
+    'GET /stats/top-events?limit=10': TOP_EVENTS,
+    'GET /stats/sortinghat-faculties': SORTINGHAT,
+    'GET /stats/applications-faculties': APP_FACULTIES,
+  }
+
+  it('sahifa yuklanayotganda sarlavha ko\'rinadi, ostida `role="status"` spinner', () => {
+    vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})))
+    setup()
+    expect(screen.getByRole('heading', { level: 2, name: 'Statistika' })).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('Yuklanmoqda...')
+  })
+
+  it("`/stats` 500 qaytarsa — sarlavha + banner (`role=\"alert\"`); xato tanasi 0 ta KPI karta bo'lib chiqmaydi", async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    mockApi({ ...ALL, 'GET /stats': { status: 500, body: { error: 'Server xatosi' } } })
+    const { container } = setup()
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveClass('adm-banner')
+    expect(alert).toHaveTextContent("Statistikani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.")
+    expect(screen.getByRole('heading', { level: 2, name: 'Statistika' })).toBeInTheDocument()
+    expect(container.querySelectorAll('.adm-kpi')).toHaveLength(0)
+    spy.mockRestore()
+  })
+
+  it("bo'lim so'rovi 500 qaytarsa (ma'lumot `{error}`) — faqat shu karta xato ko'rsatadi, bo'sh grafik emas", async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    mockApi({ ...ALL, 'GET /stats/top-news?limit=10': { status: 500, body: { error: 'Server xatosi' } } })
+    setup()
+    await screen.findByText('Bitiruv marosimi') // top-events muvaffaqiyatli
+    const alerts = await screen.findAllByRole('alert')
+    expect(alerts).toHaveLength(1)
+    expect(alerts[0]).toHaveTextContent('Yuklashda xatolik yuz berdi.')
+    expect(alerts[0].closest('.adm-card')).toHaveTextContent("Eng ko'p ko'rilgan yangiliklar")
+    spy.mockRestore()
+  })
+
+  it("trend xato bo'lsa sarlavha va Kun/Hafta tugmalari saqlanadi (taxta: trend kartasi 3 holat)", async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    mockApi({ ...ALL, 'GET /stats/applications-trend?granularity=day': { status: 503, body: { error: 'x' } } })
+    setup()
+    expect(await screen.findByText('Trendni yuklashda xatolik yuz berdi.')).toBeInTheDocument()
+    expect(screen.getByText('Arizalar trendi')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: "Haftalik ko'rinish" })).toBeInTheDocument()
+    spy.mockRestore()
+  })
+
+  it('trend bo\'sh — ikonkali "Ma\'lumot yo\'q" va tugmalar saqlanadi; reytinglarda "Jami" chiqmaydi', async () => {
+    mockApi({
+      ...ALL,
+      'GET /stats/applications-trend?granularity=day': { granularity: 'day', buckets: [] },
+      'GET /stats/sortinghat-faculties': { total: 0, faculties: [] },
+    })
+    const { container } = setup()
+    await waitFor(() => expect(container.querySelectorAll('.adm-empty-state')).toHaveLength(2))
+    expect(screen.getByRole('button', { name: "Kunlik ko'rinish" })).toBeInTheDocument()
+    expect(screen.queryByText('Jami: 0 ta murojaat')).not.toBeInTheDocument()
+    expect(screen.getByText('Jami: 9 ta ariza')).toBeInTheDocument()
+  })
+
+  it("sarlavhalar iyerarxiyasi: h2 Statistika → h3 Batafsil → h4 karta sarlavhalari (5 ta)", async () => {
+    mockApi(ALL)
+    setup()
+    await screen.findByText("Eng ko'p ariza tushgan yo'nalishlar")
+    expect(screen.getByRole('heading', { level: 3, name: 'Batafsil statistika' })).toBeInTheDocument()
+    expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(5)
+  })
+
+  it("Kun/Hafta tugmalari `btn btn-sm`; faol — `btn-primary`", async () => {
+    mockApi(ALL)
+    setup()
+    const day = await screen.findByRole('button', { name: "Kunlik ko'rinish" })
+    const week = screen.getByRole('button', { name: "Haftalik ko'rinish" })
+    expect(day).toHaveClass('btn', 'btn-sm', 'btn-primary')
+    expect(week).toHaveClass('btn', 'btn-sm')
+    expect(week).not.toHaveClass('btn-primary')
+    fireEvent.click(week)
+    expect(week).toHaveClass('btn-primary')
+    expect(day).not.toHaveClass('btn-primary')
+  })
+
+  it("KPI ikonkalari ekran o'quvchidan yashirin (yorliq matni yetarli)", async () => {
+    mockApi(ALL)
+    const { container } = setup()
+    await screen.findByText('Yangiliklar')
+    for (const icon of container.querySelectorAll('.adm-kpi-icon')) expect(icon).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it("so'rovlar `AbortSignal` bilan yuboriladi (unmount'da bekor qilinadi)", async () => {
+    const signals = []
+    vi.stubGlobal('fetch', vi.fn((url, init) => { signals.push(init.signal); return new Promise(() => {}) }))
+    const { unmount } = setup()
+    expect(signals).toHaveLength(6)
+    unmount()
+    expect(signals.every(s => s.aborted)).toBe(true)
+  })
+})

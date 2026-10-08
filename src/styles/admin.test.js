@@ -141,10 +141,14 @@ describe('Bosqich 6b: statistika va grafiklar', () => {
     for (const t of STAT) expect(code).toMatch(new RegExp(`\\[data-tone="${t}"\\]\\s*\\{ --kpi-c: var\\(--stat-${t}\\); \\}`))
   })
 
-  it("KPI: rang chiziq va ikonkada (`--kpi-c`), qiymat matni `--color-text` da; ikonka foni `color-mix`", () => {
-    expect(code).toMatch(/\.adm-kpi \{[^}]*border-left: 3px solid var\(--kpi-c\)/)
+  // 6.22 (taxta): chap `border-left: 3px` o'rniga 4 px `::before` chiziq; ikonka plitkasi 10 % `color-mix`
+  // o'rniga to'liq `--kpi-c` fonida (ustida `--color-on-stat`). Qiymat hamon `--color-text` da.
+  it("KPI: rang chiziq (`::before`), fon, chegara va ikonka plitkasida (`--kpi-c`), qiymat matni `--color-text` da", () => {
+    expect(code).toMatch(/\.adm-kpi::before \{[^}]*width: 4px;[^}]*background: var\(--kpi-c\)/)
+    expect(code).toMatch(/\.adm-kpi \{[^}]*border-color: color-mix\(in srgb, var\(--kpi-c\) 40%, var\(--color-border\)\)/)
+    expect(code).toMatch(/\.adm-kpi \{[^}]*background: color-mix\(in srgb, var\(--kpi-c\) var\(--stat-tint\), var\(--color-surface-3\)\)/)
     expect(code).toMatch(/\.adm-kpi-value \{[^}]*color: var\(--color-text\)/)
-    expect(code).toMatch(/\.adm-kpi-icon \{[^}]*background: color-mix\(in srgb, var\(--kpi-c\) 10%, transparent\)/)
+    expect(code).toMatch(/\.adm-kpi-icon \{[^}]*background: var\(--kpi-c\);[^}]*color: var\(--color-on-stat\)/)
   })
 
   it('KPI hover CSS da (oldin JS onMouseEnter/Leave)', () => {
@@ -245,3 +249,65 @@ describe('Bosqich 6.18: admin logotipi', () => {
   })
 })
 
+
+describe('Bosqich 6.22: Statistika (taxta bo\'yicha)', () => {
+  const css = strip(read('src/styles/admin.css'))
+  const tokens = read('src/styles/tokens.css')
+
+  it("karta: radius 16, padding 24, `--shadow-card-board` (taxta soyasi) va `--color-surface-3` foni", () => {
+    expect(css).toMatch(/\.adm-card \{[^}]*padding: 24px;[^}]*border-radius: 16px;[^}]*background: var\(--color-surface-3\);[^}]*box-shadow: var\(--shadow-card-board\)/)
+  })
+
+  it("sarlavhalar: h2 28/800, h3 18/700; karta sarlavhasi 15/700 va 32 px ikonka plitkasi (rangli — `data-tone`)", () => {
+    expect(css).toMatch(/\.adm-page-title \{[^}]*font-size: 1\.75rem;[^}]*font-weight: 800/)
+    expect(css).toMatch(/\.adm-subtitle \{[^}]*font-size: 1\.125rem;[^}]*font-weight: 700/)
+    expect(css).toMatch(/\.adm-card-title \{[^}]*font-size: 0\.9375rem;[^}]*font-weight: 700/)
+    expect(css).toMatch(/\.adm-card-title-icon \{[^}]*width: 32px;[^}]*height: 32px;[^}]*border-radius: 10px/)
+    expect(css).toMatch(/\.adm-card-title\[data-tone\] \.adm-card-title-icon \{[^}]*color-mix\(in srgb, var\(--kpi-c\) 18%/)
+  })
+
+  it("KPI: 16 px radius, padding 16/16/16/20, 40 px ikonka (12 radius), qiymat 30/800; fokus offset 3 px", () => {
+    expect(css).toMatch(/\.adm-kpi \{[^}]*padding: 16px 16px 16px 20px/)
+    expect(css).toMatch(/\.adm-kpi-icon \{[^}]*width: 40px;[^}]*height: 40px;[^}]*border-radius: 12px/)
+    expect(css).toMatch(/\.adm-kpi-value \{[^}]*font-size: 1\.875rem;[^}]*font-weight: 800/)
+    expect(css).toMatch(/\.adm-kpi-link:focus-visible \{ outline-offset: 3px; \}/)
+    expect(css).toMatch(/\.adm-kpi:hover \{ box-shadow: var\(--shadow-pop\); \}/)
+  })
+
+  it("holatlar: `.adm-load-state` (28 px padding), banner (radius 12, max 640), bo'sh holat plitkasi 44 px; spinner `reduce` da to'xtaydi", () => {
+    expect(css).toMatch(/\.adm-load-state \{[^}]*padding: 28px 0/)
+    expect(css).toMatch(/\.adm-banner \{[^}]*max-width: 640px;[^}]*border-radius: 12px;[^}]*background: var\(--color-danger-bg\)/)
+    expect(css).toMatch(/\.adm-empty-state-icon \{[^}]*width: 44px;[^}]*height: 44px/)
+    expect(css).toMatch(/prefers-reduced-motion: reduce\) \{\s*\.adm-load-state-spinner \{ animation: none; \}/)
+  })
+
+  it("`.adm-load-state-spinner` mavjud `.adm-spinner` (rasm yuklash) bilan to'qnashmaydi", () => {
+    expect(css).toMatch(/\.adm-load-state-spinner \{/)
+    expect((css.match(/\.adm-spinner \{/g) ?? [])).toHaveLength(1)
+  })
+
+  it("grafik: trend tooltip 10 px radius, `--color-border-2` chegara, `--shadow-pop`; yo'naltiruvchi chiziq; svg fokus halqasi", () => {
+    expect(css).toMatch(/\.adm-tooltip \{[^}]*padding: 10px 12px;[^}]*border: 1px solid var\(--color-border-2\);[^}]*border-radius: 10px;[^}]*box-shadow: var\(--shadow-pop\)/)
+    expect(css).toMatch(/\.adm-chart-guide \{ stroke: var\(--color-border-2\); \}/)
+    expect(css).toMatch(/\.adm-chart-svg--visible:focus-visible \{[^}]*outline: 2px solid var\(--color-focus\)/)
+  })
+
+  it("Kun/Hafta: faol tugmada yorqin soya yo'q (faqat ichki yoritma); faol emasi `--color-border-2` chegarali", () => {
+    expect(css).toMatch(/\.adm-seg \.btn-primary,\s*\.adm-seg \.btn-primary:hover:not\(:disabled\) \{ box-shadow: inset 0 1px 0 rgb\(255 255 255 \/ 0\.16\); \}/)
+    expect(css).toMatch(/\.adm-seg \.btn:not\(\.btn-primary\) \{[^}]*border-color: var\(--color-border-2\)/)
+  })
+
+  it("yangi tokenlar (`--color-border-2`, `--color-on-stat`, `--stat-tint`, `--shadow-pop`) Light + ikkala Dark blokida", () => {
+    for (const t of ['--color-border-2', '--color-on-stat', '--stat-tint', '--shadow-pop'])
+      expect(tokens.match(new RegExp(`${t}:`, 'g')), t).toHaveLength(3)
+  })
+
+  it("Stats va grafiklar hex/rgb'siz, grafiklarda `<style>` yo'q; trend grafigida 2 ta inline xolos (nuqta rangi, balandlik)", () => {
+    for (const f of ['Stats.jsx', 'shared/StateViews.jsx', 'shared/useApiGet.js', 'charts/RankedBarChart.jsx', 'charts/TrendLineChart.jsx']) {
+      const src = strip(read(`src/pages/admin/${f}`))
+      expect(src, f).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+      expect(src, f).not.toMatch(/rgba?\(/)
+    }
+    expect(read('src/pages/admin/Stats.jsx')).not.toMatch(/style=\{/)
+  })
+})

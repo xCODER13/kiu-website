@@ -35,4 +35,19 @@ describe('RankedBarChart', () => {
     render(<RankedBarChart data={[]} emptyLabel="Hech narsa yo'q" />)
     expect(screen.getByText("Hech narsa yo'q")).toBeInTheDocument()
   })
+
+  // 6.22: grafik ekran o'quvchiga bitta rasm sifatida o'qiladi (qiymatlar `aria-label` da), svg yashirin
+  it("`role=\"img\"` va `aria-label`: karta nomi + barcha qiymatlar; ichki svg `aria-hidden`", async () => {
+    const { container } = render(<RankedBarChart data={two} ariaLabel="Reyting" />)
+    const frame = screen.getByRole('img')
+    expect(frame).toHaveAttribute('aria-label', 'Reyting: Birinchi — 5, Ikkinchi — 2')
+    await screen.findByText('Birinchi')
+    expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it("bo'sh ma'lumot — `EmptyState` (ikonka + matn), grafik `role=\"img\"` yo'q", () => {
+    const { container } = render(<RankedBarChart data={[]} />)
+    expect(screen.queryByRole('img')).toBeNull()
+    expect(container.querySelector('.adm-empty-state')).not.toBeNull()
+  })
 })
