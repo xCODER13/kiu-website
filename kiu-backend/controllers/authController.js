@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const logger = require('../logger')
 const { fail } = require('../middleware/errorHandler')
+const { revokeAllTokens } = require('../services/adminSessions')
 
 // Login javob vaqtini konstant qilish uchun — haqiqiy ADMIN_PASSWORD_HASH bilan
 // bir xil "shakl"dagi (bcrypt, cost 12) dummy hash. Bu faqat vaqt o'lchamini bir
@@ -109,4 +110,18 @@ async function changePassword(req, res) {
   }
 }
 
-module.exports = { login, changePassword }
+// «Barcha qurilmalardan chiqish»: shu paytgacha chiqarilgan HAMMA admin tokenlari (so'rovni
+// yuborgan token ham) bekor qilinadi. Token o'g'irlangan bo'lishi mumkin bo'lganda parolni
+// almashtirmasdan sessiyalarni to'xtatish uchun. Frontend javobdan keyin o'z tokenini o'chirib,
+// login sahifasiga o'tishi kerak.
+async function logoutAll(req, res) {
+  try {
+    await revokeAllTokens()
+    req.log.warn({ user: req.user?.username }, "[SECURITY] Barcha admin sessiyalari tugatildi")
+    res.json({ success: true })
+  } catch (e) {
+    fail(req, res, 500, e)
+  }
+}
+
+module.exports = { login, changePassword, logoutAll }

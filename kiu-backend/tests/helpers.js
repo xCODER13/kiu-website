@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
+const { resetCache: resetAdminSessionsCache } = require('../services/adminSessions')
 
 // `issuedSecondsAgo` — tokenning `iat` (soniyada) claim'ini o'tmishga suradi. Parol
 // almashtirishdan "oldin chiqarilgan" tokenni ishonchli modellashtirish uchun kerak:
@@ -23,6 +24,7 @@ async function setAdminPassword(plainPassword) {
   await mongoose.connection.db.collection('settings').deleteOne({ key: 'admin_password_changed_at' })
   process.env.ADMIN_PASSWORD_HASH = hash
   delete process.env.ADMIN_PASSWORD_CHANGED_AT
+  resetAdminSessionsCache()
   return hash
 }
 
