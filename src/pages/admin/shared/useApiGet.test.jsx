@@ -59,4 +59,47 @@ describe('useApiGet', () => {
     await waitFor(() => expect(result.current.loading).toBe(false))
     expect(result.current.data.path).toMatch(/\/b$/)
   })
+
+  // 6.23 (Arizalar): «Qayta urinish» va mahalliy yangilash
+  it('`reload()` so\'rovni qaytadan yuboradi: loading yana true, so\'ng yangi ma\'lumot', async () => {
+    let n = 0
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(ok({ n: ++n }))))
+    const { result } = renderHook(() => useApiGet('/x', 'x'))
+    await waitFor(() => expect(result.current.data).toEqual({ n: 1 }))
+    act(() => result.current.reload())
+    expect(result.current.loading).toBe(true)
+    expect(result.current.data).toBeNull()
+    await waitFor(() => expect(result.current.data).toEqual({ n: 2 }))
+    expect(fetch).toHaveBeenCalledTimes(2)
+  })
+
+  it('xatodan keyin `reload()` xatoni tozalaydi', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    let first = true
+    vi.stubGlobal('fetch', vi.fn(() => { const r = first ? fail(500) : ok([1]); first = false; return Promise.resolve(r) }))
+    const { result } = renderHook(() => useApiGet('/x', 'x'))
+    await waitFor(() => expect(result.current.error).toBe(true))
+    act(() => result.current.reload())
+    await waitFor(() => expect(result.current.data).toEqual([1]))
+    expect(result.current.error).toBe(false)
+    spy.mockRestore()
+  })
+
+  it('`mutate(fn)` yuklangan ma\'lumotni mahalliy yangilaydi (qayta so\'rovsiz)', async () => {
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(ok([{ id: 1 }, { id: 2 }]))))
+    const { result } = renderHook(() => useApiGet('/x', 'x'))
+    await waitFor(() => expect(result.current.data).toHaveLength(2))
+    act(() => result.current.mutate(list => list.filter(i => i.id !== 1)))
+    expect(result.current.data).toEqual([{ id: 2 }])
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
+  it("`mutate` ma'lumot yo'qligida (yuklanmoqda / xato) hech narsa qilmaydi", async () => {
+    vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})))
+    const { result } = renderHook(() => useApiGet('/x', 'x'))
+    const fn = vi.fn()
+    act(() => result.current.mutate(fn))
+    expect(fn).not.toHaveBeenCalled()
+    expect(result.current.data).toBeNull()
+  })
 })

@@ -311,3 +311,67 @@ describe('Bosqich 6.22: Statistika (taxta bo\'yicha)', () => {
     expect(read('src/pages/admin/Stats.jsx')).not.toMatch(/style=\{/)
   })
 })
+
+describe("Bosqich 6.23: Arizalar (taxta bo'yicha)", () => {
+  const css = code
+  const rule = sel => (css.match(new RegExp(`${sel.replace(/[.[\]()]/g, '\\$&')} \\{([^}]*)\\}`)) ?? [])[1] ?? ''
+  const tokens = read('src/styles/tokens.css')
+
+  it("filtr chip'i — 36 px kapsula; faol — to'ldirilgan brend foni, hisoblagich `rgb(255 255 255 / .22)`", () => {
+    expect(rule('.adm-chip')).toMatch(/height: 36px;/)
+    expect(rule('.adm-chip')).toMatch(/border-radius: var\(--radius-pill\);/)
+    expect(rule('.adm-chip[data-active="true"]')).toMatch(/background: var\(--color-brand-fill\);[\s\S]*color: var\(--color-on-brand\)/)
+    expect(css).toMatch(/\.adm-chip\[data-active="true"\] \.adm-chip-count \{[^}]*rgb\(255 255 255 \/ 0\.22\)/)
+    expect(rule('.adm-chip-dot')).toMatch(/background: var\(--st\);/)
+  })
+
+  it("holat tanlagichi neytral (holat rangini takrorlamaydi): `--st` ishlatilmaydi, chegara `--color-border-2`", () => {
+    expect(rule('.adm-status-select')).not.toMatch(/var\(--st\)/)
+    expect(rule('.adm-status-select')).toMatch(/border: 1px solid var\(--color-border-2\);/)
+    expect(css).toMatch(/\.adm-status-select:focus-visible \{[^}]*border-color: var\(--color-brand\);/)
+    expect(css).toMatch(/\.adm-status-select:disabled \{[^}]*cursor: not-allowed;/)
+  })
+
+  it("ariza kartasi: padding 20, avatar 44 px doira, sana 13 px (avval 10 px)", () => {
+    expect(rule('.adm-app-card')).toMatch(/padding: 20px;/)
+    expect(rule('.adm-app-avatar')).toMatch(/width: 44px;[\s\S]*height: 44px;[\s\S]*border-radius: 50%;/)
+    expect(rule('.adm-app-date')).toMatch(/font-size: 0\.8125rem;/)
+  })
+
+  it("vakansiya teglari: neytral, lavozim — brend (avval 4 xil `color-mix` rang)", () => {
+    expect(css).not.toMatch(/\.adm-tag--(strong|success|warning)/)
+    expect(rule('.adm-tag--brand')).toMatch(/background: var\(--color-brand-subtle\);/)
+  })
+
+  it("tasdiq dialogi: overlay `--color-modal-overlay`, `--z-modal`, radius 20, oltin hairline, `--shadow-confirm`", () => {
+    expect(rule('.adm-dialog-overlay')).toMatch(/position: fixed;/)
+    expect(rule('.adm-dialog-overlay')).toMatch(/z-index: var\(--z-modal\);/)
+    expect(rule('.adm-dialog-overlay')).toMatch(/background: var\(--color-modal-overlay\);/)
+    expect(rule('.adm-dialog')).toMatch(/width: 440px;[\s\S]*border-radius: 20px;[\s\S]*box-shadow: var\(--shadow-confirm\);/)
+    expect(rule('.adm-dialog::before')).toMatch(/background: var\(--gradient-hairline\);/)
+    expect(rule('.adm-dialog-confirm')).toMatch(/background: var\(--color-danger\);[\s\S]*color: var\(--color-on-danger\);/)
+  })
+
+  it("`--shadow-confirm` va `--color-on-danger` Light, tizim Dark'i va `data-theme=dark` da bor", () => {
+    expect(tokens.match(/--shadow-confirm:/g)).toHaveLength(3)
+    expect(tokens.match(/--color-on-danger:/g)).toHaveLength(3)
+  })
+
+  it("`window.confirm`/`alert` ishlatilmaydi; eski `.adm-state` klasslari olib tashlangan", () => {
+    const src = strip(read('src/pages/admin/ApplicationsAdmin.jsx')).replace(/\/\/.*$/gm, '')   // izohlar emas, kod
+    expect(src).not.toMatch(/window\.confirm|\balert\(/)
+    expect(src).not.toMatch(/adm-state/)
+    expect(css).not.toMatch(/\.adm-state(--dashed)? \{/)
+  })
+
+  it("skelet animatsiyasiz (taxtada statik); aylanuvchi ikonkalar `prefers-reduced-motion` da to'xtaydi", () => {
+    expect(rule('.adm-skel')).not.toMatch(/animation/)
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\.adm-select-icon--spin svg \{ animation: none; \}/)
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\.adm-dialog-confirm\[aria-busy="true"\] svg \{ animation: none; \}/)
+  })
+
+  it("`.adm-sr-only` ko'rinmas, lekin ekran o'quvchiga ochiq (`display: none` emas)", () => {
+    expect(rule('.adm-sr-only')).toMatch(/clip-path: inset\(50%\);/)
+    expect(rule('.adm-sr-only')).not.toMatch(/display: none/)
+  })
+})

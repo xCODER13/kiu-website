@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { API, H, errorMessage } from './api'
 
 // GET so'rovi uchun umumiy hook (6.22 — Statistika). Avval Stats.jsx da oltita alohida
@@ -9,11 +9,19 @@ import { API, H, errorMessage } from './api'
 // - `AbortController`: `path` o'zgarsa yoki komponent yopilsa so'rov bekor qilinadi (eskirgan
 //   javob yangisini bosib ketmaydi, unmount'dan keyin setState yo'q).
 // - `res.ok` tekshiriladi: 4xx/5xx — xato holati (`error: true`), ma'lumot emas.
-// - "yuklanmoqda" HISOBLANADI (`state.path !== path`) — effekt ichida sinxron setState yo'q.
+// - "yuklanmoqda" HISOBLANADI (`state.key !== key`) — effekt ichida sinxron setState yo'q.
 //
-// Qaytaradi: { data, error, loading }. `label` — konsol xabari uchun (foydalanuvchiga ko'rsatilmaydi).
+// 6.23 (Arizalar) qo'shdi:
+// - `reload()` — xatodan keyin "Qayta urinish": so'rov qaytadan yuboriladi va `loading` yana true bo'ladi.
+// - `mutate(fn)` — yuklangan ma'lumotni mahalliy yangilash (holat o'zgartirilgach / ariza o'chirilgach
+//   butun ro'yxatni qayta yuklamasdan; server javobi allaqachon qo'lda).
+//
+// Qaytaradi: { data, error, loading, reload, mutate }. `label` — konsol xabari uchun (foydalanuvchiga ko'rsatilmaydi).
 export function useApiGet(path, label) {
-  const [state, setState] = useState({ path: null, data: null, error: false })
+  const [nonce, setNonce] = useState(0)
+  const [state, setState] = useState({ key: null, data: null, error: false })
+  // `key` — path + qayta yuklash soni: reload() ham "yangi so'rov" hisoblanadi
+  const key = `${nonce}:${path}`
 
   useEffect(() => {
     const controller = new AbortController()
@@ -22,19 +30,24 @@ export function useApiGet(path, label) {
         if (!res.ok) throw new Error(await errorMessage(res, `HTTP ${res.status}`))
         return res.json()
       })
-      .then(data => setState({ path, data, error: false }))
+      .then(data => setState({ key, data, error: false }))
       .catch(err => {
         if (controller.signal.aborted) return
         console.error(`${label}:`, err)
-        setState({ path, data: null, error: true })
+        setState({ key, data: null, error: true })
       })
     return () => controller.abort()
-  }, [path, label])
+  }, [path, label, key])
 
-  const settled = state.path === path
+  const reload = useCallback(() => setNonce(n => n + 1), [])
+  const mutate = useCallback(fn => setState(s => (s.data == null ? s : { ...s, data: fn(s.data) })), [])
+
+  const settled = state.key === key
   return {
     data: settled ? state.data : null,
     error: settled && state.error,
     loading: !settled,
+    reload,
+    mutate,
   }
 }
