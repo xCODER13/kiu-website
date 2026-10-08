@@ -14,6 +14,9 @@ const corsOptions = {
     return callback(new Error('Not allowed by CORS'))
   },
   credentials: true,
+  // Cross-origin javobda brauzer faqat «xavfsiz» sarlavhalarni JS'ga ko'rsatadi. Admin Profil «yana N ta urinish qoldi» va
+  // 429 taymeri uchun shularni o'qiydi (express-rate-limit `standardHeaders` yuboradi) (3.5).
+  exposedHeaders: ['RateLimit-Limit', 'RateLimit-Remaining', 'RateLimit-Reset', 'Retry-After'],
 }
 
 module.exports = { corsOptions, PRODUCTION_ORIGIN, PREVIEW_ORIGIN_RE }

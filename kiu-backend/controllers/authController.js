@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const logger = require('../logger')
 const { fail } = require('../middleware/errorHandler')
 const { revokeAllTokens } = require('../services/adminSessions')
+const { passwordProblem } = require('../utils/passwordPolicy')
 
 // Login javob vaqtini konstant qilish uchun — haqiqiy ADMIN_PASSWORD_HASH bilan
 // bir xil "shakl"dagi (bcrypt, cost 12) dummy hash. Bu faqat vaqt o'lchamini bir
@@ -78,6 +79,10 @@ async function changePassword(req, res) {
   // uchun uzunlik BAYT bilan tekshiriladi (kirill/emoji bitta belgi = 2-4 bayt).
   if (Buffer.byteLength(newPassword, 'utf8') > 72)
     return res.status(400).json({ error: "Yangi parol 72 baytdan oshmasligi kerak (taxminan 72 ta lotin belgisi)" })
+  // Foydalanuvchining o'z kiritgan ikki qiymatini solishtirish — hech narsa oshkor qilmaydi (joriy parol hali tekshirilmagan).
+  if (newPassword === currentPassword) return res.status(400).json({ error: 'Yangi parol joriy paroldan farq qilishi kerak' })
+  const problem = passwordProblem(newPassword, req.user?.username || process.env.ADMIN_USERNAME)
+  if (problem) return res.status(400).json({ error: problem })
 
   await refreshAdminSettingsFromDb()
 
@@ -86,7 +91,9 @@ async function changePassword(req, res) {
   }
   const currentOk = await bcrypt.compare(currentPassword, process.env.ADMIN_PASSWORD_HASH)
 
-  if (!currentOk) return res.status(401).json({ error: "Joriy parol noto'g'ri" })
+  // 403, 401 emas: 401 — «token yaroqsiz» ma'nosida (frontend uni sessiya tugagan deb hisoblab chiqarib yuboradi);
+  // bu yerda token yaroqli, rad etilgan narsa — kiritilgan joriy parol (3.1).
+  if (!currentOk) return res.status(403).json({ error: "Joriy parol noto'g'ri" })
 
   try {
     const hash = await bcrypt.hash(newPassword, 12)
