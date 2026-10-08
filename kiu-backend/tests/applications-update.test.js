@@ -81,7 +81,50 @@ describe('PUT /api/applications/:id — yangilash', () => {
   })
 })
 
-describe('PUT /api/applications/:id — validatsiya (runValidators)', () => {
+describe('PUT /api/applications/:id — faqat status (1.2)', () => {
+  // Admin panel faqat { status } yuboradi. Boshqa maydonlar (ism, telefon, email, xabar, type...)
+  // PUT orqali o'zgarmaydi: o'g'irlangan token bilan arizachining ma'lumotini soxtalashtirib bo'lmaydi.
+  test("status bilan birga kelgan boshqa maydonlar e'tiborsiz qoldiriladi", async () => {
+    const app1 = await createApplication({ message: 'Salom', email: 'ali@example.com' })
+    const res = await request(app)
+      .put(`/api/applications/${app1._id}`).set(auth)
+      .send({ status: 'reviewed', name: 'Soxta', phone: '+998900000000', email: 'x@y.uz', message: 'Boshqa', type: 'vacancy' })
+
+    expect(res.status).toBe(200)
+    const saved = await Application.findById(app1._id)
+    expect(saved.status).toBe('reviewed')
+    expect(saved.name).toBe('Ali Valiyev')
+    expect(saved.phone).toBe(VALID_PHONE)
+    expect(saved.email).toBe('ali@example.com')
+    expect(saved.message).toBe('Salom')
+    expect(saved.type).toBe(app1.type)
+  })
+
+  test("status yuborilmasa 400, ariza o'zgarmaydi", async () => {
+    const app1 = await createApplication()
+    const res = await request(app).put(`/api/applications/${app1._id}`).set(auth).send({ name: 'Soxta', phone: '123' })
+
+    expect(res.status).toBe(400)
+    const saved = await Application.findById(app1._id)
+    expect(saved.name).toBe('Ali Valiyev')
+    expect(saved.phone).toBe(VALID_PHONE)
+  })
+
+  test("bo'sh tanali so'rov 400", async () => {
+    const app1 = await createApplication()
+    const res = await request(app).put(`/api/applications/${app1._id}`).set(auth).send({})
+    expect(res.status).toBe(400)
+  })
+
+  test("status satr bo'lmasa (obyekt, massiv, son) 400 — operator in'ektsiyasi o'tmaydi", async () => {
+    const app1 = await createApplication()
+    for (const bad of [{ $ne: 'new' }, ['reviewed'], 1, null, true]) {
+      const res = await request(app).put(`/api/applications/${app1._id}`).set(auth).send({ status: bad })
+      expect(res.status).toBe(400)
+    }
+    expect((await Application.findById(app1._id)).status).toBe('new')
+  })
+
   test("noto'g'ri status qiymati 400 bilan rad etiladi, ariza o'zgarmaydi", async () => {
     const app1 = await createApplication()
     const res = await request(app).put(`/api/applications/${app1._id}`).set(auth).send({ status: 'hacked' })
@@ -90,32 +133,13 @@ describe('PUT /api/applications/:id — validatsiya (runValidators)', () => {
     expect((await Application.findById(app1._id)).status).toBe('new')
   })
 
-  test("noto'g'ri type qiymati 400", async () => {
+  test("sxemadagi har bir status qabul qilinadi", async () => {
     const app1 = await createApplication()
-    const res = await request(app).put(`/api/applications/${app1._id}`).set(auth).send({ type: 'other' })
-    expect(res.status).toBe(400)
-  })
-
-  test("noto'g'ri telefon formati 400 — POST'dagi validator PUT'da ham ishlaydi", async () => {
-    const app1 = await createApplication()
-    const res = await request(app).put(`/api/applications/${app1._id}`).set(auth).send({ phone: '123' })
-
-    expect(res.status).toBe(400)
-    expect((await Application.findById(app1._id)).phone).toBe(VALID_PHONE)
-  })
-
-  test("noto'g'ri email 400", async () => {
-    const app1 = await createApplication()
-    const res = await request(app).put(`/api/applications/${app1._id}`).set(auth).send({ email: 'email-emas' })
-    expect(res.status).toBe(400)
-  })
-
-  test("maxlength'dan uzun matn (message > 3000) 400", async () => {
-    const app1 = await createApplication()
-    const res = await request(app)
-      .put(`/api/applications/${app1._id}`).set(auth)
-      .send({ message: 'x'.repeat(3001) })
-    expect(res.status).toBe(400)
+    for (const status of Application.schema.path('status').enumValues) {
+      const res = await request(app).put(`/api/applications/${app1._id}`).set(auth).send({ status })
+      expect(res.status).toBe(200)
+      expect(res.body.status).toBe(status)
+    }
   })
 
   test("xato javobida ichki (Mongoose) tafsilotlari mijozga sizib chiqmaydi", async () => {

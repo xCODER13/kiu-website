@@ -53,7 +53,7 @@ function buildTelegramMessage(application) {
 // maydonlar. "status" bundan ataylab tashqarida: create() uni hech qachon
 // client'dan olmaydi (har doim serverda 'new' qilib belgilanadi, aks holda
 // so'rov yuboruvchi o'z arizasini to'g'ridan-to'g'ri "accepted" qilib yuborishi
-// mumkin edi), update() esa uni alohida UPDATABLE_FIELDS orqali qo'shadi.
+// mumkin edi). Holatni faqat admin `update()` orqali o'zgartiradi.
 const APPLICATION_FIELDS = ['name', 'phone', 'faculty', 'message', 'email', 'position', 'education', 'experience', 'type']
 
 async function create(req, res) {
@@ -71,23 +71,23 @@ async function create(req, res) {
   } catch (e) { fail(req, res, 400, e) }
 }
 
-// Mass assignment himoyasi (create()dagi kabi ro'yxat, "status" qo'shilgan holda):
-// avval `req.body` filtrlashsiz to'g'ridan-to'g'ri findByIdAndUpdate'ga berilardi —
-// Mongoose'ning strict rejimi sxemada yo'q maydonlarni (masalan, `isAdmin`) allaqachon
-// yashirincha tashlab yuborardi, lekin bu holatga aniq, kod darajasidagi himoya yo'q edi
-// (implicit xatti-harakatga tayanish o'rniga). Ro'yxat create()dagi bilan bir xil bo'lgani
-// uchun mavjud PUT kontrakti (type/phone/email/message ham validatsiyadan o'tishi, testlar
-// bilan tasdiqlangan) o'zgarishsiz qoladi.
-const UPDATABLE_FIELDS = [...APPLICATION_FIELDS, 'status']
+// ── ADMIN FAQAT ARIZA HOLATINI O'ZGARTIRADI (DESIGN.md 10.4, 1.2) ──
+// Avval PUT `APPLICATION_FIELDS + status` ni qabul qilardi: o'g'irlangan/xato admin token
+// bilan arizachining ismi, telefoni, emaili, matni va turini o'zgartirish mumkin edi
+// (shaxsiy ma'lumot). Admin panel esa faqat `{ status }` yuboradi. Endi `status` shart va
+// ruxsat etilgan qiymatlardan biri bo'lishi kerak (aks holda 400); body'dagi boshqa hamma
+// maydon e'tiborsiz qoldiriladi va saqlanmaydi. Arizachi ma'lumotlari faqat POST orqali kiradi.
+const APPLICATION_STATUSES = Application.schema.path('status').enumValues
 
 async function update(req, res) {
   try {
-    const body = {}
-    for (const field of UPDATABLE_FIELDS) {
-      if (req.body[field] !== undefined) body[field] = req.body[field]
+    const status = req.body && req.body.status
+    // `typeof` tekshiruvi: `{ "status": { "$ne": null } }` kabi obyekt filtrga/yangilanishga o'tmasin
+    if (typeof status !== 'string' || !APPLICATION_STATUSES.includes(status)) {
+      return res.status(400).json({ error: "Holat noto'g'ri" })
     }
 
-    const updated = await Application.findByIdAndUpdate(req.params.id, body, { new: true, runValidators: true })
+    const updated = await Application.findByIdAndUpdate(req.params.id, { status }, { new: true, runValidators: true })
     if (!updated) return res.status(404).json({ error: 'Topilmadi' })
     res.json(updated)
   } catch (e) { fail(req, res, 400, e) }
@@ -98,4 +98,4 @@ async function remove(req, res) {
   catch (e) { fail(req, res, 500, e) }
 }
 
-module.exports = { getAll, create, update, remove }
+module.exports = { getAll, create, update, remove }
