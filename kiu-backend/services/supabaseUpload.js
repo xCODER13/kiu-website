@@ -2,6 +2,9 @@ const { createClient } = require('@supabase/supabase-js')
 const crypto = require('crypto')
 const logger = require('../logger')
 
+// Barcha rasmlar shu bucket'da (public). Nom bitta joyda — upload/delete/prefiks mos tushishi uchun.
+const STORAGE_BUCKET = 'news-images'
+
 let supabase = null
 
 function getSupabase() {
@@ -93,7 +96,7 @@ async function uploadImageWithPath(file, folder) {
   const path = `${folder}/${crypto.randomUUID()}-${safeName}`
 
   const { error } = await client.storage
-    .from('news-images')
+    .from(STORAGE_BUCKET)
     // Supabase'ga saqlanadigan Content-Type — endi tasodifiy client
     // sarlavhasi emas, tasdiqlangan haqiqiy fayl turi (`detectedMime`)
     .upload(path, file.buffer, { contentType: detectedMime })
@@ -102,8 +105,22 @@ async function uploadImageWithPath(file, folder) {
     throw new Error(`Supabase upload xatosi: ${error.message}`)
   }
 
-  const { data } = client.storage.from('news-images').getPublicUrl(path)
+  const { data } = client.storage.from(STORAGE_BUCKET).getPublicUrl(path)
   return { url: data.publicUrl, path }
+}
+
+// Bizning public bucket URL'lari boshlanadigan prefiks (oxiri '/'). Qiymat qo'lda yig'ilmaydi,
+// supabase-js'ning o'zidan olinadi — shunda u har doim `uploadImageWithPath` qaytaradigan
+// URL'lar bilan mos keladi (SUPABASE_URL formati o'zgarsa ham). SUPABASE_URL/KEY
+// sozlanmagan bo'lsa `getSupabase()` xato tashlaydi — chaqiruvchi buni "prefiks yo'q" deb oladi.
+function getPublicUrlPrefix() {
+  const SENTINEL = '__prefix__'
+  const { data } = getSupabase().storage.from(STORAGE_BUCKET).getPublicUrl(SENTINEL)
+  const url = data && data.publicUrl
+  if (typeof url !== 'string' || !url.endsWith(SENTINEL)) {
+    throw new Error("Storage public URL prefiksini aniqlab bo'lmadi")
+  }
+  return url.slice(0, -SENTINEL.length)
 }
 
 async function uploadImageToSupabase(file, folder) {
@@ -120,7 +137,7 @@ async function deleteSupabaseImages(paths) {
   const list = (Array.isArray(paths) ? paths : [paths]).filter(Boolean)
   if (list.length === 0) return
   const client = getSupabase()
-  const { error } = await client.storage.from('news-images').remove(list)
+  const { error } = await client.storage.from(STORAGE_BUCKET).remove(list)
   if (error) {
     throw new Error(`Supabase'dan o'chirishda xato: ${error.message}`)
   }
@@ -157,4 +174,4 @@ async function uploadImagesToSupabase(files, folder) {
   return { urls: succeeded.map(s => s.url), paths: succeeded.map(s => s.path) }
 }
 
-module.exports = { getSupabase, uploadImageToSupabase, uploadImagesToSupabase, deleteSupabaseImages }
+module.exports = { getSupabase, getPublicUrlPrefix, uploadImageToSupabase, uploadImagesToSupabase, deleteSupabaseImages, STORAGE_BUCKET }

@@ -2,6 +2,7 @@ const Event = require('../models/Event')
 const { fail } = require('../middleware/errorHandler')
 const { applyPagination } = require('../utils/pagination')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
+const { rejectForeignImageUrls } = require('../utils/imageUrls')
 
 async function getAll(req, res) {
   try {
@@ -29,6 +30,8 @@ async function resolveImage(req, folder) {
 async function create(req, res) {
   let uploadedPaths = []
   try {
+    // `existingImage` faqat fayl yuborilmaganda ishlatiladi; fayl bo'lsa u e'tiborsiz (1.1)
+    if (!req.file && rejectForeignImageUrls(req, res, [req.body.existingImage || ''])) return
     const resolved = await resolveImage(req, 'events')
     uploadedPaths = resolved.uploadedPaths
     const { title, desc, eventDate, type } = req.body
@@ -42,6 +45,10 @@ async function create(req, res) {
 async function update(req, res) {
   let uploadedPaths = []
   try {
+    if (!req.file) {
+      const stored = await Event.findById(req.params.id).select('image')
+      if (rejectForeignImageUrls(req, res, [req.body.existingImage || ''], stored ? [stored.image] : [])) return
+    }
     const resolved = await resolveImage(req, 'events')
     uploadedPaths = resolved.uploadedPaths
     const { title, desc, eventDate, type } = req.body

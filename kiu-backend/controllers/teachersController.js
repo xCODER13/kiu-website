@@ -2,6 +2,7 @@ const Teacher = require('../models/Teacher')
 const { fail } = require('../middleware/errorHandler')
 const { applyPagination } = require('../utils/pagination')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
+const { rejectForeignImageUrls } = require('../utils/imageUrls')
 
 // Bazada eski `email` qiymatlari qolgan bo'lishi mumkin (Mongoose strict rejimi ularni o'chirmaydi) —
 // shuning uchun har bir javobdan aniq chiqarib tashlanadi (scripts/unset-teacher-email.js bilan DB ham tozalanadi).
@@ -29,6 +30,8 @@ async function resolveImage(req) {
 async function create(req, res) {
   let uploadedPaths = []
   try {
+    // `existingImage` faqat fayl yuborilmaganda ishlatiladi; fayl bo'lsa u e'tiborsiz (1.1)
+    if (!req.file && rejectForeignImageUrls(req, res, [req.body.existingImage || ''])) return
     const resolved = await resolveImage(req)
     uploadedPaths = resolved.uploadedPaths
     const { name, role, dept, avatar } = req.body
@@ -43,6 +46,10 @@ async function create(req, res) {
 async function update(req, res) {
   let uploadedPaths = []
   try {
+    if (!req.file) {
+      const stored = await Teacher.findById(req.params.id).select('image')
+      if (rejectForeignImageUrls(req, res, [req.body.existingImage || ''], stored ? [stored.image] : [])) return
+    }
     const resolved = await resolveImage(req)
     uploadedPaths = resolved.uploadedPaths
     const { name, role, dept, avatar } = req.body

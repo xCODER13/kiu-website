@@ -6,7 +6,7 @@ import { useMultiImageUpload } from './shared/useImageUpload'
 import { useApiGet } from './shared/useApiGet'
 import { ErrorBanner, ErrorPanel, EmptyState } from './shared/StateViews.jsx'
 import ConfirmDialog from './shared/ConfirmDialog.jsx'
-import { MAX_IMAGES } from './shared/constants'
+import { MAX_IMAGES, toAdminCategory } from './shared/constants'
 import NewsForm from './NewsForm.jsx'
 
 const EMPTY = { title: '', content: '', category: 'Umumiy', shortsUrl: '' }
@@ -145,7 +145,7 @@ export default function NewsAdmin() {
     const v = {
       title: n.title,
       content: n.content || '',
-      category: n.category || 'Umumiy',
+      category: toAdminCategory(n.category),
       shortsUrl: n.shortsUrl || (n.videoId ? `https://youtube.com/shorts/${n.videoId}` : ''),
     }
     const urls = parseImages(n.image)

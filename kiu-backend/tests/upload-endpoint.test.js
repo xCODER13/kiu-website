@@ -75,12 +75,12 @@ describe('POST /api/news — rasm bilan', () => {
     const res = await request(app)
       .post('/api/news').set(auth)
       .field('title', 'Aralash')
-      .field('existingImages', JSON.stringify(['https://old.test/1.png']))
+      .field('existingImages', JSON.stringify([cdn('news/old-1.png')])) // 1.1: yangi hujjatda mavjud URL bizning Storage prefiksi bilan boshlanishi shart
       .attach('imageFiles', PNG, { filename: 'new.png', contentType: 'image/png' })
 
     expect(res.status).toBe(200)
     const urls = JSON.parse(res.body.image)
-    expect(urls[0]).toBe('https://old.test/1.png')
+    expect(urls[0]).toBe(cdn('news/old-1.png'))
     expect(urls[1]).toMatch(/-new\.png$/)
   })
 
