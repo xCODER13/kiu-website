@@ -1,7 +1,6 @@
 const path = require('path')
 const mongoose = require('mongoose')
 const { assertSafeTestUri } = require('./testDbGuard')
-const { resetCache: resetAdminSessionsCache } = require('../services/adminSessions')
 
 // `.env.test` (agar mavjud bo'lsa) — faqat TEST_MONGODB_URI uchun. Mavjud env
 // o'zgaruvchilarni (masalan CI'da berilganini) bosib o'tmaydi. `quiet` — dotenv shovqinsiz.
@@ -45,7 +44,8 @@ beforeAll(async () => {
 
 afterEach(async () => {
   // `auth` DB'dagi chegaralarni 30 soniya keshlaydi — testlar orasida qolib ketmasin.
-  resetAdminSessionsCache()
+  // (require shu yerda, env sozlanganidan KEYIN: aks holda logger LOG_LEVEL='silent' dan oldin yaratiladi)
+  require('../services/adminSessions').resetCache()
   delete process.env.ADMIN_PASSWORD_HASH
   delete process.env.ADMIN_PASSWORD_CHANGED_AT
   const collections = mongoose.connection.collections
