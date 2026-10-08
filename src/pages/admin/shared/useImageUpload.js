@@ -35,25 +35,45 @@ export function useSingleImageUpload() {
   return { imageFile, imagePreview, setImageFile, setImagePreview, handleImageSelect, clearImage }
 }
 
-// ── Ko'p rasm (News) ────────────────────────────────────────────────
-export function useMultiImageUpload() {
+// ── Ko'p rasm (News, Gallery) ────────────────────────────────────────
+// 6.24 (Yangiliklar) qo'shdi:
+// - `addFiles(files)` — fayl tanlash VA drag-and-drop uchun bitta yo'l (`handleFileSelect` shuni chaqiradi);
+// - `max` — jami rasm soni (mavjud + yangi); oshsa fayllar qo'shilmaydi;
+// - `onError({ kind, file, max })` — berilsa `alert()` o'rniga chaqiriladi (kind: 'type' | 'size' | 'count'),
+//   maydon ostida inline xabar ko'rsatish uchun. Berilmasa — avvalgidek `alert()` (Galereya 6-bo'lakda o'zgaradi).
+const MAX_FILE_SIZE = 5 * 1024 * 1024
+
+export function useMultiImageUpload({ onError, max } = {}) {
   const [imageFiles, setImageFiles]     = useState([])   // yangi fayllar
   const [imagePreviews, setImagePreviews] = useState([]) // {url, isNew}[]
   const fileRef = useRef(null)
 
-  function handleFileSelect(e) {
-    const files = Array.from(e.target.files || [])
+  function fail(error) {
+    if (fileRef.current) fileRef.current.value = ''
+    if (onError) return onError(error)
+    if (error.kind === 'type') alert('Faqat rasm fayllari qabul qilinadi (JPEG, PNG, WebP, GIF)!')
+    else if (error.kind === 'size') alert(`${error.file.name} — 5 MB dan katta!`)
+    else alert(`Ko'pi bilan ${error.max} ta rasm qo'shish mumkin.`)
+  }
+
+  function addFiles(list) {
+    const files = Array.from(list || [])
     if (!files.length) return
     const invalid = files.find(f => !isAllowedImage(f))
-    if (invalid) return alert('Faqat rasm fayllari qabul qilinadi (JPEG, PNG, WebP, GIF)!')
-    const oversized = files.find(f => f.size > 5 * 1024 * 1024)
-    if (oversized) return alert(`${oversized.name} — 5 MB dan katta!`)
+    if (invalid) return fail({ kind: 'type', file: invalid })
+    const oversized = files.find(f => f.size > MAX_FILE_SIZE)
+    if (oversized) return fail({ kind: 'size', file: oversized })
+    if (max && imagePreviews.length + files.length > max) return fail({ kind: 'count', max })
 
     const newFiles = [...imageFiles, ...files]
     const newPreviews = [...imagePreviews, ...files.map(f => ({ url: URL.createObjectURL(f), isNew: true }))]
     setImageFiles(newFiles)
     setImagePreviews(newPreviews)
     if (fileRef.current) fileRef.current.value = ''
+  }
+
+  function handleFileSelect(e) {
+    addFiles(e.target.files)
   }
 
   function removeImage(idx) {
@@ -73,15 +93,21 @@ export function useMultiImageUpload() {
 
   // Tahrirlash uchun ochilganda — mavjud (backenddan kelgan) URL'larni
   // preview sifatida ko'rsatish, yangi fayllar ro'yxatini tozalash.
+  function revokeNew() {
+    imagePreviews.filter(p => p.isNew).forEach(p => URL.revokeObjectURL(p.url))
+  }
+
   function reset(urls = []) {
+    revokeNew()
     setImageFiles([])
     setImagePreviews(urls.map(u => ({ url: u, isNew: false })))
   }
 
   function clear() {
+    revokeNew()
     setImageFiles([])
     setImagePreviews([])
   }
 
-  return { imageFiles, imagePreviews, fileRef, handleFileSelect, removeImage, reset, clear }
+  return { imageFiles, imagePreviews, fileRef, handleFileSelect, addFiles, removeImage, reset, clear }
 }

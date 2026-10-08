@@ -105,4 +105,35 @@ describe('ConfirmDialog', () => {
     opener.remove()
     document.body.style.overflow = ''
   })
+
+  // 6.24: «Saqlanmagan o'zgarishlar» (tone="warning")
+  describe('tone="warning" (saqlanmagan o\'zgarishlar)', () => {
+    const warn = (props = {}) => setup({ tone: 'warning', title: "Saqlanmagan o'zgarishlar bor", confirmLabel: 'Chiqish', cancelLabel: 'Tahrirlashda qolish', ...props })
+
+    it('fokus xavfsiz tugmada («Tahrirlashda qolish»), «Chiqish» chapda', () => {
+      warn()
+      const stay = screen.getByRole('button', { name: 'Tahrirlashda qolish' })
+      const leave = screen.getByRole('button', { name: 'Chiqish' })
+      expect(stay).toHaveFocus()
+      expect(leave.compareDocumentPosition(stay) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+      expect(stay).toHaveClass('btn-primary')
+    })
+
+    it('ogohlantirish ikonkasi (o\'chirish ikonkasi emas), tasdiq tugmasida ikonka yo\'q', () => {
+      warn()
+      expect(document.querySelector('.adm-dialog-icon--warning')).not.toBeNull()
+      expect(screen.getByRole('button', { name: 'Chiqish' }).querySelector('svg')).toBeNull()
+    })
+
+    it('«Chiqish» — onConfirm, «Tahrirlashda qolish» va Esc — onCancel', async () => {
+      const user = userEvent.setup()
+      const { onConfirm, onCancel } = warn()
+      await user.click(screen.getByRole('button', { name: 'Chiqish' }))
+      expect(onConfirm).toHaveBeenCalledTimes(1)
+      await user.click(screen.getByRole('button', { name: 'Tahrirlashda qolish' }))
+      await user.keyboard('{Escape}')
+      expect(onCancel).toHaveBeenCalledTimes(2)
+      expect(onConfirm).toHaveBeenCalledTimes(1)
+    })
+  })
 })

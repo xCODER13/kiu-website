@@ -226,8 +226,15 @@ describe('Bosqich 6c: CRUD sahifalar (shared/styles.js klasslarga o\'tdi)', () =
     expect(code).toMatch(/animation: spin 0\.7s linear infinite/)
     for (const n of ['NewsAdmin', 'EventsAdmin', 'GalleryAdmin', 'TeachersAdmin']) {
       expect(src(n), n).not.toMatch(/ede9fe/i)
+    }
+    // 6.24: Yangiliklar fayl kiritishi `shared/ImageField.jsx` ga o'tdi va `hidden` o'rniga `.adm-sr-only` — `hidden` (display: none)
+    // inputni klaviaturadan ham, ekran o'quvchidan ham olib tashlardi; endi Tab bilan fokuslanadi (fokus halqasi yuklash maydonida).
+    for (const n of ['EventsAdmin', 'GalleryAdmin', 'TeachersAdmin']) {
       expect(src(n), n).toMatch(/type="file"[^>]* hidden \/>/)
     }
+    const field = read('src/pages/admin/shared/ImageField.jsx')
+    expect(field).toMatch(/className="adm-sr-only"\s+type="file"/)
+    expect(field).not.toMatch(/type="file"[^>]*\shidden[\s/>]/)
   })
 })
 
@@ -370,8 +377,41 @@ describe("Bosqich 6.23: Arizalar (taxta bo'yicha)", () => {
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\.adm-dialog-confirm\[aria-busy="true"\] svg \{ animation: none; \}/)
   })
 
+  it("tasdiq tugmasi band bo'lganda bitta spinner: umumiy `.btn[aria-busy]::after` o'chiriladi (ikki marta aylanardi)", () => {
+    expect(css).toMatch(/\.btn\.adm-dialog-confirm\[aria-busy="true"\]::after \{ content: none; \}/)
+  })
+
   it("`.adm-sr-only` ko'rinmas, lekin ekran o'quvchiga ochiq (`display: none` emas)", () => {
     expect(rule('.adm-sr-only')).toMatch(/clip-path: inset\(50%\);/)
     expect(rule('.adm-sr-only')).not.toMatch(/display: none/)
+  })
+})
+
+describe('Bosqich 6.24: Yangiliklar', () => {
+  const css = code
+  const rule = sel => (css.match(new RegExp(`${sel.replace(/[.[\]()]/g, '\\$&')} \\{([^}]*)\\}`)) ?? [])[1] ?? ''
+  const tokens = read('src/styles/tokens.css')
+  const srcOf = f => strip(read(f)).replace(/\/\/.*$/gm, '')
+
+  it("Yangiliklar kodida `alert()`, `window.confirm` va inline `style=` yo'q", () => {
+    for (const f of ['src/pages/admin/NewsAdmin.jsx', 'src/pages/admin/NewsForm.jsx', 'src/pages/admin/shared/FormField.jsx', 'src/pages/admin/shared/ImageField.jsx']) {
+      const src = srcOf(f)
+      expect(src, f).not.toMatch(/window\.confirm|\balert\(|\bconfirm\(/)
+      expect(src, f).not.toMatch(/\bstyle=/)
+    }
+  })
+
+  it("`--color-scrim-thumb` tokeni bor va miniatyura qatlami shuni ishlatadi", () => {
+    expect(tokens).toMatch(/--color-scrim-thumb:/)
+    expect(css).toMatch(/var\(--color-scrim-thumb\)/)
+  })
+
+  it("forma maydonlarining fokus halqasi o'chirilmagan (`outline: none` yo'q)", () => {
+    expect(rule('.adm-ctl:focus-visible')).not.toMatch(/outline:\s*none/)
+  })
+
+  it("saqlash tugmasi band bo'lganda bitta spinner (`.btn[aria-busy]::after`), SVG ikonka qo'shilmaydi", () => {
+    expect(css).toMatch(/\.btn\.btn-primary\.adm-save\[aria-busy="true"\]/)
+    expect(srcOf('src/pages/admin/NewsForm.jsx')).toMatch(/\{!saving && Ic\.save\}/)
   })
 })

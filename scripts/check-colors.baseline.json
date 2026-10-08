@@ -1,7 +1,7 @@
 {
   "totals": {
     "hex": 6,
-    "func": 83,
+    "func": 84,
     "files": 6,
     "uniqueHex": 6
   },
@@ -10,13 +10,13 @@
       "hex": 0,
       "func": 53
     },
-    "src/styles/components.css": {
+    "src/styles/admin.css": {
       "hex": 0,
       "func": 14
     },
-    "src/styles/admin.css": {
+    "src/styles/components.css": {
       "hex": 0,
-      "func": 13
+      "func": 14
     },
     "src/pages/admin/TeachersAdmin.jsx": {
       "hex": 6,
