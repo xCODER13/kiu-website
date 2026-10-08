@@ -49,7 +49,7 @@ describe('GET /api/stats', () => {
       { title: 'e2', eventDate: '2026-02-02' },
       { title: 'e3', eventDate: '2026-03-03' },
     ])
-    await Teacher.create({ name: 'T', role: 'R', dept: 'D' })
+    await Teacher.create({ name: 'T', role: 'R', dept: 'Aniq fanlar kafedrasi' })
     await Gallery.create([
       { title: '1-kampus', images: ['https://x/1.jpg'] },
       { title: '2-kampus', images: ['https://x/2.jpg'] },

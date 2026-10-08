@@ -252,7 +252,7 @@ describe('Events — rasm bilan', () => {
 
 // ───────────────────────── TEACHERS ─────────────────────────
 describe('Teachers — rasm bilan', () => {
-  const fields = { name: 'Dilshod Karimov', role: 'Professor', dept: 'Informatika' }
+  const fields = { name: 'Dilshod Karimov', role: 'Professor', dept: 'Aniq fanlar kafedrasi' }
 
   test("POST: fayl 'teachers/' papkasiga yuklanadi va URL saqlanadi", async () => {
     const res = await request(app)

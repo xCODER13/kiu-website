@@ -204,7 +204,7 @@ describe('Events — begona rasm URL', () => {
 })
 
 describe('Teachers — begona rasm URL', () => {
-  const fields = { name: 'Ali Valiyev', role: 'Dotsent', dept: 'Informatika', avatar: 'AV' }
+  const fields = { name: 'Ali Valiyev', role: 'Dotsent', dept: 'Aniq fanlar kafedrasi', avatar: 'AV' }
 
   test("POST: fayl yo'q + begona existingImage — 400", async () => {
     const res = await request(app).post('/api/teachers').set(auth).field({ ...fields, existingImage: EVIL })

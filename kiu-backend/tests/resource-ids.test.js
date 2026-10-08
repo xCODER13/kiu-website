@@ -18,7 +18,7 @@ const BAD_ID = 'bu-id-emas'
 const RESOURCES = [
   { name: 'news', path: '/api/news', Model: News, seed: { title: 'Asl' }, update: { title: 'Yangi' }, field: 'title' },
   { name: 'events', path: '/api/events', Model: Event, seed: { title: 'Asl', eventDate: '2026-01-01' }, update: { title: 'Yangi', eventDate: '2026-02-02' }, field: 'title' },
-  { name: 'teachers', path: '/api/teachers', Model: Teacher, seed: { name: 'Asl', role: 'R', dept: 'D' }, update: { name: 'Yangi', role: 'R', dept: 'D' }, field: 'name' },
+  { name: 'teachers', path: '/api/teachers', Model: Teacher, seed: { name: 'Asl', role: 'R', dept: 'Aniq fanlar kafedrasi' }, update: { name: 'Yangi', role: 'R', dept: 'Aniq fanlar kafedrasi' }, field: 'name' },
 ]
 
 describe.each(RESOURCES)('$name — PUT/DELETE /:id', ({ path, Model, seed, update, field }) => {
