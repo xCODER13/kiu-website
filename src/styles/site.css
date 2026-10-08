@@ -171,12 +171,13 @@
     .nav-group-panel { transform: none; transition: none; }
   }
   /* SPA navigatsiyasidan keyin sichqoncha joyidan qimirlamasa `:hover` "true" bo'lib qoladi — element bosilganda
-     Navbar.jsx shu klassni qo'yib panelni majburan yopadi (chetga chiqilganda olib tashlanadi). `!important` — ataylab:
-     holatni majburan yopish, specificity urushi emas. */
+     Navbar.jsx shu klassni qo'yib panelni majburan yopadi (chetga chiqilganda olib tashlanadi; Esc bilan yopilganda ham).
+     `!important` yo'q (6.30): bu qoida yuqoridagi `:hover`/`:focus-within` qoidalari bilan BIR XIL specificity (0,3,0) da va ulardan KEYIN
+     turadi, shuning uchun ustun keladi — tartibni o'zgartirmang (admin.test/site.test shuni tekshiradi). */
   .nav-group.force-closed .nav-group-panel {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
   .nav-group-panel-inner {
     position: relative;

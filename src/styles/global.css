@@ -128,17 +128,18 @@
   .fade-up, .enter { animation: none; }
 }
 
-/* Mobile nav */
-.desktop-nav { display: flex !important; }
-.mobile-nav  { display: none !important; }
+/* Mobile nav. Bu qoidalar QATLAMSIZ: qatlamsiz qoida har qanday qatlamli (`components`: `.btn`, `.nav-links`...) qoidadan ustun —
+   shuning uchun `!important` kerak emas (6.30). Qatlamsiz boshqa qoida bu klasslarning `display` iga tegmasligi kerak. */
+.desktop-nav { display: flex; }
+.mobile-nav  { display: none; }
 
 /* Til almashtirgich (UZ | RU | EN) — site.css (6.12a) */
 
 /* Responsive */
 /* Desktop navbar 1180 px dan pastda hamburger menyuga almashadi (spec 6.6: 1024 px; 1180 — yangi 14 px/600 havolalar sig'ishi uchun) */
 @media (max-width: 1180px) {
-  .desktop-nav { display: none !important; }
-  .mobile-nav  { display: flex !important; }
+  .desktop-nav { display: none; }
+  .mobile-nav  { display: flex; }
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
