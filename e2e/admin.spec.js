@@ -144,17 +144,19 @@ test.describe('Admin: tadbirlar boshqaruvi', () => {
     await expect(page.getByText('Sanani tanlang.')).toBeVisible()
 
     await page.getByLabel(/^Sarlavha/).fill(title)
-    await page.getByLabel(/^Sana/).fill('2099-10-15')
+    // Backend sanani «hozirdan +10 yil»gacha qabul qiladi (1.4) — 2099 rad etiladi; 3 yil keyin ham har doim «kelgusi»
+    const year = new Date().getFullYear() + 3
+    await page.getByLabel(/^Sana/).fill(`${year}-10-15`)
     await Promise.all([
       page.waitForResponse(res => res.url().endsWith('/api/events') && res.request().method() === 'POST'),
       page.getByRole('button', { name: "Qo'shish", exact: true }).click(),
     ])
 
-    // Sana 2099 — «Kelgusi tadbirlar» bo'limida, plitka va yil bilan
+    // Sana kelajakda — «Kelgusi tadbirlar» bo'limida, plitka va yil bilan
     const upcoming = page.getByRole('region', { name: 'Kelgusi tadbirlar' })
     const row = upcoming.getByRole('listitem').filter({ hasText: title })
     await expect(row).toBeVisible()
-    await expect(row).toContainText('15 oktyabr 2099')
+    await expect(row).toContainText(`15 oktyabr ${year}`)
 
     await page.getByRole('button', { name: `O'chirish: ${title}` }).click()
     await Promise.all([
