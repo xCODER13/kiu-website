@@ -2,6 +2,7 @@ const News = require('../models/News')
 const { fail } = require('../middleware/errorHandler')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { applyPagination } = require('../utils/pagination')
+const { rejectForeignImageUrls } = require('../utils/imageUrls')
 
 async function getOne(req, res) {
   try {
@@ -53,6 +54,8 @@ async function create(req, res) {
   let uploadedPaths = []
   try {
     const existingUrls = parseExistingImages(req.body.existingImages)
+    // Yuklashdan OLDIN: begona URL bo'lsa Storage'ga hech narsa yozilmaydi (1.1)
+    if (rejectForeignImageUrls(req, res, existingUrls)) return
     const files = req.files || []
     const { urls: newUrls, paths } = await uploadImagesToSupabase(files, 'news')
     uploadedPaths = paths
@@ -71,6 +74,10 @@ async function update(req, res) {
   let uploadedPaths = []
   try {
     const existingUrls = parseExistingImages(req.body.existingImages)
+    // Hujjatning o'zida saqlangan URL'lar (o'zgarmagan rasmlar) eski formatda bo'lsa ham o'tadi;
+    // hujjat topilmasa tekshiruv oddiy, 404 esa pastda (avvalgi tartib saqlandi)
+    const stored = await News.findById(req.params.id).select('image')
+    if (rejectForeignImageUrls(req, res, existingUrls, stored ? parseExistingImages(stored.image) : [])) return
     const files = req.files || []
     const { urls: newUrls, paths } = await uploadImagesToSupabase(files, 'news')
     uploadedPaths = paths

@@ -1,7 +1,20 @@
+// 1.1: `existingImages` URL'lari bizning Storage prefiksi bilan boshlanishi shart. Prefiks
+// supabase-js'dan olinadi (`getPublicUrl`), shuning uchun u mock qilinadi: prefiks `https://cdn.test/`.
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
+    storage: { from: jest.fn(() => ({ getPublicUrl: p => ({ data: { publicUrl: `https://cdn.test/${p}` } }) })) },
+  })),
+}))
+
 const request = require('supertest')
 const app = require('../app')
 const Gallery = require('../models/Gallery')
 const { getAuthToken } = require('./helpers')
+
+beforeAll(() => {
+  process.env.SUPABASE_URL = 'https://supabase.test'
+  process.env.SUPABASE_SERVICE_KEY = 'test-service-key'
+})
 
 describe('Gallery CRUD', () => {
   test("GET /api/gallery — auth talab qilmaydi, bo'sh ro'yxat qaytaradi", async () => {
@@ -72,11 +85,12 @@ describe('Gallery CRUD', () => {
       .set('Authorization', `Bearer ${token}`)
       .field('title', 'Yangilangan')
       .field('desc', 'yangi tavsif')
-      .field('existingImages', JSON.stringify(['https://x/1.jpg', 'https://x/2.jpg']))
+      // 1-URL hujjatda allaqachon saqlangan (eski, begona format ham o'tadi); 2-URL yangi — bizning prefiks bilan
+      .field('existingImages', JSON.stringify(['https://x/1.jpg', 'https://cdn.test/gallery/2.jpg']))
     expect(res.status).toBe(200)
     expect(res.body.title).toBe('Yangilangan')
     expect(res.body.desc).toBe('yangi tavsif')
-    expect(res.body.images).toEqual(['https://x/1.jpg', 'https://x/2.jpg'])
+    expect(res.body.images).toEqual(['https://x/1.jpg', 'https://cdn.test/gallery/2.jpg'])
   })
 
   test("PUT /api/gallery/:id — mavjud bo'lmagan ID uchun 404 qaytaradi", async () => {
@@ -85,7 +99,7 @@ describe('Gallery CRUD', () => {
       .put('/api/gallery/507f1f77bcf86cd799439011')
       .set('Authorization', `Bearer ${token}`)
       .field('title', 'X')
-      .field('existingImages', JSON.stringify(['https://x/1.jpg']))
+      .field('existingImages', JSON.stringify(['https://cdn.test/gallery/1.jpg']))
     expect(res.status).toBe(404)
   })
 

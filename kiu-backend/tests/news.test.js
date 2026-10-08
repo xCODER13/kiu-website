@@ -72,9 +72,9 @@ describe('News CRUD', () => {
     const res = await request(app)
       .post('/api/news')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'Video', shortsUrl: 'https://youtube.com/shorts/abc', videoId: 'abc' })
+      .send({ title: 'Video', shortsUrl: 'https://youtube.com/shorts/abc', videoId: 'abcDEF12345' })
     expect(res.status).toBe(200)
-    expect(res.body.videoId).toBe('abc')
+    expect(res.body.videoId).toBe('abcDEF12345')
     expect(res.body.shortsUrl).toBe('https://youtube.com/shorts/abc')
   })
 

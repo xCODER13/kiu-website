@@ -18,6 +18,12 @@ export const NAV = [
 
 // Yangiliklar formasi (6.24): chegaralar serverdagi bilan bir xil bo'lishi shart
 export const NEWS_CATEGORIES = ["Umumiy", "Ta'lim", 'Sport', 'Madaniyat', 'Xalqaro', 'Fan']
+// Server kategoriyani kichik harfda saqlaydi ("sport"), forma esa ko'rinadigan nom ("Sport") bilan ishlaydi.
+// Ro'yxatda yo'q (eski, erkin matnli) qiymat o'zgarishsiz qaytadi — forma uni alohida variant sifatida ko'rsatadi.
+export const toAdminCategory = c => {
+  const key = String(c ?? '').trim().toLowerCase()
+  return NEWS_CATEGORIES.find(x => x.toLowerCase() === key) ?? (c || 'Umumiy')
+}
 export const TITLE_MAX = 300      // models/News.js `maxlength`
 export const CONTENT_MAX = 50000  // models/News.js `maxlength`
 export const MAX_IMAGES = 10      // routes/news.routes.js multer `files: 10`

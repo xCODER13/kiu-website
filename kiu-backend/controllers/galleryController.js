@@ -2,6 +2,7 @@ const Gallery = require('../models/Gallery')
 const { fail } = require('../middleware/errorHandler')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { applyPagination } = require('../utils/pagination')
+const { rejectForeignImageUrls } = require('../utils/imageUrls')
 
 async function getAll(req, res) {
   try {
@@ -29,8 +30,13 @@ function parseExistingImages(raw) {
 // `uploadImagesToSupabase` o'zi ichida tozalaydi. Bu funksiya qaytargan
 // `paths`ni chaqiruvchi (create/update) DB yozuvi muvaffaqiyatsiz bo'lganda
 // ham tozalash uchun saqlab qo'yadi.
-async function buildImages(req, folder) {
+//
+// `storedUrls` — tahrirlashda hujjatda allaqachon saqlangan URL'lar (1.1): ular o'zgarishsiz
+// qolishi mumkin; YANGI kiritilgan URL esa bizning Storage prefiksi bilan boshlanishi shart.
+// Begona URL bo'lsa `null` qaytadi (javob allaqachon 400 sifatida yuborilgan), Storage'ga yozilmaydi.
+async function buildImages(req, res, folder, storedUrls = []) {
   const existingUrls = parseExistingImages(req.body.existingImages)
+  if (rejectForeignImageUrls(req, res, existingUrls, storedUrls)) return null
   const files = req.files || []
   const { urls: newUrls, paths } = await uploadImagesToSupabase(files, folder)
   return { images: [...existingUrls, ...newUrls], paths }
@@ -39,7 +45,9 @@ async function buildImages(req, folder) {
 async function create(req, res) {
   let uploadedPaths = []
   try {
-    const { images, paths } = await buildImages(req, 'gallery')
+    const built = await buildImages(req, res, 'gallery')
+    if (!built) return
+    const { images, paths } = built
     uploadedPaths = paths
     if (images.length === 0) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
@@ -56,7 +64,10 @@ async function create(req, res) {
 async function update(req, res) {
   let uploadedPaths = []
   try {
-    const { images, paths } = await buildImages(req, 'gallery')
+    const stored = await Gallery.findById(req.params.id).select('images')
+    const built = await buildImages(req, res, 'gallery', stored ? stored.images : [])
+    if (!built) return
+    const { images, paths } = built
     uploadedPaths = paths
     const { title, desc } = req.body
     const updated = await Gallery.findByIdAndUpdate(req.params.id,

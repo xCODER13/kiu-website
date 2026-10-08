@@ -266,6 +266,19 @@ describe('NewsAdmin: forma', () => {
     expect(screen.getByLabelText('YouTube Shorts havolasi')).toHaveValue('https://youtube.com/shorts/dQw4w9WgXcQ')
   })
 
+  it('server kichik harfda saqlagan kategoriya ("sport", "ta\'lim") formada ko\'rinadigan nomga mos tushadi, takroriy variant qo\'shilmaydi', async () => {
+    const api = mockApi({ 'GET /news': [{ ...N1, category: "ta'lim" }], 'PUT /news/n1': N1 })
+    const user = userEvent.setup()
+    render(<NewsAdmin />)
+    await user.click(await screen.findByRole('button', { name: /Tahrirlash/ }))
+    const select = screen.getByLabelText('Kategoriya')
+    expect(select).toHaveValue("Ta'lim")
+    expect(within(select).getAllByRole('option')).toHaveLength(6)
+    await submit(user, 'Saqlash')
+    await waitFor(() => expect(api.find('PUT', '/news/n1')).toHaveLength(1))
+    expect(api.find('PUT', '/news/n1')[0].body.get('category')).toBe("Ta'lim")
+  })
+
   it('ro\'yxatda yo\'q kategoriya jimgina boshqasiga almashmaydi (select ga qo\'shiladi)', async () => {
     const api = mockApi({ 'GET /news': [{ ...N1, category: 'Eski kategoriya' }], 'PUT /news/n1': N1 })
     const user = userEvent.setup()
