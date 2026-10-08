@@ -39,11 +39,21 @@ export const asArray = d => (Array.isArray(d) ? d : [])
 // window.fetch o'raladi. Faqat bizning API'ga va Authorization bilan ketgan so'rovlar
 // hisobga olinadi (login'ning noto'g'ri paroli 401 bermaydi va bu yerga kirmaydi).
 // Qaytaradi: tozalash funksiyasi (unmount'da chaqiring).
+//
+// 6.28: «Joriy parol noto'g'ri» ham 401 (backend) — handler uni «token eskirdi» deb hisoblab adminni tizimdan chiqarib yuborardi.
+// Shunday so'rovlar `skipUnauthorizedRedirect(init)` bilan belgilanadi (sarlavha emas — maxsus sarlavha CORS preflight'ni buzardi):
+// handler tegmaydi, 401 ni so'rovni yuborgan komponent o'zi ajratadi (maydon xatosi yoki «sessiya eskirdi»).
+const skipRedirect = new WeakSet()
+export function skipUnauthorizedRedirect(init) {
+  skipRedirect.add(init)
+  return init
+}
+
 export function installUnauthorizedHandler(onUnauthorized) {
   const original = window.fetch
   const wrapped = async function (input, init) {
     const res = await original.call(this, input, init)
-    if (res.status === 401) {
+    if (res.status === 401 && !(init && skipRedirect.has(init))) {
       const url = typeof input === 'string' ? input : input?.url
       const headers = init?.headers || {}
       const hasAuth = !!(headers.Authorization || headers.authorization)

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { API, H, HF, installUnauthorizedHandler, errorMessage, asArray } from './api'
+import { API, H, HF, installUnauthorizedHandler, skipUnauthorizedRedirect, errorMessage, asArray } from './api'
 
 describe('admin api helpers', () => {
   it('API — VITE_API_URL + /api', () => expect(API).toBe('http://api.test/api'))
@@ -39,6 +39,20 @@ describe('installUnauthorizedHandler', () => {
     const { cb } = setup(401)
     const res = await fetch(`${API}/news`, authed)
     expect(res.status).toBe(401)
+    expect(cb).toHaveBeenCalledTimes(1)
+    expect(localStorage.getItem('kiu_token')).toBeNull()
+  })
+
+  it('skipUnauthorizedRedirect(init) — belgilangan so\'rovning 401 i tokenni o\'chirmaydi va callback ni chaqirmaydi; belgilanmagani esa chaqiradi', async () => {
+    localStorage.setItem('kiu_token', 't')
+    const { cb } = setup(401)
+    const init = skipUnauthorizedRedirect({ method: 'POST', headers: { Authorization: 'Bearer t' } })
+    expect(init.method).toBe('POST') // o'sha obyekt qaytadi
+    const res = await fetch(`${API}/admin/change-password`, init)
+    expect(res.status).toBe(401)
+    expect(cb).not.toHaveBeenCalled()
+    expect(localStorage.getItem('kiu_token')).toBe('t')
+    await fetch(`${API}/news`, authed) // belgilanmagan so'rov — avvalgidek
     expect(cb).toHaveBeenCalledTimes(1)
     expect(localStorage.getItem('kiu_token')).toBeNull()
   })

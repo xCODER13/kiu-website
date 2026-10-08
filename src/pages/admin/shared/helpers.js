@@ -114,3 +114,56 @@ export const isPastEvent = (value, today) => eventDateKey(value) < today
 export function initialsOf({ avatar, name }) {
   return avatar || (name || '').slice(0, 2).toUpperCase()
 }
+
+// ── Profil (6.28) ───────────────────────────────────────────────────────────────────────────────
+// JWT'ning ichini (payload) o'qiydi — FAQAT ko'rsatish uchun (login, sessiya muddati); imzoni tekshirmaydi (bu serverning ishi).
+// Noto'g'ri/bo'sh token — null.
+export function decodeJwtPayload(token) {
+  try {
+    const part = String(token).split('.')[1]
+    if (!part) return null
+    const bin = atob(part.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(part.length / 4) * 4, '='))
+    const data = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))))
+    return data && typeof data === 'object' ? data : null
+  } catch {
+    return null
+  }
+}
+
+const UZ_MONTHS_LOWER = ['yan', 'fev', 'mar', 'apr', 'may', 'iyn', 'iyl', 'avg', 'sen', 'okt', 'noy', 'dek']
+
+// 1791540000000 → "9-okt 2026, 14:20" (adminning mahalliy vaqti). Noto'g'ri qiymat — ''.
+export function formatDateTimeShort(ms) {
+  const d = new Date(ms)
+  if (Number.isNaN(d.getTime())) return ''
+  const p = n => String(n).padStart(2, '0')
+  return `${d.getDate()}-${UZ_MONTHS_LOWER[d.getMonth()]} ${d.getFullYear()}, ${p(d.getHours())}:${p(d.getMinutes())}`
+}
+
+// Qolgan vaqt (ms) → «7 kundan so'ng» / «5 soatdan so'ng» / «12 daqiqadan so'ng»; o'tib ketgan bo'lsa — «muddati tugagan».
+export function formatTimeLeft(ms) {
+  if (!(ms > 0)) return 'muddati tugagan'
+  const min = Math.max(1, Math.floor(ms / 60000))
+  if (min < 60) return `${min} daqiqadan so'ng`
+  const hours = Math.floor(min / 60)
+  if (hours < 24) return `${hours} soatdan so'ng`
+  return `${Math.floor(hours / 24)} kundan so'ng`
+}
+
+// Uzunlik BAYT bilan (backend ham `Buffer.byteLength` bilan tekshiradi: bcrypt 72 bayt) — kirill/emoji bitta belgi = 2–4 bayt.
+export const byteLength = value => new TextEncoder().encode(String(value ?? '')).length
+
+export const STRENGTH_LABELS = { 1: 'Juda zaif', 2: 'Zaif', 3: 'Yaxshi', 4: 'Kuchli' }
+
+// Parol kuchi 0–4 (oddiy heuristika, kutubxonasiz; maslahat, to'siq emas): 0 — bo'sh; < 8 belgi — 1; 8–9 belgi yoki bitta turdagi — 2;
+// ≥ 10 va kamida 2 tur (harf, raqam, belgi) yoki ≥ 14 — 3; ≥ 14 va 3 tur yoki ≥ 20 — 4.
+export function passwordStrength(value) {
+  const v = String(value ?? '')
+  if (!v) return 0
+  const len = [...v].length
+  if (len < 8) return 1
+  const types = [/\p{L}/u, /\d/, /[^\p{L}\d]/u].filter(re => re.test(v)).length
+  if (len >= 20 || (len >= 14 && types >= 3)) return 4
+  if ((len >= 10 && types >= 2) || len >= 14) return 3
+  return 2
+}

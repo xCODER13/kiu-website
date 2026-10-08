@@ -446,29 +446,6 @@
     background: var(--color-surface-3);
     box-shadow: var(--shadow-card-board);
   }
-  .adm-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 6px 10px;
-    border: 1px solid var(--color-border);
-    border-radius: 7px;
-    background: none;
-    color: var(--color-text-muted);
-    font-family: inherit;
-    font-size: var(--text-2xs);
-    cursor: pointer;
-  }
-  .adm-btn--primary {
-    gap: 6px;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    background: var(--gradient-brand);
-    color: var(--color-on-brand);
-    font-size: var(--text-xs);
-    font-weight: 600;
-  }
   .adm-page-title {
     margin: 0;
     font-size: 1.75rem;
@@ -1359,7 +1336,7 @@
   /* ══ 6.24: Yangiliklar (taxta: Admin-News / Admin-News2) ══
      Yangi umumiy qismlar (keyingi bo'laklarda ham): `.adm-fld*` (forma maydoni), `.adm-ctl*` (input/select/textarea),
      `.adm-dz*` + `.adm-ithumb*` (rasm maydoni), `.adm-formcard*`, `.adm-items`/`.adm-item*` (ro'yxat qatori).
-     Eski `.adm-input`, `.adm-label`, `.adm-row-*`, `.adm-thumb-*` Tadbirlar, Galereya va O'qituvchilar uchun tegilmadi. */
+     (Eski `.adm-input`, `.adm-label`, `.adm-row-*` keyingi bo'laklarda olib tashlandi — oxirgisi 6.28.) */
 
   /* Bo'limlar: «Yangiliklar 32», «YouTube Shorts 12» */
   .adm-sec { margin-top: 28px; }
@@ -2328,150 +2305,239 @@
     margin-top: 2px;
   }
 
-  /* ══ 6c: CRUD sahifalar (Yangiliklar, Tadbirlar, Galereya, O'qituvchilar, Profil) ══
-     avval shared/styles.js obyektlari edi (card, inp, lbl, bP, bD, bE, bG). */
-
-  /* ── Tugma variantlari (`.adm-btn`, `--primary`; Profil, 8-bo'lakda almashadi) ── */
-  .adm-btn--primary:disabled { opacity: .6; }
-
-  /* ── Sahifa boshi va bo'limlar ── */
-  .adm-section-title {
-    margin-bottom: 8px;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-  }
-  .adm-list--spaced { margin-bottom: 1.5rem; }
-
-  /* ── Forma (ochiladigan karta) ── */
-  .adm-form-body {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .adm-label {
-    display: block;
-    margin-bottom: 4px;
-    font-size: var(--text-2xs);
-    font-weight: 600;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-  }
-  .adm-input {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid var(--color-border-strong);
-    border-radius: 8px;
-    background: var(--color-bg);
-    color: var(--color-text);
-    font-family: inherit;
-    font-size: var(--text-sm);
-  }
-
   /* Rasm yuklanmasa (`onError` → `data-broken`): xira ko'rsatiladi yoki yashiriladi */
   img[data-broken="true"] { opacity: .3; }
 
-  /* ── Ro'yxat qatorlari (Yangiliklar, Tadbirlar) ── */
-  .adm-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .adm-row-left {
-    display: flex;
-    flex: 1;
-    gap: 12px;
-    min-width: 0;
-  }
-  .adm-row-main {
-    flex: 1;
-    min-width: 0;
-  }
-  .adm-row-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-  .adm-pill {
-    padding: 2px 8px;
-    border-radius: 20px;
-    background: color-mix(in srgb, var(--color-brand) 10%, transparent);
-    font-size: 0.625rem;
-    color: var(--color-brand);
-  }
-  .adm-pill--youtube {
-    background: color-mix(in srgb, var(--brand-youtube) 10%, transparent);
-    color: var(--brand-youtube);
-  }
-  .adm-row-date {
-    font-size: 0.625rem;
-    color: var(--color-text-muted);
-  }
-  .adm-row-title {
-    margin-bottom: 3px;
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--color-text);
-  }
-  .adm-row-text {
-    overflow: hidden;
-    font-size: var(--text-2xs);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: var(--color-text-muted);
-  }
-  .adm-row-text--news { max-width: 450px; }
-
-  /* ── Profil ── */
+  /* ══ 6.28: Profil (taxta: Admin-Profil / Admin-Profil2) ══
+     Forma kartasi `.adm-formcard*`, maydon `.adm-fld*`/`.adm-ctl*` — Yangiliklar bilan bir xil; bu yerda faqat 380 px + 1fr to'r,
+     «Hisob» kartasi, parol maydoni («ko'z»), kuch o'lchagichi, talablar ro'yxati va banner. Rang faqat tokenlar. */
   .adm-profile-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 380px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
   }
-  .adm-profile-title {
+  .adm-profile-grid .adm-formcard { margin-top: 0; }
+  .adm-account { padding: 22px 24px 8px; }
+  .adm-account-title {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 1.25rem;
-    font-size: var(--text-sm);
-    font-weight: 600;
+    margin: 0 0 6px;
+    font-size: 1rem;
+    font-weight: 700;
     color: var(--color-text);
   }
-  .adm-info-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    padding: 10px 12px;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    background: var(--color-surface-2);
+  .adm-account-title svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-brand);
   }
-  .adm-info-key {
-    font-size: var(--text-xs);
+  .adm-account-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0;
+  }
+  .adm-account-row + .adm-account-row { border-top: 1px solid var(--color-border); }
+  .adm-account-row p { margin: 0; }
+  .adm-account-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--color-brand-subtle);
+    color: var(--color-brand);
+  }
+  .adm-account-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  .adm-account-key {
+    font-size: 0.8125rem;
     color: var(--color-text-muted);
   }
-  .adm-info-value {
-    font-size: var(--text-xs);
-    font-weight: 600;
+  .adm-account-val {
+    font-size: 0.96875rem;
+    font-weight: 700;
     color: var(--color-text);
   }
-  .adm-msg {
+  .adm-account-sub {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .adm-pwform-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .adm-pwform-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--color-brand-subtle);
+    color: var(--color-brand);
+  }
+  .adm-pwform-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .adm-pwform-sub {
+    margin: 2px 0 0;
+    font-size: 0.90625rem;
+    color: var(--color-text-muted);
+  }
+  .adm-form-note {
+    font-size: 0.84375rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Parol maydoni: o'ngda «ko'z» tugmasi; `•` belgilari kengroq */
+  .adm-pw { position: relative; }
+  .adm-ctl--pw { padding-right: 52px; }
+  .adm-ctl--pw[type="password"]:not(:placeholder-shown) {
+    font-size: 1.0625rem;
+    letter-spacing: 0.16em;
+  }
+  .adm-ctl[data-ok="true"] {
+    border: 1.5px solid var(--color-success);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-success) 10%, transparent);
+  }
+  .adm-pw-eye {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  .adm-pw-eye svg {
+    width: 18px;
+    height: 18px;
+  }
+  .adm-pw-eye:hover:not(:disabled) {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+  }
+  .adm-pw-eye:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 1px;
+  }
+  .adm-pw-eye:disabled { opacity: 0.6; cursor: not-allowed; }
+  .adm-fld-ok {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 10px 12px;
-    border: 1px solid var(--msg-c);
-    border-radius: 8px;
-    background: color-mix(in srgb, var(--msg-c) 10%, transparent);
-    font-size: var(--text-xs);
-    color: var(--msg-c);
+    margin: 6px 0 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-success);
   }
-  .adm-msg[data-type="success"] { --msg-c: var(--color-success); }
-  .adm-msg[data-type="error"]   { --msg-c: var(--color-danger); }
+  .adm-fld-ok svg {
+    flex: none;
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Parol kuchi: 4 segment (rang yolg'iz ma'no tashimaydi — matn bor) va talablar ro'yxati */
+  .adm-strength { margin-top: 12px; }
+  .adm-strength-bars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .adm-strength-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-surface-3);
+  }
+  .adm-strength[data-level="1"] .adm-strength-bar:nth-child(-n+1) { background: var(--color-danger); }
+  .adm-strength[data-level="2"] .adm-strength-bar:nth-child(-n+2) { background: var(--color-warning); }
+  .adm-strength[data-level="3"] .adm-strength-bar:nth-child(-n+3),
+  .adm-strength[data-level="4"] .adm-strength-bar { background: var(--color-success); }
+  .adm-strength-text {
+    margin: 8px 0 0;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .adm-strength-label { font-weight: 700; }
+  .adm-strength[data-level="1"] .adm-strength-label { color: var(--color-danger); }
+  .adm-strength[data-level="2"] .adm-strength-label { color: var(--color-warning); }
+  .adm-strength[data-level="3"] .adm-strength-label,
+  .adm-strength[data-level="4"] .adm-strength-label { color: var(--color-success); }
+  .adm-reqs {
+    display: grid;
+    gap: 6px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .adm-req {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84375rem;
+    color: var(--color-text-muted);
+  }
+  .adm-req[data-state="ok"] { color: var(--color-success); }
+  .adm-req[data-state="fail"] { color: var(--color-danger); }
+  .adm-req-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+  }
+  .adm-req-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+  .adm-req-dot {
+    width: 12px;
+    height: 12px;
+    box-sizing: border-box;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+  }
+
+  /* Muvaffaqiyat / urinishlar limiti banneri (xato banneri — umumiy `.adm-banner`) */
+  .adm-pbanner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 12px 14px 12px 16px;
+    border: 1px solid var(--pb);
+    border-radius: 12px;
+    background: var(--pb-bg);
+    font-size: 0.90625rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .adm-pbanner[data-tone="success"] { --pb: var(--color-success); --pb-bg: var(--color-success-bg); }
+  .adm-pbanner[data-tone="warning"] { --pb: var(--color-warning); --pb-bg: var(--color-warning-bg); }
+  .adm-pbanner > svg {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--pb);
+  }
+  .adm-pbanner-text { flex: 1; min-width: 0; }
 }

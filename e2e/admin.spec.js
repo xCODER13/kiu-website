@@ -264,3 +264,48 @@ test.describe("Admin: o'qituvchilar boshqaruvi", () => {
     await expect(page.getByRole('heading', { name })).toHaveCount(0)
   })
 })
+
+test.describe('Admin: profil (parolni o\'zgartirish)', () => {
+  // Haqiqiy backend: parol HECH QACHON o'zgartirilmaydi va noto'g'ri-parol urinishi ham yuborilmaydi (limiter: 15 daqiqada 5 ta) —
+  // faqat mijoz tomoni (validatsiya, kuch o'lchagichi, «ko'z», takrorlash). Noto'g'ri joriy parol / 401 / 429 — birlik testlarda (ProfileAdmin.test.jsx).
+  test("login → Hisob kartasi → validatsiya → kuch o'lchagichi → ko'z tugmasi → parollar mosligi (so'rov ketmaydi)", async ({ page }) => {
+    await loginAsAdmin(page)
+    await page.getByRole('link', { name: 'Profil', exact: true }).click()
+    await expect(page).toHaveURL(/\/admin\/profile$/)
+    await expect(page.getByRole('heading', { name: 'Profil sozlamalari' })).toBeVisible()
+    await expect(page.getByText('Sessiya tugaydi')).toBeVisible()
+
+    const requests = []
+    page.on('request', req => { if (req.url().includes('/admin/change-password')) requests.push(req) })
+
+    // Bo'sh yuborish: har bir maydon ostida xabar, fokus birinchi xatoda
+    await page.getByRole('button', { name: 'Parolni saqlash' }).click()
+    await expect(page.getByText('Joriy parolni kiriting.')).toBeVisible()
+    await expect(page.getByText("Parol kamida 8 ta belgidan iborat bo'lishi kerak.")).toBeVisible()
+    await expect(page.getByText('Yangi parolni takrorlang.')).toBeVisible()
+    await expect(page.getByLabel(/^Joriy parol/)).toBeFocused()
+
+    // Kuch o'lchagichi
+    await page.getByLabel(/^Joriy parol/).fill('joriy-parol-1')
+    const next = page.getByLabel(/^Yangi parol(?!ni)/)
+    await next.fill('1234567')
+    await expect(page.getByText('Juda zaif', { exact: true })).toBeVisible()
+    await next.fill('Kuz-Qarshi-2026!')
+    await expect(page.getByText('Kuchli', { exact: true })).toBeVisible()
+
+    // «Ko'z»: parolni ko'rsatish/yashirish
+    await expect(next).toHaveAttribute('type', 'password')
+    await page.getByRole('button', { name: "Parolni ko'rsatish" }).nth(1).click()
+    await expect(next).toHaveAttribute('type', 'text')
+
+    // Takrorlash mos kelmasa — maydondan chiqqanda darrov xabar; mos kelsa — «Parollar mos.»
+    const confirm = page.getByLabel(/^Yangi parolni takrorlang/)
+    await confirm.fill('boshqa-parol')
+    await confirm.blur()
+    await expect(page.getByText('Parollar mos kelmadi.')).toBeVisible()
+    await confirm.fill('Kuz-Qarshi-2026!')
+    await expect(page.getByText('Parollar mos.')).toBeVisible()
+
+    expect(requests).toHaveLength(0)
+  })
+})
