@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount, parseEventDate, eventDateKey, formatEventDate, eventTile, todayKey, isPastEvent } from './helpers'
+import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount, parseEventDate, eventDateKey, formatEventDate, eventTile, todayKey, isPastEvent, formatDateLong } from './helpers'
 
 const ID = 'dQw4w9WgXcQ'
 describe('extractYouTubeShortsId', () => {
@@ -96,5 +96,20 @@ describe('tadbir sanasi (6.25)', () => {
     expect(isPastEvent('2026-10-07', '2026-10-08')).toBe(true)
     expect(isPastEvent('2026-10-09', '2026-10-08')).toBe(false)
     expect(isPastEvent(undefined, '2026-10-08')).toBe(true)
+  })
+})
+
+describe('formatDateLong (6.26 — albom qo\'shilgan sana)', () => {
+  it('vaqt tamg\'asi → «12 sentyabr 2026» (adminning mahalliy kuni); oy nomi to\'liq, yil bor', () => {
+    expect(formatDateLong(new Date(2026, 8, 12, 10, 0))).toBe('12 sentyabr 2026')
+    expect(formatDateLong(new Date(2026, 0, 2, 23, 59))).toBe('2 yanvar 2026')
+    expect(formatDateLong(new Date(2025, 11, 31, 0, 1))).toBe('31 dekabr 2025')
+  })
+
+  it('ISO satr ham ishlaydi; noto\'g\'ri / bo\'sh qiymat — \'\'', () => {
+    expect(formatDateLong('2026-03-05T12:00:00Z')).toMatch(/^\d{1,2} mart 2026$/)
+    expect(formatDateLong('')).toBe('')
+    expect(formatDateLong(undefined)).toBe('')
+    expect(formatDateLong('mavjud emas')).toBe('')
   })
 })

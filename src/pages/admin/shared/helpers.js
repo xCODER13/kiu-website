@@ -45,6 +45,14 @@ export function formatDateShort(value) {
   return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()}`
 }
 
+// "2026-09-12T08:00:00Z" → "12 sentyabr 2026" — yozuv QO'SHILGAN payt (vaqt tamg'asi), shuning uchun adminning mahalliy kuni.
+// Tadbir sanasidan (`formatEventDate`, kalendar sanasi) farqi shu; oy nomlari umumiy. Noto'g'ri qiymat — ''.
+export function formatDateLong(value) {
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return ''
+  return `${d.getDate()} ${UZ_MONTHS[d.getMonth()]} ${d.getFullYear()}`
+}
+
 // 1284 → "1 284" (uzilmas probel — son ikki qatorga bo'linmaydi). Son bo'lmasa — "0".
 export function formatCount(value) {
   const n = Number(value)

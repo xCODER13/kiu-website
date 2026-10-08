@@ -34,3 +34,8 @@ export const EVENT_TYPES = [
   { value: 'graduation', label: 'Bitiruvchilar', tone: 2 },
   { value: 'admission', label: 'Qabul', tone: 5 },
 ]
+
+// Galereya (6.26): models/Gallery.js `maxlength`; mozaika — albomdagi birinchi 3 rasm
+export const GALLERY_TITLE_MAX = 200
+export const GALLERY_DESC_MAX = 500
+export const ALBUM_MOSAIC = 3

@@ -165,3 +165,48 @@ test.describe('Admin: tadbirlar boshqaruvi', () => {
     await expect(page.getByRole('heading', { name: title })).toHaveCount(0)
   })
 })
+
+test.describe('Admin: galereya boshqaruvi', () => {
+  // Albom yaratish rasm yuklashni (Supabase) talab qiladi — CI'da u yo'q, shuning uchun yozish so'rovlari yuborilmaydi:
+  // forma, validatsiya, rasm tanlash, 10/10 holati va «saqlanmagan o'zgarishlar» dialogi tekshiriladi.
+  const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64')
+  const file = i => ({ name: `rasm-${i}.png`, mimeType: 'image/png', buffer: PNG })
+
+  test("login → forma validatsiyasi → rasm tanlash → 10/10 → saqlanmagan o'zgarishlar dialogi", async ({ page }) => {
+    await loginAsAdmin(page)
+    await page.getByRole('link', { name: 'Galereya', exact: true }).click()
+    await expect(page).toHaveURL(/\/admin\/gallery$/)
+    await expect(page.getByRole('heading', { level: 2, name: 'Galereya' })).toBeVisible()
+
+    await page.getByRole('button', { name: 'Yangi albom' }).first().click()
+
+    // Bo'sh forma: nom va rasm uchun ALOHIDA xabar (avval ketma-ket ikkita `alert()`)
+    await page.getByRole('button', { name: "Qo'shish", exact: true }).click()
+    await expect(page.getByText('Albom nomini kiriting.')).toBeVisible()
+    await expect(page.getByText('Kamida bitta rasm tanlang.')).toBeVisible()
+
+    await page.getByLabel(/^Nomi/).fill('E2E albom')
+    const input = page.locator('input[type=file]')
+    await input.setInputFiles([file(1), file(2)])
+    await expect(page.locator('.adm-ithumb')).toHaveCount(2)
+    await expect(page.getByText('2 / 10')).toBeVisible()
+    await expect(page.getByText('Kamida bitta rasm tanlang.')).toBeHidden()
+
+    // 10 / 10: yuklash maydoni o'chadi, qo'shish imkonsiz
+    await input.setInputFiles(Array.from({ length: 8 }, (_, i) => file(i + 3)))
+    await expect(page.locator('.adm-ithumb')).toHaveCount(10)
+    await expect(page.getByText("Albom to'ldi — 10 ta rasm")).toBeVisible()
+    await expect(input).toBeDisabled()
+
+    // Saqlanmagan o'zgarishlar: «Bekor qilish» jimgina tozalamaydi
+    await page.getByRole('button', { name: 'Bekor qilish' }).click()
+    const dialog = page.getByRole('alertdialog', { name: "Saqlanmagan o'zgarishlar bor" })
+    await expect(dialog).toBeVisible()
+    await dialog.getByRole('button', { name: 'Tahrirlashda qolish' }).click()
+    await expect(page.getByLabel(/^Nomi/)).toHaveValue('E2E albom')
+    await page.getByRole('button', { name: 'Bekor qilish' }).click()
+    await page.getByRole('alertdialog').getByRole('button', { name: 'Chiqish' }).click()
+    await expect(page.getByLabel(/^Nomi/)).toHaveCount(0)
+  })
+})
+

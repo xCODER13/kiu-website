@@ -229,9 +229,9 @@ describe('Bosqich 6c: CRUD sahifalar (shared/styles.js klasslarga o\'tdi)', () =
     }
     // 6.24: Yangiliklar fayl kiritishi `shared/ImageField.jsx` ga o'tdi va `hidden` o'rniga `.adm-sr-only` — `hidden` (display: none)
     // inputni klaviaturadan ham, ekran o'quvchidan ham olib tashlardi; endi Tab bilan fokuslanadi (fokus halqasi yuklash maydonida).
-    // 6.25: Tadbirlar ham xuddi shunday — fayl kiritishi `shared/PosterField.jsx` da (`.adm-sr-only`). Galereya va O'qituvchilar
-    // (6- va 7-bo'laklar) hozircha `hidden` da.
-    for (const n of ['GalleryAdmin', 'TeachersAdmin']) {
+    // 6.25: Tadbirlar ham xuddi shunday — fayl kiritishi `shared/PosterField.jsx` da (`.adm-sr-only`).
+    // 6.26: Galereya ham (`shared/ImageField.jsx`). Faqat O'qituvchilar (7-bo'lak) hozircha `hidden` da.
+    for (const n of ['TeachersAdmin']) {
       expect(src(n), n).toMatch(/type="file"[^>]* hidden \/>/)
     }
     for (const f of ['ImageField', 'PosterField']) {
@@ -458,5 +458,55 @@ describe('Bosqich 6.25: Tadbirlar', () => {
     expect(css).not.toMatch(/\.adm-event-(date|day|month)|\.adm-row-thumb\b|\.adm-preview-img--poster/)
     expect(css).toMatch(/\.adm-thumb-x \{/)
     expect(css).toMatch(/\.adm-upload\b/)
+  })
+})
+
+describe('Bosqich 6.26: Galereya', () => {
+  const css = code
+  const rule = sel => (css.match(new RegExp(`${sel.replace(/[.[\]()]/g, '\\$&')} \\{([^}]*)\\}`)) ?? [])[1] ?? ''
+  const srcOf = f => strip(read(f)).replace(/\/\/.*$/gm, '')
+
+  it("Galereya kodida `alert()`, `window.confirm`, `.catch(() => {})` va inline `style=` yo'q", () => {
+    for (const f of ['src/pages/admin/GalleryAdmin.jsx', 'src/pages/admin/GalleryForm.jsx', 'src/pages/admin/shared/ImageField.jsx']) {
+      const src = srcOf(f)
+      expect(src, f).not.toMatch(/window\.confirm|\balert\(|\bconfirm\(/)
+      expect(src, f).not.toMatch(/\.catch\(\s*\(\)\s*=>\s*\{\s*\}\s*\)/)
+      expect(src, f).not.toMatch(/\bstyle=/)
+    }
+  })
+
+  it("mozaika balandligi 200 px, oraliq 2 px; 3 rasmda katta (2fr) + ikkita kichik (1fr); belgi `--color-scrim-thumb`", () => {
+    expect(rule('.adm-album-mosaic')).toMatch(/height: 200px;/)
+    expect(rule('.adm-album-mosaic')).toMatch(/gap: 2px;/)
+    expect(css).toMatch(/\.adm-album-mosaic\[data-count="2"\] \{ grid-template-columns: 1fr 1fr; \}/)
+    expect(css).toMatch(/\.adm-album-mosaic\[data-count="3"\] \{ grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; \}/)
+    expect(css).toMatch(/\.adm-album-tile:first-child \{ grid-row: 1 \/ span 2; \}/)
+    expect(rule('.adm-album-badge')).toMatch(/height: 26px;/)
+    expect(rule('.adm-album-badge')).toMatch(/background: var\(--color-scrim-thumb\);/)
+  })
+
+  it("karta radius 16; tavsif 2 qatorga qisqaradi va `min-height: 42px` (kartalar balandligi tekis)", () => {
+    expect(rule('.adm-album')).toMatch(/border-radius: 16px;/)
+    expect(rule('.adm-album-desc')).toMatch(/-webkit-line-clamp: 2;/)
+    expect(rule('.adm-album-desc')).toMatch(/min-height: 42px;/)
+  })
+
+  it("Galereya klasslarida hardcoded rang yo'q (faqat tokenlar)", () => {
+    for (const sel of ['.adm-album', '.adm-album-mosaic', '.adm-album-tile', '.adm-album-fallback', '.adm-album-badge', '.adm-album-title', '.adm-album-desc', '.adm-ithumb-num']) {
+      expect(rule(sel), sel).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+    }
+  })
+
+  it("tartib raqami plitkada; to'lgan yuklash maydoni o'chirilgan ko'rinishda; xato — danger chegara", () => {
+    expect(rule('.adm-ithumb-num')).toMatch(/top: 6px;\s*left: 6px;/)
+    expect(css).toMatch(/\.adm-dz\[data-full="true"\],\s*\.adm-dz\[data-full="true"\]:hover \{[^}]*var\(--color-surface-2\)/)
+    expect(css).toMatch(/\.adm-dz\[data-invalid="true"\] \{ border-color: var\(--color-danger\); \}/)
+  })
+
+  it("Galereyaga xos eski klasslar olib tashlangan (`.adm-album-cover/-count`, `.adm-thumbs`, `.adm-note`); O'qituvchilar ishlatadiganlari qoladi", () => {
+    expect(css).not.toMatch(/\.adm-album-cover|\.adm-album-count|\.adm-grid--albums|\.adm-thumbs\b|\.adm-thumb-img|\.adm-thumb-new|\.adm-note\b/)
+    expect(css).toMatch(/\.adm-thumb-x \{/)
+    expect(css).toMatch(/\.adm-upload\b/)
+    expect(css).toMatch(/\.adm-grid--teachers/)
   })
 })
