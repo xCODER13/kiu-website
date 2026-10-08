@@ -4,12 +4,13 @@ import useNavigate from '../../i18n/useLocalizedNavigate'
 import { getCategoryToken, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 import { formatDate } from '../../utils/formatDate'
+import useCarouselPause from '../../hooks/useCarouselPause'
 
 // ── FEATURED CAROUSEL ── (6.11: rasm ustida wine qoplama; kategoriya — pill ichida rangli nuqta)
 export default function FeaturedCarousel({ items }) {
   const { t } = useTranslation()
   const [idx, setIdx] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const { paused, handlers } = useCarouselPause()
   const timer = useRef(null)
   const navigate = useNavigate()
 
@@ -30,8 +31,7 @@ export default function FeaturedCarousel({ items }) {
   return (
     <div
       className="carousel"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      {...handlers}
     >
       {/* Background: faqat rasm manzili dinamik; rasm yo'q bo'lsa CSS dagi gradient */}
       <div

@@ -105,6 +105,9 @@ export default function Navbar({ dark, setDark, onApply }) {
   // ketardi. closedGroup shu holatni JS orqali majburan yopadi, sichqoncha
   // haqiqatan chetga chiqqanda (onMouseLeave) yana oddiy hover ishlay boshlaydi.
   const [closedGroup, setClosedGroup] = useState(null)
+  // `aria-expanded` uchun: panelni CSS (`:hover`/`:focus-within`) ochadi, ekran o'quvchi esa buni faqat atributdan biladi — shu holat uni aks ettiradi
+  const [openGroup, setOpenGroup] = useState(null)
+  const escaped = useRef(false)   // Esc bilan yopilgan: fokus guruh ichida qoladi, lekin panel qayta ochilmasin
   const { t } = useTranslation()
   // Faol havolani aniqlash uchun prefikssiz yo'l: /en/faculty → /faculty
   const { path } = useLocale()
@@ -145,17 +148,36 @@ export default function Navbar({ dark, setDark, onApply }) {
 
           {navGroups.map(group => {
             const isActive = group.items.some(i => path === i.to)
+            const expanded = openGroup === group.id && closedGroup !== group.id
             return (
               <div
                 key={group.id}
                 className={`nav-group${closedGroup === group.id ? ' force-closed' : ''}`}
-                onMouseLeave={() => setClosedGroup(null)}
+                onMouseEnter={() => setOpenGroup(group.id)}
+                onMouseLeave={e => {
+                  setClosedGroup(null)
+                  if (!e.currentTarget.contains(document.activeElement)) setOpenGroup(null)
+                }}
+                onFocus={() => { if (!escaped.current) setOpenGroup(group.id) }}
+                onBlur={e => {
+                  if (e.currentTarget.contains(e.relatedTarget)) return
+                  setOpenGroup(null)
+                  if (escaped.current) { escaped.current = false; setClosedGroup(null) }
+                }}
+                onKeyDown={e => {
+                  if (e.key !== 'Escape' || !expanded) return
+                  e.stopPropagation()
+                  escaped.current = true
+                  setClosedGroup(group.id)
+                  e.currentTarget.querySelector('.nav-group-trigger')?.focus()
+                }}
               >
                 <button
                   onClick={(e) => e.currentTarget.blur()}
                   className="nav-group-trigger"
                   data-active={isActive}
                   aria-haspopup="true"
+                  aria-expanded={expanded}
                 >
                   {t(`nav.groups.${group.id}`)}
                   <ChevronIcon />

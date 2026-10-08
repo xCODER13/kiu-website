@@ -128,4 +128,30 @@ describe('Navbar', () => {
     const faculty = screen.getAllByRole('link', { name: "Yo'nalishlar" })
     expect(faculty.some(a => a.classList.contains('nav-group-item') && a.classList.contains('active'))).toBe(true)
   })
+
+  it("dropdown: `aria-expanded` hover/fokus bilan o'zgaradi; Esc paneli yopadi va fokus tugmada qoladi; tashqariga chiqilganda qayta ochiladi", async () => {
+    const user = userEvent.setup()
+    renderNavbar()
+    const trigger = screen.getAllByRole('button', { name: /^Universitet/ })[0]
+    expect(trigger).toHaveAttribute('aria-haspopup', 'true')
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    await user.hover(trigger)
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await user.unhover(trigger)
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+
+    // Klaviatura: Tab → fokus → ochiq; Esc → yopiq, fokus shu tugmada
+    act(() => trigger.focus())
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await user.keyboard('{Escape}')
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    expect(trigger).toHaveFocus()
+    expect(trigger.closest('.nav-group')).toHaveClass('force-closed')
+
+    // Guruhdan chiqilgach Esc holati tozalanadi — keyingi safar fokus yana ochadi
+    act(() => trigger.blur())
+    expect(trigger.closest('.nav-group')).not.toHaveClass('force-closed')
+    act(() => trigger.focus())
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+  })
 })

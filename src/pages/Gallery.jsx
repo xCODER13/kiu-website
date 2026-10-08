@@ -13,6 +13,13 @@ const API = import.meta.env.VITE_API_URL
 function Lightbox({ photo, index, total, onClose, onPrev, onNext }) {
   const { t } = useTranslation()
   const ref = useRef(null)
+  // Orqa sahifa klaviatura/ekran o'quvchi uchun yopiladi (Tadbirlar va Yo'nalish modallari bilan bir xil). Oyna `document.body` ga chiqarilgani uchun
+  // `#root` ni `inert` qilish unga ta'sir qilmaydi. Effektlar tartibi muhim: yopilganda avval `inert` olinadi, keyin `useModalA11y` fokusni qaytaradi.
+  useEffect(() => {
+    const root = document.getElementById('root')
+    if (root) root.inert = true
+    return () => { if (root) root.inert = false }
+  }, [])
   useModalA11y(ref, onClose)
 
   // Portal: sahifa ildizi (`.fade-up`) `transform` animatsiyasi `position: fixed` ni o'z ichiga qamab qo'yadi

@@ -4,13 +4,14 @@ import { NavLink } from '../../i18n/router'
 import { getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 import { formatDate } from '../../utils/formatDate'
+import useCarouselPause from '../../hooks/useCarouselPause'
 
 // Home uchun ixchamlashtirilgan yangiliklar karuseli (6.11c5): ko'rinish Yangiliklar sahifasi karuseli bilan umumiy
-// (`.carousel*` klasslari, pages.css). Mantiq o'zgarmagan: 5 s avtoaylanish, sichqoncha ustida pauza.
+// (`.carousel*` klasslari, pages.css). Mantiq o'zgarmagan: 5 s avtoaylanish, sichqoncha ustida va klaviatura fokusida pauza; `prefers-reduced-motion` da avtoaylanish yo'q.
 export default function HomeNewsCarousel({ items }) {
   const { t } = useTranslation()
   const [idx, setIdx] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const { paused, handlers } = useCarouselPause()
   const timerRef = useRef(null)
 
   const next = useCallback(() => setIdx(i => (i + 1) % items.length), [items.length])
@@ -31,8 +32,7 @@ export default function HomeNewsCarousel({ items }) {
       className="carousel carousel--home"
       role="region"
       aria-label={t('home.news.title')}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      {...handlers}
     >
       {/* Fon: faqat rasm manzili dinamik; rasm yo'q bo'lsa CSS dagi gradient */}
       <div key={idx} className="carousel-bg" style={img ? { backgroundImage: `url(${img})` } : undefined} />

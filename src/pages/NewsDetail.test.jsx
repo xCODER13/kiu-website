@@ -149,6 +149,10 @@ describe('NewsDetail — qayta dizayn (Bosqich 6.11b)', () => {
     await user.click(next)
     await waitFor(() => expect(container.querySelector('.gallery-counter')).toHaveTextContent('2 / 3'))
     expect(container.querySelectorAll('.gallery-dot')[1]).toHaveAttribute('aria-current', 'true')
+    // Brauzer qisqa yo'li (Alt+←) galereyani aylantirmaydi — faqat oddiy strelka
+    await user.keyboard('{Alt>}{ArrowLeft}{/Alt}')
+    await new Promise(r => setTimeout(r, 350))
+    expect(container.querySelector('.gallery-counter')).toHaveTextContent('2 / 3')
     await user.keyboard('{ArrowLeft}')
     await waitFor(() => expect(container.querySelector('.gallery-counter')).toHaveTextContent('1 / 3'))
     fireEvent.error(container.querySelector('.gallery-img'))

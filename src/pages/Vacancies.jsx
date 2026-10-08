@@ -34,7 +34,10 @@ export default function Vacancies() {
       experience: validateRequired(form.experience, t('vacancies.fieldNames.experience'), t),
     }
     setFieldErrors(errs)
-    return Object.values(errs).every(v => !v)
+    // Birinchi xatoli maydonga fokus (maydonlar forma tartibida) — klaviatura va ekran o'quvchi foydalanuvchisi xatoga darhol tushadi (ApplyModal kabi)
+    const firstInvalid = Object.keys(errs).find(k => errs[k])
+    if (firstInvalid) document.getElementById(`vac-${firstInvalid}`)?.focus()
+    return !firstInvalid
   }
 
   async function handleSubmit(e) {

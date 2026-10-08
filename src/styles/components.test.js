@@ -19,6 +19,14 @@ describe('components.css', () => {
     expect(code).not.toMatch(/outline:\s*(none|0)\b/)
   })
 
+  it("to'q yuzalarda (footer, banner, karusel) fokus halqasi yorqin: `--color-focus` shu konteynerlarda `--color-focus-on-dark` ga almashadi (6.29)", () => {
+    expect(code).toMatch(/:where\(\.site-footer, \.apply-banner, \.wine-banner, \.carousel\) \{ --color-focus: var\(--color-focus-on-dark\); \}/)
+    const tokens = readFileSync(resolve(process.cwd(), 'src/styles/tokens.css'), 'utf8')
+    expect(tokens).toMatch(/--color-focus-on-dark:\s*var\(--wine-300\)/)
+    // Dark'da `--color-focus` allaqachon wine-300 — to'q yuzada ko'rinish o'zgarmaydi
+    expect((tokens.match(/--color-focus:\s+var\(--wine-300\)/g) ?? []).length).toBeGreaterThanOrEqual(2)
+  })
+
   it('forced-colors rejimida halqa tizim rangida', () => {
     expect(code).toMatch(/forced-colors: active[\s\S]*Highlight/)
   })
