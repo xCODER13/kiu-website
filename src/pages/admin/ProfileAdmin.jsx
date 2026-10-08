@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API, H, errorMessage, skipUnauthorizedRedirect } from './shared/api'
+import ConfirmDialog from './shared/ConfirmDialog.jsx'
 import { Ic } from './shared/Icons.jsx'
 import PasswordField from './shared/PasswordField.jsx'
 import { ErrorBanner } from './shared/StateViews.jsx'
@@ -66,8 +67,8 @@ function Requirements({ items }) {
   )
 }
 
-// «Hisob» kartasi: login va sessiya muddati — JWT ichidan (backend'ga so'rov yo'q). «Parol oxirgi o'zgargan» va «Sessiya xavfsizligi»
-// backend endpoint'lari (`GET /admin/me`, `POST /admin/logout-all`) tayyor bo'lgach qo'shiladi (DESIGN.md 10.4).
+// «Hisob» kartasi: login va sessiya muddati — JWT ichidan (backend'ga so'rov yo'q). «Parol oxirgi o'zgargan»
+// `GET /admin/me` tayyor bo'lgach qo'shiladi (DESIGN.md 10.4).
 function AccountCard({ session, now }) {
   const left = session.exp ? session.exp * 1000 - now : null
   return (
@@ -89,6 +90,64 @@ function AccountCard({ session, now }) {
             <p className="adm-account-sub">{formatTimeLeft(left)}</p>
           </div>
         </div>
+      )}
+    </section>
+  )
+}
+
+// «Sessiya xavfsizligi»: parolni almashtirmasdan barcha qurilmalardagi sessiyalarni tugatadi (`POST /admin/logout-all`).
+// Backend shu so'rovni yuborgan tokenni ham bekor qiladi, shuning uchun muvaffaqiyatda token o'chirilib, kirish sahifasiga o'tiladi.
+function SessionCard() {
+  const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+
+  async function logoutAll() {
+    if (busy) return
+    setBusy(true)
+    setError('')
+    try {
+      const res = await fetch(`${API}/admin/logout-all`, { method: 'POST', headers: H() })
+      if (res.ok || res.status === 401) {
+        // 401 — token allaqachon yaroqsiz (sessiya baribir tugagan): natija bir xil
+        localStorage.removeItem('kiu_token')
+        navigate('/admin/login')
+        return
+      }
+      const msg = await errorMessage(res, '')
+      setError(res.status === 429
+        ? (msg || "Juda ko'p so'rov yuborildi. Birozdan so'ng qayta urinib ko'ring.")
+        : `${(msg || 'Sessiyalar tugatilmadi.').replace(/[.!\s]+$/, '')} — qayta urinib ko'ring.`)
+    } catch {
+      setError("Sessiyalar tugatilmadi. Server bilan bog'lanib bo'lmadi — qayta urinib ko'ring.")
+    }
+    setBusy(false)
+    setOpen(false)
+  }
+
+  return (
+    <section className="adm-card adm-session" aria-labelledby="session-title">
+      <h3 id="session-title" className="adm-account-title">{Ic.shield}Sessiya xavfsizligi</h3>
+      <p className="adm-session-text">
+        Parolni o'zgartirmasdan barcha qurilmalardagi sessiyalarni tugatadi. Qurilmangiz yo'qolgan yoki kimdir kirgan deb shubhalansangiz, shuni bosing.
+      </p>
+      {error && <div className="adm-form-banner"><ErrorBanner>{error}</ErrorBanner></div>}
+      <button type="button" className="btn btn-danger adm-session-btn" onClick={() => setOpen(true)}>
+        {Ic.logout}Barcha qurilmalardan chiqish
+      </button>
+      {open && (
+        <ConfirmDialog
+          title="Barcha qurilmalardan chiqasizmi?"
+          iconTone="warning"
+          confirmIcon={Ic.logout}
+          confirmLabel="Barchasidan chiqish"
+          busy={busy}
+          onConfirm={logoutAll}
+          onCancel={() => setOpen(false)}
+        >
+          Shu qurilmadagi sessiya ham tugaydi — qaytadan kirishingiz kerak. Parol o'zgarmaydi.
+        </ConfirmDialog>
       )}
     </section>
   )
@@ -200,7 +259,10 @@ export default function ProfileAdmin() {
       </div>
 
       <div className="adm-profile-grid">
-        <AccountCard session={session} now={now} />
+        <div className="adm-profile-side">
+          <AccountCard session={session} now={now} />
+          <SessionCard />
+        </div>
 
         <form className="adm-card adm-formcard adm-pwform" noValidate onSubmit={save} aria-labelledby="pw-form-title">
           <div className="adm-pwform-head">
