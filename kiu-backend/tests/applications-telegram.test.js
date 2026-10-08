@@ -34,7 +34,7 @@ afterEach(() => {
 
 describe('POST /api/applications — Telegram xabari', () => {
   test("qabul arizasi: Telegram'ga bitta xabar ketadi (to'g'ri chat, HTML rejim, ma'lumotlar bilan)", async () => {
-    const res = await request(app).post(URL).send({ ...ADMISSION, email: 'ali@example.com', message: 'Salom' })
+    const res = await request(app).post(URL).send({ ...ADMISSION, message: 'Salom' })
     expect(res.status).toBe(200)
 
     expect(fetchSpy).toHaveBeenCalledTimes(1)
@@ -45,7 +45,6 @@ describe('POST /api/applications — Telegram xabari', () => {
     expect(payload.text).toContain('Qabul arizasi')
     expect(payload.text).toContain('Ali Valiyev')
     expect(payload.text).toContain('+998901234567')
-    expect(payload.text).toContain('ali@example.com')
     expect(payload.text).toContain('Informatika')
     expect(payload.text).toContain('Salom')
   })

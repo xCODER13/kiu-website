@@ -52,6 +52,7 @@ describe('POST /api/applications (ochiq, autentifikatsiyasiz forma)', () => {
     const res = await request(app).post('/api/applications').send({
       name: 'Test',
       phone: '+998901234567',
+      type: 'vacancy',
       email: 'bu-email-emas',
     })
     expect(res.status).toBe(400)
