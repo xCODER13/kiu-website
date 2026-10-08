@@ -210,3 +210,57 @@ test.describe('Admin: galereya boshqaruvi', () => {
   })
 })
 
+
+test.describe("Admin: o'qituvchilar boshqaruvi", () => {
+  test("login → forma validatsiyasi → qo'shish → qidiruv/filtr → tahrirlash → o'chirish", async ({ page }) => {
+    await loginAsAdmin(page)
+    await page.getByRole('link', { name: "O'qituvchilar", exact: true }).click()
+    await expect(page).toHaveURL(/\/admin\/teachers$/)
+
+    const name = `E2E Sinov Ustoz ${Date.now()}`
+    await page.getByRole('button', { name: "Yangi o'qituvchi" }).first().click()
+
+    // Bo'sh maydonlar: ism, lavozim va kafedra uchun ALOHIDA xabar (avval bitta `alert()`), so'rov ketmaydi
+    await page.getByRole('button', { name: "Qo'shish", exact: true }).click()
+    await expect(page.getByText("To'liq ismni kiriting.")).toBeVisible()
+    await expect(page.getByText('Lavozimni kiriting.')).toBeVisible()
+    await expect(page.getByText('Kafedrani tanlang.')).toBeVisible()
+
+    await page.getByLabel(/^To'liq ism/).fill(name)
+    await page.getByLabel(/^Lavozim/).fill('Dotsent')
+    await page.getByRole('combobox', { name: 'Kafedra', exact: true }).selectOption('Aniq fanlar kafedrasi')
+    await Promise.all([
+      page.waitForResponse(res => res.url().endsWith('/api/teachers') && res.request().method() === 'POST'),
+      page.getByRole('button', { name: "Qo'shish", exact: true }).click(),
+    ])
+    await expect(page.getByRole('heading', { name })).toBeVisible()
+
+    // Qidiruv va kafedra filtri: topilsa — karta; topilmasa — «Hech narsa topilmadi» + «Filtrni tozalash»
+    const search = page.getByRole('textbox', { name: "Ism bo'yicha qidirish" })
+    await search.fill(name.toUpperCase())
+    await expect(page.getByRole('heading', { name })).toBeVisible()
+    await page.getByRole('combobox', { name: "Kafedra bo'yicha filtr" }).selectOption('Ijtimoiy fanlar kafedrasi')
+    await expect(page.getByText('Hech narsa topilmadi')).toBeVisible()
+    await page.getByRole('button', { name: 'Filtrni tozalash' }).click()
+    await expect(page.getByRole('heading', { name })).toBeVisible()
+    await search.fill('')
+
+    // Tahrirlash: lavozim o'zgaradi
+    await page.getByRole('button', { name: `Tahrirlash: ${name}` }).click()
+    await page.getByLabel(/^Lavozim/).fill('Professor')
+    await Promise.all([
+      page.waitForResponse(res => res.url().includes('/api/teachers/') && res.request().method() === 'PUT'),
+      page.getByRole('button', { name: 'Saqlash', exact: true }).click(),
+    ])
+    await expect(page.getByRole('heading', { name }).locator('xpath=ancestor::li')).toContainText('Professor')
+
+    // O'chirish: dialog orqali
+    await page.getByRole('button', { name: `O'chirish: ${name}` }).click()
+    await Promise.all([
+      page.waitForResponse(res => res.url().includes('/api/teachers/') && res.request().method() === 'DELETE'),
+      page.getByRole('alertdialog').getByRole('button', { name: "O'chirish" }).click(),
+    ])
+    await expect(page.getByRole('alertdialog')).toBeHidden()
+    await expect(page.getByRole('heading', { name })).toHaveCount(0)
+  })
+})

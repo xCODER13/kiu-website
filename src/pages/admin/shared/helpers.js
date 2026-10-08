@@ -107,3 +107,10 @@ export function todayKey(now = new Date()) {
 
 // O'tgan tadbir: sana bugundan oldin. Sanasi noto'g'ri tadbir ham «o'tgan» bo'limiga (oxiriga) tushadi — yo'qolmaydi.
 export const isPastEvent = (value, today) => eventDateKey(value) < today
+
+// ── O'qituvchilar (6.27) ──────────────────────────────────────────────────────────────────────
+// Saytdagi kabi bosh harflar: `avatar` maydoni (qo'lda kiritilgan), bo'sh bo'lsa — ismning birinchi 2 harfi (katta harfda).
+// (Xatti-harakat avvalgidek: «Karimov» → «KA»; familiya+ism bosh harflari emas — 6.11 «Avatar holatlari», testlar shunga bog'langan.)
+export function initialsOf({ avatar, name }) {
+  return avatar || (name || '').slice(0, 2).toUpperCase()
+}
