@@ -15,3 +15,9 @@ export const NAV = [
   { to: '/admin/vacancies',    label: 'Vakansiyalar',     icon: Ic.vacancy },
   { to: '/admin/profile',      label: 'Profil',           icon: Ic.profile },
 ]
+
+// Yangiliklar formasi (6.24): chegaralar serverdagi bilan bir xil bo'lishi shart
+export const NEWS_CATEGORIES = ["Umumiy", "Ta'lim", 'Sport', 'Madaniyat', 'Xalqaro', 'Fan']
+export const TITLE_MAX = 300      // models/News.js `maxlength`
+export const CONTENT_MAX = 50000  // models/News.js `maxlength`
+export const MAX_IMAGES = 10      // routes/news.routes.js multer `files: 10`

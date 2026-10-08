@@ -164,6 +164,7 @@
     --carousel-tint:       rgb(127 32 99 / 0.38);             /* karusel rasmi ustida chapdan wine qoplama */
     --color-scrim-pill:    rgb(18 8 14 / 0.62);               /* rasm ustidagi pill (kategoriya) */
     --color-scrim-ctrl:    rgb(18 8 14 / 0.52);               /* rasm ustidagi hisoblagich/strelka/nuqta foni */
+    --color-scrim-thumb:   rgb(20 13 17 / 0.82);              /* admin: forma miniatyurasi ustidagi «olib tashlash» va «Yangi» belgisi (6.24); ikkala temada bir xil */
 
     /* 6.11c3: galereya kartasi (hover qoplama, "KIU" nishoni) va katta rasm oynasi foni */
     --gallery-hover-overlay: rgb(100 24 78 / 0.55);           /* kartaga hover — rasm ustida wine qoplama (Dark'da neytral to'q) */

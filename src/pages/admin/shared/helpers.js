@@ -35,3 +35,25 @@ export function parseImages(imageField) {
 export function markBroken(e) {
   e.currentTarget.dataset.broken = 'true'
 }
+
+// "30.09.2026" — brauzer locale'iga bog'liq emas; server UTC saqlaydi, admin lokal sanani ko'radi.
+// Noto'g'ri qiymat — bo'sh satr (sahifa "Invalid Date" ko'rsatmaydi).
+export function formatDateShort(value) {
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return ''
+  const p = n => String(n).padStart(2, '0')
+  return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()}`
+}
+
+// 1284 → "1 284" (uzilmas probel — son ikki qatorga bo'linmaydi). Son bo'lmasa — "0".
+export function formatCount(value) {
+  const n = Number(value)
+  if (!Number.isFinite(n)) return '0'
+  return String(Math.trunc(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0')
+}
+
+// Forma maydoni inputi uchun: `id`, xato bo'lsa `aria-invalid`, ko'rinib turgan xato/izohga `aria-describedby` (FormField.jsx bilan juft).
+export function fieldProps(id, { error, hint } = {}) {
+  const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined
+  return { id, 'aria-invalid': error ? 'true' : undefined, 'aria-describedby': describedBy }
+}

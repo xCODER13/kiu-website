@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { extractYouTubeShortsId, parseImages, markBroken } from './helpers'
+import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount } from './helpers'
 
 const ID = 'dQw4w9WgXcQ'
 describe('extractYouTubeShortsId', () => {
@@ -38,5 +38,31 @@ describe('markBroken', () => {
     markBroken({ currentTarget: img })
     expect(img.dataset.broken).toBe('true')
     expect(img.getAttribute('style')).toBeNull()
+  })
+})
+
+describe('formatDateShort', () => {
+  it('"DD.MM.YYYY" (lokal sana, nol bilan)', () => {
+    expect(formatDateShort(new Date(2026, 8, 5, 10, 0))).toBe('05.09.2026')
+    expect(formatDateShort(new Date(2026, 11, 31, 23, 59))).toBe('31.12.2026')
+  })
+  it('noto\'g\'ri/bo\'sh qiymat — bo\'sh satr ("Invalid Date" chiqmaydi)', () => {
+    expect(formatDateShort('abc')).toBe('')
+    expect(formatDateShort(undefined)).toBe('')
+  })
+})
+
+describe('formatCount', () => {
+  it('mingliklar uzilmas probel bilan ajratiladi', () => {
+    expect(formatCount(1284)).toBe('1 284')
+    expect(formatCount(3940)).toBe('3 940')
+    expect(formatCount(1234567)).toBe('1 234 567')
+    expect(formatCount(642)).toBe('642')
+  })
+  it('son bo\'lmasa yoki yo\'q bo\'lsa — "0"; kasr qismi tashlanadi', () => {
+    expect(formatCount(undefined)).toBe('0')
+    expect(formatCount(null)).toBe('0')
+    expect(formatCount('x')).toBe('0')
+    expect(formatCount(12.9)).toBe('12')
   })
 })

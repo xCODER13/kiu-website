@@ -1354,8 +1354,537 @@
     height: 16px;
   }
   .adm-dialog-confirm[aria-busy="true"] svg { animation: btn-spin 0.8s linear infinite; }
+  /* Spinner — matn oldidagi SVG; umumiy `.btn[aria-busy]::after` spinneri o'chiriladi (aks holda ikkita aylanadi) */
+  .btn.adm-dialog-confirm[aria-busy="true"]::after { content: none; }
   @media (prefers-reduced-motion: reduce) {
     .adm-dialog-confirm[aria-busy="true"] svg { animation: none; }
+  }
+
+  /* ══ 6.24: Yangiliklar (taxta: Admin-News / Admin-News2) ══
+     Yangi umumiy qismlar (keyingi bo'laklarda ham): `.adm-fld*` (forma maydoni), `.adm-ctl*` (input/select/textarea),
+     `.adm-dz*` + `.adm-ithumb*` (rasm maydoni), `.adm-formcard*`, `.adm-items`/`.adm-item*` (ro'yxat qatori).
+     Eski `.adm-input`, `.adm-label`, `.adm-row-*`, `.adm-thumb-*` Tadbirlar, Galereya va O'qituvchilar uchun tegilmadi. */
+
+  /* Bo'limlar: «Yangiliklar 32», «YouTube Shorts 12» */
+  .adm-sec { margin-top: 28px; }
+  .adm-page-head + .adm-sec { margin-top: 8px; }
+  .adm-sec-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .adm-sec-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .adm-count-pill--sm {
+    height: 24px;
+    padding: 0 10px;
+    font-size: 0.8125rem;
+  }
+
+  /* Ro'yxat qatori: 112×84 miniatyura · belgilar · sarlavha · matn boshi · amallar */
+  .adm-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .adm-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+  }
+  .adm-item-thumb {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 112px;
+    height: 84px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--color-surface-2);
+    color: var(--color-text-muted);
+  }
+  .adm-item-thumb svg {
+    width: 24px;
+    height: 24px;
+  }
+  .adm-item-thumb--empty {
+    border: 1.5px dashed var(--color-border-2);
+    background: transparent;
+  }
+  .adm-item-thumb--shorts {
+    background: color-mix(in srgb, var(--stat-orange) 14%, var(--color-surface-3));
+    color: var(--stat-orange);
+  }
+  .adm-item-thumb--shorts.adm-item-thumb--empty { border: none; }
+  .adm-item-thumb-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .adm-item-main {
+    flex: 1;
+    min-width: 0;
+  }
+  .adm-item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    margin-bottom: 6px;
+  }
+  /* Kategoriya: nuqta + nom (rang `--cat` = `--chart-1…6`, chip foni — 12 % (Dark 18 %, `--cat-chip-mix`)) */
+  .adm-cat {
+    --cat: var(--color-text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    box-sizing: border-box;
+    height: 26px;
+    padding: 0 11px;
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--cat) var(--cat-chip-mix), var(--color-surface-3));
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .adm-cat[data-cat="1"] { --cat: var(--chart-1); }
+  .adm-cat[data-cat="2"] { --cat: var(--chart-2); }
+  .adm-cat[data-cat="3"] { --cat: var(--chart-3); }
+  .adm-cat[data-cat="4"] { --cat: var(--chart-4); }
+  .adm-cat[data-cat="5"] { --cat: var(--chart-5); }
+  .adm-cat[data-cat="6"] { --cat: var(--chart-6); }
+  .adm-cat--shorts { --cat: var(--stat-orange); }
+  .adm-cat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cat);
+  }
+  .adm-cat svg {
+    width: 14px;
+    height: 14px;
+    color: var(--cat);
+  }
+  .adm-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .adm-meta svg {
+    width: 14px;
+    height: 14px;
+  }
+  .adm-item-title {
+    margin: 0 0 4px;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    color: var(--color-text);
+  }
+  .adm-item-text {
+    max-width: 620px;
+    margin: 0;
+    overflow: hidden;
+    font-size: 0.90625rem;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text-muted);
+  }
+  .adm-item-actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn.adm-item-edit {
+    min-height: 40px;
+    padding: 0 18px;
+    gap: 8px;
+    border-width: 1.5px;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .adm-item-edit svg,
+  .adm-icon-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  .btn.adm-icon-btn {
+    width: 40px;
+    min-height: 40px;
+    padding: 0;
+    border-width: 1.5px;
+  }
+  .adm-skel--thumb { flex: none; width: 112px; height: 84px; border-radius: 12px; }
+  .adm-skel--edit  { width: 120px; height: 40px; border-radius: 10px; }
+  .adm-skel--icon  { width: 40px; height: 40px; border-radius: 10px; }
+  .adm-empty-action { margin-top: 6px; }
+
+  /* Forma kartochkasi: brend chegarali (1.5 px), sarlavha 20/800, yopish (X) */
+  .adm-formcard {
+    margin-top: 20px;
+    padding: 28px;
+    border: 1.5px solid var(--color-brand);
+  }
+  .adm-formcard-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .adm-formcard-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+  }
+  .adm-formcard-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1.5px solid var(--color-border-2);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  .adm-formcard-close svg {
+    width: 16px;
+    height: 16px;
+  }
+  .adm-formcard-close:hover:not(:disabled) {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+  }
+  .adm-formcard-close:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+  .adm-formcard-close:disabled { opacity: 0.6; cursor: not-allowed; }
+  .adm-form-banner { margin-bottom: 18px; }
+  .adm-form-banner .adm-banner {
+    align-items: center;
+    max-width: none;
+    padding: 12px 14px 12px 16px;
+    font-size: 0.90625rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .adm-form-banner .adm-banner svg { margin-top: 0; color: var(--color-danger); }
+  .adm-fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .adm-form-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .adm-form-saving {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 0;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .adm-form-saving-icon {
+    display: flex;
+    color: var(--color-brand);
+  }
+  .adm-form-saving-icon svg { animation: btn-spin 0.8s linear infinite; }
+  .adm-form-foot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .adm-form-foot .adm-btn-neutral {
+    min-height: 40px;
+    margin-top: 0;
+  }
+  .adm-form-req {
+    margin-left: auto;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  /* «Saqlanmoqda...»: brend rangi saqlanadi (umumiy `disabled` kulrang EMAS), kenglik sakramaydi; spinner (`.btn[aria-busy]::after`) matn oldida */
+  .adm-save { min-width: 172px; }
+  .btn.btn-primary.adm-save[aria-busy="true"] {
+    background: var(--color-brand-fill);
+    color: var(--color-on-brand);
+    opacity: 0.72;
+    box-shadow: none;
+    cursor: progress;
+  }
+  .btn.adm-save[aria-busy="true"]::after { order: -1; }
+
+  /* Forma maydoni: ko'rinadigan yorliq 14/600, o'ngda hisoblagich, ostida izoh yoki xato */
+  .adm-fld { min-width: 0; }
+  .adm-fld-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .adm-fld-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .adm-fld-req { color: var(--color-text-muted); }
+  .adm-fld-count {
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+  }
+  .adm-fld-hint {
+    margin: 6px 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--color-text-muted);
+  }
+  .adm-fld-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 6px 0 0;
+    font-size: 0.84375rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-danger);
+  }
+  .adm-fld-error svg {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin-top: 2px;
+  }
+  .adm-ctl {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--color-border-2);
+    border-radius: 10px;
+    background: var(--color-bg);
+    font-family: inherit;
+    font-size: 0.9375rem;
+    color: var(--color-text);
+  }
+  .adm-ctl::placeholder { color: var(--color-text-muted); }
+  .adm-ctl:focus-visible {
+    border-color: var(--color-brand);
+    outline: 2px solid transparent;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-brand) 16%, transparent);
+  }
+  .adm-ctl[aria-invalid="true"] {
+    border: 1.5px solid var(--color-danger);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-danger) 10%, transparent);
+  }
+  .adm-ctl:disabled {
+    background: var(--color-surface-2);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .adm-ctl--area {
+    height: auto;
+    min-height: 144px;
+    padding: 12px 14px;
+    line-height: 1.55;
+    resize: vertical;
+  }
+  .adm-ctl--select {
+    appearance: none;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+  .adm-input-wrap { position: relative; }
+  .adm-input-icon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 14px;
+    display: flex;
+    align-items: center;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+  .adm-input-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  .adm-ctl--icon { padding-left: 40px; }
+
+  /* Rasm yuklash maydoni (bosish + drag-and-drop) va miniatyuralar */
+  .adm-dz {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-sizing: border-box;
+    padding: 16px 18px;
+    border: 1.5px dashed var(--color-border-2);
+    border-radius: 12px;
+    background: var(--color-bg);
+    cursor: pointer;
+  }
+  .adm-dz:hover,
+  .adm-dz[data-drag="true"] {
+    border-color: var(--color-brand);
+    background: var(--color-brand-subtle);
+  }
+  .adm-dz:has(:focus-visible) {
+    border-color: var(--color-brand);
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+  .adm-dz[data-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .adm-dz-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--color-brand-subtle);
+    color: var(--color-brand);
+  }
+  .adm-dz-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .adm-dz-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .adm-dz-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-brand);
+  }
+  .adm-dz-text {
+    font-size: 0.84375rem;
+    color: var(--color-text-muted);
+  }
+  .adm-ithumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .adm-ithumb {
+    position: relative;
+    flex: none;
+    box-sizing: border-box;
+    width: 132px;
+    height: 99px;
+    overflow: hidden;
+    border: 1px solid var(--color-border-2);
+    border-radius: 12px;
+    background: var(--color-surface-2);
+  }
+  .adm-ithumb[data-new="true"] { border: 2px solid var(--color-brand); }
+  .adm-ithumb-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .adm-ithumb-badge {
+    position: absolute;
+    left: 6px;
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .adm-ithumb-badge--cover {
+    top: 6px;
+    background: var(--color-brand-fill);
+    color: var(--color-on-brand);
+  }
+  .adm-ithumb-badge--new {
+    bottom: 6px;
+    background: var(--color-scrim-thumb);
+    color: var(--neutral-0);
+  }
+  .adm-ithumb-x {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1.5px solid rgb(255 255 255 / 0.9);
+    border-radius: 50%;
+    background: var(--color-scrim-thumb);
+    color: var(--neutral-0);
+    cursor: pointer;
+  }
+  .adm-ithumb-x svg {
+    width: 14px;
+    height: 14px;
+  }
+  .adm-ithumb-x:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+  .adm-ithumb-x:disabled { opacity: 0.6; cursor: not-allowed; }
+  .adm-ithumb-img[data-broken="true"] { opacity: 0.3; }
+
+  /* «Saqlanmagan o'zgarishlar» dialogi (ConfirmDialog tone="warning"): sariq-jigarrang ikonka plitkasi, brend «qolish» tugmasi */
+  .adm-dialog-icon.adm-dialog-icon--warning {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+  }
+  .btn.adm-dialog-stay {
+    min-height: 44px;
+    padding: 0 20px;
+    font-size: 0.90625rem;
+    font-weight: 700;
   }
 
   /* ══ 6c: CRUD sahifalar (Yangiliklar, Tadbirlar, Galereya, O'qituvchilar, Profil) ══
