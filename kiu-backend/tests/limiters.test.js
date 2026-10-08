@@ -73,12 +73,12 @@ describe("mutationLimiter — admin yozuvlari (30 so'rov / 15 daqiqa / IP)", () 
     for (let i = 0; i < 40; i++) {
       expect((await request(app).delete(`/api/news/${ghostId()}`).set('X-Forwarded-For', ip)).status).toBe(401)
     }
-    expect((await authed('delete', `/api/news/${ghostId()}`, ip)).status).toBe(200)
+    expect((await authed('delete', `/api/news/${ghostId()}`, ip)).status).toBe(404)
   })
 
   test("31-avtorizatsiyalangan so'rov 429; bloklangan so'rov bajarilmaydi (yangilik yaratilmaydi)", async () => {
     const ip = nextIp()
-    for (let i = 0; i < 30; i++) expect((await authed('delete', `/api/news/${ghostId()}`, ip)).status).toBe(200)
+    for (let i = 0; i < 30; i++) expect((await authed('delete', `/api/news/${ghostId()}`, ip)).status).toBe(404)
 
     const blocked = await authed('post', '/api/news', ip).field('title', 'Bloklangan')
     expect(blocked.status).toBe(429)
@@ -100,7 +100,7 @@ describe("mutationLimiter — admin yozuvlari (30 so'rov / 15 daqiqa / IP)", () 
     for (let i = 0; i < 31; i++) await authed('delete', `/api/news/${ghostId()}`, ip)
     expect((await authed('delete', `/api/news/${ghostId()}`, ip)).status).toBe(429)
 
-    expect((await authed('delete', `/api/news/${ghostId()}`, nextIp())).status).toBe(200)
+    expect((await authed('delete', `/api/news/${ghostId()}`, nextIp())).status).toBe(404)
   })
 
   test("mutationLimiter GET so'rovlarni cheklamaydi (viewLimiter alohida)", async () => {

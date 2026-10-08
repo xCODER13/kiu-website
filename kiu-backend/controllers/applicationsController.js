@@ -94,8 +94,11 @@ async function update(req, res) {
 }
 
 async function remove(req, res) {
-  try { await Application.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { fail(req, res, 500, e) }
+  try {
+    const deleted = await Application.findByIdAndDelete(req.params.id)
+    if (!deleted) return res.status(404).json({ error: 'Topilmadi' })
+    res.json({ success: true })
+  } catch (e) { fail(req, res, 500, e) }
 }
 
 module.exports = { getAll, create, update, remove }

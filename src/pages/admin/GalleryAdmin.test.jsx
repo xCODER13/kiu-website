@@ -496,6 +496,18 @@ describe('GalleryAdmin: o\'chirish', () => {
     expect(screen.getByText('jami 5 ta rasm')).toBeInTheDocument()
   })
 
+  it("DELETE 404 (boshqa admin allaqachon o'chirgan) — albom ro'yxatdan ketadi, xato banneri yo'q", async () => {
+    mockApi({ 'GET /gallery': [G1], 'DELETE /gallery/g1': { status: 404, body: { error: 'Topilmadi' } } })
+    const user = userEvent.setup()
+    render(<GalleryAdmin />)
+    await screen.findByText('1-kampus')
+    await del(user)
+    await user.click(confirmBtn())
+    await waitFor(() => expect(screen.queryByText('1-kampus')).not.toBeInTheDocument())
+    expect(screen.queryByText('Topilmadi')).not.toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it('server DELETE ni rad etsa (500) — albom qoladi, xabar bannerda (`alert()` yo\'q), dialog yopiladi', async () => {
     mockApi({ 'GET /gallery': [G1], 'DELETE /gallery/g1': { status: 500, body: { error: 'Baza xatosi' } } })
     const user = userEvent.setup()

@@ -504,6 +504,17 @@ describe('NewsAdmin: o\'chirish', () => {
     expect(screen.getByRole('button', { name: "O'chirish: Birinchi yangilik" })).toHaveFocus()
   })
 
+  it("DELETE 404 (boshqa admin allaqachon o'chirgan) — yangilik ro'yxatdan ketadi, xato banneri yo'q", async () => {
+    mockApi({ 'GET /news': [N1], 'DELETE /news/n1': { status: 404, body: { error: 'Topilmadi' } } })
+    const user = userEvent.setup()
+    render(<NewsAdmin />)
+    await screen.findByText('Birinchi yangilik')
+    await del(user)
+    await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: "O'chirish" }))
+    await waitFor(() => expect(screen.queryByText('Birinchi yangilik')).not.toBeInTheDocument())
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it('server DELETE ni rad etsa (500) — element qoladi, banner server xabari bilan, dialog yopiladi', async () => {
     mockApi({ 'GET /news': [N1], 'DELETE /news/n1': { status: 500, body: { error: 'Baza xatosi' } } })
     const user = userEvent.setup()

@@ -244,7 +244,8 @@ export default function NewsAdmin() {
     setDeleting(true)
     try {
       const r = await fetch(`${API}/news/${id}`, { method: 'DELETE', headers: H() })
-      if (!r.ok) {
+      // 404 — boshqa admin allaqachon o'chirgan (backend 1.8): natija bir xil, ro'yxatdan olib tashlanadi
+      if (!r.ok && r.status !== 404) {
         setNotice(await errorMessage(r, "O'chirib bo'lmadi."))
       } else {
         res.mutate(list => (Array.isArray(list) ? list.filter(n => n._id !== id) : list))
