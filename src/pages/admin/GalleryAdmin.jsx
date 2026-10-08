@@ -1,149 +1,329 @@
-import { useState, useEffect } from 'react'
-import { API, H, HF, errorMessage, asArray } from './shared/api'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { API, H, HF, errorMessage } from './shared/api'
 import { Ic } from './shared/Icons.jsx'
-import { markBroken } from './shared/helpers'
+import { markBroken, formatDateLong, formatCount } from './shared/helpers'
 import { useMultiImageUpload } from './shared/useImageUpload'
+import { useApiGet } from './shared/useApiGet'
+import { ErrorBanner, ErrorPanel, EmptyState } from './shared/StateViews.jsx'
+import ConfirmDialog from './shared/ConfirmDialog.jsx'
+import { MAX_IMAGES, ALBUM_MOSAIC } from './shared/constants'
+import GalleryForm from './GalleryForm.jsx'
+
+const EMPTY = { title: '', desc: '' }
+const KEPT = "kiritilgan ma'lumotlar saqlanib turibdi, qayta urinib ko'ring."
+
+// Fayl xatosi (hook'dan keladi) → yuklash maydoni ostidagi xabar
+function imageErrorText({ kind, file, max }) {
+  if (kind === 'type') return `${file?.name ? `${file.name} — ` : ''}faqat JPEG, PNG, WebP yoki GIF qabul qilinadi.`
+  if (kind === 'size') return `${file.name} — 5 MB dan katta. Boshqa rasm tanlang.`
+  return `Albomda ko'pi bilan ${max} ta rasm bo'lishi mumkin.`
+}
+
+// Yuklanmoqda: taxtadagi skelet (`aria-busy`), kartalar bilan bir xil joylashuv — sahifa sakramaydi
+function AlbumSkeleton() {
+  return (
+    <ul className="adm-albums adm-skel-list" aria-busy="true" role="status">
+      <li className="adm-sr-only">Yuklanmoqda...</li>
+      {[0, 1, 2].map(i => (
+        <li key={i} className="adm-card adm-album" aria-hidden="true">
+          <div className="adm-skel adm-skel--mosaic" />
+          <div className="adm-album-body adm-skel-col">
+            <div className="adm-skel adm-skel--name" />
+            <div className="adm-skel adm-skel--line" />
+            <div className="adm-skel adm-skel--date" />
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+// Mozaika (birinchi 3 rasm): 1 ta — to'liq; 2 ta — yarim-yarim; 3 va undan ko'p — katta + ikkita kichik. Ko'rsatilgan
+// hamma rasm yuklanmasa — «Rasm yuklanmadi» bloki (karta bo'sh qolmasin); «N ta rasm» belgisi har doim bor.
+// Bir rasm yuklanmasa, faqat o'sha katak xiralashadi (`markBroken`).
+function Mosaic({ images }) {
+  const shown = images.slice(0, ALBUM_MOSAIC)
+  const [failed, setFailed] = useState(() => new Set())
+  const lost = shown.length === 0 || shown.every((_, i) => failed.has(i))
+  return (
+    <div className="adm-album-mosaic" data-count={shown.length} data-lost={lost ? 'true' : undefined}>
+      {lost ? (
+        <div className="adm-album-fallback">
+          {Ic.image}
+          <span>{shown.length === 0 ? "Rasm yo'q" : 'Rasm yuklanmadi'}</span>
+        </div>
+      ) : shown.map((src, i) => (
+        <img
+          key={`${i}:${src}`}
+          className="adm-album-tile"
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={e => { markBroken(e); setFailed(f => new Set(f).add(i)) }}
+        />
+      ))}
+      <span className="adm-album-badge">{Ic.image}{images.length} ta rasm</span>
+    </div>
+  )
+}
+
+function AlbumCard({ item, onEdit, onDelete }) {
+  const images = Array.isArray(item.images) ? item.images : []
+  const date = formatDateLong(item.createdAt)
+  return (
+    <li className="adm-card adm-album">
+      <Mosaic key={images.slice(0, ALBUM_MOSAIC).join('\n')} images={images} />
+      <div className="adm-album-body">
+        <h4 className="adm-album-title">{item.title}</h4>
+        <p className="adm-album-desc">{item.desc}</p>
+        <span className="adm-meta adm-album-date">
+          {date && <>{Ic.events}<span className="adm-sr-only">Qo'shilgan: </span>{date}</>}
+        </span>
+        <div className="adm-album-actions">
+          <button type="button" className="btn btn-secondary btn-sm adm-item-edit" aria-label={`Tahrirlash: ${item.title}`} onClick={() => onEdit(item)}>
+            {Ic.edit}Tahrirlash
+          </button>
+          <button type="button" className="btn btn-danger adm-icon-btn" aria-label={`O'chirish: ${item.title}`} onClick={() => onDelete(item)}>
+            {Ic.trash}
+          </button>
+        </div>
+      </div>
+    </li>
+  )
+}
 
 export default function GalleryAdmin() {
-  const [items, setItems] = useState([])
-  const [form, setForm]   = useState({ title: '', desc: '' })
-  const [editing, setEdit] = useState(null)
-  const [open, setOpen]    = useState(false)
-  const [uploading, setUploading] = useState(false)
+  const res = useApiGet('/gallery', 'Albomlarni yuklash')
+  const failed = res.error || (!res.loading && !Array.isArray(res.data))
+  const items = useMemo(() => (Array.isArray(res.data) ? res.data : []), [res.data])
+  const totalImages = useMemo(() => items.reduce((n, a) => n + (Array.isArray(a.images) ? a.images.length : 0), 0), [items])
 
-  // News'dagi bilan bir xil ko'p-rasmli yuklash hook'i — har bir albom bir
-  // nechta rasmga ega bo'lishi mumkin (News uslubi, Teachers'dagi bitta rasm
-  // emas).
-  const { imageFiles, imagePreviews, fileRef, handleFileSelect, removeImage, reset, clear } = useMultiImageUpload()
+  const [open, setOpen] = useState(false)
+  const [editing, setEditing] = useState(null)        // tahrirlanayotgan albom `_id` si
+  const [values, setValues] = useState(EMPTY)
+  const [initial, setInitial] = useState({ values: EMPTY, urls: [] })  // «o'zgardimi?» taqqoslash uchun
+  const [errors, setErrors] = useState({})
+  const [imageError, setImageError] = useState('')
+  const [serverError, setServerError] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [leave, setLeave] = useState(null)            // saqlanmagan o'zgarishlar dialogi kutayotgan amal
+  const [toDelete, setToDelete] = useState(null)
+  const [deleting, setDeleting] = useState(false)
+  const [notice, setNotice] = useState('')
+  const [focusKey, setFocusKey] = useState(0)         // forma ochilganda nomga fokus
+  const [refocus, setRefocus] = useState(0)           // forma yopilganda / o'chirilgandan keyin sarlavhaga fokus
+  const titleRef = useRef(null)
+  const headingRef = useRef(null)
 
-  useEffect(() => { fetch(`${API}/gallery`).then(r => r.json()).then(d => setItems(asArray(d))).catch(() => {}) }, [])
+  // Ko'p rasmli yuklash hook'i (Yangiliklar bilan bir xil); albom — 10 tagacha, fayl xatolari maydon ostida
+  const images = useMultiImageUpload({ max: MAX_IMAGES, onError: e => setImageError(imageErrorText(e)) })
 
-  async function save() {
-    if (!form.title.trim()) return alert('Nom kiritilishi shart!')
-    const existingUrls = imagePreviews.filter(p => !p.isNew).map(p => p.url)
-    if (existingUrls.length === 0 && imageFiles.length === 0) return alert('Kamida bitta rasm tanlang!')
+  useEffect(() => { if (focusKey > 0) titleRef.current?.focus() }, [focusKey])
+  useEffect(() => { if (refocus > 0) headingRef.current?.focus() }, [refocus])
 
+  const currentUrls = images.imagePreviews.filter(p => !p.isNew).map(p => p.url)
+  const dirty = open && (
+    values.title !== initial.values.title ||
+    values.desc !== initial.values.desc ||
+    images.imageFiles.length > 0 ||
+    currentUrls.join('\n') !== initial.urls.join('\n')
+  )
+
+  function resetFeedback() { setErrors({}); setImageError(''); setServerError('') }
+
+  function openNew() {
+    setEditing(null); setValues(EMPTY); setInitial({ values: EMPTY, urls: [] })
+    images.clear(); resetFeedback(); setOpen(true); setFocusKey(k => k + 1)
+  }
+
+  function openEdit(item) {
+    const v = { title: item.title, desc: item.desc || '' }
+    const urls = Array.isArray(item.images) ? item.images : []
+    setEditing(item._id); setValues(v); setInitial({ values: v, urls })
+    images.reset(urls); resetFeedback(); setOpen(true); setFocusKey(k => k + 1)
+  }
+
+  function closeForm() {
+    setOpen(false); setEditing(null); setValues(EMPTY); setInitial({ values: EMPTY, urls: [] })
+    images.clear(); resetFeedback(); setRefocus(k => k + 1)
+  }
+
+  // Forma o'zgargan bo'lsa «Bekor», «X», boshqa albomni tahrirlash va «Yangi albom» jimgina tozalamaydi — dialog so'raydi
+  function requestNew() {
+    if (!open) return openNew()
+    if (!editing) return titleRef.current?.focus()   // yangi forma allaqachon ochiq
+    if (dirty) return setLeave({ type: 'new' })
+    openNew()
+  }
+  function requestEdit(item) {
+    if (editing === item._id) return titleRef.current?.focus()
+    if (open && dirty) return setLeave({ type: 'edit', item })
+    openEdit(item)
+  }
+  function requestClose() {
+    if (dirty) setLeave({ type: 'close' })
+    else closeForm()
+  }
+  function confirmLeave() {
+    const action = leave
+    setLeave(null)
+    if (action.type === 'new') openNew()
+    else if (action.type === 'edit') openEdit(action.item)
+    else closeForm()
+  }
+
+  function change(field, value) {
+    setValues(v => ({ ...v, [field]: value }))
+    if (errors[field]) setErrors(e => ({ ...e, [field]: undefined }))
+  }
+
+  function addFiles(list) {
+    setImageError('')
+    images.addFiles(list)
+  }
+
+  function removeImage(i) {
+    setImageError('')
+    images.removeImage(i)
+  }
+
+  async function save(e) {
+    e.preventDefault()
+    if (saving) return
+    const title = values.title.trim()
+    const noImages = images.imagePreviews.length === 0
+    setErrors(title ? {} : { title: 'Albom nomini kiriting.' })
+    setImageError(noImages ? 'Kamida bitta rasm tanlang.' : '')
+    if (!title) return titleRef.current?.focus()
+    if (noImages) return images.fileRef.current?.focus()
+
+    // Rasm yuklash backend orqali (Supabase service_role kaliti serverda, MIME/hajm tekshiruvi bilan) — brauzer
+    // to'g'ridan-to'g'ri Supabase'ga yozmaydi. Mavjud (o'zgartirilmagan) URL'lar `existingImages` sifatida,
+    // yangi tanlangan fayllar haqiqiy fayl sifatida yuboriladi.
     const fd = new FormData()
-    fd.append('title', form.title)
-    fd.append('desc', form.desc)
-    fd.append('existingImages', JSON.stringify(existingUrls))
-    imageFiles.forEach(f => fd.append('imageFiles', f))
+    fd.append('title', title)
+    fd.append('desc', values.desc)
+    fd.append('existingImages', JSON.stringify(currentUrls))
+    images.imageFiles.forEach(f => fd.append('imageFiles', f))
 
-    setUploading(true)
+    setSaving(true)
+    setServerError('')
     try {
       const url = editing ? `${API}/gallery/${editing}` : `${API}/gallery`
-      const res = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
-      if (!res.ok) return alert(await errorMessage(res, 'Albom saqlanmadi.'))
-      const data = await res.json()
-      if (editing) setItems(p => p.map(i => i._id === editing ? data : i))
-      else setItems(p => [data, ...p])
-
-      setForm({ title: '', desc: '' })
-      clear(); setEdit(null); setOpen(false)
+      const r = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: HF(), body: fd })
+      if (!r.ok) {
+        const msg = await errorMessage(r, 'Albom saqlanmadi.')
+        return setServerError(`${msg.replace(/[.!\s]+$/, '')} — ${KEPT}`)
+      }
+      const data = await r.json()
+      const id = editing
+      res.mutate(list => (Array.isArray(list) ? (id ? list.map(a => (a._id === id ? data : a)) : [data, ...list]) : list))
+      closeForm()
     } catch {
-      alert("Server bilan bog'lanib bo'lmadi.")
+      setServerError(`Albom saqlanmadi. Server bilan bog'lanib bo'lmadi — ${KEPT}`)
     } finally {
       // Tarmoq xatosida ham tugma qayta faollashadi
-      setUploading(false)
+      setSaving(false)
     }
   }
 
-  async function del(id) {
-    if (!window.confirm("O'chirishni tasdiqlaysizmi?")) return
+  async function confirmDelete() {
+    if (!toDelete || deleting) return
+    const { _id: id } = toDelete
+    setDeleting(true)
     try {
-      const res = await fetch(`${API}/gallery/${id}`, { method: 'DELETE', headers: H() })
-      if (!res.ok) return alert(await errorMessage(res, "O'chirib bo'lmadi."))
-      setItems(p => p.filter(i => i._id !== id))
+      const r = await fetch(`${API}/gallery/${id}`, { method: 'DELETE', headers: H() })
+      if (!r.ok) {
+        setNotice(await errorMessage(r, "O'chirib bo'lmadi."))
+      } else {
+        res.mutate(list => (Array.isArray(list) ? list.filter(a => a._id !== id) : list))
+        if (editing === id) closeForm()
+        else setRefocus(k => k + 1)
+      }
     } catch {
-      alert("Server bilan bog'lanib bo'lmadi.")
+      setNotice("Server bilan bog'lanib bo'lmadi.")
+    } finally {
+      setDeleting(false)
+      setToDelete(null)
     }
   }
 
-  function startEdit(item) {
-    setEdit(item._id)
-    reset(item.images || [])
-    setForm({ title: item.title, desc: item.desc || '' })
-    setOpen(true)
-  }
+  const deleteCount = Array.isArray(toDelete?.images) ? toDelete.images.length : 0
 
   return (
     <div>
-      <div className="adm-crud-head">
-        <h2 className="adm-page-title">Galereya ({items.length})</h2>
-        <button className="adm-btn adm-btn--primary" onClick={() => { setOpen(!open); setEdit(null); clear(); setForm({ title: '', desc: '' }) }}>{Ic.add} Yangi</button>
+      {notice && <ErrorBanner onDismiss={() => setNotice('')}>{notice}</ErrorBanner>}
+
+      <div className="adm-page-head">
+        <div className="adm-page-head-title">
+          <h2 className="adm-page-title" ref={headingRef} tabIndex={-1}>Galereya</h2>
+          <span className="adm-count-pill"><span className="adm-sr-only">Albomlar: </span>{res.loading || failed ? '–' : items.length}</span>
+          {!res.loading && !failed && items.length > 0 && <span className="adm-page-head-sub">jami {formatCount(totalImages)} ta rasm</span>}
+        </div>
+        <button type="button" className="btn btn-primary" onClick={requestNew}>{Ic.add}Yangi albom</button>
       </div>
 
       {open && (
-        <div className="adm-card adm-form">
-          <h3 className="adm-form-title">{editing ? 'Tahrirlash' : 'Yangi albom'}</h3>
-          <div className="adm-form-body">
-            <div className="adm-form-grid">
-              <div><label className="adm-label">Nomi *</label><input className="adm-input" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="1-kampus" /></div>
-              <div><label className="adm-label">Tavsif</label><input className="adm-input" value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} placeholder="Kampus binosi" /></div>
-            </div>
-
-            <div>
-              <label className="adm-label">Rasmlar ({imagePreviews.length} ta) *</label>
-              <label className="adm-upload">
-                {Ic.photo}
-                Rasm qo'shish
-                <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={handleFileSelect} hidden />
-              </label>
-              <div className="adm-hint">JPEG, PNG, WebP · maks 5 MB · bir vaqtda bir nechtasini tanlash mumkin</div>
-            </div>
-
-            {imagePreviews.length > 0 && (
-              <div className="adm-thumbs">
-                {imagePreviews.map((p, i) => (
-                  <div key={i} className="adm-thumb">
-                    <img className="adm-thumb-img" data-new={p.isNew ? 'true' : 'false'} src={p.url} alt={`rasm-${i + 1}`} loading="lazy" onError={markBroken} />
-                    {p.isNew && <span className="adm-thumb-new">YANGI</span>}
-                    <button className="adm-thumb-x" onClick={() => removeImage(i)} aria-label="Rasmni olib tashlash">×</button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div className="adm-note">
-              Bir albomga bir nechta rasm qo'shish mumkin — masalan bir binoning turli burchaklardan olingan suratlari.
-            </div>
-
-            {uploading && (
-              <div className="adm-saving">
-                <div className="adm-spinner" />
-                Saqlanmoqda...
-              </div>
-            )}
-
-            <div className="adm-form-actions">
-              <button className="adm-btn adm-btn--primary" onClick={save} disabled={uploading}>{Ic.save} {editing ? 'Saqlash' : "Qo'shish"}</button>
-              <button className="adm-btn" onClick={() => { setOpen(false); setEdit(null) }}>Bekor</button>
-            </div>
-          </div>
-        </div>
+        <GalleryForm
+          isEditing={!!editing}
+          values={values}
+          onChange={change}
+          errors={errors}
+          images={{ ...images, removeImage }}
+          imageError={imageError}
+          onFiles={addFiles}
+          saving={saving}
+          serverError={serverError}
+          titleRef={titleRef}
+          onSubmit={save}
+          onClose={requestClose}
+        />
       )}
 
-      <div className="adm-grid adm-grid--albums">
-        {items.map(item => (
-          <div key={item._id} className="adm-card adm-album">
-            <div className="adm-album-cover">
-              {item.images?.[0] && (
-                <img src={item.images[0]} alt={item.title} loading="lazy" onError={markBroken} />
-              )}
-            </div>
-            <div className="adm-album-body">
-              <div className="adm-album-title">{item.title}</div>
-              {item.desc && <div className="adm-album-desc">{item.desc}</div>}
-              <div className="adm-album-count">{(item.images || []).length} ta rasm</div>
-              <div className="adm-actions">
-                <button className="adm-btn adm-btn--edit" onClick={() => startEdit(item)}>{Ic.edit} Tahrir</button>
-                <button className="adm-btn adm-btn--danger" onClick={() => del(item._id)}>{Ic.del} O'chir</button>
-              </div>
-            </div>
-          </div>
-        ))}
-        {items.length === 0 && <p className="adm-blank adm-blank--grid">Hali albom qo'shilmagan</p>}
-      </div>
+      {res.loading ? <AlbumSkeleton /> : failed ? (
+        <ErrorPanel title="Albomlarni yuklab bo'lmadi." onRetry={res.reload}>
+          Internet aloqasini tekshiring yoki birozdan keyin qayta urinib ko'ring.
+        </ErrorPanel>
+      ) : items.length === 0 ? (
+        !open && (
+          <EmptyState
+            icon={Ic.gallery}
+            title="Hali albom yo'q"
+            action={<button type="button" className="btn btn-primary adm-empty-action" onClick={openNew}>{Ic.add}Yangi albom</button>}
+          >
+            Birinchi albomni qo'shing — undagi har bir rasm saytning «Galereya» sahifasida alohida ko'rinadi.
+          </EmptyState>
+        )
+      ) : (
+        <ul className="adm-albums">
+          {items.map(a => <AlbumCard key={a._id} item={a} onEdit={requestEdit} onDelete={setToDelete} />)}
+        </ul>
+      )}
+
+      {toDelete && (
+        <ConfirmDialog
+          title="Albomni o'chirishni tasdiqlaysizmi?"
+          busy={deleting}
+          onConfirm={confirmDelete}
+          onCancel={() => setToDelete(null)}
+        >
+          <strong>«{toDelete.title}»</strong> albomi{deleteCount > 0 ? ` va undagi ${deleteCount} ta rasm` : ''} o'chiriladi, saytdagi galereyadan ham yo'qoladi. Bu amalni qaytarib bo'lmaydi.
+        </ConfirmDialog>
+      )}
+
+      {leave && (
+        <ConfirmDialog
+          tone="warning"
+          title="Saqlanmagan o'zgarishlar bor"
+          confirmLabel="Chiqish"
+          cancelLabel="Tahrirlashda qolish"
+          onConfirm={confirmLeave}
+          onCancel={() => setLeave(null)}
+        >
+          O'zgarishlar saqlanmagan. Chiqsangiz, kiritilgan ma'lumotlar yo'qoladi.
+        </ConfirmDialog>
+      )}
     </div>
   )
 }

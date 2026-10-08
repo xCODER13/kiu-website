@@ -2008,6 +2008,159 @@
   }
   .adm-poster-hint { margin-top: 12px; }
 
+  /* ══ 6.26: Galereya (taxta: Admin-Gallery / Admin-Gallery2) ══
+     Forma `NewsForm` bilan bir xil (`.adm-formcard*`, `.adm-fld*`, `.adm-ctl*`, `.adm-dz*`, `.adm-ithumb*`); bu yerda faqat albom
+     kartasi (3 ustun, 200 px mozaika), tartib raqami, to'lgan/xato holati. Rang faqat tokenlar. */
+  .adm-page-head-sub {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .adm-albums {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .adm-album {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+  .adm-album-mosaic {
+    position: relative;
+    display: grid;
+    flex: none;
+    height: 200px;
+    gap: 2px;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+  .adm-album-mosaic[data-count="2"] { grid-template-columns: 1fr 1fr; }
+  .adm-album-mosaic[data-count="3"] { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; }
+  .adm-album-mosaic[data-count="3"] > .adm-album-tile:first-child { grid-row: 1 / span 2; }
+  .adm-album-mosaic[data-lost="true"] { display: flex; }
+  .adm-album-tile {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    object-fit: cover;
+    background: var(--color-surface-2);
+  }
+  .adm-album-tile[data-broken="true"] { opacity: 0.2; }
+  .adm-album-fallback {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--color-surface-2);
+    font-size: 0.84375rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .adm-album-fallback svg {
+    width: 28px;
+    height: 28px;
+  }
+  .adm-album-badge {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-sizing: border-box;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 8px;
+    background: var(--color-scrim-thumb);
+    font-size: 0.78125rem;
+    font-weight: 700;
+    color: var(--neutral-0);
+  }
+  .adm-album-badge svg {
+    width: 13px;
+    height: 13px;
+  }
+  .adm-album-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 18px 20px 20px;
+  }
+  .adm-album-title {
+    margin: 0 0 6px;
+    overflow: hidden;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+  .adm-album-desc {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    min-height: 42px;
+    margin: 0 0 10px;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    font-size: 0.90625rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+  }
+  .adm-album-date { min-height: 20px; }
+  .adm-album-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .adm-formcard + .adm-albums { margin-top: 24px; }
+  .adm-ithumbs + .adm-fld-hint { margin-top: 12px; }
+  .adm-skel--mosaic { flex: none; width: 100%; height: 200px; border-radius: 0; }
+
+  /* Tartib raqami: plitkaning chap-tepasida (saytdagi ketma-ketlik; «Muqova» yo'q — barcha rasm teng) */
+  .adm-ithumb-num {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background: var(--color-scrim-thumb);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--neutral-0);
+  }
+  /* Yuklash maydoni: xato (punktir danger) va to'lgan (o'chirilgan) holat */
+  .adm-dz[data-invalid="true"] { border-color: var(--color-danger); }
+  .adm-dz[data-full="true"],
+  .adm-dz[data-full="true"]:hover {
+    border-color: var(--color-border-2);
+    background: var(--color-surface-2);
+    cursor: default;
+  }
+  .adm-dz[data-full="true"] .adm-dz-title { color: var(--color-text-muted); }
+  .adm-dz[data-full="true"] .adm-dz-icon {
+    background: var(--color-surface-3);
+    color: var(--color-text-muted);
+  }
+
   /* ══ 6c: CRUD sahifalar (Yangiliklar, Tadbirlar, Galereya, O'qituvchilar, Profil) ══
      avval shared/styles.js obyektlari edi (card, inp, lbl, bP, bD, bE, bG). */
 
@@ -2088,14 +2241,6 @@
     font-size: 0.625rem;
     color: var(--color-text-muted);
   }
-  .adm-note {
-    padding: 0.75rem;
-    border: 1px solid color-mix(in srgb, var(--color-brand) 15%, transparent);
-    border-radius: 8px;
-    background: color-mix(in srgb, var(--color-brand) 5%, transparent);
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
-  }
   .adm-actions {
     display: flex;
     gap: 6px;
@@ -2118,33 +2263,6 @@
     font-size: var(--text-xs);
     font-weight: 600;
     cursor: pointer;
-  }
-  .adm-thumbs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .adm-thumbs--spaced { margin-top: 4px; }
-  .adm-thumb { position: relative; }
-  .adm-thumb-img {
-    display: block;
-    width: 90px;
-    height: 70px;
-    border: 2px solid var(--color-border);
-    border-radius: 8px;
-    object-fit: cover;
-  }
-  .adm-thumb-img[data-new="true"] { border-color: var(--color-brand); }
-  .adm-thumb-new {
-    position: absolute;
-    bottom: 4px;
-    left: 4px;
-    padding: 1px 5px;
-    border-radius: 10px;
-    background: var(--color-brand-fill);
-    color: var(--color-on-brand);
-    font-size: 0.5625rem;
-    font-weight: 700;
   }
   .adm-preview {
     position: relative;
@@ -2184,7 +2302,6 @@
   }
   /* Rasm yuklanmasa (`onError` → `data-broken`): xira ko'rsatiladi yoki yashiriladi */
   img[data-broken="true"] { opacity: .3; }
-  .adm-album-cover img[data-broken="true"] { opacity: .2; }
   .adm-avatar img[data-broken="true"] { display: none; }
 
   /* ── Saqlanmoqda ── */
@@ -2263,39 +2380,7 @@
     display: grid;
     gap: 10px;
   }
-  .adm-grid--albums   { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
   .adm-grid--teachers { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-  .adm-album {
-    padding: 0;
-    overflow: hidden;
-  }
-  .adm-album-cover {
-    height: 130px;
-    overflow: hidden;
-    background: var(--color-border);
-  }
-  .adm-album-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .adm-album-body { padding: 0.75rem; }
-  .adm-album-title {
-    margin-bottom: 2px;
-    font-size: var(--text-xs);
-    font-weight: 600;
-    color: var(--color-text);
-  }
-  .adm-album-desc {
-    margin-bottom: 4px;
-    font-size: var(--text-2xs);
-    color: var(--color-text-muted);
-  }
-  .adm-album-count {
-    margin-bottom: 8px;
-    font-size: 0.625rem;
-    color: var(--color-text-muted);
-  }
   .adm-teacher-head {
     display: flex;
     align-items: center;
