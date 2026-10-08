@@ -56,6 +56,19 @@ describe('Vacancies', () => {
     expect(fetch).not.toHaveBeenCalled()
   })
 
+  it("xatoda fokus FORMA TARTIBIDAGI birinchi noto'g'ri maydonga o'tadi (ismdan keyin telefon, so'ng tanlagichlar)", async () => {
+    okFetch()
+    const user = userEvent.setup()
+    render(<Vacancies />)
+    await goToForm(user)
+    await user.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
+    expect(screen.getByPlaceholderText('Familiya Ism Otasining ismi')).toHaveFocus()
+    await user.type(screen.getByPlaceholderText('Familiya Ism Otasining ismi'), 'Ali Valiyev')
+    await user.type(screen.getByPlaceholderText('+998 90 123 45 67'), '+998 90 123 45 67')
+    await user.click(screen.getByRole('button', { name: 'Ariza yuborish' }))
+    expect(screen.getAllByRole('combobox')[0]).toHaveFocus() // lavozim — birinchi xatoli tanlagich
+  })
+
   it('to\'g\'ri ma\'lumot — type:"vacancy" bilan yuboradi va muvaffaqiyat ekranini ko\'rsatadi', async () => {
     okFetch()
     const user = userEvent.setup()

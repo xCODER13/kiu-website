@@ -40,6 +40,8 @@ function ImageCarousel({ imgs, title }) {
 
   useEffect(() => {
     const onKey = (e) => {
+      // Brauzer qisqa yo'llari (Alt+←/→ — orqaga/oldinga) va matn maydonidagi strelkalar galereyani aylantirmasin
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.target.closest?.('input, textarea, select, [contenteditable="true"]')) return
       if (e.key === 'ArrowLeft') prev()
       if (e.key === 'ArrowRight') next()
     }

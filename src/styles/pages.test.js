@@ -87,7 +87,8 @@ describe('vacancies/*, news/* manba kodi (Bosqich 5b)', () => {
     for (const f of files) {
       const src = read(f)
       const uses = src.match(/onMouse(Enter|Leave)=\{[^}]*\}/g) ?? []
-      if (f.endsWith('FeaturedCarousel.jsx')) expect(uses).toEqual(['onMouseEnter={() => setPaused(true)}', 'onMouseLeave={() => setPaused(false)}'])
+      // 6.29: pauza hodisalari umumiy `useCarouselPause` hook'iga ko'chdi (sichqoncha + klaviatura fokusi + reduced-motion) — komponentda `{...handlers}`
+      if (f.endsWith('FeaturedCarousel.jsx')) { expect(uses).toEqual([]); expect(src).toMatch(/\{\.\.\.handlers\}/) }
       else expect(uses, f).toEqual([])
     }
   })
@@ -160,8 +161,11 @@ describe('Bosqich 5c: qolgan <style> teglari, JS hover va `!important`', () => {
       'src/components/ApplyModal.jsx', 'src/components/TelegramPanel.jsx',
     ]
     for (const f of files) expect(read(f), f).not.toMatch(/onMouse(Enter|Leave)|onFocus|onBlur/)
-    const carousel = read('src/pages/home/NewsCarousel.jsx').match(/onMouse(Enter|Leave)=\{[^}]*\}/g)
-    expect(carousel).toEqual(['onMouseEnter={() => setPaused(true)}', 'onMouseLeave={() => setPaused(false)}'])
+    // 6.29: karusel pauza hodisalari (sichqoncha + klaviatura fokusi + reduced-motion) umumiy `useCarouselPause` hook'iga ko'chdi;
+    // komponentda endi `{...handlers}` — eski `onMouseEnter={() => setPaused(true)}` matni yo'q. Hook ham stil yozmaydi.
+    expect(read('src/pages/home/NewsCarousel.jsx')).toMatch(/\{\.\.\.handlers\}/)
+    expect(read('src/pages/home/NewsCarousel.jsx')).not.toMatch(/onMouse(Enter|Leave)/)
+    expect(read('src/hooks/useCarouselPause.js')).not.toMatch(/\.style\b|style=/)
   })
 
   it("ApplyModal va TelegramPanel: inline stil yo'q, `errorBorder` ishlatilmaydi; klasslar site.css da, token orqali", () => {

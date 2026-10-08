@@ -13,6 +13,8 @@
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
+  /* To'q yuzalar (Light'da ham to'q): wine-700 halqa ko'rinmaydi — o'zgaruvchi shu konteynerlarda yorqinga almashadi (Dark'da `--color-focus` allaqachon wine-300) */
+  :where(.site-footer, .apply-banner, .wine-banner, .carousel) { --color-focus: var(--color-focus-on-dark); }
   @media (forced-colors: active) {
     :where(a[href], button, input, select, textarea, summary):focus-visible { outline-color: Highlight; }
   }

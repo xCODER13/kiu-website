@@ -158,4 +158,19 @@ describe('Gallery (public)', () => {
     expect(alert).toHaveAttribute('data-tone', 'danger')
     spy.mockRestore()
   })
+
+  it("lightbox ochiq paytda orqa sahifa `inert` (#root), yopilganda olinadi", async () => {
+    mockApi({ 'GET /gallery': [ALBUM1] })
+    const root = document.createElement('div')
+    root.id = 'root'
+    document.body.appendChild(root)
+    render(<Gallery />, { container: root.appendChild(document.createElement('div')) })
+    const tiles = await screen.findAllByAltText('1-kampus')
+    expect(root.inert).toBeFalsy() // jsdom'da `inert` xossasi dastlab yo'q
+    fireEvent.click(tiles[0].closest('.card'))
+    expect(root.inert).toBe(true)
+    fireEvent.click(screen.getByRole('button', { name: 'Yopish' }))
+    expect(root.inert).toBe(false)
+    root.remove()
+  })
 })

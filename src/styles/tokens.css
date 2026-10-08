@@ -87,6 +87,7 @@
     --color-brand-active:  var(--wine-900);
     --color-brand-strong:  var(--wine-900);       /* kuchaytirilgan brend MATN/to'q yuza (hover emas) */
     --color-focus:         var(--wine-700);       /* fokus halqasi */
+    --color-focus-on-dark: var(--wine-300);       /* fokus halqasi TO'Q yuza ustida (footer, banner, karusel) — ikkala temada bir xil */
     --color-brand-subtle:  var(--wine-50);
     --color-brand-subtle-2: var(--wine-100);
     --color-on-brand:      var(--neutral-0);
