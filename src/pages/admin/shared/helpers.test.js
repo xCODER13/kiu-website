@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount, parseEventDate, eventDateKey, formatEventDate, eventTile, todayKey, isPastEvent, formatDateLong, initialsOf } from './helpers'
+import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount, parseEventDate, eventDateKey, formatEventDate, eventTile, todayKey, isPastEvent, formatDateLong, initialsOf, decodeJwtPayload, formatDateTimeShort, formatTimeLeft, byteLength, passwordStrength, STRENGTH_LABELS } from './helpers'
 
 const ID = 'dQw4w9WgXcQ'
 describe('extractYouTubeShortsId', () => {
@@ -124,5 +124,44 @@ describe("initialsOf (6.27 — O'qituvchilar avatari)", () => {
   it("ism ham bo'lmasa — bo'sh satr (qulamaydi)", () => {
     expect(initialsOf({})).toBe('')
     expect(initialsOf({ avatar: '', name: null })).toBe('')
+  })
+})
+
+describe('Profil yordamchilari (6.28)', () => {
+  const b64 = o => btoa(JSON.stringify(o)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+
+  it('decodeJwtPayload — payload ni o\'qiydi (base64url); buzuq token → null', () => {
+    const t = `h.${b64({ username: 'admin', exp: 1900000000 })}.s`
+    expect(decodeJwtPayload(t)).toEqual({ username: 'admin', exp: 1900000000 })
+    for (const bad of [null, '', 'abc', 'a.b.c', 'a.!!!.c']) expect(decodeJwtPayload(bad)).toBeNull()
+  })
+
+  it('formatDateTimeShort — «9-okt 2026, 14:20»', () => {
+    const d = new Date(2026, 9, 9, 14, 20).getTime()
+    expect(formatDateTimeShort(d)).toBe('9-okt 2026, 14:20')
+  })
+
+  it('formatTimeLeft — daqiqa / soat / kun; o\'tgan bo\'lsa «muddati tugagan»', () => {
+    const M = 60000
+    expect(formatTimeLeft(5 * M)).toBe("5 daqiqadan so'ng")
+    expect(formatTimeLeft(3 * 60 * M)).toBe("3 soatdan so'ng")
+    expect(formatTimeLeft(7 * 24 * 60 * M)).toBe("7 kundan so'ng")
+    expect(formatTimeLeft(0)).toBe('muddati tugagan')
+    expect(formatTimeLeft(-1000)).toBe('muddati tugagan')
+  })
+
+  it('byteLength — UTF-8 bayt (bcrypt 72 bayt chegarasi uchun)', () => {
+    expect(byteLength('abc')).toBe(3)
+    expect(byteLength('я'.repeat(37))).toBe(74)
+    expect(byteLength('')).toBe(0)
+  })
+
+  it('passwordStrength — 0 (bo\'sh) … 4; yorliqlar', () => {
+    expect(passwordStrength('')).toBe(0)
+    expect(passwordStrength('1234567')).toBe(1)
+    expect(passwordStrength('abcdefgh')).toBe(2)
+    expect(passwordStrength('abcdefg123')).toBe(3)
+    expect(passwordStrength('Kuz-Qarshi-2026!')).toBe(4)
+    expect(STRENGTH_LABELS).toEqual({ 1: 'Juda zaif', 2: 'Zaif', 3: 'Yaxshi', 4: 'Kuchli' })
   })
 })

@@ -203,26 +203,22 @@ describe('Bosqich 6c: CRUD sahifalar (shared/styles.js klasslarga o\'tdi)', () =
   it("JS orqali stil yozilmaydi: `onError` → `markBroken` (`data-broken`), `style.opacity/display` yo'q", () => {
     for (const n of PAGES) {
       expect(src(n), n).not.toMatch(/\.style\.(opacity|display)/)
-      expect(src(n), n).not.toMatch(/onMouse(Enter|Leave)|onFocus|onBlur/)
+      // 6.28: `onBlur` Profilda «Parolni takrorlang» mos kelmasligini maydondan chiqilganda tekshirish uchun (stil emas) — shu sababli
+      // ProfileAdmin uchun `onBlur` istisno; hover/fokus holatini JS bilan yozish (`onMouse*`, `onFocus`) baribir taqiqlangan.
+      expect(src(n), n).not.toMatch(n === 'ProfileAdmin' ? /onMouse(Enter|Leave)|onFocus/ : /onMouse(Enter|Leave)|onFocus|onBlur/)
     }
     expect(code).toMatch(/img\[data-broken="true"\] \{ opacity: \.3; \}/)
     // 6.27: `.adm-avatar img[data-broken] { display: none }` o'rniga `Avatar.jsx` yuklanmagan fotoda bosh harflarga qaytadi (holat orqali)
     expect(read('src/pages/admin/shared/Avatar.jsx')).toMatch(/onError=\{\(\) => setFailedSrc\(image\)\}/)
   })
 
-  it("forma elementlari tokenlarda: `.adm-input` chegarasi `--color-border-strong`, `.adm-label` 11px token, tugma variantlari", () => {
-    expect(code).toMatch(/\.adm-input \{[^}]*border: 1px solid var\(--color-border-strong\)/)
-    expect(code).toMatch(/\.adm-input \{[^}]*font-size: var\(--text-sm\)/)
-    expect(code).toMatch(/\.adm-label \{[^}]*font-size: var\(--text-2xs\)/)
-    // 6.27: `.adm-btn--edit` / `.adm-btn--danger` o'chirildi (O'qituvchilar `btn btn-secondary` / `btn btn-danger` ga o'tdi)
-    expect(code).not.toMatch(/\.adm-btn--(edit|danger)\b/)
-    expect(code).toMatch(/\.adm-btn--primary:disabled \{ opacity: \.6; \}/)
-  })
-
-  it("`.adm-msg` rangi `data-type` → `--msg-c` (success/danger tokenlari); Shorts belgisi `--brand-youtube`", () => {
-    expect(code).toMatch(/\.adm-msg\[data-type="success"\] \{ --msg-c: var\(--color-success\); \}/)
-    expect(code).toMatch(/\.adm-msg\[data-type="error"\]\s+\{ --msg-c: var\(--color-danger\); \}/)
-    expect(code).toMatch(/\.adm-pill--youtube \{[^}]*var\(--brand-youtube\)/)
+  // 6.28: Profil `.adm-formcard`/`.adm-ctl`/`btn-primary` ga o'tdi → eski `.adm-input`, `.adm-label`, `.adm-btn*`, `.adm-msg*`, `.adm-info*`,
+  // `.adm-form-body` va (avvaldan o'lik) `.adm-pill*`, `.adm-row*`, `.adm-section-title`, `.adm-list--spaced` o'chirildi. Eski ikki qo'riqchi shu klasslarni
+  // tekshirgani uchun o'zgartirildi: endi ularning YO'QLIGINI va yangi `.adm-ctl` tokenlarini tekshiradi.
+  it("forma elementlari tokenlarda: `.adm-ctl` chegarasi `--color-border-2`; eski `.adm-input`/`.adm-label`/`.adm-btn*` yo'q", () => {
+    expect(code).toMatch(/\.adm-ctl \{[^}]*border: 1px solid var\(--color-border-2\)/)
+    expect(code).not.toMatch(/\.adm-(input|label)\s*\{|\.adm-btn(--primary)?\s*[{:,]/)
+    expect(code).not.toMatch(/\.adm-(info|msg|pill|row|form-body)\b|\.adm-(section-title|list--spaced)\b/)
   })
 
   // 6.27: `.adm-spinner` va `spin` animatsiyali eski «Saqlanmoqda» spinneri o'chirildi (O'qituvchilar ham `Ic.spinner` + `btn-spin` ga o'tdi)
@@ -548,6 +544,46 @@ describe("Bosqich 6.27: O'qituvchilar", () => {
   it("O'qituvchilar klasslarida hardcoded rang yo'q (faqat tokenlar)", () => {
     for (const sel of ['.adm-teacher', '.adm-teacher-role', '.adm-teacher-name', '.adm-teacher-dept', '.adm-avatar', '.adm-avfield-new', '.adm-fld-warn', '.adm-toolbar-count']) {
       expect(rule(sel), sel).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+    }
+  })
+})
+
+describe('Bosqich 6.28 — Profil', () => {
+  const css = code
+  const rule = sel => (css.match(new RegExp(`${sel.replace(/[.[\]()]/g, '\\$&')} \\{([^}]*)\\}`)) ?? [])[1] ?? ''
+  it('to\'r: 380 px forma/hisob ustuni + `minmax(0, 1fr)`', () => {
+    expect(rule('.adm-profile-grid')).toMatch(/grid-template-columns: 380px minmax\(0, 1fr\);/)
+  })
+
+  it('kuch o\'lchagichi va talablar holatlari faqat holat tokenlaridan (danger / warning / success)', () => {
+    expect(css).toMatch(/\.adm-strength\[data-level="1"\] \.adm-strength-bar:nth-child\(-n\+1\) \{ background: var\(--color-danger\); \}/)
+    expect(css).toMatch(/\.adm-strength\[data-level="2"\] \.adm-strength-bar:nth-child\(-n\+2\) \{ background: var\(--color-warning\); \}/)
+    expect(css).toMatch(/\.adm-strength\[data-level="4"\] \.adm-strength-bar \{ background: var\(--color-success\); \}/)
+    expect(css).toMatch(/\.adm-req\[data-state="ok"\] \{ color: var\(--color-success\); \}/)
+    expect(css).toMatch(/\.adm-req\[data-state="fail"\] \{ color: var\(--color-danger\); \}/)
+  })
+
+  it('banner: `data-tone` → `--pb` (success / warning); to\'g\'ri parol maydoni — `--color-success` chegara', () => {
+    expect(css).toMatch(/\.adm-pbanner\[data-tone="success"\] \{ --pb: var\(--color-success\); --pb-bg: var\(--color-success-bg\); \}/)
+    expect(css).toMatch(/\.adm-pbanner\[data-tone="warning"\] \{ --pb: var\(--color-warning\); --pb-bg: var\(--color-warning-bg\); \}/)
+    expect(rule('.adm-ctl[data-ok="true"]')).toMatch(/var\(--color-success\)/)
+  })
+
+  it('«ko\'z» tugmasi 36 px, fokus halqasi bor', () => {
+    expect(rule('.adm-pw-eye')).toMatch(/width: 36px;\s*height: 36px;/)
+    expect(rule('.adm-pw-eye:focus-visible')).toMatch(/outline: 2px solid var\(--color-brand\);/)
+  })
+
+  it('Profil klasslarida hardcoded rang yo\'q (faqat tokenlar)', () => {
+    for (const sel of ['.adm-account', '.adm-account-icon', '.adm-pwform-icon', '.adm-pw-eye', '.adm-fld-ok', '.adm-strength-bar', '.adm-req', '.adm-req-dot', '.adm-pbanner']) {
+      expect(rule(sel), sel).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+    }
+  })
+
+  it('Profil komponentlarida inline style va qo\'lda hodisa-uslub yo\'q', () => {
+    for (const n of ['src/pages/admin/ProfileAdmin.jsx', 'src/pages/admin/shared/PasswordField.jsx']) {
+      expect(read(n), n).not.toMatch(/style=\{\{/)
+      expect(read(n), n).not.toMatch(/\.style\.(opacity|display)|onMouse(Enter|Leave)/)
     }
   })
 })
