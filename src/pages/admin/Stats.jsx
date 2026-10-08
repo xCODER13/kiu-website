@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { NavLink } from 'react-router-dom'
-import { API, H } from './shared/api'
 import { Ic } from './shared/Icons.jsx'
+import { useApiGet } from './shared/useApiGet'
+import { LoadingState, ErrorState, EmptyState, ErrorBanner } from './shared/StateViews.jsx'
 import TrendLineChart from './charts/TrendLineChart'
 import RankedBarChart from './charts/RankedBarChart'
 
@@ -21,114 +22,83 @@ function formatBucketDate(d, full, granularity) {
   return granularity === 'week' ? `${base} haftasi` : base
 }
 
+// Reyting kartasi: sarlavha (rangli ikonka plitkasi) + holatga qarab yuklanmoqda / xato / grafik.
+// Har karta o'z holatiga ega — bittasi muvaffaqiyatsiz bo'lsa ham qolganlari ko'rsatiladi.
+function RankCard({ title, tone, icon, resource, children }) {
+  return (
+    <div className="adm-card">
+      <h4 className="adm-card-title" data-tone={tone}><span className="adm-card-title-icon" aria-hidden="true">{icon}</span>{title}</h4>
+      {resource.error ? <ErrorState />
+        : resource.loading ? <LoadingState />
+        : children}
+    </div>
+  )
+}
+
 export default function Stats() {
-  const [stats, setStats] = useState(null)
-  const [error, setError] = useState(false)
-  useEffect(() => {
-    fetch(`${API}/stats`, { headers: H() }).then(r => r.json()).then(setStats)
-      .catch(err => { console.error('Stats yuklashda xatolik:', err); setError(true) })
-  }, [])
-
-  // ── Band 6: admin statistika dashboard'i — trend grafigi va reyting
-  // grafiklari uchun qo'shimcha holatlar. Har biri o'z fetch/loading/error
-  // holatiga ega — bittasi muvaffaqiyatsiz bo'lsa ham qolganlari ko'rsatiladi.
+  // 6.22: barcha so'rovlar `useApiGet` orqali — `res.ok` tekshiriladi, unmount/granularity
+  // almashganda `AbortController` eskisini bekor qiladi (avval faqat trendda poyga himoyasi bor edi).
   const [granularity, setGranularity] = useState('day')
-  const [trend, setTrend] = useState(null)
-  const [trendError, setTrendError] = useState(false)
-  useEffect(() => {
-    // effect tanasida to'g'ridan-to'g'ri setState (reset) chaqirmaslik uchun —
-    // "yuklanmoqda" holati pastda trend?.granularity joriy granularity bilan
-    // solishtirib HISOBLANADI (eskirgan javob hali ko'rsatilmayapti degani).
-    // `cancelled` — foydalanuvchi tez-tez tugmani bossa, eski so'rov javobi
-    // yangisini bosib ketmasligi uchun.
-    let cancelled = false
-    fetch(`${API}/stats/applications-trend?granularity=${granularity}`, { headers: H() })
-      .then(r => r.json())
-      .then(d => { if (!cancelled) { setTrend(d); setTrendError(false) } })
-      .catch(err => {
-        if (cancelled) return
-        console.error('Arizalar trendini yuklashda xatolik:', err)
-        setTrendError(true)
-      })
-    return () => { cancelled = true }
-  }, [granularity])
-
-  const [topNews, setTopNews] = useState(null)
-  const [topNewsError, setTopNewsError] = useState(false)
-  useEffect(() => {
-    fetch(`${API}/stats/top-news?limit=${TOP_LIMIT}`, { headers: H() })
-      .then(r => r.json()).then(setTopNews)
-      .catch(err => { console.error("Top yangiliklarni yuklashda xatolik:", err); setTopNewsError(true) })
-  }, [])
-
-  const [topEvents, setTopEvents] = useState(null)
-  const [topEventsError, setTopEventsError] = useState(false)
-  useEffect(() => {
-    fetch(`${API}/stats/top-events?limit=${TOP_LIMIT}`, { headers: H() })
-      .then(r => r.json()).then(setTopEvents)
-      .catch(err => { console.error('Top tadbirlarni yuklashda xatolik:', err); setTopEventsError(true) })
-  }, [])
-
-  const [sortingHat, setSortingHat] = useState(null)
-  const [sortingHatError, setSortingHatError] = useState(false)
-  useEffect(() => {
-    fetch(`${API}/stats/sortinghat-faculties`, { headers: H() })
-      .then(r => r.json()).then(setSortingHat)
-      .catch(err => { console.error('SortingHat statistikasini yuklashda xatolik:', err); setSortingHatError(true) })
-  }, [])
-
-  const [appFaculties, setAppFaculties] = useState(null)
-  const [appFacultiesError, setAppFacultiesError] = useState(false)
-  useEffect(() => {
-    fetch(`${API}/stats/applications-faculties`, { headers: H() })
-      .then(r => r.json()).then(setAppFaculties)
-      .catch(err => { console.error("Ariza yo'nalishlari statistikasini yuklashda xatolik:", err); setAppFacultiesError(true) })
-  }, [])
+  const stats = useApiGet('/stats', 'Stats yuklashda xatolik')
+  const trend = useApiGet(`/stats/applications-trend?granularity=${granularity}`, 'Arizalar trendini yuklashda xatolik')
+  const topNews = useApiGet(`/stats/top-news?limit=${TOP_LIMIT}`, 'Top yangiliklarni yuklashda xatolik')
+  const topEvents = useApiGet(`/stats/top-events?limit=${TOP_LIMIT}`, 'Top tadbirlarni yuklashda xatolik')
+  const sortingHat = useApiGet('/stats/sortinghat-faculties', 'SortingHat statistikasini yuklashda xatolik')
+  const appFaculties = useApiGet('/stats/applications-faculties', "Ariza yo'nalishlari statistikasini yuklashda xatolik")
 
   const dateLabel = useCallback((d, full = false) => formatBucketDate(d, full, granularity), [granularity])
 
-  if (error) return <p className="adm-error">Statistikani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.</p>
-  if (!stats) return <p className="adm-loading">Yuklanmoqda...</p>
+  // Sarlavha har holatda ko'rinadi (taxta: "sahifa darajasidagi holatlar" — yuklanmoqda va xato ham shu ostida)
+  if (stats.error) {
+    return (
+      <div>
+        <h2 className="adm-page-title adm-page-title--spaced">Statistika</h2>
+        <ErrorBanner>Statistikani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.</ErrorBanner>
+      </div>
+    )
+  }
+  if (stats.loading) {
+    return (
+      <div>
+        <h2 className="adm-page-title adm-page-title--spaced">Statistika</h2>
+        <LoadingState />
+      </div>
+    )
+  }
+  const s = stats.data ?? {}
 
   // `tone` — 4.4 dagi `--stat-*` rangi (CSS `[data-tone]` orqali `--kpi-c` ga aylanadi)
   const cards = [
-    { label: 'Yangiliklar',        value: stats.newsCount,     tone: 'blue',    icon: Ic.news,    to: '/admin/news'         },
-    { label: 'Youtube shorts',     value: stats.shortsCount,   tone: 'orange',  icon: Ic.video,   to: '/admin/news'         },
-    { label: 'Tadbirlar',          value: stats.eventsCount,   tone: 'emerald', icon: Ic.events,  to: '/admin/events'       },
-    { label: "O'qituvchilar",      value: stats.teachersCount, tone: 'indigo',  icon: Ic.teach,   to: '/admin/teachers'     },
-    { label: 'Qabul arizalari',    value: stats.appsCount,     tone: 'amber',   icon: Ic.apps,    to: '/admin/applications' },
-    { label: 'Vakansiya arizalari',value: stats.vacancyApps,   tone: 'cyan',    icon: Ic.vacancy, to: '/admin/vacancies'    },
-    { label: 'Galereya',           value: stats.galleryCount,  tone: 'lime',    icon: Ic.gallery, to: '/admin/gallery'      },
+    { label: 'Yangiliklar',        value: s.newsCount,     tone: 'blue',    icon: Ic.news,    to: '/admin/news'         },
+    { label: 'Youtube shorts',     value: s.shortsCount,   tone: 'orange',  icon: Ic.video,   to: '/admin/news'         },
+    { label: 'Tadbirlar',          value: s.eventsCount,   tone: 'emerald', icon: Ic.events,  to: '/admin/events'       },
+    { label: "O'qituvchilar",      value: s.teachersCount, tone: 'indigo',  icon: Ic.teach,   to: '/admin/teachers'     },
+    { label: 'Qabul arizalari',    value: s.appsCount,     tone: 'amber',   icon: Ic.clipboard, to: '/admin/applications' },
+    { label: 'Vakansiya arizalari',value: s.vacancyApps,   tone: 'cyan',    icon: Ic.vacancy, to: '/admin/vacancies'    },
+    { label: 'Galereya',           value: s.galleryCount,  tone: 'lime',    icon: Ic.gallery, to: '/admin/gallery'      },
   ]
 
-  // trend hali joriy granularity uchun kelmagan bo'lsa (masalan foydalanuvchi
-  // "Hafta"ni bosdi-yu, so'rov hali javob bermadi) — eskirgan (oldingi
-  // granularity'ga tegishli) ma'lumot ko'rsatilmasin, "Yuklanmoqda..." chiqadi.
-  const trendLoading = !trendError && trend?.granularity !== granularity
-  const trendBuckets = (trend?.buckets ?? []).map(b => ({ date: new Date(b.date), admission: b.admission, vacancy: b.vacancy }))
-  const topNewsData = (Array.isArray(topNews) ? topNews : []).map(n => ({ label: n.title, value: n.views ?? 0 }))
-  const topEventsData = (Array.isArray(topEvents) ? topEvents : []).map(e => ({ label: e.title, value: e.views ?? 0 }))
-  const facultyData = (sortingHat?.faculties ?? []).map(f => ({ label: f.faculty, value: f.count }))
-  const appFacultyData = (appFaculties?.faculties ?? []).map(f => ({ label: f.faculty, value: f.count }))
+  const trendBuckets = (trend.data?.buckets ?? []).map(b => ({ date: new Date(b.date), admission: b.admission, vacancy: b.vacancy }))
+  const topNewsData = (Array.isArray(topNews.data) ? topNews.data : []).map(n => ({ label: n.title, value: n.views ?? 0 }))
+  const topEventsData = (Array.isArray(topEvents.data) ? topEvents.data : []).map(e => ({ label: e.title, value: e.views ?? 0 }))
+  const facultyData = (sortingHat.data?.faculties ?? []).map(f => ({ label: f.faculty, value: f.count }))
+  const appFacultyData = (appFaculties.data?.faculties ?? []).map(f => ({ label: f.faculty, value: f.count }))
 
   return (
     <div>
       <h2 className="adm-page-title adm-page-title--spaced">Statistika</h2>
-      {/* Kartalar 7 ta: 132px asosda (7*132 + 6*12 = 996px) keng ekranda hammasi bitta qatorga sig'adi
-          (avval 155px edi va 7-karta yolg'iz ikkinchi qatorga tushib qolardi). NavLink `display:flex` va
-          ichki karta `flex:1` — bir qatordagi kartalar yorliq 2 qatorga o'ralib ketsa ham bir xil balandlikda.
-          "Yangi arizalar" kartasi olib tashlandi (Qabul arizalari bilan dublikat edi).
-          grid o'rniga flex + justify-content:center ishlatildi — shunda oxirgi qatorda
-          kartalar soni ustunlar soniga to'liq bo'linmasa ham, ikki tomonga bir xil
-          bo'sh joy qoladi (grid'da bo'sh ustun faqat o'ngda qolib, assimetrik ko'rinar edi).
-          Hover (siljish) CSS da: `.adm-kpi:hover` (oldin JS hover) */}
+      {/* Kartalar 7 ta: 132px asosda (7*132 + 6*12 = 996px) keng ekranda hammasi bitta qatorga sig'adi.
+          NavLink `display:flex` va ichki karta `flex:1` — bir qatordagi kartalar yorliq 2 qatorga o'ralib
+          ketsa ham bir xil balandlikda. Flex + justify-content:center (grid emas): oxirgi qatorda
+          kartalar soni ustunlarga bo'linmasa ham ikki tomonga bir xil bo'sh joy qoladi.
+          Hover (siljish va soya) CSS da: `.adm-kpi:hover`. */}
       <div className="adm-kpi-grid">
         {cards.map(c => (
           <NavLink key={c.label} to={c.to} className="adm-kpi-link">
             <div className="adm-card adm-kpi" data-tone={c.tone}>
               <div className="adm-kpi-top">
                 <div className="adm-kpi-value">{c.value ?? 0}</div>
-                <div className="adm-kpi-icon">{c.icon}</div>
+                <div className="adm-kpi-icon" aria-hidden="true">{c.icon}</div>
               </div>
               <div className="adm-kpi-label">{c.label}</div>
             </div>
@@ -138,26 +108,26 @@ export default function Stats() {
 
       <h3 className="adm-subtitle">Batafsil statistika</h3>
 
-      {/* Arizalar trendi — kun/hafta almashtirish tugmasi bilan */}
+      {/* Arizalar trendi — kun/hafta almashtirish tugmasi bilan. Sarlavha va tugmalar har holatda ko'rinadi */}
       <div className="adm-card adm-trend-card">
         <div className="adm-card-head">
-          <div className="adm-card-title">
-            <span className="adm-card-title-icon">{Ic.stats}</span>
+          <h4 className="adm-card-title">
+            <span className="adm-card-title-icon" aria-hidden="true">{Ic.stats}</span>
             Arizalar trendi
-          </div>
+          </h4>
           <div className="adm-seg" role="group" aria-label="Vaqt oralig'ini tanlash">
             <button type="button" aria-label="Kunlik ko'rinish" aria-pressed={granularity === 'day'}
-              className={granularity === 'day' ? 'adm-btn adm-btn--primary' : 'adm-btn'} onClick={() => setGranularity('day')}>Kun</button>
+              className={granularity === 'day' ? 'btn btn-sm btn-primary' : 'btn btn-sm'} onClick={() => setGranularity('day')}>Kun</button>
             <button type="button" aria-label="Haftalik ko'rinish" aria-pressed={granularity === 'week'}
-              className={granularity === 'week' ? 'adm-btn adm-btn--primary' : 'adm-btn'} onClick={() => setGranularity('week')}>Hafta</button>
+              className={granularity === 'week' ? 'btn btn-sm btn-primary' : 'btn btn-sm'} onClick={() => setGranularity('week')}>Hafta</button>
           </div>
         </div>
-        {trendError ? (
-          <p className="adm-error">Trendni yuklashda xatolik yuz berdi.</p>
-        ) : trendLoading ? (
-          <p className="adm-loading">Yuklanmoqda...</p>
+        {trend.error ? (
+          <ErrorState>Trendni yuklashda xatolik yuz berdi.</ErrorState>
+        ) : trend.loading ? (
+          <LoadingState />
         ) : trendBuckets.length === 0 ? (
-          <p className="adm-loading adm-empty">Ma'lumot yo'q</p>
+          <EmptyState />
         ) : (
           <>
             <TrendLineChart
@@ -167,6 +137,7 @@ export default function Stats() {
                 { key: 'vacancy', label: 'Vakansiya arizalari', color: 'var(--stat-cyan)' },
               ]}
               dateLabel={dateLabel}
+              ariaLabel="Arizalar trendi: qabul va vakansiya arizalari soni"
             />
             <div className="adm-legend">
               <span className="adm-legend-item" data-tone="amber"><span className="adm-legend-dot" />Qabul arizalari</span>
@@ -179,43 +150,23 @@ export default function Stats() {
       {/* 2 qator x 2 ustun (`.adm-rank-grid`): keng ekranda doim 2 ustun; tor ekranda (ustun 260px dan
           kichraymasligi uchun) o'zi 1 ustunga tushadi */}
       <div className="adm-rank-grid">
-        <div className="adm-card">
-          <div className="adm-card-title" data-tone="blue"><span className="adm-card-title-icon">{Ic.news}</span>Eng ko'p ko'rilgan yangiliklar</div>
-          {topNewsError ? <p className="adm-error">Yuklashda xatolik yuz berdi.</p>
-            : !topNews ? <p className="adm-loading">Yuklanmoqda...</p>
-            : <RankedBarChart data={topNewsData} color="var(--stat-blue)" />}
-        </div>
+        <RankCard title="Eng ko'p ko'rilgan yangiliklar" tone="blue" icon={Ic.news} resource={topNews}>
+          <RankedBarChart data={topNewsData} color="var(--stat-blue)" ariaLabel="Eng ko'p ko'rilgan yangiliklar" />
+        </RankCard>
 
-        <div className="adm-card">
-          <div className="adm-card-title" data-tone="emerald"><span className="adm-card-title-icon">{Ic.events}</span>Eng ko'p ko'rilgan tadbirlar</div>
-          {topEventsError ? <p className="adm-error">Yuklashda xatolik yuz berdi.</p>
-            : !topEvents ? <p className="adm-loading">Yuklanmoqda...</p>
-            : <RankedBarChart data={topEventsData} color="var(--stat-emerald)" />}
-        </div>
+        <RankCard title="Eng ko'p ko'rilgan tadbirlar" tone="emerald" icon={Ic.events} resource={topEvents}>
+          <RankedBarChart data={topEventsData} color="var(--stat-emerald)" ariaLabel="Eng ko'p ko'rilgan tadbirlar" />
+        </RankCard>
 
-        <div className="adm-card">
-          <div className="adm-card-title" data-tone="violet"><span className="adm-card-title-icon">{Ic.teach}</span>Sehrli shlyapa yo'nalish tavsiyalari</div>
-          {sortingHatError ? <p className="adm-error">Yuklashda xatolik yuz berdi.</p>
-            : !sortingHat ? <p className="adm-loading">Yuklanmoqda...</p>
-            : (
-              <>
-                <RankedBarChart data={facultyData} color="var(--stat-violet)" />
-                <div className="adm-chart-total">Jami: {sortingHat.total ?? 0} ta murojaat</div>
-              </>
-            )}
-        </div>
+        <RankCard title="Sehrli shlyapa yo'nalish tavsiyalari" tone="violet" icon={Ic.teach} resource={sortingHat}>
+          <RankedBarChart data={facultyData} color="var(--stat-violet)" ariaLabel="Sehrli shlyapa yo'nalish tavsiyalari" />
+          {facultyData.length > 0 && <div className="adm-chart-total">Jami: {sortingHat.data?.total ?? 0} ta murojaat</div>}
+        </RankCard>
 
-        <div className="adm-card">
-          <div className="adm-card-title" data-tone="amber"><span className="adm-card-title-icon">{Ic.apps}</span>Eng ko'p ariza tushgan yo'nalishlar</div>
-          {appFacultiesError ? <p className="adm-error">Yuklashda xatolik yuz berdi.</p>
-            : !appFaculties ? <p className="adm-loading">Yuklanmoqda...</p>
-            : (
-              <>
-                <RankedBarChart data={appFacultyData} color="var(--stat-amber)" />
-                <div className="adm-chart-total">Jami: {appFaculties.total ?? 0} ta ariza</div>
-              </>
-            )}
-        </div>
+        <RankCard title="Eng ko'p ariza tushgan yo'nalishlar" tone="amber" icon={Ic.clipboard} resource={appFaculties}>
+          <RankedBarChart data={appFacultyData} color="var(--stat-amber)" ariaLabel="Eng ko'p ariza tushgan yo'nalishlar" />
+          {appFacultyData.length > 0 && <div className="adm-chart-total">Jami: {appFaculties.data?.total ?? 0} ta ariza</div>}
+        </RankCard>
       </div>
     </div>
   )
