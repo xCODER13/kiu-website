@@ -3,10 +3,17 @@ const { fail } = require('../middleware/errorHandler')
 const { applyPagination } = require('../utils/pagination')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { rejectForeignImageUrls } = require('../utils/imageUrls')
+const { omitUnchangedLegacy } = require('../utils/legacyValues')
+const { DEPARTMENTS } = require('../utils/departments')
 
 // Bazada eski `email` qiymatlari qolgan bo'lishi mumkin (Mongoose strict rejimi ularni o'chirmaydi) —
 // shuning uchun har bir javobdan aniq chiqarib tashlanadi (scripts/unset-teacher-email.js bilan DB ham tozalanadi).
 const HIDE = '-email'
+
+// Ruxsat etilgan kafedralar ro'yxati (ommaviy; admin forma va kelajakda sayt filtri shundan oladi)
+function getDepartments(req, res) {
+  res.json(DEPARTMENTS)
+}
 
 async function getAll(req, res) {
   try {
@@ -46,14 +53,17 @@ async function create(req, res) {
 async function update(req, res) {
   let uploadedPaths = []
   try {
-    if (!req.file) {
-      const stored = await Teacher.findById(req.params.id).select('image')
-      if (rejectForeignImageUrls(req, res, [req.body.existingImage || ''], stored ? [stored.image] : [])) return
-    }
+    const stored = await Teacher.findById(req.params.id).select('image dept avatar')
+    if (!req.file && rejectForeignImageUrls(req, res, [req.body.existingImage || ''], stored ? [stored.image] : [])) return
     const resolved = await resolveImage(req)
     uploadedPaths = resolved.uploadedPaths
     const { name, role, dept, avatar } = req.body
-    const updated = await Teacher.findByIdAndUpdate(req.params.id, { name, role, dept, avatar, image: resolved.image }, { new: true, runValidators: true }).select(HIDE)
+    // Eski (ro'yxatdan oldin saqlangan) kafedra/avatar o'zgarmasdan qaytsa — tahrirlash bloklanmasin (utils/legacyValues.js)
+    const fields = omitUnchangedLegacy({ name, role, dept, avatar }, stored, {
+      dept: d => DEPARTMENTS.includes(d),
+      avatar: a => a.length <= 2,
+    })
+    const updated = await Teacher.findByIdAndUpdate(req.params.id, { ...fields, image: resolved.image }, { new: true, runValidators: true }).select(HIDE)
     if (!updated) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
       return res.status(404).json({ error: 'Topilmadi' })
@@ -70,4 +80,4 @@ async function remove(req, res) {
   catch (e) { fail(req, res, 500, e) }
 }
 
-module.exports = { getAll, create, update, remove }
+module.exports = { getAll, getDepartments, create, update, remove }

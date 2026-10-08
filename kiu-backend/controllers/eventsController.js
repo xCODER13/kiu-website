@@ -3,6 +3,8 @@ const { fail } = require('../middleware/errorHandler')
 const { applyPagination } = require('../utils/pagination')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { rejectForeignImageUrls } = require('../utils/imageUrls')
+const { omitUnchangedLegacy } = require('../utils/legacyValues')
+const { EVENT_TYPES } = require('../utils/eventTypes')
 
 async function getAll(req, res) {
   try {
@@ -45,14 +47,14 @@ async function create(req, res) {
 async function update(req, res) {
   let uploadedPaths = []
   try {
-    if (!req.file) {
-      const stored = await Event.findById(req.params.id).select('image')
-      if (rejectForeignImageUrls(req, res, [req.body.existingImage || ''], stored ? [stored.image] : [])) return
-    }
+    const stored = await Event.findById(req.params.id).select('image type')
+    if (!req.file && rejectForeignImageUrls(req, res, [req.body.existingImage || ''], stored ? [stored.image] : [])) return
     const resolved = await resolveImage(req, 'events')
     uploadedPaths = resolved.uploadedPaths
     const { title, desc, eventDate, type } = req.body
-    const updated = await Event.findByIdAndUpdate(req.params.id, { title, desc, eventDate, type, image: resolved.image }, { new: true, runValidators: true })
+    // Eski (enum'dan oldin saqlangan) tur o'zgarmasdan qaytsa — tahrirlash bloklanmasin (utils/legacyValues.js)
+    const fields = omitUnchangedLegacy({ title, desc, eventDate, type }, stored, { type: t => EVENT_TYPES.includes(t) })
+    const updated = await Event.findByIdAndUpdate(req.params.id, { ...fields, image: resolved.image }, { new: true, runValidators: true })
     if (!updated) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
       return res.status(404).json({ error: 'Topilmadi' })
