@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 // SVG ichida skript bo'lishi mumkin (saqlangan XSS xavfi).
 export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const isAllowedImage = f => ALLOWED_IMAGE_TYPES.includes(f.type)
+const MAX_FILE_SIZE = 5 * 1024 * 1024
 
 // YAXSHILASH: bu ikkala hook NewsAdmin/EventsAdmin/TeachersAdmin'da deyarli
 // so'zma-so'z nusxalangan (rasm tanlash, preview, o'chirish) mantiqni bir
@@ -11,28 +12,59 @@ const isAllowedImage = f => ALLOWED_IMAGE_TYPES.includes(f.type)
 // o'zgargan.
 
 // ── Bitta rasm (Events, Teachers) ──────────────────────────────────
-export function useSingleImageUpload() {
+// 6.25 (Tadbirlar) qo'shdi (Yangiliklardagi `useMultiImageUpload` bilan bir xil naqsh):
+// - `onError({ kind, file })` — berilsa `alert()` o'rniga chaqiriladi (kind: 'type' | 'size'): maydon ostida inline xabar.
+//   Berilmasa — avvalgidek `alert()` (O'qituvchilar 7-bo'lakda o'zgaradi);
+// - `addFile(file)` — fayl tanlash VA drag-and-drop uchun bitta yo'l; `fileRef` — `<input type=file>` ni tozalash uchun:
+//   rasm olib tashlangach xuddi shu faylni qayta tanlasa `onChange` ishlashi kerak (avval `input.value` tozalanmasdi);
+// - `reset(url)` — tahrirlash uchun mavjud rasmni ko'rsatish (eski blob URL tozalanadi);
+// - `clearImage` / `reset` / `clear` blob URL'ni `revokeObjectURL` qiladi (saqlangach ham — avval xotira oqardi).
+export function useSingleImageUpload({ onError } = {}) {
   const [imageFile, setImageFile]       = useState(null)   // yangi tanlangan fayl
   const [imagePreview, setImagePreview] = useState(null)    // preview URL (blob yoki mavjud supabase URL)
+  const fileRef = useRef(null)
 
-  function handleImageSelect(e) {
-    const file = e.target.files?.[0]
+  const revokeIfBlob = url => { if (url?.startsWith('blob:')) URL.revokeObjectURL(url) }
+  const resetInput = () => { if (fileRef.current) fileRef.current.value = '' }
+
+  function fail(error) {
+    resetInput()
+    if (onError) return onError(error)
+    if (error.kind === 'type') alert('Faqat rasm fayli qabul qilinadi (JPEG, PNG, WebP, GIF)!')
+    else alert("Rasm 5 MB dan katta bo'lmasin!")
+  }
+
+  function addFile(file) {
     if (!file) return
-    if (!isAllowedImage(file)) return alert('Faqat rasm fayli qabul qilinadi (JPEG, PNG, WebP, GIF)!')
-    if (file.size > 5 * 1024 * 1024) return alert("Rasm 5 MB dan katta bo'lmasin!")
-    if (imagePreview?.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
+    if (!isAllowedImage(file)) return fail({ kind: 'type', file })
+    if (file.size > MAX_FILE_SIZE) return fail({ kind: 'size', file })
+    revokeIfBlob(imagePreview)
     setImageFile(file)
     setImagePreview(URL.createObjectURL(file))
+    resetInput()
+  }
+
+  function handleImageSelect(e) {
+    addFile(e.target.files?.[0])
   }
 
   // Foydalanuvchi "olib tashlash" tugmasini bosganda — blob URL tozalanadi.
   function clearImage() {
-    if (imagePreview?.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
+    revokeIfBlob(imagePreview)
     setImageFile(null)
     setImagePreview(null)
+    resetInput()
   }
 
-  return { imageFile, imagePreview, setImageFile, setImagePreview, handleImageSelect, clearImage }
+  // Forma ochilganda: mavjud (backenddan kelgan) URL yoki `null`
+  function reset(url = null) {
+    revokeIfBlob(imagePreview)
+    setImageFile(null)
+    setImagePreview(url || null)
+    resetInput()
+  }
+
+  return { imageFile, imagePreview, fileRef, setImageFile, setImagePreview, addFile, handleImageSelect, clearImage, reset }
 }
 
 // ── Ko'p rasm (News, Gallery) ────────────────────────────────────────
@@ -41,8 +73,6 @@ export function useSingleImageUpload() {
 // - `max` — jami rasm soni (mavjud + yangi); oshsa fayllar qo'shilmaydi;
 // - `onError({ kind, file, max })` — berilsa `alert()` o'rniga chaqiriladi (kind: 'type' | 'size' | 'count'),
 //   maydon ostida inline xabar ko'rsatish uchun. Berilmasa — avvalgidek `alert()` (Galereya 6-bo'lakda o'zgaradi).
-const MAX_FILE_SIZE = 5 * 1024 * 1024
-
 export function useMultiImageUpload({ onError, max } = {}) {
   const [imageFiles, setImageFiles]     = useState([])   // yangi fayllar
   const [imagePreviews, setImagePreviews] = useState([]) // {url, isNew}[]

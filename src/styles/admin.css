@@ -1887,6 +1887,127 @@
     font-weight: 700;
   }
 
+  /* ══ 6.25: Tadbirlar (taxta: Admin-Events / Admin-Events2) ══
+     6.24 dagi `.adm-item*`, `.adm-cat*`, `.adm-fld*`, `.adm-ctl*`, `.adm-dz*`, `.adm-formcard*` qayta ishlatiladi; bu yerda faqat
+     tadbirga xos qismlar: sana plitkasi, poster (96×68 ro'yxatda, 192×108 formada), «O'tgan» belgisi. */
+
+  /* Sana plitkasi 60×68: har doim ko'rinadi; kelgusi — brend, o'tgan — kulrang (faqat rang emas: «O'tgan» belgisi ham bor) */
+  .adm-date-tile {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 60px;
+    height: 68px;
+    border-radius: 12px;
+    background: var(--color-brand-subtle);
+    color: var(--color-brand);
+  }
+  .adm-date-tile[data-past="true"] {
+    background: var(--color-surface-2);
+    color: var(--color-text-muted);
+  }
+  .adm-date-day {
+    font-size: 1.375rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .adm-date-month {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .adm-item-poster {
+    flex: none;
+    box-sizing: border-box;
+    width: 96px;
+    height: 68px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--color-surface-2);
+  }
+  .adm-item-poster-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .adm-item-poster-img[data-broken="true"] { opacity: 0.3; }
+  .adm-badge-past {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 26px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .adm-skel--tile   { flex: none; width: 60px; height: 68px; border-radius: 12px; }
+  .adm-skel--poster { flex: none; width: 96px; height: 68px; border-radius: 10px; }
+
+  /* Forma: ixcham tavsif maydoni va poster (192×108 ko'rinish + tugmalar) */
+  .adm-ctl--area-sm { min-height: 96px; }
+  .adm-poster {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+  }
+  .adm-poster-img {
+    position: relative;
+    flex: none;
+    box-sizing: border-box;
+    width: 192px;
+    height: 108px;
+    overflow: hidden;
+    border: 1px solid var(--color-border-2);
+    border-radius: 12px;
+    background: var(--color-surface-2);
+  }
+  .adm-poster-img[data-new="true"] { border: 2px solid var(--color-brand); }
+  .adm-poster-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .adm-poster-img img[data-broken="true"] { opacity: 0.3; }
+  .adm-poster-side { min-width: 0; }
+  .adm-poster-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  .btn.adm-poster-btn,
+  .btn.adm-poster-remove {
+    min-height: 40px;
+    padding: 0 16px;
+    gap: 8px;
+    border-width: 1.5px;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .adm-poster-btn svg,
+  .adm-poster-remove svg {
+    width: 16px;
+    height: 16px;
+  }
+  .adm-poster-btn:has(:focus-visible) {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+  .adm-poster-btn[data-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .adm-poster-hint { margin-top: 12px; }
+
   /* ══ 6c: CRUD sahifalar (Yangiliklar, Tadbirlar, Galereya, O'qituvchilar, Profil) ══
      avval shared/styles.js obyektlari edi (card, inp, lbl, bP, bD, bE, bG). */
 
@@ -1979,7 +2100,6 @@
     display: flex;
     gap: 6px;
   }
-  .adm-actions--fixed { flex-shrink: 0; }
   .adm-form-actions {
     display: flex;
     gap: 8px;
@@ -2037,11 +2157,6 @@
     border: 2px solid var(--color-brand);
     object-fit: cover;
   }
-  .adm-preview-img--poster {
-    width: 70px;
-    height: 50px;
-    border-radius: 8px;
-  }
   .adm-preview-img--avatar {
     width: 48px;
     height: 48px;
@@ -2069,7 +2184,6 @@
   }
   /* Rasm yuklanmasa (`onError` → `data-broken`): xira ko'rsatiladi yoki yashiriladi */
   img[data-broken="true"] { opacity: .3; }
-  .adm-row-thumb[data-broken="true"],
   .adm-album-cover img[data-broken="true"] { opacity: .2; }
   .adm-avatar img[data-broken="true"] { display: none; }
 
@@ -2097,7 +2211,6 @@
     justify-content: space-between;
     gap: 12px;
   }
-  .adm-row--center { align-items: center; }
   .adm-row-left {
     display: flex;
     flex: 1;
@@ -2136,7 +2249,6 @@
     font-weight: 600;
     color: var(--color-text);
   }
-  .adm-row-title--tight { margin-bottom: 2px; }
   .adm-row-text {
     overflow: hidden;
     font-size: var(--text-2xs);
@@ -2145,34 +2257,6 @@
     color: var(--color-text-muted);
   }
   .adm-row-text--news { max-width: 450px; }
-  .adm-row-thumb {
-    flex-shrink: 0;
-    width: 46px;
-    height: 46px;
-    border-radius: 10px;
-    object-fit: cover;
-  }
-  .adm-event-date {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 46px;
-    height: 46px;
-    border-radius: 10px;
-    background: var(--gradient-brand);
-    color: var(--color-on-brand);
-  }
-  .adm-event-day {
-    font-size: var(--text-sm);
-    font-weight: 700;
-    line-height: 1;
-  }
-  .adm-event-month {
-    font-size: 0.5625rem;
-    opacity: .75;
-  }
 
   /* ── Albomlar (Galereya) va o'qituvchilar kartalari ── */
   .adm-grid {

@@ -76,6 +76,51 @@ describe('useSingleImageUpload', () => {
     expect(result.current.imagePreview).toBeNull()
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:mock-1')
   })
+
+  // 6.25 (Tadbirlar) qo'shdi
+  it('onError berilsa — alert() emas, { kind, file } bilan chaqiriladi (tur / hajm)', () => {
+    const onError = vi.fn()
+    const { result } = renderHook(() => useSingleImageUpload({ onError }))
+    const pdf = file('a.pdf', 'application/pdf')
+    act(() => result.current.addFile(pdf))
+    expect(onError).toHaveBeenLastCalledWith({ kind: 'type', file: pdf })
+    const big = file('b.png', 'image/png', 5 * 1024 * 1024 + 1)
+    act(() => result.current.addFile(big))
+    expect(onError).toHaveBeenLastCalledWith({ kind: 'size', file: big })
+    expect(alert).not.toHaveBeenCalled()
+    expect(result.current.imageFile).toBeNull()
+  })
+  it('addFile(undefined) hech narsa qilmaydi (drag-and-drop bo\'sh)', () => {
+    const onError = vi.fn()
+    const { result } = renderHook(() => useSingleImageUpload({ onError }))
+    act(() => result.current.addFile(undefined))
+    expect(onError).not.toHaveBeenCalled()
+    expect(result.current.imagePreview).toBeNull()
+  })
+  it('`<input>` qiymati tozalanadi (tanlangach, xatoda, olib tashlaganda) — xuddi shu faylni qayta tanlasa onChange ishlaydi', () => {
+    const { result } = renderHook(() => useSingleImageUpload({ onError: () => {} }))
+    const input = { value: 'C:\\fakepath\\a.png' }
+    result.current.fileRef.current = input
+    act(() => result.current.addFile(file()))
+    expect(input.value).toBe('')
+    input.value = 'x'
+    act(() => result.current.addFile(file('a.pdf', 'application/pdf')))
+    expect(input.value).toBe('')
+    input.value = 'x'
+    act(() => result.current.clearImage())
+    expect(input.value).toBe('')
+  })
+  it('reset(url) — mavjud rasm ko\'rsatiladi, eski blob revoke; reset() — bo\'sh', () => {
+    const { result } = renderHook(() => useSingleImageUpload())
+    act(() => result.current.addFile(file()))
+    act(() => result.current.reset('https://x.supabase.co/a.jpg'))
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:mock-1')
+    expect(result.current.imageFile).toBeNull()
+    expect(result.current.imagePreview).toBe('https://x.supabase.co/a.jpg')
+    act(() => result.current.reset())
+    expect(result.current.imagePreview).toBeNull()
+    expect(URL.revokeObjectURL).toHaveBeenCalledTimes(1)   // mavjud URL revoke qilinmaydi
+  })
 })
 
 describe('useMultiImageUpload', () => {
