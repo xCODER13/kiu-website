@@ -56,6 +56,11 @@ function buildTelegramMessage(application) {
 // mumkin edi). Holatni faqat admin `update()` orqali o'zgartiradi.
 const APPLICATION_FIELDS = ['name', 'phone', 'faculty', 'message', 'email', 'position', 'education', 'experience', 'type']
 
+// Faqat vakansiya arizasida mazmunli maydonlar (1.7). Qabul arizasi formasi ularni yubormaydi (ApplyModal.jsx),
+// shuning uchun `type: 'admission'` bilan kelsa e'tiborsiz qoldiriladi va SAQLANMAYDI — shaxsiy ma'lumotni
+// (email) keraksiz yig'maslik. Admin panel va Telegram shabloni ham qabul arizasida ularni ko'rsatmaydi.
+const VACANCY_ONLY_FIELDS = ['email', 'position', 'education', 'experience']
+
 async function create(req, res) {
   try {
     const body = {}
@@ -63,6 +68,7 @@ async function create(req, res) {
       if (req.body[field] !== undefined) body[field] = req.body[field]
     }
     if (!body.type || !['admission', 'vacancy'].includes(body.type)) body.type = 'admission'
+    if (body.type !== 'vacancy') for (const field of VACANCY_ONLY_FIELDS) delete body[field]
     body.status = 'new'
 
     const application = await Application.create(body)
