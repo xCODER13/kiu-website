@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount, parseEventDate, eventDateKey, formatEventDate, eventTile, todayKey, isPastEvent, formatDateLong } from './helpers'
+import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount, parseEventDate, eventDateKey, formatEventDate, eventTile, todayKey, isPastEvent, formatDateLong, initialsOf } from './helpers'
 
 const ID = 'dQw4w9WgXcQ'
 describe('extractYouTubeShortsId', () => {
@@ -111,5 +111,18 @@ describe('formatDateLong (6.26 — albom qo\'shilgan sana)', () => {
     expect(formatDateLong('')).toBe('')
     expect(formatDateLong(undefined)).toBe('')
     expect(formatDateLong('mavjud emas')).toBe('')
+  })
+})
+
+describe("initialsOf (6.27 — O'qituvchilar avatari)", () => {
+  it("`avatar` maydoni bor bo'lsa shu (o'zgartirilmaydi); bo'sh bo'lsa — ismning birinchi 2 harfi, katta harfda", () => {
+    expect(initialsOf({ avatar: 'bk', name: 'Bek' })).toBe('bk')
+    expect(initialsOf({ avatar: '', name: 'zokir aliyev' })).toBe('ZO')
+    expect(initialsOf({ name: 'Karimov Ali' })).toBe('KA')
+  })
+
+  it("ism ham bo'lmasa — bo'sh satr (qulamaydi)", () => {
+    expect(initialsOf({})).toBe('')
+    expect(initialsOf({ avatar: '', name: null })).toBe('')
   })
 })

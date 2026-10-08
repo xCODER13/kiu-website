@@ -192,10 +192,12 @@ describe('Bosqich 6c: CRUD sahifalar (shared/styles.js klasslarga o\'tdi)', () =
     for (const n of PAGES) expect(src(n)).not.toMatch(/shared\/styles/)
   })
 
-  it("5 sahifada inline stil yo'q; faqat TeachersAdmin avatar foni (indeksdan — spec 7.5 dinamik)", () => {
-    for (const n of PAGES.filter(x => x !== 'TeachersAdmin')) expect(src(n), n).not.toMatch(/style=\{/)
-    expect(src('TeachersAdmin').match(/style=\{/g)).toHaveLength(1)
-    expect(src('TeachersAdmin')).toMatch(/className="adm-avatar" style=\{\{ background: colors\[i % colors\.length\] \}\}/)
+  // 6.27 (O'qituvchilar): avval bu yerda TeachersAdmin dagi YAGONA inline stil (`colors[i % colors.length]` — 6 ta hardcoded hex)
+  // kutilardi. Endi avatar rangi bitta brend gradienti (CSS) — 5 sahifaning hech birida inline stil yo'q.
+  it("5 sahifada inline stil yo'q (O'qituvchilar avatari ham — 6.27 dan beri CSS gradient)", () => {
+    for (const n of PAGES) expect(src(n), n).not.toMatch(/style=\{/)
+    expect(read('src/pages/admin/shared/Avatar.jsx')).not.toMatch(/style=\{/)
+    expect(src('TeachersAdmin')).not.toMatch(/colors\[|#[0-9a-f]{6}\b/i)
   })
 
   it("JS orqali stil yozilmaydi: `onError` → `markBroken` (`data-broken`), `style.opacity/display` yo'q", () => {
@@ -204,14 +206,16 @@ describe('Bosqich 6c: CRUD sahifalar (shared/styles.js klasslarga o\'tdi)', () =
       expect(src(n), n).not.toMatch(/onMouse(Enter|Leave)|onFocus|onBlur/)
     }
     expect(code).toMatch(/img\[data-broken="true"\] \{ opacity: \.3; \}/)
-    expect(code).toMatch(/\.adm-avatar img\[data-broken="true"\] \{ display: none; \}/)
+    // 6.27: `.adm-avatar img[data-broken] { display: none }` o'rniga `Avatar.jsx` yuklanmagan fotoda bosh harflarga qaytadi (holat orqali)
+    expect(read('src/pages/admin/shared/Avatar.jsx')).toMatch(/onError=\{\(\) => setFailedSrc\(image\)\}/)
   })
 
   it("forma elementlari tokenlarda: `.adm-input` chegarasi `--color-border-strong`, `.adm-label` 11px token, tugma variantlari", () => {
     expect(code).toMatch(/\.adm-input \{[^}]*border: 1px solid var\(--color-border-strong\)/)
     expect(code).toMatch(/\.adm-input \{[^}]*font-size: var\(--text-sm\)/)
     expect(code).toMatch(/\.adm-label \{[^}]*font-size: var\(--text-2xs\)/)
-    expect(code).toMatch(/\.adm-btn--edit \{[^}]*color: var\(--color-brand\)/)
+    // 6.27: `.adm-btn--edit` / `.adm-btn--danger` o'chirildi (O'qituvchilar `btn btn-secondary` / `btn btn-danger` ga o'tdi)
+    expect(code).not.toMatch(/\.adm-btn--(edit|danger)\b/)
     expect(code).toMatch(/\.adm-btn--primary:disabled \{ opacity: \.6; \}/)
   })
 
@@ -221,20 +225,18 @@ describe('Bosqich 6c: CRUD sahifalar (shared/styles.js klasslarga o\'tdi)', () =
     expect(code).toMatch(/\.adm-pill--youtube \{[^}]*var\(--brand-youtube\)/)
   })
 
-  it("spinner `--color-brand-subtle-2` + `spin` animatsiyasi (eski `#ede9fe` yo'q); fayl kiritish `hidden`", () => {
-    expect(code).toMatch(/\.adm-spinner \{[^}]*border: 2px solid var\(--color-brand-subtle-2\)/)
-    expect(code).toMatch(/animation: spin 0\.7s linear infinite/)
+  // 6.27: `.adm-spinner` va `spin` animatsiyali eski «Saqlanmoqda» spinneri o'chirildi (O'qituvchilar ham `Ic.spinner` + `btn-spin` ga o'tdi)
+  it("eski `.adm-spinner` yo'q (eski `#ede9fe` ham yo'q); fayl kiritish `.adm-sr-only` (`hidden` emas)", () => {
+    expect(code).not.toMatch(/\.adm-spinner\b/)
     for (const n of ['NewsAdmin', 'EventsAdmin', 'GalleryAdmin', 'TeachersAdmin']) {
       expect(src(n), n).not.toMatch(/ede9fe/i)
     }
     // 6.24: Yangiliklar fayl kiritishi `shared/ImageField.jsx` ga o'tdi va `hidden` o'rniga `.adm-sr-only` — `hidden` (display: none)
     // inputni klaviaturadan ham, ekran o'quvchidan ham olib tashlardi; endi Tab bilan fokuslanadi (fokus halqasi yuklash maydonida).
     // 6.25: Tadbirlar ham xuddi shunday — fayl kiritishi `shared/PosterField.jsx` da (`.adm-sr-only`).
-    // 6.26: Galereya ham (`shared/ImageField.jsx`). Faqat O'qituvchilar (7-bo'lak) hozircha `hidden` da.
-    for (const n of ['TeachersAdmin']) {
-      expect(src(n), n).toMatch(/type="file"[^>]* hidden \/>/)
-    }
-    for (const f of ['ImageField', 'PosterField']) {
+    // 6.26: Galereya ham (`shared/ImageField.jsx`). 6.27: O'qituvchilar ham (`shared/AvatarField.jsx`) — endi hamma sahifada `.adm-sr-only`.
+    expect(src('TeachersAdmin')).not.toMatch(/type="file"/)
+    for (const f of ['ImageField', 'PosterField', 'AvatarField']) {
       const field = read(`src/pages/admin/shared/${f}.jsx`)
       expect(field, f).toMatch(/className="adm-sr-only"\s+type="file"/)
       expect(field, f).not.toMatch(/type="file"[^>]*\shidden[\s/>]/)
@@ -294,7 +296,8 @@ describe('Bosqich 6.22: Statistika (taxta bo\'yicha)', () => {
 
   it("`.adm-load-state-spinner` mavjud `.adm-spinner` (rasm yuklash) bilan to'qnashmaydi", () => {
     expect(css).toMatch(/\.adm-load-state-spinner \{/)
-    expect((css.match(/\.adm-spinner \{/g) ?? [])).toHaveLength(1)
+    // 6.27: eski `.adm-spinner` butunlay o'chirildi (oldin aynan 1 ta bo'lishi tekshirilardi) — to'qnashadigan narsa qolmadi
+    expect((css.match(/\.adm-spinner \{/g) ?? [])).toHaveLength(0)
   })
 
   it("grafik: trend tooltip 10 px radius, `--color-border-2` chegara, `--shadow-pop`; yo'naltiruvchi chiziq; svg fokus halqasi", () => {
@@ -454,10 +457,10 @@ describe('Bosqich 6.25: Tadbirlar', () => {
     expect(css).not.toMatch(/outline:\s*(none|0)\b/)
   })
 
-  it("Tadbirlarga xos eski klasslar olib tashlangan (`.adm-event-*`, `.adm-row-thumb`); umumiylari (Galereya/O'qituvchilar uchun) qoladi", () => {
+  // 6.27: `.adm-thumb-x` va `.adm-upload` (O'qituvchilar eski formasi) o'chirildi — «umumiylari qoladi» sharti bajarilib bo'ldi
+  it("Tadbirlarga xos eski klasslar olib tashlangan (`.adm-event-*`, `.adm-row-thumb`); O'qituvchilarning eski yuklash klasslari ham yo'q (6.27)", () => {
     expect(css).not.toMatch(/\.adm-event-(date|day|month)|\.adm-row-thumb\b|\.adm-preview-img--poster/)
-    expect(css).toMatch(/\.adm-thumb-x \{/)
-    expect(css).toMatch(/\.adm-upload\b/)
+    expect(css).not.toMatch(/\.adm-thumb-x\b|\.adm-upload\b|\.adm-preview\b/)
   })
 })
 
@@ -503,10 +506,48 @@ describe('Bosqich 6.26: Galereya', () => {
     expect(css).toMatch(/\.adm-dz\[data-invalid="true"\] \{ border-color: var\(--color-danger\); \}/)
   })
 
-  it("Galereyaga xos eski klasslar olib tashlangan (`.adm-album-cover/-count`, `.adm-thumbs`, `.adm-note`); O'qituvchilar ishlatadiganlari qoladi", () => {
+  // 6.27: «O'qituvchilar ishlatadiganlari qoladi» sharti bajarilib bo'ldi — `.adm-thumb-x`, `.adm-upload`, `.adm-grid--teachers` o'chirildi
+  it("Galereyaga xos eski klasslar olib tashlangan (`.adm-album-cover/-count`, `.adm-thumbs`, `.adm-note`); O'qituvchilarniki ham (6.27)", () => {
     expect(css).not.toMatch(/\.adm-album-cover|\.adm-album-count|\.adm-grid--albums|\.adm-thumbs\b|\.adm-thumb-img|\.adm-thumb-new|\.adm-note\b/)
-    expect(css).toMatch(/\.adm-thumb-x \{/)
-    expect(css).toMatch(/\.adm-upload\b/)
-    expect(css).toMatch(/\.adm-grid--teachers/)
+    expect(css).not.toMatch(/\.adm-thumb-x\b|\.adm-upload\b|\.adm-grid--teachers/)
+  })
+})
+
+describe("Bosqich 6.27: O'qituvchilar", () => {
+  const css = code
+  const rule = sel => (css.match(new RegExp(`${sel.replace(/[.[\]()]/g, '\\$&')} \\{([^}]*)\\}`)) ?? [])[1] ?? ''
+
+  it("eski klasslar olib tashlangan: `.adm-teacher-head`, `.adm-grid`, `.adm-crud-head`, `.adm-blank`, `.adm-form-grid`, `.adm-hint`, `.adm-saving`", () => {
+    expect(css).not.toMatch(/\.adm-teacher-head|\.adm-grid\b|\.adm-crud-head|\.adm-blank\b|\.adm-form-grid|\.adm-hint\b|\.adm-saving\b|\.adm-actions\b|\.adm-form-actions|\.adm-preview-img/)
+  })
+
+  it("avatar: bitta brend gradienti (6 ta hardcoded hex o'rniga), 56 / 96 px, foto `object-fit: cover`", () => {
+    expect(rule('.adm-avatar')).toMatch(/linear-gradient\(135deg, var\(--color-brand-fill\), var\(--color-brand-hover\)\)/)
+    expect(rule('.adm-avatar')).toMatch(/color: var\(--color-on-brand\);/)
+    expect(rule('.adm-avatar[data-size="md"]')).toMatch(/width: 56px;\s*height: 56px;/)
+    expect(rule('.adm-avatar[data-size="lg"]')).toMatch(/width: 96px;\s*height: 96px;/)
+    expect(rule('.adm-avatar img')).toMatch(/object-fit: cover;/)
+  })
+
+  it("karta radius 16, ichki 20; lavozim pill'i brend-subtle; kafedra 2 qatorga qisqaradi (`min-height: 42px`)", () => {
+    expect(rule('.adm-teacher')).toMatch(/padding: 20px;/)
+    expect(rule('.adm-teacher')).toMatch(/border-radius: 16px;/)
+    expect(rule('.adm-teacher-role')).toMatch(/background: var\(--color-brand-subtle\);/)
+    expect(rule('.adm-teacher-role')).toMatch(/color: var\(--color-brand\);/)
+    expect(rule('.adm-teacher-dept')).toMatch(/-webkit-line-clamp: 2;/)
+    expect(rule('.adm-teacher-dept')).toMatch(/min-height: 42px;/)
+    expect(rule('.adm-teacher-actions')).toMatch(/margin-top: auto;/)
+  })
+
+  it("ro'yxatda yo'q kafedra — `--color-warning` chegara va xabar; foto maydoni: yangi — 3 px brend halqa", () => {
+    expect(rule('.adm-ctl[data-warn="true"]')).toMatch(/var\(--color-warning\)/)
+    expect(rule('.adm-fld-warn')).toMatch(/color: var\(--color-warning\);/)
+    expect(css).toMatch(/\.adm-avfield-pic\[data-new="true"\] \.adm-avatar \{ box-shadow: 0 0 0 3px var\(--color-brand\); \}/)
+  })
+
+  it("O'qituvchilar klasslarida hardcoded rang yo'q (faqat tokenlar)", () => {
+    for (const sel of ['.adm-teacher', '.adm-teacher-role', '.adm-teacher-name', '.adm-teacher-dept', '.adm-avatar', '.adm-avfield-new', '.adm-fld-warn', '.adm-toolbar-count']) {
+      expect(rule(sel), sel).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+    }
   })
 })
