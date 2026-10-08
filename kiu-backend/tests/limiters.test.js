@@ -100,7 +100,7 @@ describe("mutationLimiter — admin yozuvlari (30 so'rov / 15 daqiqa / IP)", () 
     for (let i = 0; i < 31; i++) await authed('delete', `/api/news/${ghostId()}`, ip)
     expect((await authed('delete', `/api/news/${ghostId()}`, ip)).status).toBe(429)
 
-    expect((await authed('delete', `/api/news/${ghostId()}`, nextIp())).status).toBe(200)
+    expect((await authed('delete', `/api/news/${ghostId()}`, nextIp())).status).toBe(404)
   })
 
   test("mutationLimiter GET so'rovlarni cheklamaydi (viewLimiter alohida)", async () => {
