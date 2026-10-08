@@ -69,6 +69,11 @@ async function update(req, res) {
     if (!built) return
     const { images, paths } = built
     uploadedPaths = paths
+    // Albom kamida bitta rasmsiz qolmasligi kerak (create bilan bir xil qoida, 1.6)
+    if (images.length === 0) {
+      if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
+      return res.status(400).json({ error: 'Kamida bitta rasm kerak' })
+    }
     const { title, desc } = req.body
     const updated = await Gallery.findByIdAndUpdate(req.params.id,
       { title, desc, images },
@@ -86,8 +91,11 @@ async function update(req, res) {
 }
 
 async function remove(req, res) {
-  try { await Gallery.findByIdAndDelete(req.params.id); res.json({ success: true }) }
-  catch (e) { fail(req, res, 500, e) }
+  try {
+    const deleted = await Gallery.findByIdAndDelete(req.params.id)
+    if (!deleted) return res.status(404).json({ error: 'Topilmadi' })
+    res.json({ success: true })
+  } catch (e) { fail(req, res, 500, e) }
 }
 
 module.exports = { getAll, create, update, remove }

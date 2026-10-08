@@ -463,6 +463,17 @@ describe('EventsAdmin: o\'chirish', () => {
     expect(window.confirm).not.toHaveBeenCalled()
   })
 
+  it("DELETE 404 (boshqa admin allaqachon o'chirgan) — tadbir ro'yxatdan ketadi, xato banneri yo'q", async () => {
+    mockApi({ 'GET /events': [E1], 'DELETE /events/e1': { status: 404, body: { error: 'Topilmadi' } } })
+    const user = userEvent.setup()
+    render(<EventsAdmin />)
+    await screen.findByText('Ochiq eshiklar kuni')
+    await del(user, 'Ochiq eshiklar kuni')
+    await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: "O'chirish" }))
+    await waitFor(() => expect(screen.queryByText('Ochiq eshiklar kuni')).not.toBeInTheDocument())
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it('DELETE 500 — tadbir qoladi, xabar yopiladigan bannerda (alert() emas)', async () => {
     mockApi({ 'GET /events': [E1], 'DELETE /events/e1': { status: 500, body: { error: 'x xato' } } })
     const user = userEvent.setup()

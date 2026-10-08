@@ -247,6 +247,17 @@ describe('ApplicationsAdmin', () => {
     expect(screen.getByText('Ali Valiyev')).toBeInTheDocument()
   })
 
+  it("DELETE 404 (boshqa admin allaqachon o'chirgan) — ariza ro'yxatdan ketadi, xato banneri yo'q", async () => {
+    mockApi({ 'GET /applications': A, 'DELETE /applications/a1': { status: 404, body: { error: 'Topilmadi' } } })
+    const user = userEvent.setup()
+    render(<ApplicationsAdmin />)
+    await screen.findByText('Ali Valiyev')
+    await user.click(within(card('Ali Valiyev')).getByRole('button', { name: /O'chir/ }))
+    await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: "O'chirish" }))
+    await waitFor(() => expect(screen.queryByText('Ali Valiyev')).not.toBeInTheDocument())
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it('DELETE xato (500) — ariza ro\'yxatda qoladi, dialog yopiladi va banner ko\'rsatiladi', async () => {
     mockApi({ 'GET /applications': A, 'DELETE /applications/a1': { status: 500, body: { error: 'Baza xatosi' } } })
     const user = userEvent.setup()

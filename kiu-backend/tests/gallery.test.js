@@ -103,6 +103,26 @@ describe('Gallery CRUD', () => {
     expect(res.status).toBe(404)
   })
 
+  // 1.6: albom rasmsiz qolmasligi kerak (create bilan bir xil qoida)
+  test("PUT /api/gallery/:id — barcha rasm olib tashlansa 400, albom o'zgarmaydi", async () => {
+    const token = getAuthToken()
+    const item = await Gallery.create({ title: 'Eski', images: ['https://x/1.jpg'] })
+    const none = await request(app).put(`/api/gallery/${item._id}`).set('Authorization', `Bearer ${token}`)
+      .field('title', 'Yangi').field('existingImages', JSON.stringify([]))
+    expect(none.status).toBe(400)
+    expect(none.body).toEqual({ error: 'Kamida bitta rasm kerak' })
+    const missing = await request(app).put(`/api/gallery/${item._id}`).set('Authorization', `Bearer ${token}`).field('title', 'Yangi')
+    expect(missing.status).toBe(400)
+    const after = await Gallery.findById(item._id)
+    expect(after.title).toBe('Eski')
+    expect(after.images).toEqual(['https://x/1.jpg'])
+  })
+
+  test("DELETE /api/gallery/:id — bazada yo'q ID uchun 404", async () => {
+    const res = await request(app).delete('/api/gallery/507f1f77bcf86cd799439011').set('Authorization', `Bearer ${getAuthToken()}`)
+    expect(res.status).toBe(404)
+  })
+
   test("PUT /api/gallery/:id — auth'siz 401 qaytaradi", async () => {
     const item = await Gallery.create({ title: 'Test', images: ['https://x/1.jpg'] })
     const res = await request(app).put(`/api/gallery/${item._id}`).send({ title: 'X' })

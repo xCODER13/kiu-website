@@ -186,7 +186,8 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
     setNotice('')
     try {
       const r = await fetch(`${API}/applications/${id}`, { method: 'DELETE', headers: H() })
-      if (!r.ok) setNotice(await errorMessage(r, "O'chirib bo'lmadi."))
+      // 404 — boshqa admin allaqachon o'chirgan (backend 1.8): natija bir xil, ro'yxatdan olib tashlanadi
+      if (!r.ok && r.status !== 404) setNotice(await errorMessage(r, "O'chirib bo'lmadi."))
       else {
         mutate(list => (Array.isArray(list) ? list.filter(a => a._id !== id) : list))
         setRefocus(n => n + 1)

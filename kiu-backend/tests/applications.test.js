@@ -107,4 +107,13 @@ describe('DELETE /api/applications/:id', () => {
     const found = await Application.findById(app1._id)
     expect(found).toBeNull()
   })
+
+  test("bazada yo'q ID uchun 404 (1.8), boshqa arizalarga tegilmaydi", async () => {
+    const keep = await Application.create({ name: 'A', phone: '+998901234567' })
+    const res = await request(app)
+      .delete('/api/applications/507f1f77bcf86cd799439011')
+      .set('Authorization', `Bearer ${getAuthToken()}`)
+    expect(res.status).toBe(404)
+    expect(await Application.findById(keep._id)).not.toBeNull()
+  })
 })

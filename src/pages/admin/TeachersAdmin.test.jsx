@@ -347,6 +347,16 @@ describe("TeachersAdmin: o'chirish va saqlanmagan o'zgarishlar", () => {
     expect(screen.getByRole('heading', { name: 'Karimov Ali Vali' })).toBeInTheDocument()
   })
 
+  it("DELETE 404 (boshqa admin allaqachon o'chirgan) — karta ro'yxatdan ketadi, xato banneri yo'q", async () => {
+    mockApi({ 'GET /teachers': [T1], 'DELETE /teachers/t1': { status: 404, body: { error: 'Topilmadi' } } })
+    const user = userEvent.setup()
+    render(<TeachersAdmin />)
+    await user.click(await screen.findByRole('button', { name: "O'chirish: Karimov Ali Vali" }))
+    await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: "O'chirish" }))
+    await waitFor(() => expect(screen.queryByRole('heading', { name: 'Karimov Ali Vali' })).not.toBeInTheDocument())
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it("DELETE 403 — karta qoladi, banner ko'rsatiladi (alert() emas)", async () => {
     mockApi({ 'GET /teachers': [T1], 'DELETE /teachers/t1': { status: 403, body: { error: "Ruxsat yo'q" } } })
     const user = userEvent.setup()

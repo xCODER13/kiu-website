@@ -46,11 +46,20 @@ describe.each(RESOURCES)('$name — PUT/DELETE /:id', ({ path, Model, seed, upda
     expect(res.status).toBe(400)
   })
 
-  test("DELETE: bazada yo'q id idempotent — 200, hech narsa buzilmaydi", async () => {
+  // 1.8: avval idempotent 200 edi — endi 404 (PUT bilan bir xil). Admin panel 404 ni «allaqachon o'chirilgan» deb qabul qiladi.
+  test("DELETE: bazada yo'q id uchun 404, hech narsa buzilmaydi", async () => {
     const keep = await Model.create(seed)
-    expect((await request(app).delete(`${path}/${ghostId()}`).set(auth())).status).toBe(200)
+    const res = await request(app).delete(`${path}/${ghostId()}`).set(auth())
+    expect(res.status).toBe(404)
+    expect(res.body).toEqual({ error: 'Topilmadi' })
     expect(await Model.countDocuments()).toBe(1)
     expect(await Model.findById(keep._id)).not.toBeNull()
+  })
+
+  test("DELETE: mavjud id — 200 va ikkinchi marta o'chirish 404", async () => {
+    const target = await Model.create(seed)
+    expect((await request(app).delete(`${path}/${target._id}`).set(auth())).status).toBe(200)
+    expect((await request(app).delete(`${path}/${target._id}`).set(auth())).status).toBe(404)
   })
 
   // BILINGAN KAMCHILIKLAR. `.failing` tuzatilgach o'zi xabar beradi — shunda `.failing` ni olib tashlang.
