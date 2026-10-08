@@ -792,141 +792,571 @@
     border-radius: 50%;
   }
 
-  /* ── Arizalar ──────────────────────────────────────────────────────── */
+  /* ── Arizalar (6.23 — taxta Admin-Apps) ────────────────────────────────
+     Ikki sahifa (Qabul / Vakansiya) bitta komponent. Faqat tokenlar: rang, soya va fon — tokens.css dan. */
+  .adm-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .adm-page-head {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 1rem;
+    gap: 16px;
+    margin-bottom: 20px;
   }
+  .adm-page-head-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .adm-count-pill {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-3);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  /* Filtr chip'lari: 36 px kapsula, holat nuqtasi + nom + hisoblagich; faol — to'ldirilgan brend foni */
   .adm-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
-  }
-  .adm-chip {
-    padding: 5px 10px;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    background: var(--color-bg);
-    color: var(--color-text-muted);
-    font-family: inherit;
-    font-size: var(--text-2xs);
-    cursor: pointer;
-  }
-  .adm-chip[data-active="true"] {
-    border-color: var(--color-brand);
-    background: var(--color-brand-fill);
-    color: var(--color-on-brand);
-  }
-  .adm-state {
-    padding: 3rem;
-    font-size: var(--text-sm);
-    text-align: center;
-    color: var(--color-text-muted);
-  }
-  .adm-state--dashed {
-    border: 1px dashed var(--color-border);
-    border-radius: 12px;
-  }
-  .adm-list {
-    display: flex;
-    flex-direction: column;
     gap: 8px;
   }
+  .adm-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-sizing: border-box;
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--color-border-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--duration-base), border-color var(--duration-base);
+  }
+  .adm-chip:hover:not([data-active="true"]) { background: var(--color-brand-subtle); }
+  .adm-chip[data-active="true"] {
+    border-color: var(--color-brand-fill);
+    background: var(--color-brand-fill);
+    color: var(--color-on-brand);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16);
+  }
+  .adm-chip-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--st);
+  }
+  .adm-chip-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 22px;
+    height: 20px;
+    padding: 0 7px;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+    font-size: 0.78125rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+  .adm-chip[data-active="true"] .adm-chip-count {
+    background: rgb(255 255 255 / 0.22);
+    color: var(--color-on-brand);
+  }
+
+  /* Ariza kartasi: avatar | asosiy qism | amallar (184 px) */
+  .adm-app-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .adm-app-card { padding: 20px; }
   .adm-app-row {
     display: flex;
-    flex-wrap: wrap;
     align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
+    gap: 16px;
   }
-  .adm-app-main { flex: 1; }
+  .adm-app-avatar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-brand-subtle);
+    font-size: 0.9375rem;
+    font-weight: 800;
+    color: var(--color-brand);
+  }
+  .adm-app-main {
+    flex: 1;
+    min-width: 0;
+  }
   .adm-app-head {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
+    gap: 10px;
+    margin-bottom: 8px;
   }
   .adm-app-name {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 1.0625rem;
+    font-weight: 700;
     color: var(--color-text);
+    overflow-wrap: anywhere;
+  }
+  /* Holat badge'i: 26 px kapsula, SVG ikonka + matn (rang `.badge-*` dan — holat tokeni) */
+  .adm-app-head > .badge {
+    gap: 6px;
+    box-sizing: border-box;
+    height: 26px;
+    padding: 0 11px 0 9px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .adm-app-head > .badge svg {
+    flex: none;
+    width: 14px;
+    height: 14px;
   }
   .adm-app-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 4px;
-    font-size: var(--text-xs);
-    color: var(--color-text-muted);
+    gap: 8px 20px;
+    margin-bottom: 10px;
   }
   .adm-app-meta-item {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 7px;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    overflow-wrap: anywhere;
   }
-  .adm-app-line {
-    margin-bottom: 4px;
-    font-size: var(--text-xs);
+  .adm-app-meta-icon {
+    display: flex;
+    flex: none;
     color: var(--color-text-muted);
   }
-  .adm-app-line strong { color: var(--color-text); }
+  .adm-app-meta-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+  .adm-app-line {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 10px;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .adm-app-line strong {
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  /* Vakansiya teglari: lavozim — brend, qolgan uchtasi neytral (avval to'rt xil rang hech narsani anglatmasdi) */
   .adm-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 4px;
+    gap: 8px;
+    margin-bottom: 10px;
   }
   .adm-tag {
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: var(--text-2xs);
-  }
-  .adm-tag--brand   { background: color-mix(in srgb, var(--color-brand) 8%, transparent);        color: var(--color-brand); }
-  .adm-tag--strong  { background: color-mix(in srgb, var(--color-brand-strong) 8%, transparent); color: var(--color-brand-strong); }
-  .adm-tag--success { background: color-mix(in srgb, var(--color-success) 8%, transparent);      color: var(--color-success); }
-  .adm-tag--warning { background: color-mix(in srgb, var(--color-warning) 8%, transparent);      color: var(--color-warning); }
-  .adm-app-msg {
-    margin-top: 4px;
-    padding: 6px 10px;
-    border-left: 2px solid var(--color-border);
-    border-radius: 6px;
-    background: var(--color-surface-2);
-    font-size: var(--text-2xs);
-    color: var(--color-text-muted);
-  }
-  .adm-app-date {
-    margin-top: 6px;
-    font-size: 0.625rem;
-    color: var(--color-text-muted);
-  }
-  .adm-app-actions {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    align-items: flex-end;
+    display: inline-flex;
+    align-items: center;
     gap: 6px;
-  }
-  /* Holat tanlagichi: rang `data-status` bo'yicha (holat → status tokeni, 4.4) */
-  .adm-status-select {
-    padding: 6px 8px;
-    border: 1px solid var(--st);
-    border-radius: 7px;
-    background: var(--color-bg);
-    color: var(--st);
-    font-family: inherit;
-    font-size: var(--text-2xs);
+    box-sizing: border-box;
+    height: 28px;
+    padding: 0 11px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-2);
+    font-size: 0.8125rem;
     font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .adm-tag svg {
+    flex: none;
+    width: 14px;
+    height: 14px;
+  }
+  .adm-tag--brand {
+    border-color: transparent;
+    background: var(--color-brand-subtle);
+    color: var(--color-brand);
+  }
+  .adm-app-msg {
+    margin: 2px 0 10px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--color-border-2);
+    border-radius: 8px;
+    background: var(--color-surface-2);
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-text);
+  }
+  .adm-app-msg-text {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+  .adm-app-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-brand);
     cursor: pointer;
   }
+  .adm-app-more-icon { display: flex; }
+  .adm-app-more-icon svg {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--duration-base);
+  }
+  .adm-app-more[aria-expanded="true"] .adm-app-more-icon svg { transform: rotate(180deg); }
+  .adm-app-date {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .adm-app-date .adm-app-meta-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Amallar: holat tanlagichi (neytral chegara — holatni badge ko'rsatadi) va o'chirish */
+  .adm-app-actions {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    gap: 8px;
+    width: 184px;
+  }
+  .adm-field-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .adm-select { position: relative; }
+  .adm-status-select {
+    appearance: none;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    padding: 0 40px 0 12px;
+    border: 1px solid var(--color-border-2);
+    border-radius: 10px;
+    background: var(--color-bg);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .adm-status-select:focus-visible {
+    border-color: var(--color-brand);
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+  .adm-status-select:disabled {
+    opacity: 0.72;
+    cursor: not-allowed;
+  }
+  .adm-select-icon {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+  .adm-select-icon--spin svg { animation: btn-spin 0.8s linear infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .adm-select-icon--spin svg { animation: none; }
+  }
+  .adm-app-delete {
+    width: 100%;
+    min-height: 40px;
+    margin-top: 4px;
+    font-weight: 700;
+  }
+  .adm-app-delete svg {
+    width: 16px;
+    height: 16px;
+  }
+  /* Holat → status tokeni (4.4): chip nuqtasi `--st` dan oladi */
   [data-status="new"]      { --st: var(--color-info); }
   [data-status="reviewed"] { --st: var(--color-warning); }
   [data-status="accepted"] { --st: var(--color-success); }
   [data-status="rejected"] { --st: var(--color-danger); }
+
+  /* Skelet (yuklanmoqda): kartalar bilan bir xil joylashuv, animatsiyasiz */
+  .adm-skel {
+    max-width: 100%;
+    border-radius: 6px;
+    background: var(--color-border);
+  }
+  .adm-skel-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .adm-app-actions.adm-skel-col { gap: 10px; }
+  .adm-skel--avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; }
+  .adm-skel--name  { width: 240px; height: 18px; }
+  .adm-skel--line  { width: 360px; height: 14px; }
+  .adm-skel--short { width: 300px; }
+  .adm-skel--date  { width: 160px; height: 12px; }
+  .adm-skel--label { width: 60px; height: 12px; }
+  .adm-skel--btn   { width: 100%; height: 40px; border-radius: 10px; }
+
+  /* Sahifa holatlari: xato paneli, bo'sh panel, yopiladigan banner (shared/StateViews.jsx) */
+  .adm-error-panel {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 18px 20px;
+    border: 1px solid color-mix(in srgb, var(--color-danger) 35%, transparent);
+    border-radius: 14px;
+    background: var(--color-danger-bg);
+  }
+  .adm-error-panel-icon {
+    display: flex;
+    margin-top: 1px;
+    color: var(--color-danger);
+  }
+  .adm-error-panel-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .adm-error-panel-title {
+    margin: 0;
+    font-size: 0.96875rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .adm-error-panel-text {
+    margin: 3px 0 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+  .adm-error-panel-retry {
+    margin-top: 14px;
+    padding: 0 18px;
+    font-weight: 700;
+  }
+  .adm-error-panel-retry svg {
+    width: 16px;
+    height: 16px;
+  }
+  .adm-empty-state--panel {
+    gap: 10px;
+    padding: 56px 24px;
+    border: 1.5px dashed var(--color-border-2);
+    border-radius: 16px;
+    background: var(--color-bg);
+    text-align: center;
+  }
+  .adm-empty-state--panel .adm-empty-state-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+  }
+  .adm-empty-state--panel .adm-empty-state-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  .adm-empty-state-title {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .adm-empty-state--panel .adm-empty-state-text {
+    max-width: 380px;
+    font-size: 0.90625rem;
+    line-height: 1.5;
+  }
+  /* Neytral ikkilamchi tugma (chegarali, brendsiz): «Barchasi», dialogdagi «Bekor qilish» */
+  .adm-btn-neutral {
+    margin-top: 6px;
+    padding: 0 18px;
+    border-color: var(--color-border-2);
+    background: var(--color-bg);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .adm-btn-neutral:hover:not(:disabled) { background: var(--color-surface-2); }
+  .adm-banner--dismissible {
+    align-items: center;
+    max-width: none;
+    margin-bottom: 16px;
+    padding: 12px 14px 12px 16px;
+    font-size: 0.90625rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .adm-banner--dismissible > svg {
+    width: 18px;
+    height: 18px;
+    margin-top: 0;
+    color: var(--color-danger);
+  }
+  .adm-banner-text { flex: 1; }
+  .adm-banner-close {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  .adm-banner-close:hover { background: color-mix(in srgb, var(--color-danger) 12%, transparent); }
+  .adm-banner-close svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Tasdiq dialogi (shared/ConfirmDialog.jsx): 440 px, radius 20, tepada oltin hairline.
+     Fon `--gradient-card` (Dark'da taxtadagi 2 qatlamli gradient), soya — `--shadow-confirm` */
+  .adm-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: var(--color-modal-overlay);
+  }
+  .adm-dialog {
+    position: relative;
+    box-sizing: border-box;
+    width: 440px;
+    max-width: 100%;
+    padding: 32px 32px 28px;
+    overflow: hidden;
+    border: 1px solid var(--color-border-2);
+    border-radius: 20px;
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-confirm);
+  }
+  .adm-dialog::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--gradient-hairline);
+    pointer-events: none;
+  }
+  .adm-dialog-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 18px;
+    border-radius: 14px;
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+  }
+  .adm-dialog-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  .adm-dialog-title {
+    margin: 0 0 8px;
+    font-size: 1.375rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+  }
+  .adm-dialog-text {
+    margin: 0 0 24px;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    overflow-wrap: anywhere;
+  }
+  .adm-dialog-text strong { color: var(--color-text); }
+  .adm-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .adm-dialog-cancel {
+    padding: 0 18px;
+    border-color: var(--color-border-2);
+    background: var(--color-bg);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .adm-dialog-cancel:hover:not(:disabled) { background: var(--color-surface-2); }
+  .adm-dialog-confirm {
+    padding: 0 18px;
+    border-color: var(--color-danger);
+    background: var(--color-danger);
+    font-weight: 700;
+    color: var(--color-on-danger);
+  }
+  .adm-dialog-confirm:hover:not(:disabled) { filter: brightness(0.92); }
+  .adm-dialog-confirm svg {
+    width: 16px;
+    height: 16px;
+  }
+  .adm-dialog-confirm[aria-busy="true"] svg { animation: btn-spin 0.8s linear infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .adm-dialog-confirm[aria-busy="true"] svg { animation: none; }
+  }
 
   /* ══ 6c: CRUD sahifalar (Yangiliklar, Tadbirlar, Galereya, O'qituvchilar, Profil) ══
      avval shared/styles.js obyektlari edi (card, inp, lbl, bP, bD, bE, bG). */
