@@ -21,28 +21,27 @@ test.describe('Admin: yangiliklar boshqaruvi', () => {
     await expect(page).toHaveURL(/\/admin\/news$/)
 
     const title = `E2E sinov yangiligi ${Date.now()}`
-    await page.getByRole('button', { name: /Yangi/ }).click()
-    await page.getByPlaceholder('Yangilik sarlavhasi').fill(title)
+    // Bo'sh ro'yxatda «Yangi yangilik» tugmasi ikkita (sarlavha + bo'sh holat) — birinchisi
+    await page.getByRole('button', { name: 'Yangi yangilik' }).first().click()
+    await page.getByLabel(/^Sarlavha/).fill(title)
     await page.locator('textarea').fill("Bu — Playwright E2E test tomonidan yaratilgan vaqtinchalik yozuv.")
 
     await Promise.all([
       page.waitForResponse(res => res.url().endsWith('/api/news') && res.request().method() === 'POST'),
-      page.getByRole('button', { name: "Qo'shish" }).click(),
+      page.getByRole('button', { name: "Qo'shish", exact: true }).click(),
     ])
 
     // Yangi yozuv ro'yxatda ko'rinishi kerak
     await expect(page.getByText(title)).toBeVisible()
 
-    // Shu yozuvning qatoridagi "Tahrir" tugmasidan darhol keyingi (sibling)
-    // tugma — o'chirish (faqat ikonka, matnsiz — NewsAdmin.jsx'da name yo'q).
-    const row = page.locator('div').filter({ hasText: title }).filter({ has: page.getByRole('button', { name: /Tahrir/ }) }).last()
-    const editBtn = row.getByRole('button', { name: /Tahrir/ })
-    const delBtn = editBtn.locator('xpath=following-sibling::button[1]')
-
-    page.once('dialog', dialog => dialog.accept())
+    // 6.24: o'chirish tugmasi `aria-label="O'chirish: <sarlavha>"`, tasdiq — ilovaning o'z `alertdialog`i
+    // (avval brauzer `confirm()` dialogi edi).
+    await page.getByRole('button', { name: `O'chirish: ${title}` }).click()
+    const dialog = page.getByRole('alertdialog')
+    await expect(dialog).toBeVisible()
     await Promise.all([
       page.waitForResponse(res => res.url().includes('/api/news/') && res.request().method() === 'DELETE'),
-      delBtn.click(),
+      dialog.getByRole('button', { name: "O'chirish" }).click(),
     ])
 
     await expect(page.getByText(title)).not.toBeVisible()
@@ -67,23 +66,21 @@ test.describe('Admin: yangiliklar boshqaruvi', () => {
     fs.writeFileSync(imgPath, Buffer.from(TINY_PNG_BASE64, 'base64'))
 
     try {
-      await page.getByRole('button', { name: /Yangi/ }).click()
-      await page.getByPlaceholder('Yangilik sarlavhasi').fill(title)
+      await page.getByRole('button', { name: 'Yangi yangilik' }).first().click()
+      await page.getByLabel(/^Sarlavha/).fill(title)
       await page.locator('input[type="file"]').setInputFiles(imgPath)
       await expect(page.getByAltText('rasm-1')).toBeVisible()
 
       await Promise.all([
         page.waitForResponse(res => res.url().endsWith('/api/news') && res.request().method() === 'POST'),
-        page.getByRole('button', { name: "Qo'shish" }).click(),
+        page.getByRole('button', { name: "Qo'shish", exact: true }).click(),
       ])
 
       await expect(page.getByText(title)).toBeVisible()
 
       // Tozalash
-      const row = page.locator('div').filter({ hasText: title }).filter({ has: page.getByRole('button', { name: /Tahrir/ }) }).last()
-      const delBtn = row.getByRole('button', { name: /Tahrir/ }).locator('xpath=following-sibling::button[1]')
-      page.once('dialog', dialog => dialog.accept())
-      await delBtn.click()
+      await page.getByRole('button', { name: `O'chirish: ${title}` }).click()
+      await page.getByRole('alertdialog').getByRole('button', { name: "O'chirish" }).click()
       await expect(page.getByText(title)).not.toBeVisible()
     } finally {
       fs.rmSync(imgPath, { force: true })
