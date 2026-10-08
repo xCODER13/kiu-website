@@ -18,11 +18,16 @@ const FOCUSABLE = 'button:not(:disabled), [href], input:not(:disabled), select:n
 // amal (`cancel` — «Tahrirlashda qolish») brend rangli asosiy tugma va fokus shunda, `confirm` («Chiqish») —
 // neytral tugma, chapda. `tone="danger"` (standart) — o'chirish: xavfsiz tugma chapda, qizil tasdiq o'ngda.
 //
+// Profil («Barcha qurilmalardan chiqish»): `iconTone="warning"` — ogohlantirish rangidagi ikonka, lekin xavfsiz tugma chapda va
+// to'ldirilgan qizil tasdiq o'ngda (danger tartibi); `confirmIcon` — tasdiq tugmasidagi ikonka (standart — savat).
+//
 // Yangiliklar, Tadbirlar, Galereya va O'qituvchilar sahifalari ham shuni ishlatadi (keyingi bo'laklar).
 export default function ConfirmDialog({
   title,
   children,
   tone = 'danger',
+  iconTone = tone,
+  confirmIcon = Ic.trash,
   confirmLabel = tone === 'warning' ? 'Davom etish' : "O'chirish",
   cancelLabel = tone === 'warning' ? 'Qolish' : 'Bekor qilish',
   busy = false,
@@ -88,7 +93,7 @@ export default function ConfirmDialog({
       disabled={busy}
       aria-busy={busy || undefined}
     >
-      {!warning && (busy ? Ic.spinner : Ic.trash)}
+      {!warning && (busy ? Ic.spinner : confirmIcon)}
       {confirmLabel}
     </button>
   )
@@ -96,7 +101,7 @@ export default function ConfirmDialog({
   return createPortal(
     <div className="adm-dialog-overlay" onMouseDown={e => { if (e.target === e.currentTarget && !busy) onCancel() }}>
       <div ref={dialogRef} className="adm-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descId}>
-        <span className={warning ? 'adm-dialog-icon adm-dialog-icon--warning' : 'adm-dialog-icon'} aria-hidden="true">{warning ? Ic.warn : Ic.trash}</span>
+        <span className={iconTone === 'warning' ? 'adm-dialog-icon adm-dialog-icon--warning' : 'adm-dialog-icon'} aria-hidden="true">{iconTone === 'warning' ? Ic.warn : Ic.trash}</span>
         <h2 id={titleId} className="adm-dialog-title">{title}</h2>
         <div id={descId} className="adm-dialog-text">{children}</div>
         <div className="adm-dialog-actions">

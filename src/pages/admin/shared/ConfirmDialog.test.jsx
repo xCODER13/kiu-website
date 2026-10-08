@@ -106,6 +106,35 @@ describe('ConfirmDialog', () => {
     document.body.style.overflow = ''
   })
 
+  // Profil: «Barcha qurilmalardan chiqish» — danger tartibi, lekin ogohlantirish ikonkasi va o'zgacha tasdiq ikonkasi
+  describe('iconTone="warning" + confirmIcon (danger tartibi)', () => {
+    const custom = (props = {}) => setup({
+      iconTone: 'warning', confirmIcon: <svg data-testid="out" />, title: 'Barcha qurilmalardan chiqasizmi?', confirmLabel: 'Barchasidan chiqish', ...props,
+    })
+
+    it("ogohlantirish ikonkasi; tasdiq tugmasida berilgan ikonka (axlat qutisi emas); xavfsiz tugma chapda va fokusda", () => {
+      custom()
+      expect(document.querySelector('.adm-dialog-icon--warning')).not.toBeNull()
+      const confirm = screen.getByRole('button', { name: 'Barchasidan chiqish' })
+      const cancel = screen.getByRole('button', { name: 'Bekor qilish' })
+      expect(confirm).toHaveClass('adm-dialog-confirm')
+      expect(confirm.querySelector('[data-testid="out"]')).not.toBeNull()
+      expect(cancel).toHaveFocus()
+      expect(cancel.compareDocumentPosition(confirm) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    })
+
+    it("busy: ikonka o'rniga spinner", () => {
+      custom({ busy: true })
+      expect(screen.getByRole('button', { name: 'Barchasidan chiqish' }).querySelector('[data-testid="out"]')).toBeNull()
+    })
+
+    it("berilmasa standart: axlat qutisi ikonkasi va qizil ikonka foni (oldingi xatti-harakat)", () => {
+      setup()
+      expect(document.querySelector('.adm-dialog-icon--warning')).toBeNull()
+      expect(screen.getByRole('button', { name: "O'chirish" }).querySelector('svg')).not.toBeNull()
+    })
+  })
+
   // 6.24: «Saqlanmagan o'zgarishlar» (tone="warning")
   describe('tone="warning" (saqlanmagan o\'zgarishlar)', () => {
     const warn = (props = {}) => setup({ tone: 'warning', title: "Saqlanmagan o'zgarishlar bor", confirmLabel: 'Chiqish', cancelLabel: 'Tahrirlashda qolish', ...props })
