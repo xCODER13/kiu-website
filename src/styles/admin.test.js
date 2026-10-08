@@ -229,12 +229,16 @@ describe('Bosqich 6c: CRUD sahifalar (shared/styles.js klasslarga o\'tdi)', () =
     }
     // 6.24: Yangiliklar fayl kiritishi `shared/ImageField.jsx` ga o'tdi va `hidden` o'rniga `.adm-sr-only` — `hidden` (display: none)
     // inputni klaviaturadan ham, ekran o'quvchidan ham olib tashlardi; endi Tab bilan fokuslanadi (fokus halqasi yuklash maydonida).
-    for (const n of ['EventsAdmin', 'GalleryAdmin', 'TeachersAdmin']) {
+    // 6.25: Tadbirlar ham xuddi shunday — fayl kiritishi `shared/PosterField.jsx` da (`.adm-sr-only`). Galereya va O'qituvchilar
+    // (6- va 7-bo'laklar) hozircha `hidden` da.
+    for (const n of ['GalleryAdmin', 'TeachersAdmin']) {
       expect(src(n), n).toMatch(/type="file"[^>]* hidden \/>/)
     }
-    const field = read('src/pages/admin/shared/ImageField.jsx')
-    expect(field).toMatch(/className="adm-sr-only"\s+type="file"/)
-    expect(field).not.toMatch(/type="file"[^>]*\shidden[\s/>]/)
+    for (const f of ['ImageField', 'PosterField']) {
+      const field = read(`src/pages/admin/shared/${f}.jsx`)
+      expect(field, f).toMatch(/className="adm-sr-only"\s+type="file"/)
+      expect(field, f).not.toMatch(/type="file"[^>]*\shidden[\s/>]/)
+    }
   })
 })
 
@@ -413,5 +417,46 @@ describe('Bosqich 6.24: Yangiliklar', () => {
   it("saqlash tugmasi band bo'lganda bitta spinner (`.btn[aria-busy]::after`), SVG ikonka qo'shilmaydi", () => {
     expect(css).toMatch(/\.btn\.btn-primary\.adm-save\[aria-busy="true"\]/)
     expect(srcOf('src/pages/admin/NewsForm.jsx')).toMatch(/\{!saving && Ic\.save\}/)
+  })
+})
+
+describe('Bosqich 6.25: Tadbirlar', () => {
+  const css = code
+  const rule = sel => (css.match(new RegExp(`${sel.replace(/[.[\]()]/g, '\\$&')} \\{([^}]*)\\}`)) ?? [])[1] ?? ''
+  const srcOf = f => strip(read(f)).replace(/\/\/.*$/gm, '')
+
+  it("Tadbirlar kodida `alert()`, `window.confirm`, `.catch(() => {})` va inline `style=` yo'q", () => {
+    for (const f of ['src/pages/admin/EventsAdmin.jsx', 'src/pages/admin/EventsForm.jsx', 'src/pages/admin/shared/PosterField.jsx']) {
+      const src = srcOf(f)
+      expect(src, f).not.toMatch(/window\.confirm|\balert\(|\bconfirm\(/)
+      expect(src, f).not.toMatch(/\.catch\(\s*\(\)\s*=>\s*\{\s*\}\s*\)/)
+      expect(src, f).not.toMatch(/\bstyle=/)
+    }
+  })
+
+  it("rang faqat tokenlar orqali: eski hardcoded gradient/`#dc2626` yo'q; Events klasslari `--color-*`/`--radius-*` ishlatadi", () => {
+    for (const sel of ['.adm-date-tile', '.adm-badge-past', '.adm-poster-img']) {
+      expect(rule(sel), sel).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+    }
+    expect(rule('.adm-date-tile')).toMatch(/background: var\(--color-brand-subtle\);[\s\S]*color: var\(--color-brand\);/)
+    expect(css).toMatch(/\.adm-date-tile\[data-past="true"\] \{[^}]*var\(--color-surface-2\)[^}]*var\(--color-text-muted\)/)
+  })
+
+  it("sana plitkasi 60×68, poster ro'yxatda 96×68 va formada 192×108; o'lchamlar taxtadagi bilan bir xil", () => {
+    expect(rule('.adm-date-tile')).toMatch(/width: 60px;\s*height: 68px;/)
+    expect(rule('.adm-item-poster')).toMatch(/width: 96px;\s*height: 68px;/)
+    expect(rule('.adm-poster-img')).toMatch(/width: 192px;\s*height: 108px;/)
+    expect(css).toMatch(/\.adm-poster-img\[data-new="true"\] \{ border: 2px solid var\(--color-brand\); \}/)
+  })
+
+  it("poster tugmalari fokus halqasi bilan (`:has(:focus-visible)`), `outline: none` yo'q", () => {
+    expect(css).toMatch(/\.adm-poster-btn:has\(:focus-visible\) \{[^}]*outline: 2px solid var\(--color-brand\)/)
+    expect(css).not.toMatch(/outline:\s*(none|0)\b/)
+  })
+
+  it("Tadbirlarga xos eski klasslar olib tashlangan (`.adm-event-*`, `.adm-row-thumb`); umumiylari (Galereya/O'qituvchilar uchun) qoladi", () => {
+    expect(css).not.toMatch(/\.adm-event-(date|day|month)|\.adm-row-thumb\b|\.adm-preview-img--poster/)
+    expect(css).toMatch(/\.adm-thumb-x \{/)
+    expect(css).toMatch(/\.adm-upload\b/)
   })
 })

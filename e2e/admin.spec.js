@@ -86,4 +86,82 @@ test.describe('Admin: yangiliklar boshqaruvi', () => {
       fs.rmSync(imgPath, { force: true })
     }
   })
+
+  // 6.25: tasdiq dialogida «O'chirish» tugmasi band bo'lganda BITTA spinner bo'lishi kerak. 6.23 da umumiy
+  // `.btn[aria-busy]::after` (CSS spinner) va ichidagi SVG spinner birga aylanardi; birlik testi faqat CSS matnini
+  // tekshirgani uchun xatoni ushlamadi — shuning uchun haqiqiy brauzerda hisoblangan uslub tekshiriladi.
+  // `ConfirmDialog` hamma admin sahifalarida (Arizalar, Vakansiyalar, Yangiliklar, Tadbirlar …) bitta komponent.
+  test("o'chirish dialogi band holatda bitta spinner (ikkinchi `::after` yo'q)", async ({ page }) => {
+    await loginAsAdmin(page)
+    await page.getByRole('link', { name: 'Yangiliklar', exact: true }).click()
+    const title = `E2E dialog sinovi ${Date.now()}`
+    await page.getByRole('button', { name: 'Yangi yangilik' }).first().click()
+    await page.getByLabel(/^Sarlavha/).fill(title)
+    await Promise.all([
+      page.waitForResponse(res => res.url().endsWith('/api/news') && res.request().method() === 'POST'),
+      page.getByRole('button', { name: "Qo'shish", exact: true }).click(),
+    ])
+    await expect(page.getByText(title)).toBeVisible()
+
+    // DELETE so'rovi ushlab turiladi — dialog «band» holatda qoladi
+    let release
+    const held = new Promise(resolve => { release = resolve })
+    await page.route('**/api/news/*', async route => {
+      if (route.request().method() !== 'DELETE') return route.continue()
+      await held
+      await route.continue()
+    })
+
+    await page.getByRole('button', { name: `O'chirish: ${title}` }).click()
+    const confirm = page.getByRole('alertdialog').getByRole('button', { name: "O'chirish" })
+    await confirm.click()
+    await expect(confirm).toHaveAttribute('aria-busy', 'true')
+    const spinners = await confirm.evaluate(el => ({
+      svgs: el.querySelectorAll('svg').length,
+      after: getComputedStyle(el, '::after').content,
+    }))
+    expect(spinners).toEqual({ svgs: 1, after: 'none' })
+
+    // Tozalash: ushlangan so'rov yuboriladi
+    release()
+    await expect(page.getByRole('alertdialog')).toBeHidden()
+    await expect(page.getByRole('heading', { name: title })).toHaveCount(0)
+  })
+})
+
+test.describe('Admin: tadbirlar boshqaruvi', () => {
+  test("login → tadbir qo'shish (kelgusi bo'limda) → o'chirish", async ({ page }) => {
+    await loginAsAdmin(page)
+    await page.getByRole('link', { name: 'Tadbirlar', exact: true }).click()
+    await expect(page).toHaveURL(/\/admin\/events$/)
+
+    const title = `E2E sinov tadbiri ${Date.now()}`
+    await page.getByRole('button', { name: 'Yangi tadbir' }).first().click()
+
+    // Bo'sh maydonlar: sarlavha va sana uchun ALOHIDA xabar (avval bitta `alert()`), so'rov ketmaydi
+    await page.getByRole('button', { name: "Qo'shish", exact: true }).click()
+    await expect(page.getByText('Sarlavha kiritilishi shart.')).toBeVisible()
+    await expect(page.getByText('Sanani tanlang.')).toBeVisible()
+
+    await page.getByLabel(/^Sarlavha/).fill(title)
+    await page.getByLabel(/^Sana/).fill('2099-10-15')
+    await Promise.all([
+      page.waitForResponse(res => res.url().endsWith('/api/events') && res.request().method() === 'POST'),
+      page.getByRole('button', { name: "Qo'shish", exact: true }).click(),
+    ])
+
+    // Sana 2099 — «Kelgusi tadbirlar» bo'limida, plitka va yil bilan
+    const upcoming = page.getByRole('region', { name: 'Kelgusi tadbirlar' })
+    const row = upcoming.getByRole('listitem').filter({ hasText: title })
+    await expect(row).toBeVisible()
+    await expect(row).toContainText('15 oktyabr 2099')
+
+    await page.getByRole('button', { name: `O'chirish: ${title}` }).click()
+    await Promise.all([
+      page.waitForResponse(res => res.url().includes('/api/events/') && res.request().method() === 'DELETE'),
+      page.getByRole('alertdialog').getByRole('button', { name: "O'chirish" }).click(),
+    ])
+    await expect(page.getByRole('alertdialog')).toBeHidden()
+    await expect(page.getByRole('heading', { name: title })).toHaveCount(0)
+  })
 })

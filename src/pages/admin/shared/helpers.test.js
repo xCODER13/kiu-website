@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount } from './helpers'
+import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount, parseEventDate, eventDateKey, formatEventDate, eventTile, todayKey, isPastEvent } from './helpers'
 
 const ID = 'dQw4w9WgXcQ'
 describe('extractYouTubeShortsId', () => {
@@ -64,5 +64,37 @@ describe('formatCount', () => {
     expect(formatCount(null)).toBe('0')
     expect(formatCount('x')).toBe('0')
     expect(formatCount(12.9)).toBe('12')
+  })
+})
+
+describe('tadbir sanasi (6.25)', () => {
+  it("ISO va «YYYY-MM-DD» — kalendar sana satr sifatida o'qiladi (vaqt mintaqasi kunni siljitmaydi)", () => {
+    expect(parseEventDate('2026-10-15T00:00:00.000Z')).toEqual({ y: 2026, m: 10, d: 15 })
+    expect(parseEventDate('2026-01-01')).toEqual({ y: 2026, m: 1, d: 1 })
+    expect(eventDateKey('2026-10-15T00:00:00.000Z')).toBe('2026-10-15')
+    expect(eventDateKey('2026-01-05')).toBe('2026-01-05')
+  })
+  it("noto'g'ri qiymat — bo'sh natija (sahifa «Invalid Date»/NaN ko'rsatmaydi)", () => {
+    for (const v of [undefined, null, '', 'abc', '2026-13-01', '2026-00-10', '2026-05-00', '2026-05-32', 20260101]) {
+      expect(parseEventDate(v), String(v)).toBeNull()
+      expect(eventDateKey(v)).toBe('')
+      expect(formatEventDate(v)).toBe('')
+      expect(eventTile(v)).toEqual({ day: '', month: '' })
+    }
+  })
+  it('formatEventDate — yil bilan; eventTile — kun va 3 harfli oy (har oy o\'z qisqartmasi: iyun ≠ iyul)', () => {
+    expect(formatEventDate('2026-10-15T00:00:00.000Z')).toBe('15 oktyabr 2026')
+    expect(formatEventDate('2025-03-02')).toBe('2 mart 2025')
+    const months = Array.from({ length: 12 }, (_, i) => eventTile(`2026-${String(i + 1).padStart(2, '0')}-09`).month)
+    expect(months).toEqual(['YAN', 'FEV', 'MAR', 'APR', 'MAY', 'IYN', 'IYL', 'AVG', 'SEN', 'OKT', 'NOY', 'DEK'])
+    expect(eventTile('2026-10-05T00:00:00.000Z')).toEqual({ day: '5', month: 'OKT' })
+  })
+  it('todayKey — MAHALLIY sana (UTC emas); isPastEvent — bugun hali o\'tmagan, kecha o\'tgan, sanasiz — o\'tgan', () => {
+    expect(todayKey(new Date(2026, 0, 5, 23, 59))).toBe('2026-01-05')
+    expect(todayKey(new Date(2026, 11, 31, 0, 0))).toBe('2026-12-31')
+    expect(isPastEvent('2026-10-08T00:00:00.000Z', '2026-10-08')).toBe(false)
+    expect(isPastEvent('2026-10-07', '2026-10-08')).toBe(true)
+    expect(isPastEvent('2026-10-09', '2026-10-08')).toBe(false)
+    expect(isPastEvent(undefined, '2026-10-08')).toBe(true)
   })
 })

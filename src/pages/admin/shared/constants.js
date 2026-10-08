@@ -21,3 +21,16 @@ export const NEWS_CATEGORIES = ["Umumiy", "Ta'lim", 'Sport', 'Madaniyat', 'Xalqa
 export const TITLE_MAX = 300      // models/News.js `maxlength`
 export const CONTENT_MAX = 50000  // models/News.js `maxlength`
 export const MAX_IMAGES = 10      // routes/news.routes.js multer `files: 10`
+
+// Tadbirlar formasi (6.25): chegaralar models/Event.js bilan bir xil. Tur → chip rangi (`--chart-N`, 11.1-qaror 30):
+// Umumiy 1, Bitiruvchilar 2, Sport 3, Madaniy 4, Ochiq kun va Qabul 5, Ilmiy 6.
+export const EVENT_DESC_MAX = 3000  // models/Event.js `desc` maxlength
+export const EVENT_TYPES = [
+  { value: 'general', label: 'Umumiy', tone: 1 },
+  { value: 'open', label: 'Ochiq kun', tone: 5 },
+  { value: 'culture', label: 'Madaniy', tone: 4 },
+  { value: 'science', label: 'Ilmiy', tone: 6 },
+  { value: 'sport', label: 'Sport', tone: 3 },
+  { value: 'graduation', label: 'Bitiruvchilar', tone: 2 },
+  { value: 'admission', label: 'Qabul', tone: 5 },
+]
