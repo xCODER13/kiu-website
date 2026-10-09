@@ -4,6 +4,7 @@ const audit = require('../services/auditLog')
 const { applyPagination } = require('../utils/pagination')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { rejectForeignImageUrls } = require('../utils/imageUrls')
+const { removeStoredImages, removedUrls } = require('../services/imageCleanup')
 const { omitUnchangedLegacy } = require('../utils/legacyValues')
 const { DEPARTMENTS } = require('../utils/departments')
 
@@ -69,6 +70,8 @@ async function update(req, res) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
       return res.status(404).json({ error: 'Topilmadi' })
     }
+    // DB yangilandi — almashtirilgan/olib tashlangan eski rasm Storage'dan o'chiriladi (2.1; xato bo'lsa faqat log)
+    await removeStoredImages(req, removedUrls([stored && stored.image], [resolved.image]))
     res.json(updated)
   } catch (e) {
     if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
@@ -80,6 +83,7 @@ async function remove(req, res) {
   try {
     const deleted = await Teacher.findByIdAndDelete(req.params.id)
     if (!deleted) return res.status(404).json({ error: 'Topilmadi' })
+    await removeStoredImages(req, [deleted.image]) // avval DB, keyin Storage (2.1)
     await audit.record('delete', req, { resource: 'teachers', targetId: req.params.id })
     res.json({ success: true })
   } catch (e) { fail(req, res, 500, e) }
