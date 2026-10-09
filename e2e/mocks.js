@@ -18,6 +18,13 @@ export const TEACHERS = [
 export const GALLERY = [
   { _id: 'g1', title: 'Ochiq eshiklar kuni', desc: 'Kampus bilan tanishuv', images: [IMG, IMG] },
 ]
+// «Talabalar hayoti» bo'limlari (/api/student-life): havolali + rasmli, rasmsiz va rasmli kartalar — axe uchta holatni ham tekshiradi
+export const STUDENT_LIFE = [
+  { _id: 'sl1', section: 'club', title: 'Debat klubi', desc: 'Haftada bir marta uchrashuv va munozara.', link: 'https://t.me/kiu_debat', image: IMG, order: 0 },
+  { _id: 'sl2', section: 'sport', title: 'Futbol chempionligi', desc: 'Fakultetlararo turnirda birinchi o\'rin.', link: '', image: '', order: 0 },
+  { _id: 'sl3', section: 'campus', title: 'Yotoqxona', desc: 'Qulay xonalar va o\'quv zallari.', link: '', image: IMG, order: 0 },
+]
+
 
 // `**/api/**` — VITE_API_URL qaysi origin bo'lishidan qat'i nazar. Noma'lum yo'l — bo'sh ob'ekt.
 export async function mockPublicApi(page) {
@@ -29,6 +36,7 @@ export async function mockPublicApi(page) {
       if (pathname.endsWith('/api/events')) return EVENTS
       if (pathname.endsWith('/api/teachers')) return TEACHERS
       if (pathname.endsWith('/api/gallery')) return GALLERY
+      if (pathname.endsWith('/api/student-life')) return STUDENT_LIFE
       return {}
     })()
     return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })

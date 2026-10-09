@@ -1928,6 +1928,11 @@
     .photo-card:focus-visible .photo-card__media img { transform: scale(1.05); }
   }
   .photo-card__body { padding: 18px 20px 22px; }
+  /* «Talabalar hayoti» bo'lim kartasi: bosilmaydi (lightbox yo'q), tavsif qisqartirilmaydi; havola tugmasi matn ostida */
+  .card.photo-card--static { cursor: default; }
+  .photo-card--static .photo-card__desc { display: block; -webkit-line-clamp: unset; }
+  .photo-card__link { margin-top: 14px; }
+
   .photo-card__title {
     display: -webkit-box;
     margin: 0 0 6px;

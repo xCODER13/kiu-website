@@ -434,7 +434,10 @@
     "empty": "Real photos will be added soon",
     "close": "Close",
     "prev": "Previous photo",
-    "next": "Next photo"
+    "next": "Next photo",
+    "sections": { "club": "Clubs and societies", "sport": "Sports and achievements", "campus": "Campus and dormitory life" },
+    "photos": "Photo gallery",
+    "more": "Learn more"
   },
   "teachers": {
     "title": "Professor and Teachers",
