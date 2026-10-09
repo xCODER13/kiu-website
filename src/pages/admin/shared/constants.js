@@ -46,6 +46,17 @@ export const GALLERY_TITLE_MAX = 200
 export const GALLERY_DESC_MAX = 500
 export const ALBUM_MOSAIC = 3
 
+// Talabalar hayoti «Bo'limlar» (models/StudentLife.js): bo'lim kalitlari backend `utils/studentLifeSections.js` bilan bir xil
+export const STUDENT_LIFE_SECTIONS = [
+  { value: 'club', label: "Klublar va to'garaklar" },
+  { value: 'sport', label: 'Sport va yutuqlar' },
+  { value: 'campus', label: 'Kampus va yotoqxona hayoti' },
+]
+export const SL_TITLE_MAX = 200
+export const SL_DESC_MAX = 2000
+export const SL_LINK_MAX = 300
+export const SL_ORDER_MAX = 9999
+
 // O'qituvchilar (6.27): chegaralar models/Teacher.js bilan bir xil (ism, lavozim — 200). `avatar` modelda 20, formada 2 (10.4).
 // Kafedralar ro'yxati — ZAXIRA nusxa: asosiy manba `GET /api/teachers/departments` (TeachersAdmin); server javob bermaguncha yoki xato bo'lsa
 // shu ishlatiladi. Backend `utils/departments.js` bilan bir xil bo'lishi `teachers-validation.test.js` da tekshiriladi.
