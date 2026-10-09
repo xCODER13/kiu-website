@@ -6,6 +6,18 @@ const Gallery = require('../models/Gallery')
 const SortingHatLead = require('../models/SortingHatLead')
 const { fail } = require('../middleware/errorHandler')
 
+// Brauzer keshi (5.2): admin dashboard bir yuklanishda 6 ta agregatsiya so'rovini yuboradi — 30 soniya ichida
+// qayta ochilsa server/DB'ga bormaydi. `private` (umumiy proksi/CDN keshlamaydi: ma'lumot faqat admin uchun),
+// `Vary: Authorization` (boshqa token bilan eski javob berilmaydi). Header FAQAT muvaffaqiyatli javobda
+// qo'yiladi: aks holda 429/500 ham 30 soniya keshlanib qolardi (aniq max-age bilan xato javoblar ham keshlanadi).
+// Trade-off: ariza holati o'zgargach counts (newApps) 30 soniyagacha eskirgan ko'rinishi mumkin.
+const STATS_CACHE_SECONDS = 30
+function sendCached(res, data) {
+  res.set('Cache-Control', `private, max-age=${STATS_CACHE_SECONDS}`)
+  res.vary('Authorization') // append: cors() qo'ygan `Vary: Origin` ustidan yozib yubormaslik uchun
+  res.json(data)
+}
+
 // News kolleksiyasida ikki xil yozuv bor: oddiy yangilik (maqola) va YouTube Shorts video.
 // Saytdagi News.jsx ularni `videoId` bo'yicha ajratadi (`!n.videoId` — yangilik, aks holda video),
 // statistika ham AYNAN shu qoidaga amal qiladi: bo'sh string, null yoki maydon yo'q = yangilik.
@@ -26,7 +38,7 @@ async function getStats(req, res) {
       Application.countDocuments({ ...Application.ACTIVE, type: 'vacancy' }),
       Gallery.countDocuments(),
     ])
-    res.json({ newsCount, shortsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps, galleryCount })
+    sendCached(res, { newsCount, shortsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps, galleryCount })
   } catch (e) { fail(req, res, 500, e) }
 }
 
@@ -99,7 +111,7 @@ async function getApplicationsTrend(req, res) {
       buckets.push(byKey.get(key) || { date: key, admission: 0, vacancy: 0 })
     }
 
-    res.json({ granularity, buckets })
+    sendCached(res, { granularity, buckets })
   } catch (e) { fail(req, res, 500, e) }
 }
 
@@ -110,7 +122,7 @@ async function getTopNews(req, res) {
     const rows = await News.find(ARTICLE_FILTER, 'title views category createdAt')
       .sort({ views: -1, createdAt: -1 })
       .limit(limit)
-    res.json(rows)
+    sendCached(res, rows)
   } catch (e) { fail(req, res, 500, e) }
 }
 
@@ -121,7 +133,7 @@ async function getTopEvents(req, res) {
     const rows = await Event.find({}, 'title views eventDate type')
       .sort({ views: -1, eventDate: -1 })
       .limit(limit)
-    res.json(rows)
+    sendCached(res, rows)
   } catch (e) { fail(req, res, 500, e) }
 }
 
@@ -142,7 +154,7 @@ async function getSortingHatFaculties(req, res) {
       ]),
       SortingHatLead.countDocuments(),
     ])
-    res.json({ total, faculties: rows })
+    sendCached(res, { total, faculties: rows })
   } catch (e) { fail(req, res, 500, e) }
 }
 
@@ -166,7 +178,7 @@ async function getApplicationFaculties(req, res) {
       ]),
       Application.countDocuments(match),
     ])
-    res.json({ total, faculties: rows })
+    sendCached(res, { total, faculties: rows })
   } catch (e) { fail(req, res, 500, e) }
 }
 

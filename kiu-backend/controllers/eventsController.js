@@ -13,7 +13,7 @@ async function getAll(req, res) {
     // Tadbirlar taqvimi — eng yaqin sanadagi tadbir birinchi chiqadi
     // (avval createdAt bo'yicha edi, ya'ni qo'shilish tartibi — voqea
     // qachon bo'lishiga aloqasi yo'q edi)
-    const q = Event.find().sort({ eventDate: 1 })
+    const q = Event.find().sort({ eventDate: 1, _id: 1 })
     applyPagination(q, req.query)
     res.json(await q)
   } catch (e) { fail(req, res, 500, e) }
@@ -56,7 +56,7 @@ async function update(req, res) {
     const { title, desc, eventDate, type } = req.body
     // Eski (enum'dan oldin saqlangan) tur o'zgarmasdan qaytsa — tahrirlash bloklanmasin (utils/legacyValues.js)
     const fields = omitUnchangedLegacy({ title, desc, eventDate, type }, stored, { type: t => EVENT_TYPES.includes(t) })
-    const updated = await Event.findByIdAndUpdate(req.params.id, { ...fields, image: resolved.image }, { new: true, runValidators: true })
+    const updated = await Event.findByIdAndUpdate(req.params.id, { ...fields, image: resolved.image }, { returnDocument: 'after', runValidators: true })
     if (!updated) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
       return res.status(404).json({ error: 'Topilmadi' })

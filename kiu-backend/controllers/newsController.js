@@ -16,7 +16,7 @@ async function getOne(req, res) {
 
 async function getAll(req, res) {
   try {
-    const q = News.find().sort({ createdAt: -1 })
+    const q = News.find().sort({ createdAt: -1, _id: -1 })
     applyPagination(q, req.query)
     res.json(await q)
   } catch (e) { fail(req, res, 500, e) }
@@ -89,7 +89,7 @@ async function update(req, res) {
     const shortsUrl = req.body.shortsUrl || ''
     const updated = await News.findByIdAndUpdate(req.params.id,
       { title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     )
     if (!updated) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
