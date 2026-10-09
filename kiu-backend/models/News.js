@@ -20,5 +20,7 @@ const NewsSchema = new mongoose.Schema({
 
 // GET /api/news har doim createdAt bo'yicha sort qiladi — indeks shu so'rovni tezlashtiradi
 NewsSchema.index({ createdAt: -1 })
+// /api/stats/top-news: filtr + sort({ views: -1, createdAt: -1 }).limit(N) — indeks butun kolleksiyani saralamaydi
+NewsSchema.index({ views: -1, createdAt: -1 })
 
 module.exports = mongoose.model('News', NewsSchema)

@@ -104,6 +104,20 @@ const viewLimiter = rateLimit({
   }
 })
 
+// ── STATS RATE LIMITER — admin statistikasi (5.2) ──
+// Dashboard bir yuklanishda 6 ta parallel agregatsiya so'rovi yuboradi, shuning uchun 60/daqiqa.
+// Alohida limiter (viewLimiter emas): universitet tarmog'idagi umumiy IP'dan sayt ochayotganlar admin
+// panelning byudjetini sarflamasin. `auth` dan KEYIN turadi — tokensiz so'rovlar byudjetga kirmaydi.
+const statsLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Juda ko'p so'rov. Birozdan so'ng qayta urinib ko'ring."
+  }
+})
+
 // ── MUTATION RATE LIMITER — auth talab qiluvchi yozish amallari uchun (POST/PUT/DELETE) ──
 // News/Events/Teachers/Applications kabi admin-only mutatsiya endpointlari `auth`
 // middleware bilan himoyalangan, lekin o'g'irlangan/oqib chiqqan JWT bo'lsa,
@@ -124,4 +138,4 @@ const mutationLimiter = rateLimit({
   }
 })
 
-module.exports = { loginLimiter, loginUsernameLimiter, resetLoginUsernameLimit, changePasswordLimiter, formLimiter, viewLimiter, mutationLimiter }
+module.exports = { loginLimiter, loginUsernameLimiter, resetLoginUsernameLimit, changePasswordLimiter, formLimiter, viewLimiter, statsLimiter, mutationLimiter }

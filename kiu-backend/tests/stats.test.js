@@ -280,3 +280,38 @@ describe('GET /api/stats/applications-faculties', () => {
     expect(json).not.toContain(PHONE)
   })
 })
+
+// ── Brauzer keshi va indekslar (5.2) ──
+describe('Stats: Cache-Control', () => {
+  const ENDPOINTS = [
+    '/api/stats', '/api/stats/applications-trend', '/api/stats/top-news',
+    '/api/stats/top-events', '/api/stats/sortinghat-faculties', '/api/stats/applications-faculties',
+  ]
+  let n = 0
+  const get = (url, token = true) => {
+    const r = request(app).get(url).set('X-Forwarded-For', `10.60.0.${++n}`)
+    return token ? r.set('Authorization', `Bearer ${getAuthToken()}`) : r
+  }
+
+  test.each(ENDPOINTS)('%s: muvaffaqiyatli javob 30 soniya private keshlanadi (Vary: Authorization)', async url => {
+    const res = await get(url)
+    expect(res.status).toBe(200)
+    expect(res.headers['cache-control']).toBe('private, max-age=30')
+    expect(res.headers.vary).toMatch(/Authorization/i)
+  })
+
+  test("xato javoblar keshlanmaydi: auth'siz 401 da Cache-Control yo'q", async () => {
+    const res = await get('/api/stats', false)
+    expect(res.status).toBe(401)
+    expect(res.headers['cache-control']).toBeUndefined()
+  })
+})
+
+describe('Stats: indekslar', () => {
+  test('top-news va top-events sort kalitlari uchun indekslar mavjud', async () => {
+    await Promise.all([News.init(), Event.init()])
+    const hasIndex = async (Model, key) => (await Model.collection.indexes()).some(i => JSON.stringify(i.key) === JSON.stringify(key))
+    expect(await hasIndex(News, { views: -1, createdAt: -1 })).toBe(true)
+    expect(await hasIndex(Event, { views: -1, eventDate: -1 })).toBe(true)
+  })
+})
