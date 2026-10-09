@@ -29,6 +29,13 @@ describe('CORS — ruxsat etilgan originlar', () => {
     expect(res.headers.vary).toMatch(/Origin/i)
   })
 
+  // 3.5: cross-origin'da brauzer faqat «xavfsiz» sarlavhalarni JS'ga beradi; Profil «N urinish qoldi» uchun shular kerak
+  test('RateLimit-* va Retry-After sarlavhalari frontend JS uchun ochiq (Access-Control-Expose-Headers)', async () => {
+    const res = await get(PROD)
+    const exposed = (res.headers['access-control-expose-headers'] || '').split(',').map(h => h.trim().toLowerCase())
+    expect(exposed).toEqual(expect.arrayContaining(['ratelimit-remaining', 'ratelimit-reset', 'retry-after']))
+  })
+
   test("Origin sarlavhasi yo'q (curl, server-to-server, health-check): ruxsat, CORS sarlavhalarisiz", async () => {
     const res = await request(app).get('/health')
     expect(res.status).toBe(200)
