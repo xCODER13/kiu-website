@@ -16,6 +16,45 @@ const loginLimiter = rateLimit({
   }
 })
 
+// ── LOGIN: ADMIN LOGIN BO'YICHA CHEGARA — 30 ta muvaffaqiyatsiz urinish / 15 daqiqa, BARCHA IP'lar bo'yicha (3.6) ──
+// `loginLimiter` faqat IP bo'yicha: botnet har IP'dan 5 tadan sinab, admin parolini kam-kam bo'lsa ham tez taxmin qila oladi.
+// Bu chegara admin hisobining o'ziga umumiy shift qo'yadi: IP'lar soni qancha bo'lmasin, 15 daqiqada ko'pi bilan 30 ta taxmin.
+//
+// Qarorlar va xavflar:
+//  - Faqat HAQIQIY admin logini kiritilgan so'rovlar sanaladi (`skip`). Boshqa kiritilgan matnlar bo'yicha hisoblagich yaratilmaydi:
+//    xotira tasodifiy login'lar bilan to'lmaydi va kiritilgan matn (parol o'rniga yozib yuborilgan bo'lishi mumkin) hech qayerda saqlanmaydi.
+//  - Kalit doimiy (admin bitta) — kiritilgan login katta-kichik harfi, probel va hokazolar bilan aylanib o'tib bo'lmaydi
+//    (login `===` bilan solishtiriladi, mos kelmaganlar umuman sanalmaydi).
+//  - Tartib: avval `loginLimiter` (IP). IP bo'yicha bloklangan so'rov bu hisoblagichni oshirmaydi.
+//  - Muvaffaqiyatli login sanalmaydi (`skipSuccessfulRequests`).
+//  - Javob `loginLimiter` bilan AYNAN bir xil matn va sarlavhasiz (`standardHeaders: false`): aks holda javob farqi
+//    «bu login to'g'ri» degan ma'lumotni oshkor qilardi (enumeration). Qolgan farq — 30 ta urinishdan keyingina seziladi.
+//  - TRADE-OFF (DoS): hujumchi ~6 ta IP'dan (har biri 5 tadan) admin loginini 15 daqiqaga qulflab turishi mumkin.
+//    Tizimga ALLAQACHON kirgan admin ta'sirlanmaydi (JWT), lekin yangi kirish bloklanadi. Bunday holat logda `[SECURITY]` bilan ko'rinadi.
+//    Doimiy yechim — bot tekshiruvi (Turnstile, 7.1).
+const LOGIN_USERNAME_KEY = 'admin-login'
+const loginUsernameLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  skipSuccessfulRequests: true,
+  standardHeaders: false,
+  legacyHeaders: false,
+  keyGenerator: () => LOGIN_USERNAME_KEY,
+  skip: req => {
+    const u = req.body?.username
+    return typeof u !== 'string' || !process.env.ADMIN_USERNAME || u !== process.env.ADMIN_USERNAME
+  },
+  message: {
+    error: "Juda ko'p muvaffaqiyatsiz urinish. 15 daqiqadan so'ng qayta urinib ko'ring."
+  },
+  handler: (req, res, next, options) => {
+    req.log.warn({ ip: req.ip }, '[SECURITY] Admin login bo\'yicha umumiy limit to\'ldi — turli IP\'lardan taxmin yoki qulflash urinishi')
+    res.status(429).json(options.message)
+  }
+})
+// Faqat testlar uchun: testlar orasida hisoblagichni nolga qaytaradi (server kodida chaqirilmaydi).
+const resetLoginUsernameLimit = () => loginUsernameLimiter.resetKey(LOGIN_USERNAME_KEY)
+
 // ── CHANGE-PASSWORD RATE LIMITER — 5 ta urinish / 15 daqiqa ──
 // loginLimiter bilan bir xil shakl (bcrypt.compare orqali parol taqqoslaydigan
 // endpoint, xuddi login kabi qo'pol kuch hujumiga ochiq), lekin ALOHIDA
@@ -85,4 +124,4 @@ const mutationLimiter = rateLimit({
   }
 })
 
-module.exports = { loginLimiter, changePasswordLimiter, formLimiter, viewLimiter, mutationLimiter }
+module.exports = { loginLimiter, loginUsernameLimiter, resetLoginUsernameLimit, changePasswordLimiter, formLimiter, viewLimiter, mutationLimiter }
