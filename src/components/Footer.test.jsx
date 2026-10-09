@@ -22,6 +22,19 @@ describe('Footer', () => {
     expect(screen.getAllByRole('link', { name: "Bo'sh ish o'rinlari" }).length).toBeGreaterThan(0)
   })
 
+  it("«Talabalar hayoti» «Talabalar» ustunida, «Tadbirlar»dan oldin; «Bog'lanish» ustunida takrorlanmaydi (Xarita va QR Kod qoladi)", () => {
+    const { container } = renderFooter()
+    const col = screen.getByRole('heading', { name: 'Talabalar' }).parentElement
+    const names = [...col.querySelectorAll('a.footer-link')].map(a => a.textContent)
+    expect(names.indexOf('Talabalar hayoti')).toBeGreaterThan(-1)
+    expect(names.indexOf('Talabalar hayoti')).toBe(names.indexOf('Tadbirlar') - 1)
+    expect(names[names.indexOf('Talabalar hayoti') - 1]).toBe('Qabul')
+    const media = [...container.querySelectorAll('.footer-media-link')].map(a => a.textContent)
+    expect(media).toEqual(['Xarita', 'QR Kod'])
+    expect(screen.getAllByRole('link', { name: 'Talabalar hayoti' })).toHaveLength(1)
+    expect(screen.getByRole('link', { name: 'Talabalar hayoti' })).toHaveAttribute('href', '/student-life')
+  })
+
   it("logotip bor, lekin dekorativ: universitet nomi yonida ekran o'qiydigan dasturda takrorlanmaydi", () => {
     const { container } = renderFooter()
     const logo = container.querySelector('footer svg.site-logo--footer')
