@@ -798,6 +798,7 @@
     "comment": "Additional comment",
     "commentPlaceholder": "Write here if you have any questions...",
     "error": "Something went wrong while submitting your application. Please check your internet connection and try again.",
+    "rateLimited": "Too many applications were sent. Please try again a little later.",
     "failedTitle": "Application not sent.",
     "submit": "Submit",
     "sending": "Sending...",

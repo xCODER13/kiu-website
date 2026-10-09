@@ -39,7 +39,8 @@ export default function ApplyModal({ onClose }) {
   const [form, setForm] = useState({ name: '', phone: '', faculty: '', message: '' })
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(false)
+  // null | 'failed' (tarmoq/server) | 'rateLimited' (429 — internet aloqasi bilan bog'liq emas, boshqa xabar kerak)
+  const [error, setError] = useState(null)
   const [fieldErrors, setFieldErrors] = useState({})
   const nameRef = useRef(null)
   const phoneRef = useRef(null)
@@ -68,7 +69,7 @@ export default function ApplyModal({ onClose }) {
   async function handleSubmit(e) {
     e.preventDefault()
     if (loading) return // ikki marta bosish / Enter'dan takroriy ariza ketmasin
-    setError(false)
+    setError(null)
     if (!validate()) return
     setLoading(true)
     // Maydonlar `disabled` bo'lganda fokus <body>ga tushib, modal tuzog'idan chiqib ketmasin
@@ -79,10 +80,16 @@ export default function ApplyModal({ onClose }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: form.name, phone: form.phone, faculty: form.faculty, message: form.message, type: 'admission' }),
       })
+      if (res.status === 429) {
+        setError('rateLimited')
+        setTimeout(() => submitRef.current?.focus(), 0)
+        setLoading(false)
+        return
+      }
       if (!res.ok) throw new Error('Request failed')
       setSent(true)
     } catch {
-      setError(true)
+      setError('failed')
       // Qayta urinish uchun fokus yana tugmada (u endi faol)
       setTimeout(() => submitRef.current?.focus(), 0)
     }
@@ -138,7 +145,7 @@ export default function ApplyModal({ onClose }) {
               {error && (
                 <div className="modal-alert" role="alert">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  <div><b>{t('applyModal.failedTitle')}</b> {t('applyModal.error')}</div>
+                  <div><b>{t('applyModal.failedTitle')}</b> {t(error === 'rateLimited' ? 'applyModal.rateLimited' : 'applyModal.error')}</div>
                 </div>
               )}
               <button ref={submitRef} type="submit" className="btn btn-primary modal-submit" disabled={loading} aria-busy={loading}>

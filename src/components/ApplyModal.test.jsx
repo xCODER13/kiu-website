@@ -83,6 +83,22 @@ describe('ApplyModal', () => {
     await waitFor(() => expect(screen.getByRole('button', { name: 'Yuborish' })).toBeEnabled())
   })
 
+  it("429 (juda ko'p ariza) — «internet aloqasini tekshiring» emas, aniq xabar; forma saqlanadi, qayta urinish mumkin", async () => {
+    const f = vi.fn().mockResolvedValueOnce({ ok: false, status: 429 }).mockResolvedValueOnce({ ok: true })
+    vi.stubGlobal('fetch', f)
+    const user = userEvent.setup()
+    render(<ApplyModal onClose={() => {}} />)
+    await fillValid(user)
+    await user.click(screen.getByRole('button', { name: 'Yuborish' }))
+    expect(await screen.findByText(/Juda ko'p ariza yuborildi/)).toBeInTheDocument()
+    expect(screen.queryByText(/Internet aloqasini/)).not.toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Ism Familiya')).toHaveValue('Ali Valiyev')
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Yuborish' })).toBeEnabled())
+    await user.click(screen.getByRole('button', { name: 'Yuborish' }))
+    expect(await screen.findByText('Ariza yuborildi!')).toBeInTheDocument()
+    expect(screen.queryByText(/Juda ko'p ariza yuborildi/)).not.toBeInTheDocument()
+  })
+
   it('tarmoq xatosi — xato xabari', async () => {
     vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('net'))))
     const user = userEvent.setup()
