@@ -1,5 +1,6 @@
 const Application = require('../models/Application')
 const { fail } = require('../middleware/errorHandler')
+const audit = require('../services/auditLog')
 const { sendTelegram, escapeTelegramHtml } = require('../services/telegram')
 
 async function getAll(req, res) {
@@ -103,6 +104,7 @@ async function remove(req, res) {
   try {
     const deleted = await Application.findByIdAndDelete(req.params.id)
     if (!deleted) return res.status(404).json({ error: 'Topilmadi' })
+    await audit.record('delete', req, { resource: 'applications', targetId: req.params.id })
     res.json({ success: true })
   } catch (e) { fail(req, res, 500, e) }
 }
