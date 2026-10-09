@@ -215,6 +215,6 @@ describe('POST /api/admin/login — loginLimiter (5 muvaffaqiyatsiz urinish / 15
       .set('Authorization', `Bearer ${getAuthToken()}`)
       .set('X-Forwarded-For', ip)
       .send({ currentPassword: 'notogri_parol', newPassword: 'yangi_parol_123' })
-    expect(res.status).toBe(401) // 429 emas
+    expect(res.status).toBe(403) // 429 emas (noto'g'ri joriy parol — 3.1: 401 dan 403 ga o'zgardi)
   })
 })
