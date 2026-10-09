@@ -1,7 +1,7 @@
 // Kafedralar — YAGONA ruxsat etilgan ro'yxat (1.5). Yozuv xatosi saytda alohida kafedra guruhini yaratardi
 // (ommaviy sahifa kafedralarni `dept` qiymatlaridan yig'adi). Frontend nusxasi: `src/pages/admin/shared/constants.js`
 // (KAFEDRALAR) — `tests/teachers-validation.test.js` ikkalasini solishtiradi. Ro'yxat `GET /api/teachers/departments`
-// orqali ham beriladi (frontend keyinchalik shundan oladi).
+// orqali ham beriladi — admin panel (TeachersAdmin) shu endpointdan oladi, (KAFEDRALAR) faqat zaxira.
 // Yangi kafedra qo'shish uchun shu ro'yxat o'zgaradi (kod o'zgarishi kerak, bu ataylab).
 const DEPARTMENTS = [
   'Iqtisodiyot va muhandislik kafedrasi',
