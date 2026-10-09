@@ -29,32 +29,29 @@ describe('body-parser xatolari', () => {
 
 // changePassword: DB'dan sozlamalarni yangilab bo'lmasa (logger.warn) va ADMIN_PASSWORD_HASH umuman yo'q bo'lsa —
 // 500 va aniq xabar (bcrypt'ga `undefined` bilan yetib bormaydi). Haqiqiy DB bor muhitda (CI) `collection` uzib qo'yiladi.
+// DIQQAT: soxta `collection` testning O'ZIDA (finally) tiklanadi, afterEach'da emas: tests/setup.js ning afterEach'i
+// (u har doim OLDIN ishlaydi) `db.collection('settings')` ni chaqiradi va soxta xato bilan yiqilardi.
 describe('POST /api/admin/change-password: admin paroli sozlanmagan', () => {
   const mongoose = require('mongoose')
   const { getAuthToken } = require('./helpers')
-  let savedHash
-  let spy
-
-  beforeEach(() => {
-    savedHash = process.env.ADMIN_PASSWORD_HASH
-    delete process.env.ADMIN_PASSWORD_HASH
-    spy = mongoose.connection.db
-      ? jest.spyOn(mongoose.connection.db, 'collection').mockImplementation(() => { throw new Error('db down') })
-      : null
-  })
-  afterEach(() => {
-    if (spy) spy.mockRestore()
-    if (savedHash === undefined) delete process.env.ADMIN_PASSWORD_HASH
-    else process.env.ADMIN_PASSWORD_HASH = savedHash
-  })
 
   test('hash topilmasa 500 (login bilan bir xil xabar), parol tekshirilmaydi', async () => {
-    const res = await request(app)
-      .post('/api/admin/change-password')
-      .set('X-Forwarded-For', nextIp())
-      .set('Authorization', `Bearer ${getAuthToken()}`)
-      .send({ currentPassword: 'joriy-parol-123', newPassword: 'butunlay-yangi-parol-77' })
-    expect(res.status).toBe(500)
-    expect(res.body.error).toMatch(/Admin paroli sozlanmagan/)
+    const savedHash = process.env.ADMIN_PASSWORD_HASH
+    delete process.env.ADMIN_PASSWORD_HASH
+    const spy = mongoose.connection.db
+      ? jest.spyOn(mongoose.connection.db, 'collection').mockImplementation(() => { throw new Error('db down') })
+      : null
+    try {
+      const res = await request(app)
+        .post('/api/admin/change-password')
+        .set('X-Forwarded-For', nextIp())
+        .set('Authorization', `Bearer ${getAuthToken()}`)
+        .send({ currentPassword: 'joriy-parol-123', newPassword: 'butunlay-yangi-parol-77' })
+      expect(res.status).toBe(500)
+      expect(res.body.error).toMatch(/Admin paroli sozlanmagan/)
+    } finally {
+      if (spy) spy.mockRestore()
+      if (savedHash !== undefined) process.env.ADMIN_PASSWORD_HASH = savedHash
+    }
   })
 })
