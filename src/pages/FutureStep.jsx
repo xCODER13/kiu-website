@@ -117,7 +117,7 @@ export default function FutureStep() {
                           </div>
                         </div>
                         {p.link && (
-                          <a href={NBU_PRODUCTS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm kq-product__link">
+                          <a href={NBU_PRODUCTS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm kq-product__link">
                             {t('futureStep.details')}
                           </a>
                         )}
