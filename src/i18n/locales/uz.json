@@ -29,7 +29,7 @@
       "news": { "title": "Yangiliklar", "desc": "KIU hayotidan so'nggi xabarlar, tadbirlar va e'lonlar." },
       "events": { "title": "Tadbirlar taqvimi", "desc": "KIU dagi yaqinlashib kelayotgan tadbirlar, konferensiyalar va bayramlar." },
       "teachers": { "title": "Professor-o'qituvchilar", "desc": "KIU ning malakali professor-o'qituvchilar jamoasi bilan tanishing." },
-      "gallery": { "title": "Galereya", "desc": "KIU kampusi, tadbirlari va kundalik hayotidan foto lavhalar." },
+      "gallery": { "title": "Talabalar hayoti", "desc": "KIU kampusi, tadbirlari va talabalar kundalik hayotidan foto lavhalar." },
       "contact": { "title": "Bog'lanish", "desc": "KIU manzili, telefon raqamlari, elektron pochta va ish vaqti." },
       "faq": { "title": "Ko'p so'raladigan savollar", "desc": "KIU ga qabul, ta'lim jarayoni va boshqa mavzulardagi tez-tez beriladigan savollarga javoblar." },
       "documents": { "title": "Normativ hujjatlar", "desc": "KIU ning rasmiy nizomlar, buyruqlar va normativ hujjatlari." },
@@ -70,7 +70,7 @@
       "sortingHat": "Sehrli Shlyapa",
       "news": "Yangiliklar",
       "events": "Tadbirlar",
-      "gallery": "Galereya",
+      "gallery": "Talabalar hayoti",
       "testimonials": "Fikr-mulohazalar",
       "contact": "Bog'lanish",
       "map": "Xarita",
@@ -98,7 +98,7 @@
       "achievements": "Yutuqlar",
       "testimonials": "Sharhlar",
       "faq": "FAQ",
-      "gallery": "Fotogalereya",
+      "gallery": "Talabalar hayoti",
       "map": "Xarita",
       "qrcode": "QR Kod"
     }
@@ -439,9 +439,9 @@
     "howText": "Telefon kamerangizni QR kodga yo'naltiring → Avtomatik havola ochiladi → Obuna bo'ling va yangiliklar olish boshlang!"
   },
   "gallery": {
-    "title": "Fotogalereya",
-    "subtitle": "KIU hayotidan lavhalar",
-    "error": "Galereyani yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.",
+    "title": "Talabalar hayoti",
+    "subtitle": "KIU talabalari hayotidan lavhalar",
+    "error": "Rasmlarni yuklashda xatolik yuz berdi. Sahifani qayta yuklab ko'ring.",
     "empty": "Haqiqiy rasmlar tez orada qo'shiladi",
     "close": "Yopish",
     "prev": "Oldingi rasm",
@@ -782,7 +782,7 @@
       "events": "Tadbirlar taqvimi",
       "testimonials": "Talabalar sharhlari",
       "achievements": "Yutuqlar mukofotlar",
-      "gallery": "Fotogalereya rasmlar",
+      "gallery": "Talabalar hayoti fotogalereya",
       "map": "Xarita kampus joylashuvi",
       "qrcode": "QR Kod Telegram kanal"
     },

@@ -31,7 +31,7 @@ const QUICK = process.argv.includes('--quick')
 const ROUTES = QUICK
   ? ['/', '/faculty', '/contact']
   : ['/', '/faculty', '/admission', '/news', '/contact', '/about', '/hemis', '/international', '/documents',
-     '/vacancies', '/faq', '/events', '/testimonials', '/achievements', '/qrcode', '/teachers', '/gallery',
+     '/vacancies', '/faq', '/events', '/testimonials', '/achievements', '/qrcode', '/teachers', '/student-life',
      '/map', '/sorting-hat']
 const LANGS = ['', '/ru']
 const WIDTHS = [390, 768, 1280]

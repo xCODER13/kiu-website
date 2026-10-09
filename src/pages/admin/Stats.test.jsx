@@ -95,7 +95,7 @@ describe('Stats', () => {
     await screen.findByText('1')
     expect(screen.getByText('Vakansiya arizalari').closest('a')).toHaveAttribute('href', '/admin/vacancies')
     expect(screen.getByText('Qabul arizalari').closest('a')).toHaveAttribute('href', '/admin/applications')
-    expect(screen.getByText('Galereya').closest('a')).toHaveAttribute('href', '/admin/gallery')
+    expect(screen.getByText('Talabalar hayoti').closest('a')).toHaveAttribute('href', '/admin/gallery')
   })
 
   it('"Tezkor havolalar" bo\'limi endi ko\'rsatilmaydi', async () => {
@@ -104,7 +104,7 @@ describe('Stats', () => {
     await screen.findByText('1')
     expect(screen.queryByText('Tezkor havolalar')).not.toBeInTheDocument()
     // Har bir karta nomi endi faqat bir marta chiqadi (tezkor havolalar bilan dublikat yo'q)
-    expect(screen.getAllByText('Galereya')).toHaveLength(1)
+    expect(screen.getAllByText('Talabalar hayoti')).toHaveLength(1)
     expect(screen.getAllByText('Qabul arizalari')).toHaveLength(1)
   })
 })
@@ -336,7 +336,7 @@ describe('Stats — batafsil statistika (band 6)', () => {
     const tones = [...container.querySelectorAll('.adm-kpi')].map(k => [k.querySelector('.adm-kpi-label').textContent, k.dataset.tone])
     expect(tones).toEqual([
       ['Yangiliklar', 'blue'], ['Youtube shorts', 'orange'], ['Tadbirlar', 'emerald'], ["O'qituvchilar", 'indigo'],
-      ['Qabul arizalari', 'amber'], ['Vakansiya arizalari', 'cyan'], ['Galereya', 'lime'],
+      ['Qabul arizalari', 'amber'], ['Vakansiya arizalari', 'cyan'], ['Talabalar hayoti', 'lime'],
     ])
     // Faqat grafik geometriyasi (`width/height`) inline qoladi; rang, joylashuv va hover — CSS da
     expect([...container.querySelectorAll('[style]')].filter(el => /color|background|border|display|flex|grid/.test(el.getAttribute('style')))).toHaveLength(0)

@@ -61,8 +61,8 @@ describe('Statik sahifalar (EN)', () => {
 describe('Bazadan keladigan sahifalar (EN): interfeys inglizcha, kontent o\'zbekcha', () => {
   it('Gallery: sarlavha va izoh inglizcha, albom nomi o\'zgarishsiz (lang=uz)', async () => {
     mockApi({ 'GET /gallery': [{ _id: 'a1', title: '1-kampus', desc: 'Kampus binosi', images: ['https://s/1.jpg'] }] })
-    at('/en/gallery', <Gallery />)
-    expect(await screen.findByText('Photo gallery')).toBeInTheDocument()
+    at('/en/student-life', <Gallery />)
+    expect(await screen.findByText('Student life')).toBeInTheDocument()
     expect(screen.getByText(NOTE)).toBeInTheDocument()
     expect(screen.getByText('Kampus binosi')).toHaveAttribute('lang', 'uz')
     expect(screen.queryByText('Yuklanmoqda...')).not.toBeInTheDocument()
@@ -70,7 +70,7 @@ describe('Bazadan keladigan sahifalar (EN): interfeys inglizcha, kontent o\'zbek
 
   it('Gallery: bo\'sh holat inglizcha', async () => {
     mockApi({ 'GET /gallery': [] })
-    at('/en/gallery', <Gallery />)
+    at('/en/student-life', <Gallery />)
     expect(await screen.findByText('Real photos will be added soon')).toBeInTheDocument()
   })
 

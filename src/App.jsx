@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
+import { Navigate as LocaleNavigate } from './i18n/router'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -56,7 +57,7 @@ const SEO_KEYS = {
   '/news': 'news',
   '/events': 'events',
   '/teachers': 'teachers',
-  '/gallery': 'gallery',
+  '/student-life': 'gallery',
   '/contact': 'contact',
   '/faq': 'faq',
   '/documents': 'documents',
@@ -252,7 +253,9 @@ function PageRoutes({ onApply }) {
       <Route path="/achievements" element={<Achievements />} />
       <Route path="/qrcode" element={<QRCode />} />
       <Route path="/teachers" element={<Teachers />} />
-      <Route path="/gallery" element={<Gallery />} />
+      <Route path="/student-life" element={<Gallery />} />
+      {/* Eski manzil («Galereya» → «Talabalar hayoti»): vercel.json'da 301; bu yerda — dev va zaxira (til prefiksi saqlanadi) */}
+      <Route path="/gallery" element={<LocaleNavigate to="/student-life" replace />} />
       <Route path="/map" element={<Map />} />
       <Route path="/sorting-hat" element={<SortingHat />} />
       <Route path="*" element={<NotFound />} />

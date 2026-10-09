@@ -168,7 +168,7 @@ test.describe('Admin: tadbirlar boshqaruvi', () => {
   })
 })
 
-test.describe('Admin: galereya boshqaruvi', () => {
+test.describe('Admin: Talabalar hayoti (albomlar) boshqaruvi', () => {
   // Albom yaratish rasm yuklashni (Supabase) talab qiladi — CI'da u yo'q, shuning uchun yozish so'rovlari yuborilmaydi:
   // forma, validatsiya, rasm tanlash, 10/10 holati va «saqlanmagan o'zgarishlar» dialogi tekshiriladi.
   const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64')
@@ -176,9 +176,9 @@ test.describe('Admin: galereya boshqaruvi', () => {
 
   test("login → forma validatsiyasi → rasm tanlash → 10/10 → saqlanmagan o'zgarishlar dialogi", async ({ page }) => {
     await loginAsAdmin(page)
-    await page.getByRole('link', { name: 'Galereya', exact: true }).click()
+    await page.getByRole('link', { name: 'Talabalar hayoti', exact: true }).click()
     await expect(page).toHaveURL(/\/admin\/gallery$/)
-    await expect(page.getByRole('heading', { level: 2, name: 'Galereya' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'Talabalar hayoti' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Yangi albom' }).first().click()
 

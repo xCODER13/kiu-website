@@ -30,7 +30,7 @@ export default function GalleryForm({
   const newCount = images.imageFiles.length
   const hint = (
     <>
-      Saytdagi galereyada albomdagi <strong>har bir rasm alohida karta</strong> bo'lib chiqadi; nom va tavsif hammasida
+      Saytdagi «Talabalar hayoti» sahifasida albomdagi <strong>har bir rasm alohida karta</strong> bo'lib chiqadi; nom va tavsif hammasida
       takrorlanadi. Rasmlar yuklangan tartibda ko'rsatiladi.
     </>
   )

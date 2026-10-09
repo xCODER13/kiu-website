@@ -1,4 +1,8 @@
 {
+  "redirects": [
+    { "source": "/gallery", "destination": "/student-life", "permanent": true },
+    { "source": "/:lang(ru|en)/gallery", "destination": "/:lang/student-life", "permanent": true }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

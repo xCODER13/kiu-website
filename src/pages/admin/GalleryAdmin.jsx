@@ -259,7 +259,7 @@ export default function GalleryAdmin() {
 
       <div className="adm-page-head">
         <div className="adm-page-head-title">
-          <h2 className="adm-page-title" ref={headingRef} tabIndex={-1}>Galereya</h2>
+          <h2 className="adm-page-title" ref={headingRef} tabIndex={-1}>Talabalar hayoti</h2>
           <span className="adm-count-pill"><span className="adm-sr-only">Albomlar: </span>{res.loading || failed ? '–' : items.length}</span>
           {!res.loading && !failed && items.length > 0 && <span className="adm-page-head-sub">jami {formatCount(totalImages)} ta rasm</span>}
         </div>
@@ -294,7 +294,7 @@ export default function GalleryAdmin() {
             title="Hali albom yo'q"
             action={<button type="button" className="btn btn-primary adm-empty-action" onClick={openNew}>{Ic.add}Yangi albom</button>}
           >
-            Birinchi albomni qo'shing — undagi har bir rasm saytning «Galereya» sahifasida alohida ko'rinadi.
+            Birinchi albomni qo'shing — undagi har bir rasm saytning «Talabalar hayoti» sahifasida alohida ko'rinadi.
           </EmptyState>
         )
       ) : (

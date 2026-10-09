@@ -48,12 +48,12 @@ describe('Search (qidiruv)', () => {
     expect(screen.getByText('Grant stipendiya')).toBeInTheDocument()
   })
 
-  it('regressiya: "Fotogalereya" yozuvidagi kirill "е" harfi lotincha bo\'lgani uchun to\'g\'ri yozilgan so\'rov bo\'yicha topiladi', async () => {
+  it('regressiya: "Fotogalereya" (Talabalar hayoti sahifasi) yozuvidagi kirill "е" harfi lotincha bo\'lgani uchun to\'g\'ri yozilgan so\'rov bo\'yicha topiladi', async () => {
     const user = userEvent.setup()
     renderSearch()
     await openSearch(user)
     await user.type(screen.getByPlaceholderText(/Qidiring/), 'fotogalereya')
-    expect(screen.getByText('Fotogalereya rasmlar')).toBeInTheDocument()
+    expect(screen.getByText('Talabalar hayoti fotogalereya')).toBeInTheDocument()
   })
 
   it("mos natija topilmasa xabar ko'rsatiladi", async () => {
