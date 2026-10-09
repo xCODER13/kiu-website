@@ -27,5 +27,7 @@ const EventSchema = new mongoose.Schema({
 
 // Tadbirlar taqvimi — eng yaqin tadbir birinchi chiqishi uchun eventDate bo'yicha sort qilinadi
 EventSchema.index({ eventDate: 1 })
+// /api/stats/top-events: sort({ views: -1, eventDate: -1 }).limit(N)
+EventSchema.index({ views: -1, eventDate: -1 })
 
 module.exports = mongoose.model('Event', EventSchema)

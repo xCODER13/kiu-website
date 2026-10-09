@@ -109,3 +109,33 @@ describe("mutationLimiter — admin yozuvlari (30 so'rov / 15 daqiqa / IP)", () 
     expect((await request(app).get('/api/news').set('X-Forwarded-For', ip)).status).toBe(200)
   })
 })
+
+describe("statsLimiter — admin statistikasi (60 so'rov / daqiqa / IP)", () => {
+  const stats = (ip, authed = true) => {
+    const r = request(app).get('/api/stats/top-news').set('X-Forwarded-For', ip)
+    return authed ? r.set('Authorization', `Bearer ${getAuthToken()}`) : r
+  }
+
+  test("61-so'rov 429; Retry-After bor; tokensiz so'rovlar byudjetni sarflamaydi (auth limiterdan oldin)", async () => {
+    const ip = nextIp()
+    for (let i = 0; i < 40; i++) expect((await stats(ip, false)).status).toBe(401)
+
+    const first = await stats(ip)
+    expect(first.status).toBe(200)
+    expect(first.headers['ratelimit-limit']).toBe('60')
+    expect(first.headers['ratelimit-remaining']).toBe('59') // 40 ta 401 sanalmagan
+
+    for (let i = 0; i < 59; i++) expect((await stats(ip)).status).toBe(200)
+    const blocked = await stats(ip)
+    expect(blocked.status).toBe(429)
+    expect(Number(blocked.headers['retry-after'])).toBeGreaterThan(0)
+    expect(blocked.headers['cache-control']).toBeUndefined() // 429 keshlanmasin
+  })
+
+  test("viewLimiter bilan umumiy emas: stats byudjeti tugasa ham ochiq GET ishlaydi", async () => {
+    const ip = nextIp()
+    for (let i = 0; i < 61; i++) await stats(ip)
+    expect((await stats(ip)).status).toBe(429)
+    expect((await request(app).get('/api/news').set('X-Forwarded-For', ip)).status).toBe(200)
+  })
+})
