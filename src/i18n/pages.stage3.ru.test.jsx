@@ -63,15 +63,15 @@ describe('Statik sahifalar (RU)', () => {
 describe("Bazadan keladigan sahifalar (RU): interfeys ruscha, kontent o'zbekcha", () => {
   it("Gallery: sarlavha va izoh ruscha, albom nomi o'zgarishsiz (lang=uz)", async () => {
     mockApi({ 'GET /gallery': [{ _id: 'a1', title: '1-kampus', desc: 'Kampus binosi', images: ['https://s/1.jpg'] }] })
-    at('/ru/gallery', <Gallery />)
-    expect(await screen.findByText('Фотогалерея')).toBeInTheDocument()
+    at('/ru/student-life', <Gallery />)
+    expect(await screen.findByText('Студенческая жизнь')).toBeInTheDocument()
     expect(screen.getByText(NOTE)).toBeInTheDocument()
     expect(screen.getByText('Kampus binosi')).toHaveAttribute('lang', 'uz')
   })
 
   it("Gallery: bo'sh holat ruscha", async () => {
     mockApi({ 'GET /gallery': [] })
-    at('/ru/gallery', <Gallery />)
+    at('/ru/student-life', <Gallery />)
     expect(await screen.findByText('Настоящие фотографии скоро появятся')).toBeInTheDocument()
   })
 

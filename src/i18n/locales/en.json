@@ -29,7 +29,7 @@
       "news": { "title": "News", "desc": "The latest news, events and announcements from KIU." },
       "events": { "title": "Events calendar", "desc": "Upcoming events, conferences and celebrations at KIU." },
       "teachers": { "title": "Professor and Teachers", "desc": "Meet the qualified professors and teachers of KIU." },
-      "gallery": { "title": "Gallery", "desc": "Photos from the KIU campus, events and everyday life." },
+      "gallery": { "title": "Student life", "desc": "Photos from the KIU campus, events and students' everyday life." },
       "contact": { "title": "Contact", "desc": "KIU address, phone numbers, email and working hours." },
       "faq": { "title": "Frequently asked questions", "desc": "Answers to common questions about admission, studying at KIU and more." },
       "documents": { "title": "Official documents", "desc": "KIU regulations, orders and other official documents." },
@@ -70,7 +70,7 @@
       "sortingHat": "Sorting Hat",
       "news": "News",
       "events": "Events",
-      "gallery": "Gallery",
+      "gallery": "Student life",
       "testimonials": "Testimonials",
       "contact": "Contact us",
       "map": "Map",
@@ -98,7 +98,7 @@
       "achievements": "Achievements",
       "testimonials": "Testimonials",
       "faq": "FAQ",
-      "gallery": "Photo gallery",
+      "gallery": "Student life",
       "map": "Map",
       "qrcode": "QR codes"
     }
@@ -428,9 +428,9 @@
     "howText": "Point your phone camera at the QR code → the link opens automatically → subscribe and start getting the news!"
   },
   "gallery": {
-    "title": "Photo gallery",
-    "subtitle": "Snapshots from life at KIU",
-    "error": "Could not load the gallery. Please reload the page.",
+    "title": "Student life",
+    "subtitle": "Snapshots of student life at KIU",
+    "error": "Could not load the photos. Please reload the page.",
     "empty": "Real photos will be added soon",
     "close": "Close",
     "prev": "Previous photo",
@@ -780,7 +780,7 @@
       "events": "Events calendar",
       "testimonials": "Student testimonials",
       "achievements": "Achievements and awards",
-      "gallery": "Photo gallery",
+      "gallery": "Student life photo gallery",
       "map": "Map and campus location",
       "qrcode": "QR code, Telegram channel"
     },

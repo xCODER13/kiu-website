@@ -66,7 +66,7 @@ describe('Footer (EN)', () => {
     expect(screen.getByText('Mon–Sat: 09:00–20:00')).toBeInTheDocument()
     expect(screen.getByText('© 2026 Karshi International University. All rights reserved.')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Find your program' })).toHaveAttribute('href', '/en/sorting-hat')
-    expect(screen.getByRole('link', { name: 'Photo gallery' })).toHaveAttribute('href', '/en/gallery')
+    expect(screen.getByRole('link', { name: 'Student life' })).toHaveAttribute('href', '/en/student-life')
     expect(screen.getByText(config.contact.phone)).toBeInTheDocument()
     // Ijtimoiy tarmoq havolalari tashqi URL — /en prefiksi olmaydi
     expect(screen.getByRole('link', { name: 'Telegram' })).toHaveAttribute('href', config.social.telegram)

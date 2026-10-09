@@ -65,7 +65,7 @@ describe('Footer (RU)', () => {
     expect(screen.getByText('Пн–Сб: 09:00–20:00')).toBeInTheDocument()
     expect(screen.getByText('© 2026 Каршинский международный университет. Все права защищены.')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Подбор направления' })).toHaveAttribute('href', '/ru/sorting-hat')
-    expect(screen.getByRole('link', { name: 'Фотогалерея' })).toHaveAttribute('href', '/ru/gallery')
+    expect(screen.getByRole('link', { name: 'Студенческая жизнь' })).toHaveAttribute('href', '/ru/student-life')
     expect(screen.getByText(config.contact.phone)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Telegram' })).toHaveAttribute('href', config.social.telegram)
   })

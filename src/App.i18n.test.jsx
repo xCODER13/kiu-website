@@ -12,6 +12,7 @@ vi.mock('./pages/Home', () => ({ default: () => <div>HOME</div> }))
 vi.mock('./pages/About', () => ({ default: () => <div>ABOUT</div> }))
 vi.mock('./pages/News', () => ({ default: () => <div>NEWS</div> }))
 vi.mock('./pages/NewsDetail', () => ({ default: () => <div>NEWS-DETAIL</div> }))
+vi.mock('./pages/Gallery', () => ({ default: () => <div>STUDENT-LIFE</div> }))
 vi.mock('./components/ApplyModal', () => ({ default: () => <div>APPLY</div> }))
 vi.mock('./components/Search', () => ({ default: () => null }))
 
@@ -27,6 +28,33 @@ beforeEach(() => {
     '<meta name="description" content=""><meta property="og:title" content=""><meta property="og:description" content=""><meta name="robots" content="index, follow"><link rel="canonical" href="">'
 })
 afterEach(() => { document.head.innerHTML = '' })
+
+describe('«Talabalar hayoti»: /student-life va eski /gallery manzili', () => {
+  const canonical = () => document.head.querySelector('link[rel="canonical"]')?.getAttribute('href')
+
+  it('/student-life — sahifa ochiladi, canonical yangi manzilga', async () => {
+    renderAt('/student-life')
+    expect(await screen.findByText('STUDENT-LIFE')).toBeInTheDocument()
+    expect(canonical()).toBe(`${SITE}/student-life`)
+  })
+
+  it("/gallery — /student-life ga yo'naltiriladi (zaxira, vercel.json 301 asosiy)", async () => {
+    renderAt('/gallery')
+    expect(await screen.findByText('STUDENT-LIFE')).toBeInTheDocument()
+    expect(canonical()).toBe(`${SITE}/student-life`)
+  })
+
+  it("/en/gallery va /ru/gallery — til prefiksi saqlanib yo'naltiriladi", async () => {
+    const { unmount } = renderAt('/en/gallery')
+    expect(await screen.findByText('STUDENT-LIFE')).toBeInTheDocument()
+    expect(canonical()).toBe(`${SITE}/en/student-life`)
+    expect(document.documentElement.lang).toBe('en')
+    unmount()
+    renderAt('/ru/gallery')
+    expect(await screen.findByText('STUDENT-LIFE')).toBeInTheDocument()
+    expect(canonical()).toBe(`${SITE}/ru/student-life`)
+  })
+})
 
 describe('til routing', () => {
   it("/ — o'zbekcha, <html lang=uz>", async () => {

@@ -75,7 +75,7 @@ export default function Stats() {
     { label: "O'qituvchilar",      value: s.teachersCount, tone: 'indigo',  icon: Ic.teach,   to: '/admin/teachers'     },
     { label: 'Qabul arizalari',    value: s.appsCount,     tone: 'amber',   icon: Ic.clipboard, to: '/admin/applications' },
     { label: 'Vakansiya arizalari',value: s.vacancyApps,   tone: 'cyan',    icon: Ic.vacancy, to: '/admin/vacancies'    },
-    { label: 'Galereya',           value: s.galleryCount,  tone: 'lime',    icon: Ic.gallery, to: '/admin/gallery'      },
+    { label: 'Talabalar hayoti',  value: s.galleryCount,  tone: 'lime',    icon: Ic.gallery, to: '/admin/gallery'      },
   ]
 
   const trendBuckets = (trend.data?.buckets ?? []).map(b => ({ date: new Date(b.date), admission: b.admission, vacancy: b.vacancy }))

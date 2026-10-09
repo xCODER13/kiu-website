@@ -9,7 +9,7 @@ import { mockPublicApi, stubExternal } from './mocks.js'
 
 const ROUTES = [
   '/', '/about', '/admission', '/faculty', '/international', '/contact', '/faq', '/documents', '/hemis',
-  '/achievements', '/testimonials', '/map', '/qrcode', '/gallery', '/teachers', '/events', '/vacancies',
+  '/achievements', '/testimonials', '/map', '/qrcode', '/student-life', '/teachers', '/events', '/vacancies',
   '/news', '/news/n1', '/sorting-hat', '/zzz-yo-q',
   '/ru', '/en/admission', '/ru/faq', '/admin/login',
 ]

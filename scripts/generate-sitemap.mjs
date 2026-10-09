@@ -12,7 +12,7 @@ export const SITE_URL = 'https://kiu-university.vercel.app'
 const PAGES = [
   ['/', 1.0], ['/about', 0.8], ['/faculty', 0.9], ['/admission', 0.9], ['/news', 0.8],
   ['/contact', 0.8], ['/faq', 0.7], ['/events', 0.7], ['/teachers', 0.7], ['/international', 0.7],
-  ['/documents', 0.6], ['/achievements', 0.6], ['/gallery', 0.6], ['/hemis', 0.6],
+  ['/documents', 0.6], ['/achievements', 0.6], ['/student-life', 0.6], ['/hemis', 0.6],
   ['/vacancies', 0.6], ['/sorting-hat', 0.6], ['/testimonials', 0.5], ['/map', 0.5], ['/qrcode', 0.4],
 ]
 

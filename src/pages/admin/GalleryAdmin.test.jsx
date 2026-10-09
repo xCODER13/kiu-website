@@ -29,7 +29,7 @@ describe('GalleryAdmin: ro\'yxat', () => {
     mockApi({ 'GET /gallery': [G1, G3] })
     const { container } = render(<GalleryAdmin />)
     expect(await screen.findByRole('heading', { name: '1-kampus' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 2, name: 'Galereya' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Talabalar hayoti' })).toBeInTheDocument()
     expect(container.querySelector('.adm-page-head .adm-count-pill')).toHaveTextContent('Albomlar: 2')
     expect(screen.getByText('jami 7 ta rasm')).toBeInTheDocument()
     const card = cardOf('1-kampus')

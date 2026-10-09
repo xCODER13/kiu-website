@@ -69,7 +69,7 @@ const navGroups = [
     items: [
       { to: '/news', item: 'news', icon: 'file' },
       { to: '/events', item: 'events', icon: 'calendar' },
-      { to: '/gallery', item: 'gallery', icon: 'image' },
+      { to: '/student-life', item: 'gallery', icon: 'image' },
       { to: '/testimonials', item: 'testimonials', icon: 'message' },
     ],
   },
