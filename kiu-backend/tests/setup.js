@@ -46,6 +46,8 @@ afterEach(async () => {
   // `auth` DB'dagi chegaralarni 30 soniya keshlaydi — testlar orasida qolib ketmasin.
   // (require shu yerda, env sozlanganidan KEYIN: aks holda logger LOG_LEVEL='silent' dan oldin yaratiladi)
   require('../services/adminSessions').resetCache()
+  // Admin login bo'yicha umumiy limit (3.6) jarayon bo'yicha umumiy — testlar bir-birining byudjetini sarflamasin
+  require('../middleware/rateLimiters').resetLoginUsernameLimit()
   delete process.env.ADMIN_PASSWORD_HASH
   delete process.env.ADMIN_PASSWORD_CHANGED_AT
   const collections = mongoose.connection.collections

@@ -8,7 +8,7 @@ const { omitUnchangedLegacy } = require('../utils/legacyValues')
 const { DEPARTMENTS } = require('../utils/departments')
 
 // Bazada eski `email` qiymatlari qolgan bo'lishi mumkin (Mongoose strict rejimi ularni o'chirmaydi) —
-// shuning uchun har bir javobdan aniq chiqarib tashlanadi (scripts/unset-teacher-email.js bilan DB ham tozalanadi).
+// shuning uchun har bir javobdan aniq chiqarib tashlanadi (email hech qachon qaytarilmaydi).
 const HIDE = '-email'
 
 // Ruxsat etilgan kafedralar ro'yxati (ommaviy; admin forma va kelajakda sayt filtri shundan oladi)
