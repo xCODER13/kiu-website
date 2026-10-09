@@ -39,6 +39,7 @@ const I = {
   backpack: <><path d="M4 10a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M8 21v-9a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v9"/><path d="M8 10h8"/><path d="M4 15h4"/><path d="M16 15h4"/></>,
   phone: <><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></>,
   pin: <><path d="M20.5 10c0 6-8.5 12-8.5 12S3.5 16 3.5 10a8.5 8.5 0 0 1 17 0z"/><circle cx="12" cy="10" r="3"/></>,
+  trend: <><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>,
   qr: <><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><path d="M14 14h3v3h-3zM21 14v.01M14 21h3M21 17v4"/></>,
 }
 
@@ -58,6 +59,7 @@ const navGroups = [
     items: [
       { to: '/faculty', item: 'faculty', icon: 'grad' },
       { to: '/admission', item: 'admission', icon: 'pen' },
+      { to: '/kelajakka-qadam', item: 'futureStep', icon: 'trend' },
       { to: '/faq', item: 'faq', icon: 'help' },
       { to: '/hemis', item: 'hemis', icon: 'monitor' },
       { to: '/sorting-hat', item: 'sortingHat', icon: 'sparkles' },

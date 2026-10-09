@@ -25,7 +25,7 @@ const ALL_PAGES = [
   '/', '/admission', '/international', '/contact', '/faq',
   '/about', '/faculty', '/hemis', '/documents',
   '/achievements', '/map', '/qrcode', '/student-life',
-  '/teachers', '/events', '/vacancies', '/news', '/sorting-hat',
+  '/teachers', '/events', '/vacancies', '/news', '/sorting-hat', '/kelajakka-qadam',
 ]
 export const TRANSLATED_BY_LANG = {
   en: new Set(ALL_PAGES),

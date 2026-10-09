@@ -361,6 +361,30 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://kiu-university.vercel.app/kelajakka-qadam</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/kelajakka-qadam"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/kelajakka-qadam"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/kelajakka-qadam"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/kelajakka-qadam"/>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/ru/kelajakka-qadam</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/kelajakka-qadam"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/kelajakka-qadam"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/kelajakka-qadam"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/kelajakka-qadam"/>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kiu-university.vercel.app/en/kelajakka-qadam</loc>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/kelajakka-qadam"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/kelajakka-qadam"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/kelajakka-qadam"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/kelajakka-qadam"/>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://kiu-university.vercel.app/sorting-hat</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/sorting-hat"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/sorting-hat"/>
