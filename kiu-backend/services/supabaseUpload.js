@@ -1,6 +1,8 @@
 const { createClient } = require('@supabase/supabase-js')
 const crypto = require('crypto')
+const fs = require('fs')
 const logger = require('../logger')
+const { makeThumbnail, thumbPathOf } = require('./thumbnail')
 
 // Barcha rasmlar shu bucket'da (public). Nom bitta joyda — upload/delete/prefiks mos tushishi uchun.
 const STORAGE_BUCKET = 'news-images'
@@ -69,7 +71,9 @@ const ALLOWED_FOLDERS = new Set(['news', 'events', 'teachers', 'gallery'])
 // funksiya alohida ajratilgan, `uploadImageToSupabase` esa eski (faqat URL
 // qaytaradigan) kontraktni saqlab qolish uchun uni o'rab turadi.
 async function uploadImageWithPath(file, folder) {
-  if (!file || !file.buffer) {
+  // multer endi diskka yozadi (`file.path`, middleware/upload.js — reja 2.3); `file.buffer` esa xotiradagi
+  // fayllar (testlar, eski chaqiruvlar) uchun saqlangan.
+  if (!file || (!file.buffer && !file.path)) {
     throw new Error("Yuklanadigan fayl topilmadi")
   }
   if (!ALLOWED_FOLDERS.has(folder)) {
@@ -79,10 +83,13 @@ async function uploadImageWithPath(file, folder) {
     throw new Error(`Ruxsat etilmagan fayl turi: ${file.mimetype}`)
   }
 
+  // Fayl faqat shu yerda (papka/MIME tekshiruvidan keyin) o'qiladi; bitta fayl <= 5 MB (multer limiti).
+  const buffer = file.buffer || await fs.promises.readFile(file.path)
+
   // Deklaratsiya qilingan MIME whitelist'da bo'lishi kifoya emas — fayl
   // mazmuni haqiqatan ham ruxsat etilgan rasm formatlaridan biriga mos
   // kelishi kerak (client Content-Type'ni ishonch bilan qabul qilmaymiz).
-  const detectedMime = detectImageMime(file.buffer)
+  const detectedMime = detectImageMime(buffer)
   if (!detectedMime || !ALLOWED_MIME_TYPES.has(detectedMime)) {
     throw new Error("Fayl mazmuni haqiqiy rasm formatiga mos kelmadi (mazmun tekshiruvidan o'tmadi)")
   }
@@ -99,14 +106,31 @@ async function uploadImageWithPath(file, folder) {
     .from(STORAGE_BUCKET)
     // Supabase'ga saqlanadigan Content-Type — endi tasodifiy client
     // sarlavhasi emas, tasdiqlangan haqiqiy fayl turi (`detectedMime`)
-    .upload(path, file.buffer, { contentType: detectedMime })
+    .upload(path, buffer, { contentType: detectedMime })
 
   if (error) {
     throw new Error(`Supabase upload xatosi: ${error.message}`)
   }
 
   const { data } = client.storage.from(STORAGE_BUCKET).getPublicUrl(path)
-  return { url: data.publicUrl, path }
+
+  // Thumbnail (reja 2.2): eng yaxshi urinish — original allaqachon yuklangan, shuning uchun bu yerdagi
+  // xato yuklashni bekor qilmaydi (frontend thumbnail topilmasa originalga qaytadi).
+  let thumbPath = null
+  const thumb = await makeThumbnail(buffer)
+  if (thumb) {
+    const candidate = thumbPathOf(path)
+    const { error: thumbError } = await client.storage
+      .from(STORAGE_BUCKET)
+      .upload(candidate, thumb, { contentType: 'image/webp' })
+    if (thumbError) {
+      logger.warn({ err: thumbError.message, path: candidate }, "Thumbnail'ni Storage'ga yuklab bo'lmadi — faqat original saqlandi")
+    } else {
+      thumbPath = candidate
+    }
+  }
+
+  return { url: data.publicUrl, path, thumbPath }
 }
 
 // Bizning public bucket URL'lari boshlanadigan prefiks (oxiri '/'). Qiymat qo'lda yig'ilmaydi,
@@ -143,27 +167,50 @@ async function deleteSupabaseImages(paths) {
   }
 }
 
-// ── KO'P FAYLNI PARALLEL YUKLASH — QISMAN MUVAFFAQIYATSIZLIKDA ROLLBACK ──
+// ── KO'P FAYLNI CHEKLANGAN PARALLELLIKDA YUKLASH — QISMAN MUVAFFAQIYATSIZLIKDA ROLLBACK ──
 // Oldin `Promise.all` ishlatilardi: birorta fayl rad etilsa (masalan, MIME/
 // magic-bytes yoki Supabase xatosi), allaqachon muvaffaqiyatli yuklangan
 // boshqa fayllar Storage'da "yetim" qolib ketardi — ular hech qanday DB
-// yozuviga bog'lanmagan, lekin saqlanib qoladi. `Promise.allSettled` bilan
-// qaysi fayllar muvaffaqiyatli bo'lganini bilib, ularni Storage'dan o'chirib,
+// yozuviga bog'lanmagan, lekin saqlanib qoladi. Qaysi fayllar muvaffaqiyatli
+// bo'lganini bilib, ularni (thumbnail'lari bilan) Storage'dan o'chirib,
 // keyin asl xatoni qayta chiqaramiz — chaqiruvchi (controller) buni oddiy
 // `catch` orqali xuddi avvalgidek 400 qaytarish uchun ishlata oladi.
-async function uploadImagesToSupabase(files, folder) {
-  const results = await Promise.allSettled(files.map(f => uploadImageWithPath(f, folder)))
+// Bir vaqtda ko'pi bilan shuncha fayl qayta ishlanadi (o'qish + yuklash + thumbnail): RAM'da 10 × 5 MB emas, ~3 × 5 MB.
+const UPLOAD_CONCURRENCY = 3
 
-  const succeeded = results.filter(r => r.status === 'fulfilled').map(r => r.value)
-  const firstFailure = results.find(r => r.status === 'rejected')
+async function uploadImagesToSupabase(files, folder) {
+  // Cheklangan parallellik; birinchi xatodan keyin yangi fayl boshlanmaydi (allaqachon boshlanganlari tugaydi
+  // va quyida rollback qilinadi).
+  const results = new Array(files.length)
+  let next = 0
+  let stop = false
+  async function lane() {
+    while (!stop) {
+      const i = next++
+      if (i >= files.length) return
+      try {
+        results[i] = { status: 'fulfilled', value: await uploadImageWithPath(files[i], folder) }
+      } catch (reason) {
+        results[i] = { status: 'rejected', reason }
+        stop = true
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(UPLOAD_CONCURRENCY, files.length) }, lane))
+
+  const done = results.filter(Boolean)
+  const succeeded = done.filter(r => r.status === 'fulfilled').map(r => r.value)
+  const firstFailure = done.find(r => r.status === 'rejected')
+  // Originallar, keyin ularning thumbnail'lari: rollback va controller tozalashi ikkalasini ham o'chiradi
+  const allPaths = [...succeeded.map(s => s.path), ...succeeded.map(s => s.thumbPath).filter(Boolean)]
 
   if (firstFailure) {
-    if (succeeded.length > 0) {
-      await deleteSupabaseImages(succeeded.map(s => s.path)).catch(cleanupErr => {
+    if (allPaths.length > 0) {
+      await deleteSupabaseImages(allPaths).catch(cleanupErr => {
         // Tozalash o'zi muvaffaqiyatsiz bo'lsa — asl xatoni niqoblamaymiz,
         // faqat log qoldiramiz (qo'lda tozalash kerak bo'lishi mumkin).
         logger.error(
-          { err: cleanupErr.message, orphanedPaths: succeeded.map(s => s.path) },
+          { err: cleanupErr.message, orphanedPaths: allPaths },
           'Qisman yuklash xatosidan keyin rollback (Storage tozalash) muvaffaqiyatsiz bo\'ldi'
         )
       })
@@ -171,7 +218,7 @@ async function uploadImagesToSupabase(files, folder) {
     throw firstFailure.reason
   }
 
-  return { urls: succeeded.map(s => s.url), paths: succeeded.map(s => s.path) }
+  return { urls: succeeded.map(s => s.url), paths: allPaths }
 }
 
 module.exports = { getSupabase, getPublicUrlPrefix, uploadImageToSupabase, uploadImagesToSupabase, deleteSupabaseImages, STORAGE_BUCKET }

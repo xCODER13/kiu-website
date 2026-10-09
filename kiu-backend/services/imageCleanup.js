@@ -15,6 +15,7 @@
 const logger = require('../logger')
 const { getPublicUrlPrefix, deleteSupabaseImages } = require('./supabaseUpload')
 const { isOwnStorageUrl } = require('../utils/imageUrls')
+const { thumbPathOf } = require('./thumbnail')
 const News = require('../models/News')
 const Event = require('../models/Event')
 const Teacher = require('../models/Teacher')
@@ -72,7 +73,8 @@ async function removeStoredImages(req, urls) {
 
     const candidates = list.map(u => toStoragePath(u, prefix)).filter(Boolean)
     for (const c of candidates) {
-      if (!(await isStillReferenced(c.rest))) paths.push(c.path)
+      // Original bilan birga uning thumbnail'i (2.2; eski rasmlarda yo'q — mavjud bo'lmagan yo'lni o'chirish xato bermaydi)
+      if (!(await isStillReferenced(c.rest))) paths.push(c.path, thumbPathOf(c.path))
     }
     if (paths.length === 0) return
     await deleteSupabaseImages(paths)

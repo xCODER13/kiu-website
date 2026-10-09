@@ -77,21 +77,26 @@ describe('removedUrls', () => {
 })
 
 describe('removeStoredImages', () => {
+  test("original bilan birga uning thumbnail'i (`.thumb.webp`) ham o'chiriladi (2.2)", async () => {
+    await removeStoredImages(req(), [A])
+    expect(mockRemove.mock.calls[0][0]).toContain('news/aaaa-a.png.thumb.webp')
+  })
+
   test("faqat bizning rasmlar bitta so'rovda o'chiriladi; begona URL va ruxsat etilmagan papka e'tiborsiz", async () => {
     await removeStoredImages(req(), [A, B, 'https://old-host.example/x.png', `${P}private/z.png`, '', null])
     expect(mockRemove).toHaveBeenCalledTimes(1)
-    expect(mockRemove).toHaveBeenCalledWith(['news/aaaa-a.png', 'news/bbbb-b.png'])
+    expect(mockRemove).toHaveBeenCalledWith(['news/aaaa-a.png', 'news/aaaa-a.png.thumb.webp', 'news/bbbb-b.png', 'news/bbbb-b.png.thumb.webp'])
   })
 
   test("bir xil URL ikki marta berilsa — bir marta o'chiriladi", async () => {
     await removeStoredImages(req(), [A, A])
-    expect(mockRemove).toHaveBeenCalledWith(['news/aaaa-a.png'])
+    expect(mockRemove).toHaveBeenCalledWith(['news/aaaa-a.png', 'news/aaaa-a.png.thumb.webp'])
   })
 
   test("boshqa hujjat hamon havola qilsa — fayl O'CHIRILMAYDI; qolganlari o'chiriladi", async () => {
     News.exists.mockImplementation(async q => (q.image.test(`${P}news/aaaa-a.png`) ? { _id: 1 } : null))
     await removeStoredImages(req(), [A, B])
-    expect(mockRemove).toHaveBeenCalledWith(['news/bbbb-b.png'])
+    expect(mockRemove).toHaveBeenCalledWith(['news/bbbb-b.png', 'news/bbbb-b.png.thumb.webp'])
   })
 
   test("havola tekshiruvi 4 ta kolleksiyani qamraydi (Gallery — `images` massivi)", async () => {
@@ -116,7 +121,7 @@ describe('removeStoredImages', () => {
     await expect(removeStoredImages(r, [A])).resolves.toBeUndefined()
     expect(r.log.error).toHaveBeenCalledTimes(1)
     const [meta] = r.log.error.mock.calls[0]
-    expect(meta.orphanedPaths).toEqual(['news/aaaa-a.png'])
+    expect(meta.orphanedPaths).toEqual(['news/aaaa-a.png', 'news/aaaa-a.png.thumb.webp'])
     expect(meta.err).toMatch(/storage down/)
   })
 

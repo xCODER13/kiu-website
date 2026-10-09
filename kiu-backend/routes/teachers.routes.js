@@ -1,12 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const multer = require('multer')
+const upload = require('../middleware/upload')
 const auth = require('../middleware/auth')
 const { viewLimiter, mutationLimiter } = require('../middleware/rateLimiters')
 const teachersController = require('../controllers/teachersController')
 const validateObjectId = require('../middleware/validateObjectId')
-
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } })
 
 router.get('/', viewLimiter, teachersController.getAll)
 router.get('/departments', viewLimiter, teachersController.getDepartments)

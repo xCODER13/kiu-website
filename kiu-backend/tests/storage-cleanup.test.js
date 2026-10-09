@@ -48,7 +48,9 @@ beforeEach(() => {
   mockRemove.mockReset().mockResolvedValue({ error: null })
 })
 
-const removedPaths = () => mockRemove.mock.calls.flatMap(c => c[0]).sort()
+// Har original bilan thumbnail'i ham o'chiriladi (2.2) — bu yerda faqat originallar solishtiriladi, thumbnail alohida testda
+const allRemoved = () => mockRemove.mock.calls.flatMap(c => c[0]).sort()
+const removedPaths = () => allRemoved().filter(p => !p.endsWith('.thumb.webp'))
 
 describe('DELETE: rasmlar DB yozuvidan KEYIN Storage\'dan o\'chadi', () => {
   test('news: bir nechta rasm (JSON satr) bitta chaqiruvda; tartib — avval DB', async () => {
@@ -63,6 +65,7 @@ describe('DELETE: rasmlar DB yozuvidan KEYIN Storage\'dan o\'chadi', () => {
     expect(res.body).toEqual({ success: true })
     expect(mockRemove).toHaveBeenCalledTimes(1)
     expect(removedPaths()).toEqual(['news/1111-a.png', 'news/2222-b.png'])
+    expect(allRemoved()).toEqual(['news/1111-a.png', 'news/1111-a.png.thumb.webp', 'news/2222-b.png', 'news/2222-b.png.thumb.webp'])
     expect(docExistedWhenRemoving).toBeNull() // Storage chaqirilganda hujjat allaqachon yo'q edi
     expect(await News.countDocuments()).toBe(0)
   })
