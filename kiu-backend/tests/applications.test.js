@@ -105,8 +105,11 @@ describe('DELETE /api/applications/:id', () => {
       .set('Authorization', `Bearer ${token}`)
 
     expect(res.status).toBe(200)
+    // Soft delete (4.5): hujjat bazada qoladi (TTL 30 kundan keyin o'chiradi), lekin faol emas — batafsil applications-soft-delete.test.js
     const found = await Application.findById(app1._id)
-    expect(found).toBeNull()
+    expect(found.deletedAt).toBeInstanceOf(Date)
+    const list = await request(app).get('/api/applications').set('Authorization', `Bearer ${token}`)
+    expect(list.body).toHaveLength(0)
   })
 
   test("bazada yo'q ID uchun 404 (1.8), boshqa arizalarga tegilmaydi", async () => {

@@ -35,6 +35,10 @@ const ApplicationSchema = new mongoose.Schema({
   // "+998 90 123 45 67" va "90 123 45 67" bir xil raqam. select:false va toJSON'dan olib tashlanadi:
   // admin ro'yxati ham, POST javobi ham bu texnik maydonni ko'rsatmaydi.
   phoneKey:   { type: String, select: false },
+  // Soft delete (4.5): admin o'chirganda hujjat darhol yo'qolmaydi — `deletedAt` belgilanadi, ro'yxat/statistika
+  // `Application.ACTIVE` bilan filtrlaydi, TRASH_DAYS kundan keyin TTL indeks butunlay o'chiradi.
+  // Eski hujjatlarda maydon yo'q — `{ deletedAt: null }` ularni ham faol deb hisoblaydi.
+  deletedAt:  { type: Date, default: null },
 }, {
   timestamps: true,
   toJSON: { transform: (doc, ret) => { delete ret.phoneKey; return ret } },
@@ -52,4 +56,17 @@ ApplicationSchema.index({ phoneKey: 1, createdAt: -1 })
 // backfill qilish kerak — bu keyingi bosqichdagi migratsiya bilan birga qilinadi.
 ApplicationSchema.index({ type: 1, status: 1, createdAt: -1 })
 
-module.exports = mongoose.model('Application', ApplicationSchema)
+// O'chirilgan ariza (shaxsiy ma'lumot!) bazada qancha turadi. Faqat `deletedAt` Date bo'lgan hujjatlar
+// TTL'ga tushadi (partial indeks) — faol arizalar hech qachon o'z-o'zidan o'chmaydi.
+const TRASH_DAYS = 30
+ApplicationSchema.index(
+  { deletedAt: 1 },
+  { expireAfterSeconds: TRASH_DAYS * 24 * 60 * 60, partialFilterExpression: { deletedAt: { $type: 'date' } } }
+)
+
+const Application = mongoose.model('Application', ApplicationSchema)
+Application.TRASH_DAYS = TRASH_DAYS
+// Barcha o'qish/yangilash so'rovlariga qo'shiladi: `{ ...Application.ACTIVE, type: 'vacancy' }`
+Application.ACTIVE = Object.freeze({ deletedAt: null })
+
+module.exports = Application
