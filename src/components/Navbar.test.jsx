@@ -34,6 +34,15 @@ describe('Navbar', () => {
     expect(screen.getAllByRole('link', { name: 'Qabul' }).length).toBeGreaterThan(0)
   })
 
+  it("«Talabalar hayoti» havolasi: /student-life, ikonka — ryukzak (rasm ikonkasi emas, o'qituvchilar/yo'nalishlar ikonkalaridan farqli)", () => {
+    renderNavbar()
+    const link = screen.getAllByRole('link', { name: 'Talabalar hayoti' })[0]
+    expect(link).toHaveAttribute('href', '/student-life')
+    const paths = [...link.querySelectorAll('svg path')].map(p => p.getAttribute('d'))
+    expect(paths).toContain('M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2')   // ryukzak tutqichi
+    expect(link.querySelector('svg circle')).toBeNull()                  // eski rasm ikonkasidagi doira yo'q
+  })
+
   it("qorong'i rejim tugmasi bosilganda setDark chaqiriladi", async () => {
     const setDark = vi.fn()
     const user = userEvent.setup()
