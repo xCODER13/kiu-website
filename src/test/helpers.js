@@ -13,7 +13,8 @@ export function mockApi(routes = {}) {
     if (route === undefined) return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({}) })
     const r = typeof route === 'function' ? route({ path, method, body: init.body }) : route
     const res = r && typeof r === 'object' && 'status' in r && 'body' in r ? r : { status: 200, body: r }
-    return Promise.resolve({ ok: res.status >= 200 && res.status < 300, status: res.status, json: () => Promise.resolve(res.body) })
+    // `headers` (ixtiyoriy): { 'RateLimit-Remaining': '3' } — `res.headers.get(name)` ishlashi uchun
+    return Promise.resolve({ ok: res.status >= 200 && res.status < 300, status: res.status, headers: new Headers(res.headers || {}), json: () => Promise.resolve(res.body) })
   })
   vi.stubGlobal('fetch', fn)
   return { calls, fn, find: (method, path) => calls.filter(c => c.method === method && c.path === path) }

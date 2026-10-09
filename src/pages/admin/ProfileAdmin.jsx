@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API, H, errorMessage, skipUnauthorizedRedirect } from './shared/api'
+import { useApiGet } from './shared/useApiGet'
 import ConfirmDialog from './shared/ConfirmDialog.jsx'
 import { Ic } from './shared/Icons.jsx'
 import PasswordField from './shared/PasswordField.jsx'
-import { ErrorBanner } from './shared/StateViews.jsx'
+import { ErrorBanner, ErrorPanel } from './shared/StateViews.jsx'
 import {
-  decodeJwtPayload, formatDateTimeShort, formatTimeLeft, byteLength, passwordStrength, STRENGTH_LABELS,
+  decodeJwtPayload, formatDateTimeShort, formatTimeLeft, formatTimeAgo, formatCountdown, rateLimitInfo,
+  byteLength, passwordStrength, STRENGTH_LABELS,
 } from './shared/helpers'
 
 const EMPTY = { current: '', next: '', confirm: '' }
 const MAX_BYTES = 72
 const REDIRECT_MS = 4000
 const KEPT = "maydonlar saqlanib turibdi, qayta urinib ko'ring."
+const DEFAULT_LOCK_SEC = 15 * 60 // limiter oynasi (15 daqiqa) — server muddat bermasa
 
 // Yangi parol uchun uchta talab: 'idle' (hali kutilmoqda), 'ok', 'fail'
 function requirements({ current, next }) {
@@ -67,29 +70,72 @@ function Requirements({ items }) {
   )
 }
 
-// «Hisob» kartasi: login va sessiya muddati — JWT ichidan (backend'ga so'rov yo'q). «Parol oxirgi o'zgargan»
-// `GET /admin/me` tayyor bo'lgach qo'shiladi (DESIGN.md 10.4).
-function AccountCard({ session, now }) {
-  const left = session.exp ? session.exp * 1000 - now : null
-  return (
-    <section className="adm-card adm-account" aria-labelledby="account-title">
-      <h3 id="account-title" className="adm-account-title">{Ic.profile}Hisob</h3>
-      <div className="adm-account-row">
-        <span className="adm-account-icon" aria-hidden="true">{Ic.profile}</span>
-        <div>
-          <p className="adm-account-key">Login</p>
-          <p className="adm-account-val">{session.username || '—'}</p>
-        </div>
+// «Hisob» kartasi: `GET /admin/me` — login, parolning oxirgi o'zgargan vaqti va sessiya muddati (DESIGN.md 6.11 «Admin: Profil»).
+// Holatlar: yuklanmoqda (3 satr skeleti, `aria-busy`), xato («Qayta urinish»; parol formasini to'sib qo'ymaydi), tayyor.
+function AccountSkeleton() {
+  return [0, 1, 2].map(i => (
+    <div key={i} className="adm-account-row" aria-hidden="true">
+      <span className="adm-skel adm-skel--icon" />
+      <div className="adm-skel-col">
+        <span className="adm-skel adm-skel--label" />
+        <span className="adm-skel adm-skel--name" />
       </div>
-      {left !== null && (
-        <div className="adm-account-row">
-          <span className="adm-account-icon" aria-hidden="true">{Ic.shield}</span>
-          <div>
-            <p className="adm-account-key">Sessiya tugaydi</p>
-            <p className="adm-account-val">{formatDateTimeShort(session.exp * 1000)}</p>
-            <p className="adm-account-sub">{formatTimeLeft(left)}</p>
+    </div>
+  ))
+}
+
+function AccountCard({ me, now }) {
+  const d = me.data
+  const ready = !!d && typeof d === 'object' && typeof d.username === 'string'
+  const failed = !me.loading && (me.error || !ready)
+  const changedMs = ready && d.passwordChangedAt ? Date.parse(d.passwordChangedAt) : NaN
+  const expMs = ready && d.sessionExpiresAt ? Date.parse(d.sessionExpiresAt) : NaN
+  return (
+    <section className="adm-card adm-account" aria-labelledby="account-title" aria-busy={me.loading || undefined}>
+      <h3 id="account-title" className="adm-account-title">{Ic.profile}Hisob</h3>
+      {me.loading && <AccountSkeleton />}
+      {failed && (
+        <ErrorPanel title="Hisob ma'lumoti yuklanmadi" onRetry={me.reload}>
+          Parolni baribir o'zgartirishingiz mumkin.
+        </ErrorPanel>
+      )}
+      {!me.loading && !failed && (
+        <>
+          <div className="adm-account-row">
+            <span className="adm-account-icon" aria-hidden="true">{Ic.profile}</span>
+            <div>
+              <p className="adm-account-key">Login</p>
+              <p className="adm-account-val">{d.username || '—'}</p>
+            </div>
           </div>
-        </div>
+          <div className="adm-account-row">
+            <span className="adm-account-icon" aria-hidden="true">{Ic.key}</span>
+            <div>
+              <p className="adm-account-key">Parol oxirgi o'zgargan</p>
+              {Number.isFinite(changedMs) ? (
+                <>
+                  <p className="adm-account-val">{formatDateTimeShort(changedMs)}</p>
+                  <p className="adm-account-sub">{formatTimeAgo(Math.max(0, now - changedMs))}</p>
+                </>
+              ) : (
+                <>
+                  <p className="adm-account-val">Hech qachon</p>
+                  <p className="adm-account-sub">Hozir server sozlamasidagi boshlang'ich parol ishlatilmoqda.</p>
+                </>
+              )}
+            </div>
+          </div>
+          {Number.isFinite(expMs) && (
+            <div className="adm-account-row">
+              <span className="adm-account-icon" aria-hidden="true">{Ic.shield}</span>
+              <div>
+                <p className="adm-account-key">Sessiya tugaydi</p>
+                <p className="adm-account-val">{formatDateTimeShort(expMs)}</p>
+                <p className="adm-account-sub">{formatTimeLeft(expMs - now)}</p>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </section>
   )
@@ -155,13 +201,11 @@ function SessionCard() {
 
 export default function ProfileAdmin() {
   const navigate = useNavigate()
-  // Sahifa ochilgandagi holat (bir marta): token ichidan login va muddat, `now` — «N kundan so'ng» hisobi uchun
-  const [{ session, now }] = useState(() => {
+  const me = useApiGet('/admin/me', 'Hisob ma\'lumotini yuklash')
+  // Sahifa ochilgandagi vaqt (bir marta): «N kun oldin» / «N kundan so'ng» hisobi uchun. Yashirin `username` (parol menejeri) — token ichidan.
+  const [{ username, now }] = useState(() => {
     const p = decodeJwtPayload(localStorage.getItem('kiu_token'))
-    return {
-      session: { username: typeof p?.username === 'string' ? p.username : '', exp: Number.isFinite(p?.exp) ? p.exp : null },
-      now: Date.now(),
-    }
+    return { username: typeof p?.username === 'string' ? p.username : '', now: Date.now() }
   })
 
   const [values, setValues] = useState(EMPTY)
@@ -169,6 +213,9 @@ export default function ProfileAdmin() {
   const [banner, setBanner] = useState(null)      // { tone: 'error' | 'warning', text }
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState(false)
+  // 429: forma blok tugaguncha qulflanadi. `lockUntil` — blok tugash vaqti (ms), `clock` — sekundiga yangilanadigan «hozir».
+  const [lockUntil, setLockUntil] = useState(0)
+  const [clock, setClock] = useState(0)
   const focusCurrent = useRef(false)
   const currentRef = useRef(null)
   const nextRef = useRef(null)
@@ -176,6 +223,21 @@ export default function ProfileAdmin() {
   const timer = useRef(null)
 
   useEffect(() => () => clearTimeout(timer.current), [])
+
+  // Blok taymeri: har sekundda qolgan vaqt yangilanadi; tugagach forma qayta ochiladi (interval unmount'da tozalanadi)
+  useEffect(() => {
+    if (!lockUntil) return undefined
+    const id = setInterval(() => {
+      const t = Date.now()
+      if (t >= lockUntil) {
+        setLockUntil(0)
+        setBanner(null)
+      } else {
+        setClock(t)
+      }
+    }, 1000)
+    return () => clearInterval(id)
+  }, [lockUntil])
 
   // `fieldset disabled` saqlash vaqtida maydonlarni bloklaydi — fokus faqat ular yana faol bo'lgach (saving=false) beriladi
   useEffect(() => {
@@ -221,7 +283,9 @@ export default function ProfileAdmin() {
       const res = await fetch(`${API}/admin/change-password`, init)
       if (res.ok) {
         // Backend parol o'zgargach eski tokenlarni bekor qiladi (iat < passwordChangedAt) — token tozalanadi, qayta kirish so'raladi.
+        // «Hisob» kartasi: yangi sana mahalliy yangilanadi (token endi yaroqsiz, `/admin/me` ga qayta so'rov ketmaydi).
         localStorage.removeItem('kiu_token')
+        me.mutate(d => ({ ...d, passwordChangedAt: new Date().toISOString() }))
         setValues(EMPTY)
         setDone(true)
         timer.current = setTimeout(goLogin, REDIRECT_MS)
@@ -230,14 +294,24 @@ export default function ProfileAdmin() {
       const msg = await errorMessage(res, '')
       if (res.status === 403 || (res.status === 401 && msg === "Joriy parol noto'g'ri")) {
         // 401 shu yerda ham keladi (backend) — `skipUnauthorizedRedirect` tufayli admin tizimdan chiqmaydi; maydon xatosi
-        setErrors({ current: "Joriy parol noto'g'ri." })
+        // «Yana N ta urinish qoldi» — `RateLimit-Remaining` sarlavhasidan (yo'q bo'lsa qo'shimcha matn chiqmaydi)
+        const { remaining } = rateLimitInfo(res)
+        const extra = remaining == null ? ''
+          : remaining > 0 ? ` Yana ${remaining} ta urinish qoldi.`
+            : " Urinishlar tugadi — keyingi xato vaqtincha bloklaydi."
+        setErrors({ current: `Joriy parol noto'g'ri.${extra}` })
         focusCurrent.current = true
       } else if (res.status === 401) {
         // Haqiqiy «token eskirdi» — avvalgi umumiy qoida bilan bir xil
         localStorage.removeItem('kiu_token')
         navigate('/admin/login')
       } else if (res.status === 429) {
-        setBanner({ tone: 'warning', text: msg || "Juda ko'p muvaffaqiyatsiz urinish. 15 daqiqadan so'ng qayta urinib ko'ring." })
+        // Qolgan vaqt — `Retry-After` / `RateLimit-Reset` dan; sarlavha yo'q bo'lsa limiter oynasi (15 daqiqa)
+        const { resetSec } = rateLimitInfo(res)
+        const t = Date.now()
+        setClock(t)
+        setLockUntil(t + (resetSec > 0 ? resetSec : DEFAULT_LOCK_SEC) * 1000)
+        setBanner({ tone: 'warning', text: msg || "Juda ko'p muvaffaqiyatsiz urinish. Birozdan so'ng qayta urinib ko'ring." })
       } else {
         setBanner({ tone: 'error', text: `${(msg || "Parol o'zgartirilmadi.").replace(/[.!\s]+$/, '')} — ${KEPT}` })
       }
@@ -250,7 +324,9 @@ export default function ProfileAdmin() {
 
   const reqs = requirements(values)
   const confirmOk = values.confirm && values.next && values.confirm === values.next ? 'Parollar mos.' : ''
-  const locked = saving || done
+  const blocked = lockUntil > 0
+  const lockLeft = blocked ? Math.max(0, Math.ceil((lockUntil - clock) / 1000)) : 0
+  const locked = saving || done || blocked
 
   return (
     <div>
@@ -260,7 +336,7 @@ export default function ProfileAdmin() {
 
       <div className="adm-profile-grid">
         <div className="adm-profile-side">
-          <AccountCard session={session} now={now} />
+          <AccountCard me={me} now={now} />
           <SessionCard />
         </div>
 
@@ -284,11 +360,11 @@ export default function ProfileAdmin() {
           )}
           {banner?.tone === 'error' && <div className="adm-form-banner"><ErrorBanner>{banner.text}</ErrorBanner></div>}
           {banner?.tone === 'warning' && (
-            <div className="adm-pbanner" data-tone="warning" role="alert">{Ic.warn}<span className="adm-pbanner-text">{banner.text}</span></div>
+            <div className="adm-pbanner" data-tone="warning" role="alert">{Ic.warn}<span className="adm-pbanner-text">{banner.text}</span>{blocked && <span className="adm-pbanner-time">{formatCountdown(lockLeft)}</span>}</div>
           )}
 
           {/* Parol menejeri qaysi hisobga saqlashni bilishi uchun (ko'rinmas, fokuslanmaydi) */}
-          <input className="adm-sr-only" type="text" name="username" autoComplete="username" value={session.username} readOnly tabIndex={-1} aria-hidden="true" />
+          <input className="adm-sr-only" type="text" name="username" autoComplete="username" value={username} readOnly tabIndex={-1} aria-hidden="true" />
 
           <fieldset className="adm-fieldset" disabled={locked}>
             <PasswordField
@@ -330,8 +406,8 @@ export default function ProfileAdmin() {
 
           <div className="adm-form-foot">
             <button type="submit" className="btn btn-primary adm-save" disabled={locked} aria-busy={saving || undefined}>
-              {!saving && Ic.save}
-              {saving ? 'Saqlanmoqda...' : 'Parolni saqlash'}
+              {!saving && !blocked && Ic.save}
+              {saving ? 'Saqlanmoqda...' : blocked ? 'Vaqtincha bloklangan' : 'Parolni saqlash'}
             </button>
             <span className="adm-form-note">Saqlangach barcha qurilmalardan chiqarilasiz va qayta kirasiz.</span>
           </div>

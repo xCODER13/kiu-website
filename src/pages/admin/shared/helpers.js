@@ -150,6 +150,39 @@ export function formatTimeLeft(ms) {
   return `${Math.floor(hours / 24)} kundan so'ng`
 }
 
+// O'tgan vaqt (ms) → «hozirgina» / «5 daqiqa oldin» / «3 soat oldin» / «20 kun oldin»; kelajak yoki noto'g'ri qiymat — ''.
+export function formatTimeAgo(ms) {
+  if (!Number.isFinite(ms) || ms < 0) return ''
+  const min = Math.floor(ms / 60000)
+  if (min < 1) return 'hozirgina'
+  if (min < 60) return `${min} daqiqa oldin`
+  const hours = Math.floor(min / 60)
+  if (hours < 24) return `${hours} soat oldin`
+  return `${Math.floor(hours / 24)} kun oldin`
+}
+
+// Soniya → «14:32» (mm:ss); 60 daqiqadan oshsa soat ham chiqadi («1:05:00»). Manfiy / noto'g'ri qiymat — «0:00».
+export function formatCountdown(totalSec) {
+  const t = Number.isFinite(totalSec) && totalSec > 0 ? Math.ceil(totalSec) : 0
+  const p = n => String(n).padStart(2, '0')
+  const h = Math.floor(t / 3600)
+  const m = Math.floor((t % 3600) / 60)
+  const s = t % 60
+  return h > 0 ? `${h}:${p(m)}:${p(s)}` : `${m}:${p(s)}`
+}
+
+// Rate limit sarlavhalari (backend `cors.js` ularni ochiq qiladi): `RateLimit-Remaining` — qolgan urinishlar,
+// `Retry-After` (429 da) yoki `RateLimit-Reset` — blok tugashigacha SONIYA. Sarlavha yo'q / noto'g'ri bo'lsa — null.
+export function rateLimitInfo(res) {
+  const num = name => {
+    const raw = res?.headers?.get?.(name)
+    if (raw == null || String(raw).trim() === '') return null
+    const n = Number(raw)
+    return Number.isFinite(n) && n >= 0 ? Math.floor(n) : null
+  }
+  return { remaining: num('RateLimit-Remaining'), resetSec: num('Retry-After') ?? num('RateLimit-Reset') }
+}
+
 // Uzunlik BAYT bilan (backend ham `Buffer.byteLength` bilan tekshiradi: bcrypt 72 bayt) — kirill/emoji bitta belgi = 2–4 bayt.
 export const byteLength = value => new TextEncoder().encode(String(value ?? '')).length
 
