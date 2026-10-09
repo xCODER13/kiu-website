@@ -6,6 +6,7 @@
 // Development'da (local) o'qish uchun qulay rangli format ishlatiladi (pino-pretty
 // o'rnatilgan bo'lsa); productionda esa toza JSON chiqadi (log yig'uvchilar uchun qulay).
 const pino = require('pino')
+const { REDACT_PATHS, CENSOR } = require('./logRedact')
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -18,12 +19,9 @@ if (!isProd) {
 
 const logger = pino({
   level: process.env.LOG_LEVEL || 'info',
-  // Authorization (JWT) va cookie headerlari log fayllarga tushmasligi kerak —
-  // aks holda log storage orqali token o'g'irlanishi mumkin.
-  redact: {
-    paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers["set-cookie"]'],
-    censor: '[YASHIRILGAN]',
-  },
+  // Token/cookie va xatolardagi foydalanuvchi qiymatlari (telefon, ism) log fayllarga
+  // tushmasligi kerak — ro'yxat logRedact.js da.
+  redact: { paths: REDACT_PATHS, censor: CENSOR },
   transport: prettyAvailable
     ? { target: 'pino-pretty', options: { colorize: true, translateTime: 'HH:MM:ss', ignore: 'pid,hostname' } }
     : undefined,

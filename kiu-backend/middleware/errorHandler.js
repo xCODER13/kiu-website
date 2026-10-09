@@ -2,6 +2,7 @@
 // To'liq xato server logiga yoziladi, clientga esa umumiy xabar qaytariladi
 // (Mongoose/ichki xato tafsilotlari sizib chiqmasligi uchun).
 const multer = require('multer')
+const { sanitizeError } = require('../utils/safeError')
 
 const MULTER_MESSAGES = {
   LIMIT_FILE_SIZE: 'Fayl hajmi juda katta (maksimal 5 MB)',
@@ -9,7 +10,7 @@ const MULTER_MESSAGES = {
 }
 
 function fail(req, res, status, e) {
-  req.log.error({ err: e }, `[ERROR] ${req.method} ${req.originalUrl}`)
+  req.log.error({ err: sanitizeError(e) }, `[ERROR] ${req.method} ${req.originalUrl}`)
 
   const publicMsg = status === 400
     ? "So'rovda xatolik bor. Ma'lumotlarni tekshirib qayta yuboring."
@@ -29,7 +30,7 @@ function notFound(req, res) {
 // eslint-disable-next-line no-unused-vars
 function globalErrorHandler(err, req, res, next) {
   const log = req.log || require('../logger')
-  log.error({ err }, '[UNHANDLED ERROR]')
+  log.error({ err: sanitizeError(err) }, '[UNHANDLED ERROR]')
 
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ error: MULTER_MESSAGES[err.code] || `Fayl yuklashda xatolik: ${err.code}` })
