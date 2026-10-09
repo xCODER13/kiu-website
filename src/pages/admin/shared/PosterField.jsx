@@ -15,6 +15,10 @@ import { markBroken } from './helpers'
 export default function PosterField({
   id,
   label = 'Poster rasm',
+  addLabel = "Poster qo'shish",           // Talabalar hayoti «Bo'limlar» o'z matnini beradi; Tadbirlar — o'zgarishsiz
+  dropLabel = 'Posterni bu yerga tashlang',
+  note = " — bo'lmasa sana-belgi ko'rsatiladi.",
+  alt = 'poster',
   preview,            // { url, isNew } | null
   error,
   hint,
@@ -64,7 +68,7 @@ export default function PosterField({
       {preview ? (
         <div className="adm-poster">
           <div className="adm-poster-img" data-new={preview.isNew ? 'true' : 'false'}>
-            <img src={preview.url} alt="poster" loading="lazy" onError={markBroken} />
+            <img src={preview.url} alt={alt} loading="lazy" onError={markBroken} />
             {preview.isNew && <span className="adm-ithumb-badge adm-ithumb-badge--new">Yangi</span>}
           </div>
           <div className="adm-poster-side">
@@ -77,7 +81,7 @@ export default function PosterField({
                 {Ic.trash}Olib tashlash
               </button>
             </div>
-            <p className="adm-fld-hint adm-poster-hint">{limits} — bo'lmasa sana-belgi ko'rsatiladi.</p>
+            <p className="adm-fld-hint adm-poster-hint">{limits}{note}</p>
           </div>
         </div>
       ) : (
@@ -92,7 +96,7 @@ export default function PosterField({
         >
           <span className="adm-dz-icon" aria-hidden="true">{Ic.photo}</span>
           <span className="adm-dz-body">
-            <span className="adm-dz-title">{drag ? 'Posterni bu yerga tashlang' : "Poster qo'shish"}</span>
+            <span className="adm-dz-title">{drag ? dropLabel : addLabel}</span>
             <span className="adm-dz-text">{drag ? "qo'yib yuboring" : 'yoki fayl tanlash uchun bosing'} · {limits}</span>
           </span>
           {input}

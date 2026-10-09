@@ -9,7 +9,7 @@ import Stats from './Stats.jsx'
 import NewsAdmin from './NewsAdmin.jsx'
 import EventsAdmin from './EventsAdmin.jsx'
 import TeachersAdmin from './TeachersAdmin.jsx'
-import GalleryAdmin from './GalleryAdmin.jsx'
+import StudentLifeAdmin from './StudentLifeAdmin.jsx'
 import ApplicationsAdmin from './ApplicationsAdmin.jsx'
 import ProfileAdmin from './ProfileAdmin.jsx'
 
@@ -140,7 +140,7 @@ export default function Dashboard() {
             <Route path="news"         element={<NewsAdmin />} />
             <Route path="events"       element={<EventsAdmin />} />
             <Route path="teachers"     element={<TeachersAdmin />} />
-            <Route path="gallery"      element={<GalleryAdmin />} />
+            <Route path="gallery"      element={<StudentLifeAdmin />} />
             <Route path="applications" element={<ApplicationsAdmin type="admission" />} />
             <Route path="vacancies"    element={<ApplicationsAdmin type="vacancy" />} />
             <Route path="profile"      element={<ProfileAdmin />} />
