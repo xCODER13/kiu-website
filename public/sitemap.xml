@@ -385,30 +385,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://kiu-university.vercel.app/testimonials</loc>
-    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/testimonials"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/testimonials"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/testimonials"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/testimonials"/>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://kiu-university.vercel.app/ru/testimonials</loc>
-    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/testimonials"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/testimonials"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/testimonials"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/testimonials"/>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://kiu-university.vercel.app/en/testimonials</loc>
-    <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/testimonials"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/testimonials"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://kiu-university.vercel.app/en/testimonials"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://kiu-university.vercel.app/testimonials"/>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://kiu-university.vercel.app/map</loc>
     <xhtml:link rel="alternate" hreflang="uz" href="https://kiu-university.vercel.app/map"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://kiu-university.vercel.app/ru/map"/>

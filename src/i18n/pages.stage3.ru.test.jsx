@@ -8,7 +8,6 @@ import ru from './locales/ru.json'
 import i18n from './index'
 import { mockApi } from '../test/helpers'
 import Achievements from '../pages/Achievements'
-import Testimonials from '../pages/Testimonials'
 import Map from '../pages/Map'
 import QRCode from '../pages/QRCode'
 import Gallery from '../pages/Gallery'
@@ -33,14 +32,6 @@ describe('Statik sahifalar (RU)', () => {
     expect(screen.getByText('Достижения и награды')).toBeInTheDocument()
     expect(screen.getByText('Призёр конкурса «ПРИЗНАНИЕ ГОДА – 2023»')).toBeInTheDocument()
     expect(screen.queryByText('Yutuqlar va mukofotlar')).not.toBeInTheDocument()
-  })
-
-  it("Testimonials: sarlavha, yo'nalish nomi va kurs yorlig'i ruscha", () => {
-    at('/ru/testimonials', <Testimonials />)
-    expect(screen.getByText('Отзывы студентов')).toBeInTheDocument()
-    expect(screen.getAllByText(/· \d-й курс/).length).toBeGreaterThan(0)
-    expect(screen.getByText(/Выпускник/)).toBeInTheDocument()
-    expect(screen.queryByText(/-kurs/)).not.toBeInTheDocument()
   })
 
   it('Map: sarlavha ruscha, manzil ruscha', () => {

@@ -72,9 +72,9 @@ describe('tarjima fayllari', () => {
     config.stats.forEach((s, i) => expect(uzFlat[`home.stats.${statKeys[i]}`]).toBe(s.l))
   })
 
-  it("SEO: 19 ta sahifa + 404 sahifaning har biri uchun ikkala tilda sarlavha va tavsif bor", () => {
+  it("SEO: 18 ta sahifa + 404 sahifaning har biri uchun ikkala tilda sarlavha va tavsif bor", () => {
     const keys = Object.keys(uz.seo.pages)
-    expect(keys).toHaveLength(20) // 19 sahifa + notFound
+    expect(keys).toHaveLength(19) // 18 sahifa + notFound
     for (const k of keys) {
       expect(en.seo.pages[k]?.title, k).toBeTruthy()
       expect(en.seo.pages[k]?.desc, k).toBeTruthy()

@@ -7,7 +7,6 @@ import uz from './locales/uz.json'
 import en from './locales/en.json'
 import { mockApi } from '../test/helpers'
 import Achievements from '../pages/Achievements'
-import Testimonials from '../pages/Testimonials'
 import Map from '../pages/Map'
 import QRCode from '../pages/QRCode'
 import Gallery from '../pages/Gallery'
@@ -32,13 +31,6 @@ describe('Statik sahifalar (EN)', () => {
     expect(screen.getByText('Achievements and awards')).toBeInTheDocument()
     expect(screen.getByText('Prize Winner of the "Recognition of the Year – 2023" Contest')).toBeInTheDocument()
     expect(screen.queryByText('Yutuqlar va mukofotlar')).not.toBeInTheDocument()
-  })
-
-  it('Testimonials: sarlavha, yo\'nalish nomi va kurs yorlig\'i inglizcha', () => {
-    at('/en/testimonials', <Testimonials />)
-    expect(screen.getByText('Student reviews')).toBeInTheDocument()
-    expect(screen.getAllByText(/· Year \d/).length).toBeGreaterThan(0)
-    expect(screen.queryByText(/-kurs/)).not.toBeInTheDocument()
   })
 
   it('Map: sarlavha inglizcha', () => {

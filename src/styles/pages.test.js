@@ -433,13 +433,6 @@ describe('Bosqich 6.11c2: Hemis, FAQ, Sharhlar, Aloqa, Xarita, QR kodlar, 404', 
     expect(code).toMatch(/\.faq-card__a \{[^}]*max-width: 680px;[^}]*line-height: 1\.8;/)
   })
 
-  it("sharh: yulduz rangi `--color-star`; matn 16.5 px kursivsiz; muallif pastda `margin-top: auto` + ajratgich", () => {
-    expect(code).toMatch(/\.review-card__stars \{[^}]*color: var\(--color-star\);/)
-    expect(code).toMatch(/\.review-card__text \{[^}]*font-size: 1\.03125rem;[^}]*line-height: 1\.75;/)
-    expect(code).not.toMatch(/\.review-card__text \{[^}]*font-style: italic/)
-    expect(code).toMatch(/\.review-card__author \{[^}]*margin-top: auto;[^}]*border-top: 1px solid var\(--color-border\);/)
-  })
-
   it("Aloqa: 2 ustun, kartalar teng balandlikda; havola cho'zilgan (`::after`), hover — underline + strelka to'ldiriladi, ko'tarilish -2px faqat `no-preference`", () => {
     expect(code).toMatch(/\.contact-grid \{[^}]*repeat\(2, minmax\(0, 1fr\)\);[^}]*align-items: stretch;/)
     expect(code).toMatch(/\.contact-list \{[^}]*grid-template-rows: repeat\(5, minmax\(0, 1fr\)\);/)
@@ -473,13 +466,13 @@ describe('Bosqich 6.11c2: Hemis, FAQ, Sharhlar, Aloqa, Xarita, QR kodlar, 404', 
     expect(code).toMatch(/\.pill-link:hover \{ background: var\(--color-brand-fill\); color: var\(--color-on-brand\); \}/)
   })
 
-  it("Hemis, FAQ, Testimonials, Contact, Map, QRCode, NotFound: inline style yo'q, hex/rgba yo'q, eski klasslar (`achieve-icon`, `cc-icon`, `social-link`) yo'q", () => {
-    for (const f of ['Hemis', 'FAQ', 'Testimonials', 'Contact', 'Map', 'QRCode', 'NotFound']) {
+  it("Hemis, FAQ, Contact, Map, QRCode, NotFound: inline style yo'q, hex/rgba yo'q, eski klasslar (`achieve-icon`, `cc-icon`, `social-link`) yo'q", () => {
+    for (const f of ['Hemis', 'FAQ', 'Contact', 'Map', 'QRCode', 'NotFound']) {
       const path = `src/pages/${f}.jsx`
       expect(inline(path), f).toBe(0)
       expect(read(path), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|achieve-icon|cc-icon|social-link|gradient-dark/i)
     }
-    for (const f of ['Hemis', 'FAQ', 'Testimonials', 'Contact', 'Map', 'QRCode']) expect(read(`src/pages/${f}.jsx`), f).toMatch(/PageHero/)
+    for (const f of ['Hemis', 'FAQ', 'Contact', 'Map', 'QRCode']) expect(read(`src/pages/${f}.jsx`), f).toMatch(/PageHero/)
   })
 })
 
@@ -552,7 +545,14 @@ describe('Bosqich 6.11c3: Tadbirlar, O\'qituvchilar, Galereya', () => {
       expect(read(path), f).toMatch(/PageHero/)
     }
     expect(read('src/pages/Teachers.jsx')).not.toMatch(/KAFEDRALAR/)
-    expect(read('src/pages/Gallery.jsx')).toMatch(/useModalA11y/)
+    // Talabalar hayoti: modal/lightbox `pages/gallery/` papkasiga bo'lingan — ikkalasi ham `useModalA11y` ishlatadi, inline style/hex yo'q
+    for (const f of ['Lightbox', 'SectionModal', 'ItemsBrowser']) {
+      const path = `src/pages/gallery/${f}.jsx`
+      expect(inline(path), f).toBe(0)
+      expect(read(path), f).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|✕/i)
+    }
+    expect(read('src/pages/gallery/Lightbox.jsx')).toMatch(/useModalA11y/)
+    expect(read('src/pages/gallery/SectionModal.jsx')).toMatch(/useModalA11y/)
   })
 })
 
@@ -796,10 +796,6 @@ describe('Bosqich 6.12g: kichik farqlar (taxta bo\'yicha)', () => {
     expect(src).toMatch(/\['news', '\/news', <><path d="M12 20h9"/)
     expect(src).toMatch(/\['contact', '\/contact', <path d="M22 16\.92v3/)
     expect(src).toMatch(/\['admission'[^\n]*<line x1="16" y1="13" x2="8" y2="13"[^\n]*<line x1="16" y1="17" x2="8" y2="17"/)
-  })
-
-  it("Sharhlar: iqtibos ikonkasi 1.8 chiziq, taxtadagi shakl", () => {
-    expect(read('src/pages/Testimonials.jsx')).toMatch(/<Icon size=\{22\} strokeWidth=\{1\.8\}><path d="M3 21c3 0 7-1 7-8V5c0-1\.25-\.756/)
   })
 
   it("Navbar: ochiq guruh triggeri (hover/fokus) — wine tus + brend matn; oddiy havola hover'i neytral qoladi", () => {

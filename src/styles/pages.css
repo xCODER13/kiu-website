@@ -753,6 +753,16 @@
   .news-card-views { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: normal; color: var(--color-text-muted); }
   .btn.news-card-btn { min-height: 0; gap: 6px; padding: 8px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; line-height: 1; }
 
+  /* «Talabalar hayoti» (yangiliklar kartasidan qayta foydalanadi): bosiladigan karta, pastki qatorda faqat tugma (o'ngda),
+     rang — bo'limdan (`data-section`, yangiliklar toifalari palitrasi `--chart-N`); albom chiplari va «Barchasi» — brend rangi */
+  .card.news-card--click { cursor: pointer; }
+  .news-card-foot--end { justify-content: flex-end; }
+  :is(.news-card, .news-cat, .news-card-cat)[data-section="club"] { --cat: var(--chart-2); }
+  :is(.news-card, .news-cat, .news-card-cat)[data-section="sport"] { --cat: var(--chart-3); }
+  :is(.news-card, .news-cat, .news-card-cat)[data-section="campus"] { --cat: var(--chart-4); }
+  .news-card[data-section="photo"] { --cat: var(--chart-1); }
+  .news-cat--plain { --cat: var(--color-brand); }
+
   /* ── Asosiy karusel: rasm ustida wine qoplama; toifa — pill ichida nuqta ── */
   @keyframes carouselFadeIn {
     from { opacity: 0; transform: scale(1.02); }
@@ -1440,16 +1450,6 @@
   @media (prefers-reduced-motion: reduce) { .faq-card__chev { transition: none; } }
   .faq-card__a { max-width: 680px; margin: -4px 0 0; padding: 0 28px 26px; font-size: 1rem; line-height: 1.8; color: var(--color-text-muted); }
 
-  /* ── Talabalar sharhlari ──────────────────────────────────────────── */
-  .card.review-card { display: flex; flex-direction: column; margin: 0; padding: 28px 28px 26px; border-radius: 20px; }
-  .review-card__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
-  .review-card__stars { display: flex; gap: 3px; color: var(--color-star); }
-  .review-card__text { margin: 0 0 24px; font-size: 1.03125rem; line-height: 1.75; color: var(--color-text); }
-  .review-card__author { display: flex; align-items: center; gap: 14px; margin-top: auto; padding-top: 20px; border-top: 1px solid var(--color-border); }
-  .review-card .avatar-wine { width: 50px; height: 50px; font-size: 1rem; box-shadow: 0 0 0 3px var(--ring-avatar), 0 6px 14px var(--glow-brand); }
-  .review-card__name { font-size: 1rem; font-weight: 700; line-height: normal; color: var(--color-text); }
-  .review-card__meta { margin-top: 2px; font-size: 0.875rem; line-height: normal; color: var(--color-text-muted); }
-
   /* ── Bog'lanish ───────────────────────────────────────────────────── */
   .contact-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: stretch; }
   .contact-list { display: grid; grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 14px; }
@@ -1780,6 +1780,9 @@
   .ev-modal__img[data-broken="true"] { display: none; }
   .ev-modal__title { margin: 14px 0 0; padding-right: 2.5rem; font-size: 1.5rem; font-weight: 800; line-height: 1.3; color: var(--color-text); }
   .ev-modal__desc { margin: 18px 0 0; font-size: 1rem; line-height: 1.75; color: var(--color-text-muted); }
+  .ev-modal__desc--pre { white-space: pre-line; }
+  .ev-modal__actions { margin-top: 24px; }
+  .ev-modal__actions .btn { gap: 8px; }
   @media (max-width: 640px) {
     .card.ev-card { flex-wrap: wrap; align-items: flex-start; gap: 14px; padding: 18px; }
     .ev-date { width: 76px; height: 72px; }
@@ -1928,10 +1931,6 @@
     .photo-card:focus-visible .photo-card__media img { transform: scale(1.05); }
   }
   .photo-card__body { padding: 18px 20px 22px; }
-  /* «Talabalar hayoti» bo'lim kartasi: bosilmaydi (lightbox yo'q), tavsif qisqartirilmaydi; havola tugmasi matn ostida */
-  .card.photo-card--static { cursor: default; }
-  .photo-card--static .photo-card__desc { display: block; -webkit-line-clamp: unset; }
-  .photo-card__link { margin-top: 14px; }
 
   .photo-card__title {
     display: -webkit-box;

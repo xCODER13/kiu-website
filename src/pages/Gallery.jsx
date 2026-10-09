@@ -1,172 +1,199 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
-import { createPortal } from 'react-dom'
+import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import ContentLangNote from '../i18n/ContentLangNote'
 import PageHero from '../components/PageHero'
 import Icon from '../components/Icon'
 import ThumbImg from '../components/ThumbImg'
-import useModalA11y from '../hooks/useModalA11y'
+import ItemsBrowser from './gallery/ItemsBrowser'
+import Lightbox from './gallery/Lightbox'
+import SectionModal from './gallery/SectionModal'
 
 const API = import.meta.env.VITE_API_URL
 
-// «Talabalar hayoti» bo'limlari (backend `utils/studentLifeSections.js` bilan bir xil kalitlar; ketma-ketlik — sahifadagi tartib)
+// «Talabalar hayoti» bo'limlari (backend `utils/studentLifeSections.js` bilan bir xil kalitlar; ketma-ketlik — chiplardagi tartib)
 const SECTION_KEYS = ['club', 'sport', 'campus']
-// Havola `<a href>` ga tushadi: backend ham tekshiradi, bu yerda ikkinchi qatlam (faqat https://, bo'shliq/qo'shtirnoqsiz)
-const SAFE_LINK = /^https:\/\/[^\s<>"'`\\]+$/i
 
-// Katta rasm oynasi: fokus tuzog'i, Esc, scroll qulfi va fokusni qaytarish — `useModalA11y` (ApplyModal bilan bir xil).
-// Strelka tugmalari va ← → klaviaturasi Gallery'da (window'da) boshqariladi.
-function Lightbox({ photo, index, total, onClose, onPrev, onNext }) {
+const ArrowIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+)
+
+// Rasmsiz karta uchun yangiliklar kartasidagi bilan bir xil placeholder
+const Placeholder = () => (
+  <div className="news-card-ph">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+  </div>
+)
+
+// Kartaning o'zi ham bosiladi (sichqoncha qulayligi); klaviatura va ekran o'quvchi uchun haqiqiy `<button>` bor (bosish karta handleriga ko'tariladi).
+// Sana va ko'rishlar soni yo'q: bo'lim elementlarida sana ma'nosiz (tartibni admin `order` bilan boshqaradi).
+function SectionCard({ item, label, onOpen }) {
   const { t } = useTranslation()
-  const ref = useRef(null)
-  // Orqa sahifa klaviatura/ekran o'quvchi uchun yopiladi (Tadbirlar va Yo'nalish modallari bilan bir xil). Oyna `document.body` ga chiqarilgani uchun
-  // `#root` ni `inert` qilish unga ta'sir qilmaydi. Effektlar tartibi muhim: yopilganda avval `inert` olinadi, keyin `useModalA11y` fokusni qaytaradi.
-  useEffect(() => {
-    const root = document.getElementById('root')
-    if (root) root.inert = true
-    return () => { if (root) root.inert = false }
-  }, [])
-  useModalA11y(ref, onClose)
-
-  // Portal: sahifa ildizi (`.fade-up`) `transform` animatsiyasi `position: fixed` ni o'z ichiga qamab qo'yadi
-  // (oyna butun sahifa balandligiga cho'zilib, rasm viewport markazida turmaydi) — shuning uchun `document.body` ga chiqariladi.
-  return createPortal(
-    <div className="photo-lightbox" onClick={onClose}>
-      <div ref={ref} className="photo-lightbox__dialog" role="dialog" aria-modal="true" aria-label={photo.title}>
-        <button type="button" className="photo-lightbox__btn photo-lightbox__btn--close" onClick={onClose} aria-label={t('gallery.close')}>
-          <Icon size={20}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>
-        </button>
-        <button type="button" className="photo-lightbox__btn photo-lightbox__btn--prev" onClick={e => { e.stopPropagation(); onPrev() }} aria-label={t('gallery.prev')}>
-          <Icon size={26}><polyline points="15 18 9 12 15 6" /></Icon>
-        </button>
-        <button type="button" className="photo-lightbox__btn photo-lightbox__btn--next" onClick={e => { e.stopPropagation(); onNext() }} aria-label={t('gallery.next')}>
-          <Icon size={26}><polyline points="9 18 15 12 9 6" /></Icon>
-        </button>
-
-        <div className="photo-lightbox__content" onClick={e => e.stopPropagation()}>
-          <img className="photo-lightbox__img" src={photo.img} alt={photo.title} />
-          <div className="photo-lightbox__caption">
-            <div className="photo-lightbox__title" lang="uz">{photo.title}</div>
-            {photo.desc && <div className="photo-lightbox__desc" lang="uz">{photo.desc}</div>}
-            <div className="photo-lightbox__count">{index + 1} / {total}</div>
-          </div>
+  return (
+    <div className="card card-link news-card news-card--click" data-section={item.section} onClick={() => onOpen(item)}>
+      {item.image
+        ? <ThumbImg src={item.image} alt="" loading="lazy" className="news-card-img" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
+        : <Placeholder />}
+      <div className="news-card-body">
+        <div className="news-card-meta">
+          <span className="news-card-cat">
+            <span className="cat-dot" aria-hidden="true" />
+            {label}
+          </span>
+        </div>
+        <h2 lang="uz" className="news-card-title">{item.title}</h2>
+        {item.desc && <p lang="uz" className="news-card-text">{item.desc}</p>}
+        <div className="news-card-foot news-card-foot--end">
+          <button type="button" className="btn btn-primary btn-sm news-card-btn" aria-label={`${t('gallery.more')}: ${item.title}`}>
+            {t('gallery.more')}
+            <ArrowIcon />
+          </button>
         </div>
       </div>
-    </div>,
-    document.body
+    </div>
+  )
+}
+
+function PhotoCard({ photo, onOpen }) {
+  const { t } = useTranslation()
+  return (
+    <div className="card card-link news-card news-card--click" data-section="photo" onClick={onOpen}>
+      <ThumbImg src={photo.img} alt={photo.title} loading="lazy" className="news-card-img" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
+      <div className="news-card-body">
+        <h2 lang="uz" className="news-card-title">{photo.title}</h2>
+        {photo.desc && <p lang="uz" className="news-card-text">{photo.desc}</p>}
+        <div className="news-card-foot news-card-foot--end">
+          <button type="button" className="btn btn-primary btn-sm news-card-btn" aria-label={`${t('gallery.view')}: ${photo.title}`}>
+            {t('gallery.view')}
+            <ArrowIcon />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function EmptyState({ text }) {
+  return (
+    <div className="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+      <p className="empty-state-title">{text}</p>
+    </div>
   )
 }
 
 export default function Gallery() {
   const { t } = useTranslation()
-  const [items, setItems] = useState([])
+  const [albums, setAlbums] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  const [openIndex, setOpenIndex] = useState(null)   // lightbox'da ko'rsatilayotgan rasm tartib raqami
   const [sections, setSections] = useState([])        // admin boshqaradigan klub / sport / kampus elementlari
   const [sectionsLoading, setSectionsLoading] = useState(true)
+  const [tab, setTab] = useState(null)                // null = hali tanlanmagan (avtomatik)
+  const [openSection, setOpenSection] = useState(null) // modalda ochilgan bo'lim elementi
+  const [lightbox, setLightbox] = useState(null)       // { list, index } — filtrlangan rasmlar ichida
 
   useEffect(() => {
     fetch(`${API}/api/gallery`)
       .then(r => r.json())
-      .then(d => setItems(Array.isArray(d) ? d : []))
+      .then(d => setAlbums(Array.isArray(d) ? d : []))
       .catch(err => { console.error('Galereya yuklashda xatolik:', err); setError(true) })
       .finally(() => setLoading(false))
   }, [])
 
-  // Bo'limlar ixtiyoriy: yuklanmasa yoki bo'sh bo'lsa sahifa avvalgidek (faqat fotogalereya) ishlaydi, xato banner chiqmaydi.
+  // Bo'limlar ixtiyoriy: yuklanmasa yoki bo'sh bo'lsa sahifa «Fotogalereya» tabini ochadi, xato banner chiqmaydi.
   // Javob massiv bo'lmasa yoki element noma'lum bo'limga tegishli bo'lsa e'tiborga olinmaydi.
   useEffect(() => {
     fetch(`${API}/api/student-life`)
       .then(r => r.json())
-      .then(d => setSections(Array.isArray(d) ? d.filter(i => i && SECTION_KEYS.includes(i.section) && typeof i.title === 'string' && i.title) : []))
+      .then(d => setSections(Array.isArray(d)
+        ? d.filter(i => i && SECTION_KEYS.includes(i.section) && typeof i.title === 'string' && i.title).map(i => ({ ...i, group: i.section }))
+        : []))
       .catch(err => console.error("Talabalar hayoti bo'limlarini yuklashda xatolik:", err))
       .finally(() => setSectionsLoading(false))
   }, [])
 
-  const groups = useMemo(
-    () => SECTION_KEYS.map(key => ({ key, rows: sections.filter(i => i.section === key) })).filter(g => g.rows.length > 0),
+  // Har bir albom (title+desc+bir nechta rasm) har bir rasmga "yoyiladi": sarlavha/tavsif albomdan meros qilinadi,
+  // chip — albom (`group` = albom id).
+  const photos = useMemo(() => albums.flatMap(album =>
+    (album.images || []).map((img, i) => ({ id: `${album._id}_${i}`, group: album._id, title: album.title, desc: album.desc, img }))
+  ), [albums])
+
+  const sectionGroups = useMemo(
+    () => SECTION_KEYS.filter(key => sections.some(i => i.section === key)).map(key => ({ key, section: key, label: t(`gallery.sections.${key}`) })),
+    [sections, t],
+  )
+  const albumGroups = useMemo(
+    () => albums.filter(a => photos.some(p => p.group === a._id)).map(a => ({ key: a._id, label: a.title })),
+    [albums, photos],
+  )
+  // Bo'limlar chiplar tartibida (klub → sport → kampus), har birida admin `order` tartibi (backend allaqachon shunday beradi)
+  const orderedSections = useMemo(
+    () => SECTION_KEYS.flatMap(key => sections.filter(i => i.section === key)),
     [sections],
   )
 
-  // Har bir albom (title+desc+bir nechta rasm) grid'da alohida panelka
-  // sifatida ko'rsatiladigan har bir rasmga "yoyiladi" — sarlavha/tavsif
-  // albomdan meros qiladi, lightbox barcha rasmlar orasida ketma-ket o'tadi.
-  const photos = useMemo(() => items.flatMap(item =>
-    (item.images || []).map((img, i) => ({
-      id: `${item._id}_${i}`,
-      title: item.title,
-      desc: item.desc,
-      img,
-    }))
-  ), [items])
-
-  const total = photos.length
   const pending = loading || sectionsLoading
-  const hasSections = groups.length > 0
-  const prev = () => setOpenIndex(i => (i - 1 + total) % total)
-  const next = () => setOpenIndex(i => (i + 1) % total)
+  // Bo'limlar bo'sh bo'lsa sahifa o'zi «Fotogalereya» tabini ochadi; foydalanuvchi tanlasa — uning tanlovi
+  const activeTab = tab ?? (sections.length > 0 ? 'sections' : 'photos')
 
+  const total = lightbox ? lightbox.list.length : 0
+  const closeLightbox = () => setLightbox(null)
+  const prev = () => setLightbox(l => ({ ...l, index: (l.index - 1 + l.list.length) % l.list.length }))
+  const next = () => setLightbox(l => ({ ...l, index: (l.index + 1) % l.list.length }))
+
+  const lightboxOpen = lightbox !== null
   useEffect(() => {
-    if (openIndex === null) return
+    if (!lightboxOpen) return
     const onKey = e => {
-      if (e.key === 'Escape') setOpenIndex(null)
-      if (e.key === 'ArrowRight') setOpenIndex(i => (i + 1) % total)
-      if (e.key === 'ArrowLeft') setOpenIndex(i => (i - 1 + total) % total)
+      if (e.key === 'Escape') setLightbox(null)
+      if (e.key === 'ArrowRight') setLightbox(l => ({ ...l, index: (l.index + 1) % l.list.length }))
+      if (e.key === 'ArrowLeft') setLightbox(l => ({ ...l, index: (l.index - 1 + l.list.length) % l.list.length }))
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [openIndex, total])
+  }, [lightboxOpen])
 
-  const open = i => setOpenIndex(i)
+  const tabs = [
+    { key: 'sections', label: t('gallery.tabs.sections'), count: sections.length, icon: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></> },
+    { key: 'photos', label: t('gallery.photos'), count: photos.length, icon: <><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></> },
+  ]
+
+  const showSectionsEmpty = !pending && activeTab === 'sections' && sections.length === 0
+  const showPhotosEmpty = !pending && activeTab === 'photos' && photos.length === 0 && !error
+  // Tab bo'sh bo'lsa sahifa pastga cho'zilmasin (footer ko'tarilib ketmasin): avvalgi `page-body--error|empty` qoidasi
+  const tabEmpty = activeTab === 'sections' ? sections.length === 0 : photos.length === 0
+  const bodyMod = !pending && tabEmpty ? (error ? ' page-body--error' : ' page-body--empty') : ''
 
   return (
     <div className="fade-up">
-      <PageHero title={t('gallery.title')} sub={t('gallery.subtitle')} note={<ContentLangNote />} />
+      <PageHero title={t('gallery.title')} sub={t('gallery.subtitle')} note={<ContentLangNote />}>
+        <div className="kiu-tab-wrap">
+          {tabs.map(tb => (
+            <button
+              key={tb.key}
+              type="button"
+              onClick={() => setTab(tb.key)}
+              className="kiu-tab-btn"
+              data-active={activeTab === tb.key}
+              aria-pressed={activeTab === tb.key}
+            >
+              <span className="kiu-tab-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{tb.icon}</svg>
+              </span>
+              {tb.label}
+              {tb.count > 0 && <span className="kiu-tab-badge">{tb.count}</span>}
+            </button>
+          ))}
+        </div>
+      </PageHero>
 
-      <section className={`page-body${!pending && error && !hasSections ? ' page-body--error' : ''}${!pending && !error && photos.length === 0 && !hasSections ? ' page-body--empty' : ''}`}>
-        <div className={`container ${!pending && error && !hasSections ? 'container--920' : 'container-wide'}`}>
+      <section className={`page-body${bodyMod}`}>
+        <div className="container news-flow">
           {pending && (
             <div className="page-loading">
               <div className="spinner" />
               {t('common.loading')}
             </div>
-          )}
-
-          {!pending && hasSections && groups.map((g, gi) => (
-            <div key={g.key} className="student-life-section">
-              <h2 className={`section-title${gi > 0 ? ' page-block' : ''}`}>{t(`gallery.sections.${g.key}`)}</h2>
-              <div className="cards-3">
-                {g.rows.map((it, i) => (
-                  <div key={it._id} className={`rv-item reveal reveal-delay-${(i % 3) + 1}`}>
-                    <article className="card photo-card photo-card--static" data-slot={i % 6}>
-                      <div className="photo-card__media">
-                        {it.image && <ThumbImg src={it.image} alt="" loading="lazy" onError={e => { e.currentTarget.dataset.broken = 'true' }} />}
-                      </div>
-                      <div className="photo-card__body">
-                        <h3 className="photo-card__title" lang="uz">{it.title}</h3>
-                        {it.desc && <p className="photo-card__desc" lang="uz">{it.desc}</p>}
-                        {it.link && SAFE_LINK.test(it.link) && (
-                          <a
-                            href={it.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-primary btn-sm photo-card__link"
-                            aria-label={`${t('gallery.more')}: ${it.title}`}
-                          >
-                            {t('gallery.more')}
-                          </a>
-                        )}
-                      </div>
-                    </article>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          {!pending && hasSections && !error && photos.length > 0 && (
-            <h2 className="section-title page-block">{t('gallery.photos')}</h2>
           )}
 
           {!pending && error && (
@@ -176,49 +203,38 @@ export default function Gallery() {
             </div>
           )}
 
-          {!pending && !error && photos.length === 0 && !hasSections && (
-            <div className="photo-empty reveal">
-              <div className="tile tile--64">
-                <Icon size={30}><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></Icon>
-              </div>
-              <p>{t('gallery.empty')}</p>
-            </div>
+          {showSectionsEmpty && <EmptyState text={t('gallery.sectionsEmpty')} />}
+          {showPhotosEmpty && <EmptyState text={t('gallery.empty')} />}
+
+          {!pending && activeTab === 'sections' && sections.length > 0 && (
+            <ItemsBrowser
+              key="sections"
+              items={orderedSections}
+              groups={sectionGroups}
+              renderCard={it => (
+                <SectionCard key={it._id} item={it} label={t(`gallery.sections.${it.section}`)} onOpen={setOpenSection} />
+              )}
+            />
           )}
 
-          {!pending && !error && photos.length > 0 && (
-            <div className="cards-3">
-              {photos.map((p, i) => (
-                <div key={p.id} className={`rv-item reveal reveal-delay-${(i % 3) + 1}`}>
-                  {/* Kartalar klaviatura bilan ochiladi (Enter/Space) */}
-                  <div
-                    className="card card--lift photo-card"
-                    data-slot={i % 6}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => open(i)}
-                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i) } }}
-                  >
-                    <div className="photo-card__media">
-                      <ThumbImg src={p.img} alt={p.title} loading="lazy" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
-                      <span className="photo-card__badge" aria-hidden="true">KIU</span>
-                      <span className="photo-card__zoom" aria-hidden="true">
-                        <Icon size={22}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" /></Icon>
-                      </span>
-                    </div>
-                    <div className="photo-card__body">
-                      <h2 className="photo-card__title" lang="uz">{p.title}</h2>
-                      <p className="photo-card__desc" lang="uz">{p.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          {!pending && activeTab === 'photos' && photos.length > 0 && (
+            <ItemsBrowser
+              key="photos"
+              items={photos}
+              groups={albumGroups}
+              renderCard={(p, i, list) => (
+                <PhotoCard key={p.id} photo={p} onOpen={() => setLightbox({ list, index: i })} />
+              )}
+            />
           )}
         </div>
       </section>
 
-      {openIndex !== null && photos[openIndex] && (
-        <Lightbox photo={photos[openIndex]} index={openIndex} total={total} onClose={() => setOpenIndex(null)} onPrev={prev} onNext={next} />
+      {openSection && (
+        <SectionModal item={openSection} label={t(`gallery.sections.${openSection.section}`)} onClose={() => setOpenSection(null)} />
+      )}
+      {lightbox && lightbox.list[lightbox.index] && (
+        <Lightbox photo={lightbox.list[lightbox.index]} index={lightbox.index} total={total} onClose={closeLightbox} onPrev={prev} onNext={next} />
       )}
     </div>
   )
