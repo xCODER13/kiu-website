@@ -450,7 +450,7 @@ describe('EventsAdmin: o\'chirish', () => {
     await del(user, 'Ochiq eshiklar kuni')
     const dialog = screen.getByRole('alertdialog')
     expect(dialog).toHaveAccessibleName("Tadbirni o'chirishni tasdiqlaysizmi?")
-    expect(dialog).toHaveTextContent('«Ochiq eshiklar kuni» tadbiri butunlay o\'chiriladi. Bu amalni qaytarib bo\'lmaydi.')
+    expect(dialog).toHaveTextContent('«Ochiq eshiklar kuni» tadbiri va afishasi butunlay o\'chiriladi. Bu amalni qaytarib bo\'lmaydi.')
     expect(within(dialog).getByRole('button', { name: 'Bekor qilish' })).toHaveFocus()
     await user.click(within(dialog).getByRole('button', { name: 'Bekor qilish' }))
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()

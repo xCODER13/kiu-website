@@ -467,15 +467,14 @@ describe('GalleryAdmin: o\'chirish', () => {
   const confirmBtn = () => within(screen.getByRole('alertdialog')).getByRole('button', { name: "O'chirish" })
 
   // 6.26: `window.confirm` o'rniga `alertdialog` (Arizalar/Yangiliklar bilan bir xil)
-  it('dialog: sarlavha, matnda albom nomi va rasm soni; «afisha/butunlay Storage» va\'dasi yo\'q; Bekor qilish — hech narsa yuborilmaydi', async () => {
+  it('dialog: sarlavha, matnda albom nomi, rasm soni va «butunlay» (rasmlar Storage\'dan ham o\'chadi, 2.1); Bekor qilish — hech narsa yuborilmaydi', async () => {
     const api = mockApi({ 'GET /gallery': [G1] })
     const user = userEvent.setup()
     render(<GalleryAdmin />)
     await screen.findByText('1-kampus')
     await del(user)
     const dialog = screen.getByRole('alertdialog', { name: "Albomni o'chirishni tasdiqlaysizmi?" })
-    expect(dialog).toHaveTextContent("«1-kampus» albomi va undagi 2 ta rasm o'chiriladi, saytdagi galereyadan ham yo'qoladi. Bu amalni qaytarib bo'lmaydi.")
-    expect(dialog).not.toHaveTextContent('butunlay')
+    expect(dialog).toHaveTextContent("«1-kampus» albomi va undagi 2 ta rasm butunlay o'chiriladi, saytdagi galereyadan ham yo'qoladi. Bu amalni qaytarib bo'lmaydi.")
     await user.click(within(dialog).getByRole('button', { name: 'Bekor qilish' }))
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
     expect(api.find('DELETE', '/gallery/g1')).toHaveLength(0)

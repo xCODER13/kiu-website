@@ -345,7 +345,7 @@ export default function TeachersAdmin() {
           onConfirm={confirmDelete}
           onCancel={() => setToDelete(null)}
         >
-          <strong>«{toDelete.name}»</strong> o'chiriladi, saytdagi ro'yxatdan ham yo'qoladi. Bu amalni qaytarib bo'lmaydi.
+          <strong>«{toDelete.name}»</strong> va uning rasmi butunlay o'chiriladi, saytdagi ro'yxatdan ham yo'qoladi. Bu amalni qaytarib bo'lmaydi.
         </ConfirmDialog>
       )}
 

@@ -3,6 +3,7 @@ import useNavigate from '../../i18n/useLocalizedNavigate'
 import { getCategoryToken, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 import { formatDate } from '../../utils/formatDate'
+import ThumbImg from '../../components/ThumbImg'
 
 // ── NEWS CARD ── (6.11: kategoriya rangi `--cat` orqali, hover/fokus CSS da)
 export default function NewsCard({ item }) {
@@ -13,7 +14,7 @@ export default function NewsCard({ item }) {
     <div className="card card-link news-card" style={{ '--cat': getCategoryToken(item.category) }}>
       {item.image
         // Yuklanmagan rasm yashiriladi: `data-broken` (CSS), inline stil yozilmaydi
-        ? <img src={parseImages(item.image)[0]} alt={item.title} loading="lazy" className="news-card-img" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
+        ? <ThumbImg src={parseImages(item.image)[0]} alt={item.title} loading="lazy" className="news-card-img" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
         : <div className="news-card-ph">
             <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           </div>
