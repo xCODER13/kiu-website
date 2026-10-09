@@ -1,6 +1,7 @@
 const Event = require('../models/Event')
 const { fail } = require('../middleware/errorHandler')
 const audit = require('../services/auditLog')
+const { shouldCountView } = require('../services/viewDedupe')
 const { applyPagination } = require('../utils/pagination')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { rejectForeignImageUrls } = require('../utils/imageUrls')
@@ -71,7 +72,11 @@ async function update(req, res) {
 // bosilib, to'liq tavsif modali ochilganda chaqiriladi (Events.jsx).
 async function incrementView(req, res) {
   try {
-    await Event.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } })
+    // Bir tashrifchi (IP) bir resursni 24 soatda bir marta sanaydi (4.6). Mavjud bo'lmagan id uchun jurnal
+    // yaratilmaydi (viewLimiter ostida ham bazani keraksiz yozuvlar bilan to'ldirib bo'lmasin).
+    if (await Event.exists({ _id: req.params.id }) && await shouldCountView(req, 'events', req.params.id)) {
+      await Event.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } })
+    }
     res.json({ success: true })
   } catch (e) { fail(req, res, 500, e) }
 }
