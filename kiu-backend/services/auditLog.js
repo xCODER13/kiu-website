@@ -6,12 +6,13 @@
 const AuditLog = require('../models/AuditLog')
 const logger = require('../logger')
 
-async function record(event, req, { resource = '', targetId = '' } = {}) {
+async function record(event, req, { resource = '', targetId = '', actor } = {}) {
   try {
     await AuditLog.create({
       event,
       ip: String(req.ip || '').slice(0, 64),
-      actor: typeof req.user?.username === 'string' ? req.user.username.slice(0, 100) : '',
+      // actor: odatda token egasi; login_success da token hali yo'q — controller uzatadi. login_failed da HECH QACHON uzatilmaydi.
+      actor: String(actor ?? req.user?.username ?? '').slice(0, 100),
       resource,
       targetId: String(targetId || '').slice(0, 64),
     })

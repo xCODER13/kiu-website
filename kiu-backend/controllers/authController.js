@@ -5,6 +5,7 @@ const logger = require('../logger')
 const { fail } = require('../middleware/errorHandler')
 const { revokeAllTokens, getPasswordChangedAt } = require('../services/adminSessions')
 const { passwordProblem } = require('../utils/passwordPolicy')
+const audit = require('../services/auditLog')
 
 // Login javob vaqtini konstant qilish uchun — haqiqiy ADMIN_PASSWORD_HASH bilan
 // bir xil "shakl"dagi (bcrypt, cost 12) dummy hash. Bu faqat vaqt o'lchamini bir
@@ -60,9 +61,14 @@ async function login(req, res) {
   const usernameOk = username === process.env.ADMIN_USERNAME
   const passwordOk = await bcrypt.compare(password, usernameOk ? process.env.ADMIN_PASSWORD_HASH : DUMMY_HASH)
 
-  if (!usernameOk || !passwordOk) return res.status(401).json({ error: "Login yoki parol noto'g'ri" })
+  if (!usernameOk || !passwordOk) {
+    // Kiritilgan login saqlanmaydi (parol o'rniga yozib yuborilgan bo'lishi mumkin) — faqat IP va vaqt.
+    await audit.record('login_failed', req)
+    return res.status(401).json({ error: "Login yoki parol noto'g'ri" })
+  }
 
   const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '7d' })
+  await audit.record('login_success', req, { actor: username })
   res.json({ token })
 }
 
@@ -93,7 +99,10 @@ async function changePassword(req, res) {
 
   // 403, 401 emas: 401 — «token yaroqsiz» ma'nosida (frontend uni sessiya tugagan deb hisoblab chiqarib yuboradi);
   // bu yerda token yaroqli, rad etilgan narsa — kiritilgan joriy parol (3.1).
-  if (!currentOk) return res.status(403).json({ error: "Joriy parol noto'g'ri" })
+  if (!currentOk) {
+    await audit.record('password_change_failed', req)
+    return res.status(403).json({ error: "Joriy parol noto'g'ri" })
+  }
 
   try {
     const hash = await bcrypt.hash(newPassword, 12)
@@ -111,6 +120,7 @@ async function changePassword(req, res) {
     // etardi, hatto parol o'zgartirilgandan keyin ham.
     process.env.ADMIN_PASSWORD_CHANGED_AT = changedAt
 
+    await audit.record('password_changed', req)
     res.json({ success: true })
   } catch (e) {
     fail(req, res, 500, e)
@@ -124,6 +134,7 @@ async function changePassword(req, res) {
 async function logoutAll(req, res) {
   try {
     await revokeAllTokens()
+    await audit.record('logout_all', req)
     req.log.warn({ user: req.user?.username }, "[SECURITY] Barcha admin sessiyalari tugatildi")
     res.json({ success: true })
   } catch (e) {

@@ -1,5 +1,6 @@
 const Gallery = require('../models/Gallery')
 const { fail } = require('../middleware/errorHandler')
+const audit = require('../services/auditLog')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { applyPagination } = require('../utils/pagination')
 const { rejectForeignImageUrls } = require('../utils/imageUrls')
@@ -94,6 +95,7 @@ async function remove(req, res) {
   try {
     const deleted = await Gallery.findByIdAndDelete(req.params.id)
     if (!deleted) return res.status(404).json({ error: 'Topilmadi' })
+    await audit.record('delete', req, { resource: 'gallery', targetId: req.params.id })
     res.json({ success: true })
   } catch (e) { fail(req, res, 500, e) }
 }
