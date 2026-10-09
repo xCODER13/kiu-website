@@ -2556,4 +2556,11 @@
     color: var(--pb);
   }
   .adm-pbanner-text { flex: 1; min-width: 0; }
+  /* 429: blok tugashigacha qolgan vaqt (mm:ss) — raqamlar kengligi o'zgarmasin */
+  .adm-pbanner-time {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    color: var(--color-text);
+  }
 }

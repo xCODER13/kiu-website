@@ -10,6 +10,18 @@ const b64 = o => btoa(JSON.stringify(o)).replace(/\+/g, '-').replace(/\//g, '_')
 const makeJwt = payload => `${b64({ alg: 'none' })}.${b64(payload)}.x`
 const DAY = 24 * 3600
 
+// `GET /admin/me` (Hisob kartasi) har renderda ketadi — barcha testlar uchun standart javob
+const ME = {
+  username: 'admin',
+  passwordChangedAt: new Date(Date.now() - 20 * DAY * 1000).toISOString(),
+  sessionExpiresAt: new Date(Date.now() + (7 * DAY + 600) * 1000).toISOString(),
+}
+const mockProfile = (routes = {}) => mockApi({ 'GET /admin/me': ME, ...routes })
+// «so'rov ketmaydi» tekshiruvlari: `GET /admin/me` dan boshqa so'rovlar
+// Joriy `fetch` mock'iga ketgan so'rovlar (path bo'yicha)
+const mockCallsTo = path => globalThis.fetch.mock.calls.filter(([u]) => String(u).endsWith(path))
+const sent = api => api.calls.filter(c => !(c.method === 'GET' && c.path === '/admin/me'))
+
 const renderProfile = () => render(
   <MemoryRouter initialEntries={['/admin/profile']}>
     <Routes>
@@ -20,6 +32,7 @@ const renderProfile = () => render(
 )
 
 beforeEach(() => {
+  mockProfile()
   localStorage.setItem('kiu_token', makeJwt({ username: 'admin', exp: Math.floor(Date.now() / 1000) + 7 * DAY + 600 }))
 })
 afterEach(() => vi.restoreAllMocks())
@@ -36,23 +49,81 @@ async function fill(user, cur = 'eski-parol', nw = 'yangi-parol-1', conf = nw) {
 }
 const submit = (user) => user.click(saveBtn())
 
-describe('ProfileAdmin: «Hisob» kartasi', () => {
-  it('login va sessiya muddati token ichidan; «Rol», «Tizim», «URL» (qattiq yozilgan) yo\'q', () => {
+describe('ProfileAdmin: «Hisob» kartasi (GET /admin/me)', () => {
+  const card = () => screen.getByRole('region', { name: 'Hisob' })
+
+  it("yuklanmoqda — 3 satr skeleti (`aria-busy`), tayyor bo'lgach haqiqiy ma'lumot; qattiq yozilgan «Rol», «Tizim», «URL» yo'q", async () => {
     renderProfile()
-    const card = screen.getByRole('region', { name: 'Hisob' })
-    expect(within(card).getByText('Login')).toBeInTheDocument()
-    expect(within(card).getByText('admin')).toBeInTheDocument()
-    expect(within(card).getByText('Sessiya tugaydi')).toBeInTheDocument()
-    expect(within(card).getByText("7 kundan so'ng")).toBeInTheDocument()
+    expect(card()).toHaveAttribute('aria-busy', 'true')
+    expect(card().querySelectorAll('.adm-skel--icon')).toHaveLength(3)
+    expect(await within(card()).findByText('Login')).toBeInTheDocument()
+    expect(card()).not.toHaveAttribute('aria-busy')
+    expect(card().querySelector('.adm-skel')).toBeNull()
+    expect(within(card()).getByText('admin')).toBeInTheDocument()
     for (const t of ['Rol', 'Super Admin', 'Tizim', 'KIU Admin Panel', 'URL', 'localhost:5173/admin']) expect(screen.queryByText(t)).toBeNull()
   })
 
-  it("token noto'g'ri bo'lsa — qulamaydi: login «—», sessiya qatori yo'q", () => {
-    localStorage.setItem('kiu_token', 'tok')
+  it("«Parol oxirgi o'zgargan» — sana va «20 kun oldin»; «Sessiya tugaydi» — sana va «7 kundan so'ng»", async () => {
     renderProfile()
-    const card = screen.getByRole('region', { name: 'Hisob' })
-    expect(within(card).getByText('—')).toBeInTheDocument()
-    expect(within(card).queryByText('Sessiya tugaydi')).toBeNull()
+    await within(card()).findByText("Parol oxirgi o'zgargan")
+    expect(within(card()).getByText('20 kun oldin')).toBeInTheDocument()
+    expect(within(card()).getByText('Sessiya tugaydi')).toBeInTheDocument()
+    expect(within(card()).getByText("7 kundan so'ng")).toBeInTheDocument()
+    expect(mockCallsTo('/admin/me')).toHaveLength(1)
+  })
+
+  it("parol hech o'zgarmagan (null) — «Hech qachon» va boshlang'ich parol izohi", async () => {
+    mockProfile({ 'GET /admin/me': { ...ME, passwordChangedAt: null } })
+    renderProfile()
+    expect(await within(card()).findByText('Hech qachon')).toBeInTheDocument()
+    expect(within(card()).getByText("Hozir server sozlamasidagi boshlang'ich parol ishlatilmoqda.")).toBeInTheDocument()
+  })
+
+  it("sessiya muddati yo'q (null) — qator ko'rsatilmaydi, karta qulamaydi", async () => {
+    mockProfile({ 'GET /admin/me': { ...ME, sessionExpiresAt: null } })
+    renderProfile()
+    await within(card()).findByText('Login')
+    expect(within(card()).queryByText('Sessiya tugaydi')).toBeNull()
+  })
+
+  it("so'rov xatosi — xato paneli, parol formasi baribir ishlaydi; «Qayta urinish» qayta yuklaydi", async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    let ok = false
+    mockProfile({ 'GET /admin/me': () => (ok ? ME : { status: 500, body: { error: 'x' } }) })
+    const user = userEvent.setup()
+    renderProfile()
+    const alert = await within(card()).findByRole('alert')
+    expect(alert).toHaveTextContent("Hisob ma'lumoti yuklanmadi")
+    expect(current()).toBeEnabled()
+    ok = true
+    await user.click(within(card()).getByRole('button', { name: 'Qayta urinish' }))
+    expect(await within(card()).findByText('Login')).toBeInTheDocument()
+    expect(within(card()).queryByRole('alert')).toBeNull()
+  })
+
+  it("javob kutilgan shaklda emas ({}) — xato holati, 'undefined' ko'rsatilmaydi", async () => {
+    mockProfile({ 'GET /admin/me': {} })
+    renderProfile()
+    expect(await within(card()).findByRole('alert')).toBeInTheDocument()
+    expect(card()).not.toHaveTextContent('undefined')
+  })
+
+  it("parol muvaffaqiyatli almashtirilganda karta mahalliy yangilanadi («hozirgina»), `/admin/me` ga qayta so'rov ketmaydi", async () => {
+    mockProfile({ 'POST /admin/change-password': { success: true } })
+    const user = userEvent.setup()
+    renderProfile()
+    await within(card()).findByText('20 kun oldin')
+    await fill(user)
+    await submit(user)
+    await screen.findByText(/Parol o'zgartirildi/)
+    expect(within(card()).getByText('hozirgina')).toBeInTheDocument()
+    expect(mockCallsTo('/admin/me')).toHaveLength(1)
+  })
+
+  it("yashirin login maydoni parol menejeri uchun tokendagi loginni oladi", async () => {
+    renderProfile()
+    await within(card()).findByText('Login')
+    expect(document.querySelector('input[name="username"]')).toHaveValue('admin')
   })
 })
 
@@ -122,7 +193,7 @@ describe('ProfileAdmin: maydonlar', () => {
 
 describe('ProfileAdmin: validatsiya (alert emas — maydon ostida)', () => {
   it("bo'sh forma: har maydonga o'z xabari, so'rov ketmaydi, fokus birinchi xatoli maydonda", async () => {
-    const api = mockApi()
+    const api = mockProfile()
     const user = userEvent.setup()
     renderProfile()
     await submit(user)
@@ -131,28 +202,28 @@ describe('ProfileAdmin: validatsiya (alert emas — maydon ostida)', () => {
     expect(screen.getByText('Yangi parolni takrorlang.')).toBeInTheDocument()
     expect(current()).toHaveAttribute('aria-invalid', 'true')
     expect(current()).toHaveFocus()
-    expect(api.calls).toHaveLength(0)
+    expect(sent(api)).toHaveLength(0)
   })
 
   it("parollar mos kelmasa — takrorlash maydoni ostida xabar, so'rov yuborilmaydi", async () => {
-    const api = mockApi()
+    const api = mockProfile()
     const user = userEvent.setup()
     renderProfile()
     await fill(user, 'eski', 'yangi-parol-1', 'boshqa-parol-2')
     await submit(user)
     expect(screen.getByText('Parollar mos kelmadi.')).toBeInTheDocument()
     expect(confirm()).toHaveFocus()
-    expect(api.calls).toHaveLength(0)
+    expect(sent(api)).toHaveLength(0)
   })
 
   it("8 belgidan qisqa parol frontend da to'xtatiladi (backend bilan mos); aynan 8 belgi — yuboriladi", async () => {
-    const api = mockApi({ 'POST /admin/change-password': { success: true } })
+    const api = mockProfile({ 'POST /admin/change-password': { success: true } })
     const user = userEvent.setup()
     renderProfile()
     await fill(user, 'eski', '1234567')
     await submit(user)
     expect(screen.getByText("Parol kamida 8 ta belgidan iborat bo'lishi kerak.")).toBeInTheDocument()
-    expect(api.calls).toHaveLength(0)
+    expect(sent(api)).toHaveLength(0)
     await user.type(next(), '8')
     await user.type(confirm(), '8')
     await submit(user)
@@ -161,7 +232,7 @@ describe('ProfileAdmin: validatsiya (alert emas — maydon ostida)', () => {
   })
 
   it("yangi parol joriyga teng — rad etiladi (avval hech qayerda tekshirilmasdi); 72 baytdan uzun — rad etiladi", async () => {
-    const api = mockApi()
+    const api = mockProfile()
     const user = userEvent.setup()
     renderProfile()
     await fill(user, 'bir-xil-parol', 'bir-xil-parol')
@@ -171,7 +242,7 @@ describe('ProfileAdmin: validatsiya (alert emas — maydon ostida)', () => {
     await user.type(next(), 'я'.repeat(37)); await user.type(confirm(), 'я'.repeat(37))
     await submit(user)
     expect(screen.getByText('Parol 72 baytdan oshmasligi kerak.')).toBeInTheDocument()
-    expect(api.calls).toHaveLength(0)
+    expect(sent(api)).toHaveLength(0)
   })
 
   it("takrorlash maydonidan chiqilganda mos kelmasa darrov xabar; mos bo'lsa — «Parollar mos.»; yozilganda xato tozalanadi", async () => {
@@ -189,7 +260,7 @@ describe('ProfileAdmin: validatsiya (alert emas — maydon ostida)', () => {
 
 describe('ProfileAdmin: parolni o\'zgartirish', () => {
   it("muvaffaqiyat: to'g'ri body va header (confirm yuborilmaydi), forma tozalanadi va qulflanadi, token o'chiriladi, «Hozir kirish»", async () => {
-    const api = mockApi({ 'POST /admin/change-password': { success: true } })
+    const api = mockProfile({ 'POST /admin/change-password': { success: true } })
     const user = userEvent.setup()
     const { container } = renderProfile()
     await fill(user)
@@ -206,7 +277,7 @@ describe('ProfileAdmin: parolni o\'zgartirish', () => {
   })
 
   it("avtomatik o'tish 4 soniyadan keyin; unmount bo'lsa taymer tozalanadi", async () => {
-    mockApi({ 'POST /admin/change-password': { success: true } })
+    mockProfile({ 'POST /admin/change-password': { success: true } })
     const user = userEvent.setup()
     renderProfile()
     await fill(user)
@@ -217,7 +288,7 @@ describe('ProfileAdmin: parolni o\'zgartirish', () => {
   }, 10000)
 
   it("unmount: kutayotgan o'tish bekor qilinadi (`clearTimeout`)", async () => {
-    mockApi({ 'POST /admin/change-password': { success: true } })
+    mockProfile({ 'POST /admin/change-password': { success: true } })
     const clear = vi.spyOn(globalThis, 'clearTimeout')
     const user = userEvent.setup()
     const { unmount } = renderProfile()
@@ -230,7 +301,7 @@ describe('ProfileAdmin: parolni o\'zgartirish', () => {
   })
 
   it("joriy parol noto'g'ri (401) — JORIY PAROL maydoni ostida xabar, fokus shu yerda, forma saqlanadi; token saqlanadi, tizimdan CHIQMAYDI", async () => {
-    mockApi({ 'POST /admin/change-password': { status: 401, body: { error: "Joriy parol noto'g'ri" } } })
+    mockProfile({ 'POST /admin/change-password': { status: 401, body: { error: "Joriy parol noto'g'ri" } } })
     // `Dashboard.jsx` dagi umumiy 401 handler: avval aynan shu javob adminni login'ga chiqarib yuborardi
     const onUnauthorized = vi.fn()
     const cleanup = installUnauthorizedHandler(onUnauthorized)
@@ -251,7 +322,7 @@ describe('ProfileAdmin: parolni o\'zgartirish', () => {
   })
 
   it("403 (backend tuzatilgach) ham xuddi shunday — maydon xatosi", async () => {
-    mockApi({ 'POST /admin/change-password': { status: 403, body: { error: "Joriy parol noto'g'ri" } } })
+    mockProfile({ 'POST /admin/change-password': { status: 403, body: { error: "Joriy parol noto'g'ri" } } })
     const user = userEvent.setup()
     renderProfile()
     await fill(user)
@@ -261,7 +332,7 @@ describe('ProfileAdmin: parolni o\'zgartirish', () => {
   })
 
   it("boshqa 401 (token eskirgan) — token o'chadi va login ga o'tiladi", async () => {
-    mockApi({ 'POST /admin/change-password': { status: 401, body: { error: "Sessiya eskirgan — parol o'zgartirilgan, qaytadan kiring" } } })
+    mockProfile({ 'POST /admin/change-password': { status: 401, body: { error: "Sessiya eskirgan — parol o'zgartirilgan, qaytadan kiring" } } })
     const user = userEvent.setup()
     renderProfile()
     await fill(user)
@@ -271,7 +342,7 @@ describe('ProfileAdmin: parolni o\'zgartirish', () => {
   })
 
   it("urinishlar limiti (429) — ogohlantirish banneri (`role=alert`), forma ochiq qoladi", async () => {
-    mockApi({ 'POST /admin/change-password': { status: 429, body: { error: "Juda ko'p muvaffaqiyatsiz urinish. 15 daqiqadan so'ng qayta urinib ko'ring." } } })
+    mockProfile({ 'POST /admin/change-password': { status: 429, body: { error: "Juda ko'p muvaffaqiyatsiz urinish. 15 daqiqadan so'ng qayta urinib ko'ring." } } })
     const user = userEvent.setup()
     renderProfile()
     await fill(user)
@@ -281,8 +352,89 @@ describe('ProfileAdmin: parolni o\'zgartirish', () => {
     expect(next()).toHaveValue('yangi-parol-1')
   })
 
+  it("urinishlar limiti (429): blok tugashigacha forma qulflanadi, tugma «Vaqtincha bloklangan», qolgan vaqt `Retry-After` dan (mm:ss)", async () => {
+    mockProfile({ 'POST /admin/change-password': { status: 429, body: { error: "Juda ko'p muvaffaqiyatsiz urinish." }, headers: { 'Retry-After': '872', 'RateLimit-Reset': '872' } } })
+    const user = userEvent.setup()
+    renderProfile()
+    await fill(user)
+    await submit(user)
+    const banner = (await screen.findByText(/Juda ko'p muvaffaqiyatsiz urinish/)).closest('[role="alert"]')
+    expect(banner).toHaveAttribute('data-tone', 'warning')
+    expect(within(banner).getByText(/^14:3\d$|^14:32$/)).toBeInTheDocument()
+    const btn = screen.getByRole('button', { name: 'Vaqtincha bloklangan' })
+    expect(btn).toBeDisabled()
+    expect(current()).toBeDisabled()
+    expect(next()).toBeDisabled()
+    expect(next()).toHaveValue('yangi-parol-1') // maydonlar saqlanadi
+  })
+
+  it("429: `Retry-After` bo'lmasa `RateLimit-Reset`, ikkalasi ham bo'lmasa 15 daqiqa", async () => {
+    mockProfile({ 'POST /admin/change-password': { status: 429, body: { error: 'Limit' }, headers: { 'RateLimit-Reset': '90' } } })
+    const user = userEvent.setup()
+    const { unmount } = renderProfile()
+    await fill(user)
+    await submit(user)
+    expect((await screen.findByText('Limit')).closest('[role="alert"]')).toHaveTextContent(/1:(30|29)/)
+    unmount()
+
+    mockProfile({ 'POST /admin/change-password': { status: 429, body: { error: 'Limit' } } })
+    renderProfile()
+    await fill(user)
+    await submit(user)
+    expect((await screen.findByText('Limit')).closest('[role="alert"]')).toHaveTextContent(/15:00|14:59/)
+  })
+
+  it("429: vaqt tugagach forma o'zi qayta ochiladi (banner yo'qoladi, maydonlar saqlangan); unmount bo'lsa interval tozalanadi", async () => {
+    mockProfile({ 'POST /admin/change-password': { status: 429, body: { error: 'Limit' }, headers: { 'Retry-After': '2' } } })
+    const user = userEvent.setup()
+    const { unmount } = renderProfile()
+    await fill(user)
+    await submit(user)
+    await screen.findByText('Limit')
+    expect(screen.getByRole('button', { name: 'Vaqtincha bloklangan' })).toBeDisabled()
+    const reopened = await screen.findByRole('button', { name: 'Parolni saqlash' }, { timeout: 4000 })
+    expect(reopened).toBeEnabled()
+    expect(screen.queryByText('Limit')).toBeNull()
+    expect(next()).toHaveValue('yangi-parol-1')
+
+    // yangi blok → unmount: interval qolmaydi
+    const clear = vi.spyOn(globalThis, 'clearInterval')
+    await submit(user)
+    await screen.findByText('Limit')
+    unmount()
+    expect(clear).toHaveBeenCalled()
+  }, 12000)
+
+  it("noto'g'ri joriy parol + `RateLimit-Remaining` — maydon xatosida «Yana N ta urinish qoldi.»", async () => {
+    mockProfile({ 'POST /admin/change-password': { status: 403, body: { error: "Joriy parol noto'g'ri" }, headers: { 'RateLimit-Remaining': '3' } } })
+    const user = userEvent.setup()
+    renderProfile()
+    await fill(user)
+    await submit(user)
+    expect((await screen.findByText("Joriy parol noto'g'ri. Yana 3 ta urinish qoldi.")).closest('[role="alert"]')).toBeInTheDocument()
+    expect(current()).toHaveFocus()
+    expect(screen.getByRole('button', { name: 'Parolni saqlash' })).toBeEnabled() // hali bloklanmagan
+  })
+
+  it("`RateLimit-Remaining: 0` — «Urinishlar tugadi»; sarlavha yo'q yoki noto'g'ri bo'lsa qo'shimcha matn chiqmaydi", async () => {
+    for (const [headers, expected] of [
+      [{ 'RateLimit-Remaining': '0' }, "Joriy parol noto'g'ri. Urinishlar tugadi — keyingi xato vaqtincha bloklaydi."],
+      [undefined, "Joriy parol noto'g'ri."],
+      [{ 'RateLimit-Remaining': 'abc' }, "Joriy parol noto'g'ri."],
+      [{ 'RateLimit-Remaining': '-2' }, "Joriy parol noto'g'ri."],
+    ]) {
+      mockProfile({ 'POST /admin/change-password': { status: 403, body: { error: "Joriy parol noto'g'ri" }, headers } })
+      const user = userEvent.setup()
+      const { unmount } = renderProfile()
+      await fill(user)
+      await submit(user)
+      expect(await screen.findByText(expected)).toBeInTheDocument()
+      unmount()
+    }
+  })
+
   it("boshqa server xatosi — banner (server xabari), maydonlar saqlanadi, tugma qayta faol", async () => {
-    mockApi({ 'POST /admin/change-password': { status: 500, body: { error: 'Admin paroli sozlanmagan.' } } })
+    mockProfile({ 'POST /admin/change-password': { status: 500, body: { error: 'Admin paroli sozlanmagan.' } } })
     const user = userEvent.setup()
     renderProfile()
     await fill(user)
@@ -310,7 +462,11 @@ describe('ProfileAdmin: parolni o\'zgartirish', () => {
   it("saqlanmoqda: maydonlar o'chiq, tugma `aria-busy`; ikki marta bosish ikkinchi so'rov yubormaydi", async () => {
     let release
     const held = new Promise(r => { release = r })
-    const fn = vi.fn(async () => { await held; return { ok: true, status: 200, json: async () => ({ success: true }) } })
+    const fn = vi.fn(async url => {
+      if (String(url).endsWith('/admin/me')) return { ok: true, status: 200, json: async () => ME }
+      await held
+      return { ok: true, status: 200, json: async () => ({ success: true }) }
+    })
     vi.stubGlobal('fetch', fn)
     const user = userEvent.setup()
     renderProfile()
@@ -321,14 +477,14 @@ describe('ProfileAdmin: parolni o\'zgartirish', () => {
     expect(btn).toBeDisabled()
     expect(current()).toBeDisabled()
     await user.click(btn)
-    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn.mock.calls.filter(([u]) => !String(u).endsWith('/admin/me'))).toHaveLength(1)
     release()
     await screen.findByText(/Parol o'zgartirildi/)
-    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn.mock.calls.filter(([u]) => !String(u).endsWith('/admin/me'))).toHaveLength(1)
   })
 
   it("inline stil yo'q", async () => {
-    mockApi()
+    mockProfile()
     const user = userEvent.setup()
     const { container } = renderProfile()
     await submit(user)
@@ -342,7 +498,7 @@ describe('ProfileAdmin: «Sessiya xavfsizligi» (logout-all)', () => {
   const confirmBtn = () => within(dialog()).getByRole('button', { name: 'Barchasidan chiqish' })
 
   it('karta: sarlavha, tushuntirish va tugma; bosilmaguncha so\'rov ketmaydi', () => {
-    const api = mockApi()
+    const api = mockProfile()
     renderProfile()
     const card = screen.getByRole('region', { name: 'Sessiya xavfsizligi' })
     expect(within(card).getByText(/Parolni o'zgartirmasdan barcha qurilmalardagi sessiyalarni tugatadi/)).toBeInTheDocument()
@@ -352,7 +508,7 @@ describe('ProfileAdmin: «Sessiya xavfsizligi» (logout-all)', () => {
   })
 
   it('tugma tasdiq dialogini ochadi: matn, fokus «Bekor qilish»da; so\'rov hali ketmaydi', async () => {
-    const api = mockApi()
+    const api = mockProfile()
     const user = userEvent.setup()
     renderProfile()
     await user.click(openBtn())
@@ -363,7 +519,7 @@ describe('ProfileAdmin: «Sessiya xavfsizligi» (logout-all)', () => {
   })
 
   it('«Bekor qilish» va Esc — dialog yopiladi, so\'rov yo\'q, token saqlanadi', async () => {
-    const api = mockApi()
+    const api = mockProfile()
     const user = userEvent.setup()
     renderProfile()
     await user.click(openBtn())
@@ -377,7 +533,7 @@ describe('ProfileAdmin: «Sessiya xavfsizligi» (logout-all)', () => {
   })
 
   it('tasdiqlash: POST /admin/logout-all (Authorization bilan, body yo\'q), token o\'chadi, kirish sahifasiga o\'tiladi', async () => {
-    const api = mockApi({ 'POST /admin/logout-all': { success: true } })
+    const api = mockProfile({ 'POST /admin/logout-all': { success: true } })
     const user = userEvent.setup()
     renderProfile()
     await user.click(openBtn())
@@ -391,7 +547,7 @@ describe('ProfileAdmin: «Sessiya xavfsizligi» (logout-all)', () => {
   })
 
   it('401 (token allaqachon yaroqsiz) — natija bir xil: token o\'chadi, kirish sahifasi', async () => {
-    mockApi({ 'POST /admin/logout-all': { status: 401, body: { error: 'Sessiya tugatilgan' } } })
+    mockProfile({ 'POST /admin/logout-all': { status: 401, body: { error: 'Sessiya tugatilgan' } } })
     const user = userEvent.setup()
     renderProfile()
     await user.click(openBtn())
@@ -401,7 +557,7 @@ describe('ProfileAdmin: «Sessiya xavfsizligi» (logout-all)', () => {
   })
 
   it('429 — xabar kartada, dialog yopiladi, token saqlanadi, qayta urinish mumkin', async () => {
-    const api = mockApi({ 'POST /admin/logout-all': { status: 429, body: { error: "Juda ko'p so'rov yuborildi." } } })
+    const api = mockProfile({ 'POST /admin/logout-all': { status: 429, body: { error: "Juda ko'p so'rov yuborildi." } } })
     const user = userEvent.setup()
     renderProfile()
     await user.click(openBtn())
@@ -415,7 +571,7 @@ describe('ProfileAdmin: «Sessiya xavfsizligi» (logout-all)', () => {
   })
 
   it('server xatosi (500) — server xabari bilan banner, token saqlanadi', async () => {
-    mockApi({ 'POST /admin/logout-all': { status: 500, body: { error: 'Server xatosi' } } })
+    mockProfile({ 'POST /admin/logout-all': { status: 500, body: { error: 'Server xatosi' } } })
     const user = userEvent.setup()
     renderProfile()
     await user.click(openBtn())
@@ -439,7 +595,11 @@ describe('ProfileAdmin: «Sessiya xavfsizligi» (logout-all)', () => {
   it("so'rov ketayotganda: tasdiq `aria-busy`, tugmalar o'chiq, ikki marta bosish ikkinchi so'rov yubormaydi", async () => {
     let release
     const held = new Promise(r => { release = r })
-    const fn = vi.fn(async () => { await held; return { ok: true, status: 200, json: async () => ({ success: true }) } })
+    const fn = vi.fn(async url => {
+      if (String(url).endsWith('/admin/me')) return { ok: true, status: 200, json: async () => ME }
+      await held
+      return { ok: true, status: 200, json: async () => ({ success: true }) }
+    })
     vi.stubGlobal('fetch', fn)
     const user = userEvent.setup()
     renderProfile()
@@ -451,9 +611,9 @@ describe('ProfileAdmin: «Sessiya xavfsizligi» (logout-all)', () => {
     await user.click(confirmBtn())
     await user.keyboard('{Escape}')
     expect(dialog()).toBeInTheDocument()
-    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn.mock.calls.filter(([u]) => !String(u).endsWith('/admin/me'))).toHaveLength(1)
     release()
     expect(await screen.findByText('LOGIN')).toBeInTheDocument()
-    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn.mock.calls.filter(([u]) => !String(u).endsWith('/admin/me'))).toHaveLength(1)
   })
 })

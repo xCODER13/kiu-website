@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount, parseEventDate, eventDateKey, formatEventDate, eventTile, todayKey, isPastEvent, formatDateLong, initialsOf, decodeJwtPayload, formatDateTimeShort, formatTimeLeft, byteLength, passwordStrength, STRENGTH_LABELS } from './helpers'
+import { extractYouTubeShortsId, parseImages, markBroken, formatDateShort, formatCount, parseEventDate, eventDateKey, formatEventDate, eventTile, todayKey, isPastEvent, formatDateLong, initialsOf, decodeJwtPayload, formatDateTimeShort, formatTimeLeft, formatTimeAgo, formatCountdown, rateLimitInfo, byteLength, passwordStrength, STRENGTH_LABELS } from './helpers'
 
 const ID = 'dQw4w9WgXcQ'
 describe('extractYouTubeShortsId', () => {
@@ -163,5 +163,41 @@ describe('Profil yordamchilari (6.28)', () => {
     expect(passwordStrength('abcdefg123')).toBe(3)
     expect(passwordStrength('Kuz-Qarshi-2026!')).toBe(4)
     expect(STRENGTH_LABELS).toEqual({ 1: 'Juda zaif', 2: 'Zaif', 3: 'Yaxshi', 4: 'Kuchli' })
+  })
+})
+
+describe('formatTimeAgo / formatCountdown / rateLimitInfo (Profil)', () => {
+  const M = 60000
+  it('formatTimeAgo — hozirgina / daqiqa / soat / kun; kelajak va noto\'g\'ri qiymat — bo\'sh', () => {
+    expect(formatTimeAgo(0)).toBe('hozirgina')
+    expect(formatTimeAgo(59 * 1000)).toBe('hozirgina')
+    expect(formatTimeAgo(5 * M)).toBe('5 daqiqa oldin')
+    expect(formatTimeAgo(3 * 60 * M)).toBe('3 soat oldin')
+    expect(formatTimeAgo(20 * 24 * 60 * M)).toBe('20 kun oldin')
+    expect(formatTimeAgo(-1)).toBe('')
+    expect(formatTimeAgo(NaN)).toBe('')
+    expect(formatTimeAgo(undefined)).toBe('')
+  })
+
+  it("formatCountdown — m:ss, soatdan oshsa h:mm:ss; manfiy va noto'g'ri qiymat — 0:00", () => {
+    expect(formatCountdown(872)).toBe('14:32')
+    expect(formatCountdown(59)).toBe('0:59')
+    expect(formatCountdown(60)).toBe('1:00')
+    expect(formatCountdown(900)).toBe('15:00')
+    expect(formatCountdown(3905)).toBe('1:05:05')
+    expect(formatCountdown(0.2)).toBe('0:01') // yuqoriga yaxlitlanadi: 0:00 da qulf hali ochilmagan
+    expect(formatCountdown(-5)).toBe('0:00')
+    expect(formatCountdown(NaN)).toBe('0:00')
+  })
+
+  it('rateLimitInfo — sarlavhalarni o\'qiydi; Retry-After RateLimit-Reset dan ustun; yo\'q/noto\'g\'ri — null', () => {
+    const res = h => ({ headers: new Headers(h) })
+    expect(rateLimitInfo(res({ 'RateLimit-Remaining': '3', 'RateLimit-Reset': '120' }))).toEqual({ remaining: 3, resetSec: 120 })
+    expect(rateLimitInfo(res({ 'Retry-After': '30', 'RateLimit-Reset': '120' }))).toEqual({ remaining: null, resetSec: 30 })
+    expect(rateLimitInfo(res({}))).toEqual({ remaining: null, resetSec: null })
+    expect(rateLimitInfo(res({ 'RateLimit-Remaining': 'x', 'Retry-After': 'Wed, 21 Oct 2026 07:28:00 GMT', 'RateLimit-Reset': '' }))).toEqual({ remaining: null, resetSec: null })
+    expect(rateLimitInfo(res({ 'RateLimit-Remaining': '-1' }))).toEqual({ remaining: null, resetSec: null })
+    expect(rateLimitInfo({})).toEqual({ remaining: null, resetSec: null }) // headers yo'q (eski mock / g'alati javob)
+    expect(rateLimitInfo(undefined)).toEqual({ remaining: null, resetSec: null })
   })
 })

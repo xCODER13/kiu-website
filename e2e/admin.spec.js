@@ -276,6 +276,9 @@ test.describe('Admin: profil (parolni o\'zgartirish)', () => {
     await expect(page).toHaveURL(/\/admin\/profile$/)
     await expect(page.getByRole('heading', { name: 'Profil sozlamalari' })).toBeVisible()
     await expect(page.getByText('Sessiya tugaydi')).toBeVisible()
+    // `GET /api/admin/me` haqiqiy backend'dan: sarlavhalar va qatorlar (parol hech o'zgarmagan bo'lsa «Hech qachon»)
+    await expect(page.getByText("Parol oxirgi o'zgargan")).toBeVisible()
+    await expect(page.getByText("Hisob ma'lumoti yuklanmadi")).toHaveCount(0)
 
     const requests = []
     page.on('request', req => { if (req.url().includes('/admin/change-password')) requests.push(req) })
