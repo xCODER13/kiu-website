@@ -20,6 +20,7 @@ const galleryRoutes = require('./routes/gallery.routes')
 const applicationsRoutes = require('./routes/applications.routes')
 const statsRoutes = require('./routes/stats.routes')
 const miscRoutes = require('./routes/misc.routes')
+const cspRoutes = require('./routes/csp.routes')
 
 const app = express()
 
@@ -34,6 +35,10 @@ app.use(helmet())
 // pasaytirilmaydi, balki har bir so'rov/javob uchun avtomatik yoziladigan log
 // umuman chiqarilmaydi. Bu Supertest chiqishini chalkashtirmaslik uchun kerak.
 app.use(pinoHttp({ logger, autoLogging: process.env.NODE_ENV !== 'test' }))
+
+// CSP hisobotlari (5.1) CORS'DAN OLDIN: brauzer ularni CORS orqali emas, o'zi yuboradi (`Origin` har xil bo'lishi mumkin —
+// masalan, Vercel branch-preview). CORS'dan keyin turganda ruxsatsiz origin'dan kelgan hisobot 403 + `[CORS]` shovqin berardi.
+app.use('/api/csp-report', cspRoutes)
 
 app.use(cors(corsOptions))
 // News/Events/Teachers rasm bilan yuklash endi multipart/form-data (multer)

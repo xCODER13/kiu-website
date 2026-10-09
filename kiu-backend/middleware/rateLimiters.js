@@ -138,4 +138,27 @@ const mutationLimiter = rateLimit({
   }
 })
 
-module.exports = { loginLimiter, loginUsernameLimiter, resetLoginUsernameLimit, changePasswordLimiter, formLimiter, viewLimiter, statsLimiter, mutationLimiter }
+// ── CSP HISOBOT LIMITERLARI (5.1) — `POST /api/csp-report` autentifikatsiyasiz, shuning uchun ikki qavat ──
+// 1) IP bo'yicha: bitta sahifa yuklanishi bir nechta hisobot yuborishi mumkin (har biri alohida so'rov), shuning uchun 30/daqiqa.
+// 2) Umumiy (barcha IP'lar): ko'p IP'dan toshqin Render loglarini to'ldirib, haqiqiy voqealarni yashirmasin — 600/daqiqa.
+// Ikkalasi ham JIM: loglanmaydi (aks holda limitning o'zi logni to'ldirardi). Tartib: avval IP, keyin umumiy.
+const cspReportLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: false,
+  legacyHeaders: false,
+  handler: (req, res) => res.status(429).end()
+})
+const CSP_GLOBAL_KEY = 'csp-report-global'
+const cspReportGlobalLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 600,
+  standardHeaders: false,
+  legacyHeaders: false,
+  keyGenerator: () => CSP_GLOBAL_KEY,
+  handler: (req, res) => res.status(429).end()
+})
+// Faqat testlar uchun (server kodida chaqirilmaydi).
+const resetCspReportGlobalLimit = () => cspReportGlobalLimiter.resetKey(CSP_GLOBAL_KEY)
+
+module.exports = { loginLimiter, loginUsernameLimiter, resetLoginUsernameLimit, changePasswordLimiter, formLimiter, viewLimiter, statsLimiter, mutationLimiter, cspReportLimiter, cspReportGlobalLimiter, resetCspReportGlobalLimit }
