@@ -43,6 +43,13 @@ describe('vercel.json: Content-Security-Policy-Report-Only', () => {
     expect(policy).not.toMatch(/(^|[\s;])\*([\s;]|$)|\shttp:/)
   })
 
+  it("report-uri: buzilishlar backend'ning `/api/csp-report` ga yuboriladi (5.1); API origin connect-src bilan bir xil", () => {
+    const api = read('e2e/config.js').match(/CSP_API_ORIGIN = '([^']+)'/)?.[1]
+    expect(dir('report-uri')).toBe(`report-uri ${api}/api/csp-report`)
+    // backend'da shu yo'l mavjud (nomi o'zgarsa, hisobotlar jimgina yo'qolmasin)
+    expect(read('kiu-backend/app.js')).toContain("app.use('/api/csp-report'")
+  })
+
   it("img-src: `https:` (YouTube miniatyurasi i.ytimg.com — 6.16 video posteri) ruxsat etilgan; ShortsTab shu manzildan oladi", () => {
     expect(dir('img-src')).toContain(' https:')
     expect(read('src/pages/news/ShortsTab.jsx')).toContain('https://i.ytimg.com/vi/')
