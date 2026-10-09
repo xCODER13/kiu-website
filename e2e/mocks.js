@@ -64,6 +64,6 @@ export async function stubExternal(page, seen) {
 // Ommaviy sahifa marshrutlari (App.jsx) — smoke/a11y/CSP testlari uchun yagona ro'yxat
 export const PUBLIC_ROUTES = [
   '/', '/about', '/admission', '/faculty', '/international', '/contact', '/faq', '/documents', '/hemis',
-  '/achievements', '/testimonials', '/map', '/qrcode', '/student-life', '/teachers', '/events', '/vacancies',
+  '/achievements', '/map', '/qrcode', '/student-life', '/teachers', '/events', '/vacancies',
   '/news', '/news/n1', '/sorting-hat',
 ]

@@ -76,7 +76,6 @@ export default function Footer() {
               ['/student-life', 'gallery'],
               ['/events', 'events'],
               ['/achievements', 'achievements'],
-              ['/testimonials', 'testimonials'],
               ['/faq', 'faq'],
             ].map(([to, key]) => (
               <NavLink key={to} to={to} className="footer-link">{t(`footer.links.${key}`)}</NavLink>

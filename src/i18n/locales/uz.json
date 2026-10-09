@@ -37,7 +37,6 @@
       "international": { "title": "Xalqaro hamkorlik", "desc": "KIU ning xorijiy universitetlar va xalqaro tashkilotlar bilan hamkorlik dasturlari." },
       "hemis": { "title": "Elektron universitet", "desc": "KIU HEMIS tizimiga kirish — talabalar va o'qituvchilar uchun." },
       "achievements": { "title": "Yutuqlar", "desc": "KIU va uning talabalari, o'qituvchilarining yutuqlari va mukofotlari." },
-      "testimonials": { "title": "Fikr-mulohazalar", "desc": "KIU talabalari va bitiruvchilarining universitetimiz haqidagi fikrlari." },
       "map": { "title": "Kampus xaritasi", "desc": "KIU kampusining interaktiv xaritasi va yo'nalish ko'rsatmalari." },
       "sortingHat": { "title": "Yo'nalishni aniqlash", "desc": "KIU Sehrli Shlyapasi — bir necha savol orqali siz uchun eng mos yo'nalishni aniqlang." },
       "qrcode": { "title": "QR Kod", "desc": "KIU rasmiy QR kodlari va tezkor havolalar." },
@@ -71,7 +70,6 @@
       "news": "Yangiliklar",
       "events": "Tadbirlar",
       "gallery": "Talabalar hayoti",
-      "testimonials": "Fikr-mulohazalar",
       "contact": "Bog'lanish",
       "map": "Xarita",
       "qrcode": "QR kod"
@@ -96,7 +94,6 @@
       "admission": "Qabul",
       "events": "Tadbirlar",
       "achievements": "Yutuqlar",
-      "testimonials": "Sharhlar",
       "faq": "FAQ",
       "gallery": "Talabalar hayoti",
       "map": "Xarita",
@@ -406,20 +403,6 @@
       "8": { "title": "Zakovat kubogi g'olibi", "org": "KIU Rektor kubogi" }
     }
   },
-  "testimonials": {
-    "title": "Talabalar sharhlari",
-    "subtitle": "Talabalarimiz KIU haqida nima deydi",
-    "year": "{{n}}-kurs",
-    "graduate": "Bitiruvchi",
-    "reviews": {
-      "1": { "faculty": "Dasturiy injiniring", "text": "KIU da o'qish hayotimni o'zgartirdi. Zamonaviy o'qitish usullari va professional o'qituvchilar tufayli ko'p narsani o'rgandim." },
-      "2": { "faculty": "Iqtisodiyot", "text": "Xalqaro hamkorlik dasturlari va stipendiya imkoniyatlari juda zo'r. Xorijiy universitetlarda o'qish imkonim bo'ldi." },
-      "3": { "faculty": "Psixologiya", "text": "O'qituvchilar har doim yordam berishga tayyor. Kampus muhiti juda iliq va do'stona. KIU ni tanlashimdan xursandman!" },
-      "4": { "faculty": "Moliya", "text": "Bepul avtobus, yotoqxona va zamonaviy kutubxona — bularning barchasi o'qishni qulay qilib berdi." },
-      "5": { "faculty": "Filologiya", "text": "Xalqaro konferensiyalarda ishtirok etish imkoniyati ajoyib. Bu tajriba mening kelajak rejalari uchun katta ahamiyat kasb etdi." },
-      "6": { "faculty": "Dasturiy injiniring", "text": "KIU da olgan bilimlarim tufayli yaxshi ish topishga muvaffaq bo'ldim. Universitetimizdan faxrlanaman!" }
-    }
-  },
   "map": {
     "title": "Kampus xaritasi",
     "subtitle": "KIU kampuslari joylashuvi",
@@ -448,7 +431,15 @@
     "next": "Keyingi rasm",
     "sections": { "club": "Klublar va to'garaklar", "sport": "Sport va yutuqlar", "campus": "Kampus va yotoqxona hayoti" },
     "photos": "Fotogalereya",
-    "more": "Batafsil"
+    "more": "Batafsil",
+    "tabs": { "sections": "Bo'limlar" },
+    "searchPh": "Talabalar hayoti ichida qidiring...",
+    "noResults": "\"{{query}}\" bo'yicha hech narsa topilmadi",
+    "all": "Barchasi",
+    "loadMore": "Ko'proq yuklash ({{count}} ta qoldi)",
+    "openLink": "Havolani ochish",
+    "view": "Ko'rish",
+    "sectionsEmpty": "Hozircha bo'limlar yo'q"
   },
   "teachers": {
     "title": "Professor-o'qituvchilar",
@@ -783,7 +774,6 @@
       "hemis": "Elektron universitet HEMIS",
       "faq": "FAQ savol javob",
       "events": "Tadbirlar taqvimi",
-      "testimonials": "Talabalar sharhlari",
       "achievements": "Yutuqlar mukofotlar",
       "gallery": "Talabalar hayoti fotogalereya",
       "map": "Xarita kampus joylashuvi",

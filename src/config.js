@@ -64,7 +64,6 @@ const config = {
     { title: "FAQ", url: '/faq' },
     { title: "Tadbirlar", url: '/events' },
     { title: "Yutuqlar", url: '/achievements' },
-    { title: "Sharhlar", url: '/testimonials' },
     { title: "QR kod", url: '/qrcode' },
   ],
 }

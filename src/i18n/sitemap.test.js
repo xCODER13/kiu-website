@@ -17,6 +17,6 @@ describe('public/sitemap.xml', () => {
     expect(xml).toContain('hreflang="x-default" href="https://kiu-university.vercel.app/"')
     expect(xml).toContain('<loc>https://kiu-university.vercel.app/ru/about</loc>')
     expect(xml).toContain('<loc>https://kiu-university.vercel.app/ru/news</loc>')
-    expect((xml.match(/<url>/g) || []).length).toBe(57) // 19 sahifa × 3 til
+    expect((xml.match(/<url>/g) || []).length).toBe(54) // 18 sahifa × 3 til
   })
 })

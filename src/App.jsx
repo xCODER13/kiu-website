@@ -22,7 +22,6 @@ const NewsDetail      = lazy(() => import('./pages/NewsDetail'))
 const Contact         = lazy(() => import('./pages/Contact'))
 const FAQ             = lazy(() => import('./pages/FAQ'))
 const Events          = lazy(() => import('./pages/Events'))
-const Testimonials    = lazy(() => import('./pages/Testimonials'))
 const Achievements    = lazy(() => import('./pages/Achievements'))
 const QRCode          = lazy(() => import('./pages/QRCode'))
 const Teachers        = lazy(() => import('./pages/Teachers'))
@@ -65,7 +64,6 @@ const SEO_KEYS = {
   '/international': 'international',
   '/hemis': 'hemis',
   '/achievements': 'achievements',
-  '/testimonials': 'testimonials',
   '/map': 'map',
   '/sorting-hat': 'sortingHat',
   '/qrcode': 'qrcode',
@@ -249,7 +247,6 @@ function PageRoutes({ onApply }) {
       <Route path="/vacancies" element={<Vacancies />} />
       <Route path="/faq" element={<FAQ />} />
       <Route path="/events" element={<Events />} />
-      <Route path="/testimonials" element={<Testimonials />} />
       <Route path="/achievements" element={<Achievements />} />
       <Route path="/qrcode" element={<QRCode />} />
       <Route path="/teachers" element={<Teachers />} />

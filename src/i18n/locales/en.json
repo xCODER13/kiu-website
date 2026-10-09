@@ -37,7 +37,6 @@
       "international": { "title": "International cooperation", "desc": "KIU's cooperation programs with foreign universities and international organizations." },
       "hemis": { "title": "Electronic university", "desc": "Sign in to the KIU HEMIS system — for students and teachers." },
       "achievements": { "title": "Achievements", "desc": "Achievements and awards of KIU, its students and teachers." },
-      "testimonials": { "title": "Testimonials", "desc": "What KIU students and graduates say about our university." },
       "map": { "title": "Campus map", "desc": "Interactive map of the KIU campuses and directions." },
       "sortingHat": { "title": "Find your program", "desc": "The KIU Sorting Hat — answer a few questions to find the program that suits you best." },
       "qrcode": { "title": "QR codes", "desc": "Official KIU QR codes and quick links." },
@@ -71,7 +70,6 @@
       "news": "News",
       "events": "Events",
       "gallery": "Student life",
-      "testimonials": "Testimonials",
       "contact": "Contact us",
       "map": "Map",
       "qrcode": "QR codes"
@@ -96,7 +94,6 @@
       "admission": "Admission",
       "events": "Events",
       "achievements": "Achievements",
-      "testimonials": "Testimonials",
       "faq": "FAQ",
       "gallery": "Student life",
       "map": "Map",
@@ -395,20 +392,6 @@
       "8": { "title": "Zakovat Cup Winner", "org": "KIU Rector's Cup" }
     }
   },
-  "testimonials": {
-    "title": "Student reviews",
-    "subtitle": "What our students say about KIU",
-    "year": "Year {{n}}",
-    "graduate": "Graduate",
-    "reviews": {
-      "1": { "faculty": "Software Engineering", "text": "Studying at KIU changed my life. Thanks to modern teaching methods and professional teachers, I have learned a great deal." },
-      "2": { "faculty": "Economics", "text": "The international cooperation programs and scholarship opportunities are excellent. I got the chance to study at foreign universities." },
-      "3": { "faculty": "Psychology", "text": "The teachers are always ready to help. The campus atmosphere is very warm and friendly. I am happy I chose KIU!" },
-      "4": { "faculty": "Finance", "text": "The free bus, the dormitory and the modern library — all of these have made studying comfortable." },
-      "5": { "faculty": "Philology", "text": "The opportunity to take part in international conferences is wonderful. This experience matters a lot for my future plans." },
-      "6": { "faculty": "Software Engineering", "text": "Thanks to the knowledge I gained at KIU, I was able to find a good job. I am proud of our university!" }
-    }
-  },
   "map": {
     "title": "Campus map",
     "subtitle": "Locations of the KIU campuses",
@@ -437,7 +420,15 @@
     "next": "Next photo",
     "sections": { "club": "Clubs and societies", "sport": "Sports and achievements", "campus": "Campus and dormitory life" },
     "photos": "Photo gallery",
-    "more": "Learn more"
+    "more": "Learn more",
+    "tabs": { "sections": "Sections" },
+    "searchPh": "Search within student life...",
+    "noResults": "Nothing found for \"{{query}}\"",
+    "all": "All",
+    "loadMore": "Load more ({{count}} left)",
+    "openLink": "Open link",
+    "view": "View",
+    "sectionsEmpty": "No sections yet"
   },
   "teachers": {
     "title": "Professor and Teachers",
@@ -781,7 +772,6 @@
       "hemis": "HEMIS electronic university",
       "faq": "FAQ — questions and answers",
       "events": "Events calendar",
-      "testimonials": "Student testimonials",
       "achievements": "Achievements and awards",
       "gallery": "Student life photo gallery",
       "map": "Map and campus location",

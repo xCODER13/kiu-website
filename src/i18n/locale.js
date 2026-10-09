@@ -24,7 +24,7 @@ export const PREFIXED_LANGS = LANGS.filter(l => l !== DEFAULT_LANG)
 const ALL_PAGES = [
   '/', '/admission', '/international', '/contact', '/faq',
   '/about', '/faculty', '/hemis', '/documents',
-  '/achievements', '/testimonials', '/map', '/qrcode', '/student-life',
+  '/achievements', '/map', '/qrcode', '/student-life',
   '/teachers', '/events', '/vacancies', '/news', '/sorting-hat',
 ]
 export const TRANSLATED_BY_LANG = {
