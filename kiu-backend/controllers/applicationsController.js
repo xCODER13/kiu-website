@@ -3,17 +3,55 @@ const { fail } = require('../middleware/errorHandler')
 const audit = require('../services/auditLog')
 const { sendTelegram, escapeTelegramHtml } = require('../services/telegram')
 const { maskPhone } = require('../utils/phone')
+const { parsePage } = require('../utils/pagination')
 
+const APPLICATION_STATUSES = Application.schema.path('status').enumValues
+const LIST_PAGE_SIZE = 20
+const LIST_PAGE_MAX = 50
+
+// `type=admission` — `type` maydoni umuman yo'q eski hujjatlarni ham qamraydi (`$in: [.., null]` yo'q maydonga ham mos):
+// ular qabul arizasi hisoblanadi (ilgari buni klient filtrlardi). scripts/backfill-application-type.js ularni
+// `type: 'admission'` qilib bo'lgach, bu tolerantlikni olib tashlash mumkin.
+function typeFilter(type) {
+  if (type === 'vacancy') return { type: 'vacancy' }
+  if (type === 'admission') return { type: { $in: ['admission', null] } }
+  return {}
+}
+
+// GET /api/applications?type=&status=&page=&limit=
+// - `page`/`limit` YO'Q bo'lsa — eski format (oddiy massiv), shuning uchun backend frontenddan oldin deploy qilinsa
+//   hech narsa buzilmaydi. (Katta ro'yxatda shaxsiy ma'lumot sahifalarsiz qaytmasligi uchun frontend sahifalab so'raydi.)
+// - `page` yoki `limit` bor — `{ items, total, page, limit, counts }`: `total` — joriy filtr (type+status) bo'yicha,
+//   `counts` — faqat TYPE bo'yicha holatlar sanog'i (filtr chiplari uchun; `status` filtri ularni o'zgartirmaydi).
 async function getAll(req, res) {
   try {
-    const { type } = req.query
-    let filter = { ...Application.ACTIVE } // o'chirilganlar (4.5) ro'yxatda ko'rinmaydi
-    if (type === 'vacancy') {
-      filter = { ...filter, type: 'vacancy' }
-    } else if (type === 'admission') {
-      filter = { ...filter, type: 'admission' }
+    const { type, status, page, limit } = req.query
+    // `typeof`: status faqat ruxsat etilgan qiymatlardan biri (obyekt/massiv filtrga o'tmasin)
+    if (status !== undefined && (typeof status !== 'string' || !APPLICATION_STATUSES.includes(status))) {
+      return res.status(400).json({ error: "Holat noto'g'ri" })
     }
-    res.json(await Application.find(filter).sort({ createdAt: -1 }))
+    // o'chirilganlar (4.5) ro'yxatda ko'rinmaydi
+    const base = { ...Application.ACTIVE, ...typeFilter(type) }
+    const filter = status ? { ...base, status } : base
+    const columns = '-__v -deletedAt'
+    const order = { createdAt: -1, _id: -1 } // `_id` — createdAt teng bo'lganda sahifalar barqaror
+
+    if (page === undefined && limit === undefined) {
+      return res.json(await Application.find(filter).select(columns).sort(order))
+    }
+
+    const paging = parsePage({ page, limit }, { defaultLimit: LIST_PAGE_SIZE, max: LIST_PAGE_MAX })
+    const [items, total, grouped] = await Promise.all([
+      Application.find(filter).select(columns).sort(order).skip(paging.skip).limit(paging.limit),
+      Application.countDocuments(filter),
+      Application.aggregate([{ $match: base }, { $group: { _id: '$status', n: { $sum: 1 } } }]),
+    ])
+    const counts = { all: 0, new: 0, reviewed: 0, accepted: 0, rejected: 0 }
+    for (const g of grouped) {
+      if (g._id in counts) counts[g._id] = g.n
+      counts.all += g.n
+    }
+    res.json({ items, total, page: paging.page, limit: paging.limit, counts })
   } catch (e) { fail(req, res, 500, e) }
 }
 
@@ -111,8 +149,6 @@ async function create(req, res) {
 // (shaxsiy ma'lumot). Admin panel esa faqat `{ status }` yuboradi. Endi `status` shart va
 // ruxsat etilgan qiymatlardan biri bo'lishi kerak (aks holda 400); body'dagi boshqa hamma
 // maydon e'tiborsiz qoldiriladi va saqlanmaydi. Arizachi ma'lumotlari faqat POST orqali kiradi.
-const APPLICATION_STATUSES = Application.schema.path('status').enumValues
-
 async function update(req, res) {
   try {
     const status = req.body && req.body.status
