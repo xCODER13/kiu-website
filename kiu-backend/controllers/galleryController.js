@@ -4,6 +4,7 @@ const audit = require('../services/auditLog')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { applyPagination } = require('../utils/pagination')
 const { rejectForeignImageUrls } = require('../utils/imageUrls')
+const { removeStoredImages, removedUrls } = require('../services/imageCleanup')
 
 async function getAll(req, res) {
   try {
@@ -84,6 +85,8 @@ async function update(req, res) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
       return res.status(404).json({ error: 'Topilmadi' })
     }
+    // DB yangilandi — albomdan olib tashlangan rasmlar Storage'dan o'chiriladi (2.1; xato bo'lsa faqat log)
+    await removeStoredImages(req, removedUrls(stored ? stored.images : [], images))
     res.json(updated)
   } catch (e) {
     if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
@@ -95,6 +98,7 @@ async function remove(req, res) {
   try {
     const deleted = await Gallery.findByIdAndDelete(req.params.id)
     if (!deleted) return res.status(404).json({ error: 'Topilmadi' })
+    await removeStoredImages(req, deleted.images) // avval DB, keyin Storage (2.1)
     await audit.record('delete', req, { resource: 'gallery', targetId: req.params.id })
     res.json({ success: true })
   } catch (e) { fail(req, res, 500, e) }
