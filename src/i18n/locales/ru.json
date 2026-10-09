@@ -270,6 +270,9 @@
     "whoLabel": "Для кого",
     "conditionsLabel": "Условия",
     "details": "Подробнее",
+    "viewPoster": "Смотреть плакат",
+    "close": "Закрыть",
+    "posterAlt": "Плакат: {{name}}",
     "products": {
       "firstStep": {
         "title": "«Первый шаг в предпринимательство»",

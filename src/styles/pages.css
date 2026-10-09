@@ -1370,7 +1370,13 @@
   .kq-actions--center { justify-content: center; margin-top: 0; }
   .kq-lead { max-width: 680px; margin: -8px 0 24px; font-size: 1rem; line-height: 1.7; color: var(--color-text-muted); }
   .kq-list { display: flex; flex-direction: column; gap: 16px; }
-  .card.kq-product { display: grid; gap: 20px; padding: 28px 32px; border-radius: 18px; }
+  .card.kq-product { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 32px; align-items: start; padding: 28px; border-radius: 18px; }
+  .kq-product__main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+  /* Plakat qirqilmaydi: kenglikka moslanadi, balandlik nisbat bo'yicha (width/height atributlari + height: auto + object-fit: contain) */
+  .kq-poster { display: flex; flex-direction: column; gap: 10px; width: 100%; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: center; cursor: zoom-in; }
+  .kq-poster__img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-surface-3); object-fit: contain; }
+  .kq-poster__hint { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.8125rem; font-weight: 600; line-height: 1.2; color: var(--color-brand); }
+  .kq-poster:hover .kq-poster__hint { text-decoration: underline; }
   .kq-product__head { display: flex; align-items: flex-start; gap: 18px; }
   .kq-product__num {
     flex: none; display: grid; place-items: center; width: 44px; height: 44px;
@@ -1380,7 +1386,7 @@
   }
   .kq-product__title { margin: 2px 0 6px; font-size: 1.25rem; font-weight: 800; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-text); }
   .kq-product__desc { margin: 0; font-size: 0.9375rem; line-height: 1.65; color: var(--color-text-muted); }
-  .kq-product__body { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 32px; padding-top: 20px; border-top: 1px solid var(--color-border); }
+  .kq-product__body { display: flex; flex-direction: column; gap: 18px; padding-top: 20px; border-top: 1px solid var(--color-border); }
   .kq-product__label { margin: 0 0 10px; font-size: 12px; font-weight: 700; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-brand); }
   .kq-product__who { margin: 0; font-size: 0.9375rem; line-height: 1.7; color: var(--color-text); }
   .kq-conditions { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
@@ -1388,7 +1394,7 @@
   .kq-conditions__mark { flex: none; display: grid; place-items: center; width: 22px; height: 22px; margin-top: 1px; border-radius: 50%; background: var(--color-brand-subtle); color: var(--color-brand); }
   .kq-product__link { justify-self: start; }
   .kq-note { max-width: 760px; margin: 20px 0 0; font-size: 0.8125rem; line-height: 1.6; color: var(--color-text-muted); }
-  @media (max-width: 860px) { .kq-product__body { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+  @media (max-width: 860px) { .card.kq-product { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
 
   /* ── Normativ hujjatlar ───────────────────────────────────────────── */
   .card.doc-card { display: flex; flex-direction: column; padding: 28px 28px 24px; border-radius: 18px; color: inherit; text-decoration: none; }
@@ -1962,6 +1968,9 @@
     font-size: var(--text-xs);
     font-weight: 700;
   }
+  /* Plakat (Kelajakka qadam): bitta katta rasm, strelkasiz va sarlavhasiz — viewport'ga sig'adi, nisbat saqlanadi */
+  .photo-lightbox--poster .photo-lightbox__content { justify-content: center; max-width: 1100px; height: 100%; }
+  .photo-lightbox--poster .photo-lightbox__img { width: auto; height: auto; max-height: calc(100vh - 96px); }
   @media (max-width: 640px) {
     .photo-lightbox { padding: 16px; }
     .photo-lightbox__btn--prev,

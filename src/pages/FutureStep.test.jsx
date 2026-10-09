@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { readFileSync } from 'node:fs'
 import FutureStep from './FutureStep'
 
 const NBU_PRODUCTS = 'https://nbu.uz/kichik-biznes/kreditlar/yangi-kelajakka-qadam-kreditlari'
@@ -49,5 +51,46 @@ describe('FutureStep («Kelajakka qadam»)', () => {
   it("barcha ikonkalar dekorativ (`aria-hidden`)", () => {
     const { container } = render(<FutureStep />)
     container.querySelectorAll('svg').forEach(svg => expect(svg).toHaveAttribute('aria-hidden', 'true'))
+  })
+})
+
+describe('FutureStep — plakatlar (qirqilmaydi, katta ko\'rinish)', () => {
+  it("har yo'nalish kartasida to'liq plakat: alt, haqiqiy o'lcham (width/height), lazy; 5 ta", () => {
+    const { container } = render(<FutureStep />)
+    const imgs = container.querySelectorAll('.kq-product .kq-poster__img')
+    expect(imgs).toHaveLength(5)
+    imgs.forEach(img => {
+      expect(img.getAttribute('alt')).toMatch(/^Plakat: «.+»$/)
+      expect(Number(img.getAttribute('width'))).toBeGreaterThan(1000)
+      expect(Number(img.getAttribute('height'))).toBeGreaterThan(1000)
+      expect(img).toHaveAttribute('loading', 'lazy')
+    })
+    expect(screen.getAllByRole('button', { name: /Plakatni ko'rish/ })).toHaveLength(5)
+  })
+
+  it("CSS: plakat kenglikka moslanadi, balandlik nisbat bo'yicha (height: auto) va `object-fit: contain` — `cover` yo'q", () => {
+    const css = readFileSync('src/styles/pages.css', 'utf-8')
+    const rule = css.match(/\.kq-poster__img \{([^}]*)\}/)[1]
+    expect(rule).toMatch(/width: 100%/)
+    expect(rule).toMatch(/height: auto/)
+    expect(rule).toMatch(/object-fit: contain/)
+    expect(rule).not.toMatch(/cover|aspect-ratio|max-height|overflow/)
+    const lb = css.match(/\.photo-lightbox--poster \.photo-lightbox__img \{([^}]*)\}/)[1]
+    expect(lb).toMatch(/height: auto/)
+    expect(lb).not.toMatch(/object-fit: cover/)
+  })
+
+  it("plakatni bosganda dialog ochiladi (to'liq rasm), Esc yoki yopish tugmasi bilan yopiladi", async () => {
+    const user = userEvent.setup()
+    render(<FutureStep />)
+    await user.click(screen.getAllByRole('button', { name: /Plakatni ko'rish/ })[2])
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveAccessibleName('«Biznes progress»')
+    expect(dialog.querySelector('img')).toHaveAttribute('alt', 'Plakat: «Biznes progress»')
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    await user.click(screen.getAllByRole('button', { name: /Plakatni ko'rish/ })[0])
+    await user.click(screen.getByRole('button', { name: 'Yopish' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 })

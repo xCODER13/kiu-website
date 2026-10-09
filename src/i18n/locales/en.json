@@ -262,6 +262,9 @@
     "whoLabel": "Who it is for",
     "conditionsLabel": "Terms",
     "details": "Details",
+    "viewPoster": "View poster",
+    "close": "Close",
+    "posterAlt": "Poster: {{name}}",
     "products": {
       "firstStep": {
         "title": "“Tadbirkorlikka ilk qadam” (First Step into Business)",

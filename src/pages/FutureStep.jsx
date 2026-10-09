@@ -1,9 +1,17 @@
 // «Kelajakka qadam» — yoshlar va bitiruvchilarni qo'llab-quvvatlash dasturi (operator: O'zbekiston Milliy banki).
-// Matnlar i18n'da (futureStep.*); bu yerda faqat tuzilma, havolalar va ikonkalar.
+// Matnlar i18n'da (futureStep.*); bu yerda faqat tuzilma, havolalar, ikonkalar va plakatlar.
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import PageHero from '../components/PageHero'
 import Icon from '../components/Icon'
+import ContentLangNote from '../i18n/ContentLangNote'
 import telHref from '../utils/telHref'
+import PosterLightbox from './futurestep/PosterLightbox'
+import posterFirstStep from '../assets/nbu-posters/firstStep.webp'
+import posterBizStart from '../assets/nbu-posters/bizStart.webp'
+import posterBizProgress from '../assets/nbu-posters/bizProgress.webp'
+import posterStudentInvest from '../assets/nbu-posters/studentInvest.webp'
+import posterFirstProfession from '../assets/nbu-posters/firstProfession.webp'
 
 const NBU_URL = 'https://nbu.uz/'
 const NBU_PRODUCTS_URL = 'https://nbu.uz/kichik-biznes/kreditlar/yangi-kelajakka-qadam-kreditlari'
@@ -17,17 +25,20 @@ const OPPORTUNITIES = [
   { id: 'abroad', icon: <><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19"/><path d="M12 2.5a14.5 14.5 0 0 1 3.8 9.5A14.5 14.5 0 0 1 12 21.5 14.5 14.5 0 0 1 8.2 12 14.5 14.5 0 0 1 12 2.5z"/></> },
 ]
 
-// `conditions` — shartlar kalitlari (futureStep.products.<id>.conditions.<kalit>); `link` — NBU'dagi mahsulot sahifasi bor-yo'qligi
+// `conditions` — shartlar kalitlari (futureStep.products.<id>.conditions.<kalit>); `link` — NBU'dagi mahsulot sahifasi bor-yo'qligi.
+// `poster` — NBU plakati (old + orqa tomon bitta rasmda); `w`/`h` — rasmning haqiqiy o'lchami (img atributlari: sahifa «sakramasligi» va nisbat saqlanishi uchun).
 const PRODUCTS = [
-  { id: 'firstStep', conditions: ['amount', 'term', 'grace', 'rate'], link: true },
-  { id: 'bizStart', conditions: ['amount', 'term', 'grace', 'rate'], link: true },
-  { id: 'bizProgress', conditions: ['amount', 'term', 'grace', 'rate'], link: true },
-  { id: 'studentInvest', conditions: ['amount', 'term', 'grace', 'rate'], link: true },
-  { id: 'firstProfession', conditions: ['stipend', 'abroad', 'businessPlan', 'expo'], link: false },
+  { id: 'firstStep', conditions: ['amount', 'term', 'grace', 'rate'], link: true, poster: { src: posterFirstStep, w: 1236, h: 1277 } },
+  { id: 'bizStart', conditions: ['amount', 'term', 'grace', 'rate'], link: true, poster: { src: posterBizStart, w: 1237, h: 1277 } },
+  { id: 'bizProgress', conditions: ['amount', 'term', 'grace', 'rate'], link: true, poster: { src: posterBizProgress, w: 1230, h: 1276 } },
+  { id: 'studentInvest', conditions: ['amount', 'term', 'grace', 'rate'], link: true, poster: { src: posterStudentInvest, w: 1237, h: 1280 } },
+  { id: 'firstProfession', conditions: ['stipend', 'abroad', 'businessPlan', 'expo'], link: false, poster: { src: posterFirstProfession, w: 1236, h: 1274 } },
 ]
 
 export default function FutureStep() {
   const { t } = useTranslation()
+  // Katta ko'rinishda ochilgan plakat (yoki null)
+  const [openPoster, setOpenPoster] = useState(null)
   return (
     <div className="fade-up">
       <PageHero title={t('futureStep.title')} sub={t('futureStep.subtitle')}>
@@ -62,42 +73,59 @@ export default function FutureStep() {
           <div>
             <h2 className="section-title reveal">{t('futureStep.productsTitle')}</h2>
             <p className="kq-lead reveal">{t('futureStep.productsLead')}</p>
+            {/* Plakatlar o'zbekcha: boshqa tilda izoh chiqadi (o'zbekchada hech narsa) */}
+            <ContentLangNote />
             <div className="kq-list">
-              {PRODUCTS.map((p, i) => (
-                <article key={p.id} className="rv-item reveal">
-                  <div className="card card--lift kq-product">
-                    <div className="kq-product__head">
-                      <span className="kq-product__num" aria-hidden="true">{i + 1}</span>
-                      <div>
-                        <h3 className="kq-product__title">{t(`futureStep.products.${p.id}.title`)}</h3>
-                        <p className="kq-product__desc">{t(`futureStep.products.${p.id}.desc`)}</p>
+              {PRODUCTS.map((p, i) => {
+                const title = t(`futureStep.products.${p.id}.title`)
+                const alt = t('futureStep.posterAlt', { name: title })
+                return (
+                  <article key={p.id} className="rv-item reveal">
+                    <div className="card card--lift kq-product">
+                      {/* Plakat qirqilmaydi: rasm kenglikka moslanadi, balandligi nisbat bo'yicha (object-fit: contain) */}
+                      <button type="button" className="kq-poster" aria-haspopup="dialog" onClick={() => setOpenPoster({ src: p.poster.src, alt, title })}>
+                        <img className="kq-poster__img" src={p.poster.src} width={p.poster.w} height={p.poster.h} alt={alt} loading="lazy" decoding="async" />
+                        <span className="kq-poster__hint">
+                          <Icon size={16}><circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></Icon>
+                          {t('futureStep.viewPoster')}
+                        </span>
+                      </button>
+
+                      <div className="kq-product__main">
+                        <div className="kq-product__head">
+                          <span className="kq-product__num" aria-hidden="true">{i + 1}</span>
+                          <div>
+                            <h3 className="kq-product__title">{title}</h3>
+                            <p className="kq-product__desc">{t(`futureStep.products.${p.id}.desc`)}</p>
+                          </div>
+                        </div>
+                        <div className="kq-product__body">
+                          <div>
+                            <h4 className="kq-product__label">{t('futureStep.whoLabel')}</h4>
+                            <p className="kq-product__who">{t(`futureStep.products.${p.id}.who`)}</p>
+                          </div>
+                          <div>
+                            <h4 className="kq-product__label">{t('futureStep.conditionsLabel')}</h4>
+                            <ul className="kq-conditions">
+                              {p.conditions.map(c => (
+                                <li key={c}>
+                                  <span className="kq-conditions__mark"><Icon size={16} strokeWidth={2.4}><path d="M20 6 9 17l-5-5"/></Icon></span>
+                                  <span>{t(`futureStep.products.${p.id}.conditions.${c}`)}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                        {p.link && (
+                          <a href={NBU_PRODUCTS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm kq-product__link">
+                            {t('futureStep.details')}
+                          </a>
+                        )}
                       </div>
                     </div>
-                    <div className="kq-product__body">
-                      <div>
-                        <h4 className="kq-product__label">{t('futureStep.whoLabel')}</h4>
-                        <p className="kq-product__who">{t(`futureStep.products.${p.id}.who`)}</p>
-                      </div>
-                      <div>
-                        <h4 className="kq-product__label">{t('futureStep.conditionsLabel')}</h4>
-                        <ul className="kq-conditions">
-                          {p.conditions.map(c => (
-                            <li key={c}>
-                              <span className="kq-conditions__mark"><Icon size={16} strokeWidth={2.4}><path d="M20 6 9 17l-5-5"/></Icon></span>
-                              <span>{t(`futureStep.products.${p.id}.conditions.${c}`)}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                    {p.link && (
-                      <a href={NBU_PRODUCTS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-secondary btn-sm kq-product__link">
-                        {t('futureStep.details')}
-                      </a>
-                    )}
-                  </div>
-                </article>
-              ))}
+                  </article>
+                )
+              })}
             </div>
             <p className="kq-note reveal">{t('futureStep.note')}</p>
           </div>
@@ -117,6 +145,8 @@ export default function FutureStep() {
 
         </div>
       </section>
+
+      {openPoster && <PosterLightbox {...openPoster} onClose={() => setOpenPoster(null)} />}
     </div>
   )
 }

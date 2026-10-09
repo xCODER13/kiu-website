@@ -273,6 +273,9 @@
     "whoLabel": "Kimlar uchun",
     "conditionsLabel": "Shartlar",
     "details": "Batafsil",
+    "viewPoster": "Plakatni ko'rish",
+    "close": "Yopish",
+    "posterAlt": "Plakat: {{name}}",
     "products": {
       "firstStep": {
         "title": "«Tadbirkorlikka ilk qadam»",
