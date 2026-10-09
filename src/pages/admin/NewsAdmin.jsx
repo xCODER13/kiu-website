@@ -6,6 +6,7 @@ import { useMultiImageUpload } from './shared/useImageUpload'
 import { useApiGet } from './shared/useApiGet'
 import { ErrorBanner, ErrorPanel, EmptyState } from './shared/StateViews.jsx'
 import ConfirmDialog from './shared/ConfirmDialog.jsx'
+import ThumbImg from '../../components/ThumbImg'
 import { MAX_IMAGES, toAdminCategory } from './shared/constants'
 import NewsForm from './NewsForm.jsx'
 
@@ -55,7 +56,7 @@ function NewsRow({ n, shorts, onEdit, onDelete }) {
     <li className="adm-card adm-item">
       <div className={cover ? thumbClass : `${thumbClass} adm-item-thumb--empty`} aria-hidden="true">
         {cover
-          ? <img className="adm-item-thumb-img" src={cover} alt="" loading="lazy" onError={markBroken} />
+          ? <ThumbImg className="adm-item-thumb-img" src={cover} alt="" loading="lazy" onError={markBroken} />
           : (shorts ? Ic.camera : Ic.image)}
       </div>
       <div className="adm-item-main">
@@ -321,7 +322,7 @@ export default function NewsAdmin() {
           onConfirm={confirmDelete}
           onCancel={() => setToDelete(null)}
         >
-          <strong>«{toDelete.title}»</strong> yangiligi butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi.
+          <strong>«{toDelete.title}»</strong> yangiligi va uning rasmlari butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi.
         </ConfirmDialog>
       )}
 

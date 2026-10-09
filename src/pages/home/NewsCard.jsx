@@ -3,6 +3,7 @@ import { NavLink } from '../../i18n/router'
 import { getCategoryToken, getCategoryLabel } from '../../utils/newsCategories'
 import { parseImages } from './utils'
 import { formatDate } from '../../utils/formatDate'
+import ThumbImg from '../../components/ThumbImg'
 
 // Home uchun ixcham yangilik kartasi (6.11c5): butun karta — bitta havola; tashqi ko'rinish Yangiliklar sahifasi kartasi
 // bilan umumiy (`.card.news-card`); Home taxtasi bo'yicha toifa nuqtasiz, tartib: toifa → sarlavha → sana. Dinamik qiymatlar: toifa rangi `--cat` (4.4 palitrasi tokeni) va
@@ -19,7 +20,7 @@ export default function HomeNewsCard({ item, index }) {
       {img
         // Rasm sarlavha bilan bir havola ichida — `alt=""` (dekorativ): havola nomi ikki marta o'qilmasin.
         // Yuklanmagan rasm yashiriladi: `data-broken` (CSS)
-        ? <img src={img} alt="" loading="lazy" className="news-card-img" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
+        ? <ThumbImg src={img} alt="" loading="lazy" className="news-card-img" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
         : <div className="news-card-ph">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           </div>

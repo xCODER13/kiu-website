@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import ContentLangNote from '../i18n/ContentLangNote'
 import PageHero from '../components/PageHero'
 import Icon from '../components/Icon'
+import ThumbImg from '../components/ThumbImg'
 import useModalA11y from '../hooks/useModalA11y'
 
 const API = import.meta.env.VITE_API_URL
@@ -138,7 +139,7 @@ export default function Gallery() {
                     onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i) } }}
                   >
                     <div className="photo-card__media">
-                      <img src={p.img} alt={p.title} loading="lazy" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
+                      <ThumbImg src={p.img} alt={p.title} loading="lazy" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
                       <span className="photo-card__badge" aria-hidden="true">KIU</span>
                       <span className="photo-card__zoom" aria-hidden="true">
                         <Icon size={22}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" /></Icon>

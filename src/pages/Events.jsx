@@ -7,6 +7,7 @@ import config from '../config'
 import ContentLangNote from '../i18n/ContentLangNote'
 import PageHero from '../components/PageHero'
 import Icon from '../components/Icon'
+import ThumbImg from '../components/ThumbImg'
 
 const API = import.meta.env.VITE_API_URL
 const SITE_URL = 'https://kiu-university.vercel.app'
@@ -217,7 +218,7 @@ export default function Events() {
                         <p className="ev-desc" lang="uz">{e.desc}</p>
                       </div>
                       {e.image && (
-                        <img
+                        <ThumbImg
                           className="ev-img"
                           src={e.image}
                           alt={e.title}

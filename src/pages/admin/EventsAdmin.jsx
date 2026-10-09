@@ -6,6 +6,7 @@ import { useSingleImageUpload } from './shared/useImageUpload'
 import { useApiGet } from './shared/useApiGet'
 import { ErrorBanner, ErrorPanel, EmptyState } from './shared/StateViews.jsx'
 import ConfirmDialog from './shared/ConfirmDialog.jsx'
+import ThumbImg from '../../components/ThumbImg'
 import { EVENT_TYPES } from './shared/constants'
 import EventsForm from './EventsForm.jsx'
 
@@ -58,7 +59,7 @@ function EventRow({ e, past, onEdit, onDelete }) {
       </div>
       {e.image && (
         <div className="adm-item-poster" aria-hidden="true">
-          <img className="adm-item-poster-img" src={e.image} alt="" loading="lazy" onError={markBroken} />
+          <ThumbImg className="adm-item-poster-img" src={e.image} alt="" loading="lazy" onError={markBroken} />
         </div>
       )}
       <div className="adm-item-main">
@@ -321,7 +322,7 @@ export default function EventsAdmin() {
           onConfirm={confirmDelete}
           onCancel={() => setToDelete(null)}
         >
-          <strong>«{toDelete.title}»</strong> tadbiri butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi.
+          <strong>«{toDelete.title}»</strong> tadbiri va afishasi butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi.
         </ConfirmDialog>
       )}
 

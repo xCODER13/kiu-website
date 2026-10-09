@@ -6,6 +6,7 @@ import { useMultiImageUpload } from './shared/useImageUpload'
 import { useApiGet } from './shared/useApiGet'
 import { ErrorBanner, ErrorPanel, EmptyState } from './shared/StateViews.jsx'
 import ConfirmDialog from './shared/ConfirmDialog.jsx'
+import ThumbImg from '../../components/ThumbImg'
 import { MAX_IMAGES, ALBUM_MOSAIC } from './shared/constants'
 import GalleryForm from './GalleryForm.jsx'
 
@@ -53,7 +54,7 @@ function Mosaic({ images }) {
           <span>{shown.length === 0 ? "Rasm yo'q" : 'Rasm yuklanmadi'}</span>
         </div>
       ) : shown.map((src, i) => (
-        <img
+        <ThumbImg
           key={`${i}:${src}`}
           className="adm-album-tile"
           src={src}
@@ -309,7 +310,7 @@ export default function GalleryAdmin() {
           onConfirm={confirmDelete}
           onCancel={() => setToDelete(null)}
         >
-          <strong>«{toDelete.title}»</strong> albomi{deleteCount > 0 ? ` va undagi ${deleteCount} ta rasm` : ''} o'chiriladi, saytdagi galereyadan ham yo'qoladi. Bu amalni qaytarib bo'lmaydi.
+          <strong>«{toDelete.title}»</strong> albomi{deleteCount > 0 ? ` va undagi ${deleteCount} ta rasm` : ''} butunlay o'chiriladi, saytdagi galereyadan ham yo'qoladi. Bu amalni qaytarib bo'lmaydi.
         </ConfirmDialog>
       )}
 

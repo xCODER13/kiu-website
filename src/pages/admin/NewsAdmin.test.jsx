@@ -482,7 +482,7 @@ describe('NewsAdmin: o\'chirish', () => {
     await screen.findByText('Birinchi yangilik')
     await del(user)
     const dialog = screen.getByRole('alertdialog', { name: "Yangilikni o'chirishni tasdiqlaysizmi?" })
-    expect(dialog).toHaveTextContent('«Birinchi yangilik» yangiligi butunlay o\'chiriladi. Bu amalni qaytarib bo\'lmaydi.')
+    expect(dialog).toHaveTextContent('«Birinchi yangilik» yangiligi va uning rasmlari butunlay o\'chiriladi. Bu amalni qaytarib bo\'lmaydi.')
     expect(api.find('DELETE', '/news/n1')).toHaveLength(0)
     await user.click(within(dialog).getByRole('button', { name: "O'chirish" }))
     await waitFor(() => expect(screen.queryByText('Birinchi yangilik')).not.toBeInTheDocument())

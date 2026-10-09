@@ -4,6 +4,7 @@ import useApi from '../hooks/useApi'
 import ContentLangNote from '../i18n/ContentLangNote'
 import PageHero from '../components/PageHero'
 import Icon from '../components/Icon'
+import ThumbImg from '../components/ThumbImg'
 import TeacherModal from './teachers/TeacherModal'
 
 function KafedraSidebar({ teachers, activeKafedra, onSelect }) {
@@ -118,7 +119,7 @@ export default function Teachers() {
                         <div className="avatar-wine teacher-card__avatar">
                           <span aria-hidden="true">{tc.avatar || tc.name?.slice(0, 2).toUpperCase()}</span>
                           {tc.image && (
-                            <img src={tc.image} alt={tc.name} loading="lazy" onError={ev => { ev.currentTarget.dataset.broken = 'true' }} />
+                            <ThumbImg src={tc.image} alt={tc.name} loading="lazy" onError={ev => { ev.currentTarget.dataset.broken = 'true' }} />
                           )}
                         </div>
                         <h2 className="teacher-card__name" lang="uz">{tc.name}</h2>

@@ -375,6 +375,7 @@ describe("TeachersAdmin: o'chirish va saqlanmagan o'zgarishlar", () => {
     const dlg = screen.getByRole('alertdialog')
     expect(within(dlg).getByText("O'qituvchini o'chirishni tasdiqlaysizmi?")).toBeInTheDocument()
     expect(within(dlg).getByText('«Karimov Ali Vali»')).toBeInTheDocument()
+    expect(dlg).toHaveTextContent("va uning rasmi butunlay o'chiriladi")
     expect(api.find('DELETE', '/teachers/t1')).toHaveLength(0)
     await user.click(within(dlg).getByRole('button', { name: "O'chirish" }))
     await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull())
