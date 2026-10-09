@@ -35,6 +35,7 @@
       "documents": { "title": "Official documents", "desc": "KIU regulations, orders and other official documents." },
       "vacancies": { "title": "Vacancies", "desc": "Open positions and jobs at KIU. Join our team!" },
       "international": { "title": "International cooperation", "desc": "KIU's cooperation programs with foreign universities and international organizations." },
+      "futureStep": { "title": "“Kelajakka qadam” program", "desc": "“Kelajakka qadam” (Step into the Future): loans and support for young people and graduates to start a business, build skills and gain experience abroad." },
       "hemis": { "title": "Electronic university", "desc": "Sign in to the KIU HEMIS system — for students and teachers." },
       "achievements": { "title": "Achievements", "desc": "Achievements and awards of KIU, its students and teachers." },
       "map": { "title": "Campus map", "desc": "Interactive map of the KIU campuses and directions." },
@@ -64,6 +65,7 @@
       "teachers": "Professor and Teachers",
       "faculty": "Programs",
       "admission": "Admission",
+      "futureStep": "Kelajakka qadam",
       "faq": "FAQ",
       "hemis": "Electronic university",
       "sortingHat": "Sorting Hat",
@@ -94,6 +96,7 @@
       "admission": "Admission",
       "events": "Events",
       "achievements": "Achievements",
+      "futureStep": "Kelajakka qadam",
       "faq": "FAQ",
       "gallery": "Student life",
       "map": "Map",
@@ -230,6 +233,98 @@
       "students": { "title": "For students", "desc": "The chance to study at a foreign university for one semester or one year. A scholarship and accommodation are provided." },
       "teachers": { "title": "For teachers", "desc": "Research internships at foreign universities, experience exchange and participation in conferences." }
     }
+  },
+  "futureStep": {
+    "title": "“Kelajakka qadam” program",
+    "subtitle": "“Kelajakka qadam” (Step into the Future) gives young people and university graduates financial support to start a business, learn a profession and gain experience abroad.",
+    "moreNbu": "Details: nbu.uz",
+    "opportunitiesTitle": "Opportunities for young people",
+    "opportunities": {
+      "business": {
+        "title": "Start and grow a business",
+        "desc": "Turn your idea into a real project with a preferential loan."
+      },
+      "skills": {
+        "title": "Learn a profession and upskill",
+        "desc": "Vocational training and professional development programs for graduates."
+      },
+      "jobs": {
+        "title": "Create new jobs",
+        "desc": "Financial support for businesses that employ young people."
+      },
+      "abroad": {
+        "title": "Study and gain experience abroad",
+        "desc": "Funding for short-term courses and internships abroad."
+      }
+    },
+    "productsTitle": "Program directions",
+    "productsLead": "Full terms and the application procedure for each direction are published on the website of the National Bank of Uzbekistan (NBU).",
+    "whoLabel": "Who it is for",
+    "conditionsLabel": "Terms",
+    "details": "Details",
+    "viewPoster": "View poster",
+    "close": "Close",
+    "posterAlt": "Poster: {{name}}",
+    "products": {
+      "firstStep": {
+        "title": "“Tadbirkorlikka ilk qadam” (First Step into Business)",
+        "desc": "Loans that finance the business projects of university graduates and young people.",
+        "who": "Self-employed graduates and young people taking their first step into business.",
+        "conditions": {
+          "amount": "Loan amount — up to UZS 20 million",
+          "term": "Loan term — up to 18 months",
+          "grace": "Grace period — up to 6 months",
+          "rate": "Central Bank base rate + 1%"
+        }
+      },
+      "bizStart": {
+        "title": "“Biznes start” (Business Start)",
+        "desc": "Loans for graduates and young people launching their own business.",
+        "who": "Graduates and young people with the necessary business skills who want to start an independent business as a business entity.",
+        "conditions": {
+          "amount": "Loan amount — up to UZS 300 million",
+          "term": "Loan term — up to 5 years (up to 36 months for working capital)",
+          "grace": "Grace period — up to 1 year (up to 6 months for working capital)",
+          "rate": "Central Bank base rate + 1%"
+        }
+      },
+      "bizProgress": {
+        "title": "“Biznes progress” (Business Progress)",
+        "desc": "Loans for expanding an existing business.",
+        "who": "Students and young people who have already started an independent business as a business entity and want to expand it.",
+        "conditions": {
+          "amount": "Loan amount — up to UZS 2 billion",
+          "term": "Loan term — up to 7 years (up to 36 months for working capital)",
+          "grace": "Grace period — up to 2 years (up to 6 months for working capital)",
+          "rate": "Central Bank base rate + 1%"
+        }
+      },
+      "studentInvest": {
+        "title": "“Talaba invest” (Student Invest)",
+        "desc": "Loans that finance businesses which employ graduates and young people.",
+        "who": "Businesses that employ students and young people under 31.",
+        "conditions": {
+          "amount": "Loan amount — up to UZS 10 billion",
+          "term": "Loan term — up to 7 years (up to 36 months for working capital)",
+          "grace": "Grace period — up to 2 years (up to 6 months for working capital)",
+          "rate": "Central Bank base rate + 1%"
+        }
+      },
+      "firstProfession": {
+        "title": "“Mening birinchi kasbim” (My First Profession)",
+        "desc": "Organizing and funding professional training for graduates.",
+        "who": "University graduates.",
+        "conditions": {
+          "stipend": "Monthly stipend of up to 5 BCA during professional development",
+          "abroad": "Up to 50 BCA for short-term courses abroad",
+          "businessPlan": "Business plan preparation costs are covered",
+          "expo": "Job placement support through the “Talaba Expo 2026” career fairs"
+        }
+      }
+    },
+    "note": "Terms may change: check the NBU website for current information and the application procedure. BCA is the base calculation amount.",
+    "ctaTitle": "Turn your idea into a real project!",
+    "ctaText": "Contact the National Bank of Uzbekistan for details and to apply."
   },
   "about": {
     "title": "About us",
@@ -770,6 +865,7 @@
       "regulations": "Official documents",
       "vacancies": "Job openings and vacancies",
       "hemis": "HEMIS electronic university",
+      "futureStep": "Kelajakka qadam Step into the Future youth graduates loans business NBU National Bank",
       "faq": "FAQ — questions and answers",
       "events": "Events calendar",
       "achievements": "Achievements and awards",

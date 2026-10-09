@@ -34,6 +34,7 @@ const Hemis           = lazy(() => import('./pages/Hemis'))
 const International   = lazy(() => import('./pages/International'))
 const Documents       = lazy(() => import('./pages/Documents'))
 const Vacancies       = lazy(() => import('./pages/Vacancies'))
+const FutureStep      = lazy(() => import('./pages/FutureStep'))
 const SortingHat      = lazy(() => import('./pages/SortingHat'))
 const NotFound        = lazy(() => import('./pages/NotFound'))
 
@@ -61,6 +62,7 @@ const SEO_KEYS = {
   '/faq': 'faq',
   '/documents': 'documents',
   '/vacancies': 'vacancies',
+  '/kelajakka-qadam': 'futureStep',
   '/international': 'international',
   '/hemis': 'hemis',
   '/achievements': 'achievements',
@@ -245,6 +247,7 @@ function PageRoutes({ onApply }) {
       <Route path="/international" element={<International />} />
       <Route path="/documents" element={<Documents />} />
       <Route path="/vacancies" element={<Vacancies />} />
+      <Route path="/kelajakka-qadam" element={<FutureStep />} />
       <Route path="/faq" element={<FAQ />} />
       <Route path="/events" element={<Events />} />
       <Route path="/achievements" element={<Achievements />} />

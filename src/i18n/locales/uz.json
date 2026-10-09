@@ -35,6 +35,7 @@
       "documents": { "title": "Normativ hujjatlar", "desc": "KIU ning rasmiy nizomlar, buyruqlar va normativ hujjatlari." },
       "vacancies": { "title": "Bo'sh ish o'rinlari", "desc": "KIU da ochiq lavozimlar va ish o'rinlari. Jamoamizga qo'shiling!" },
       "international": { "title": "Xalqaro hamkorlik", "desc": "KIU ning xorijiy universitetlar va xalqaro tashkilotlar bilan hamkorlik dasturlari." },
+      "futureStep": { "title": "«Kelajakka qadam» dasturi", "desc": "Yoshlar va bitiruvchilar uchun biznes boshlash, kasb o'rganish va xorijda tajriba orttirishni moliyalashtiruvchi «Kelajakka qadam» dasturi: kreditlar va ko'mak turlari." },
       "hemis": { "title": "Elektron universitet", "desc": "KIU HEMIS tizimiga kirish — talabalar va o'qituvchilar uchun." },
       "achievements": { "title": "Yutuqlar", "desc": "KIU va uning talabalari, o'qituvchilarining yutuqlari va mukofotlari." },
       "map": { "title": "Kampus xaritasi", "desc": "KIU kampusining interaktiv xaritasi va yo'nalish ko'rsatmalari." },
@@ -64,6 +65,7 @@
       "teachers": "Professor-o'qituvchilar",
       "faculty": "Yo'nalishlar",
       "admission": "Qabul",
+      "futureStep": "Kelajakka qadam",
       "faq": "FAQ",
       "hemis": "Elektron universitet",
       "sortingHat": "Sehrli Shlyapa",
@@ -94,6 +96,7 @@
       "admission": "Qabul",
       "events": "Tadbirlar",
       "achievements": "Yutuqlar",
+      "futureStep": "Kelajakka qadam",
       "faq": "FAQ",
       "gallery": "Talabalar hayoti",
       "map": "Xarita",
@@ -241,6 +244,98 @@
       "students": { "title": "Talabalar uchun", "desc": "Xorijiy universitetlarda 1 semestr yoki 1 yil o'qish imkoniyati. Stipendiya va turar joy bilan ta'minlanadi." },
       "teachers": { "title": "O'qituvchilar uchun", "desc": "Xorijiy universitetlarda ilmiy stajirovka, tajriba almashinuv va konferensiyalarda ishtirok etish." }
     }
+  },
+  "futureStep": {
+    "title": "«Kelajakka qadam» dasturi",
+    "subtitle": "Yoshlar va oliy ta'lim bitiruvchilariga biznes boshlash, kasb o'rganish va xorijda tajriba orttirish uchun moliyaviy ko'mak beruvchi dastur.",
+    "moreNbu": "Batafsil: nbu.uz",
+    "opportunitiesTitle": "Yoshlar uchun imkoniyatlar",
+    "opportunities": {
+      "business": {
+        "title": "Biznesni boshlash va kengaytirish",
+        "desc": "G'oyangizni imtiyozli kredit hisobiga real loyihaga aylantiring."
+      },
+      "skills": {
+        "title": "Kasb egallash va malaka oshirish",
+        "desc": "Bitiruvchilar uchun kasbga tayyorlash va malaka oshirish dasturlari."
+      },
+      "jobs": {
+        "title": "Yangi ish o'rinlari yaratish",
+        "desc": "Yoshlarni ish bilan ta'minlayotgan tadbirkorlik subyektlariga moliyaviy ko'mak."
+      },
+      "abroad": {
+        "title": "Xorijda o'qish va tajriba orttirish",
+        "desc": "Chet eldagi qisqa muddatli kurslar va stajirovkalar uchun mablag'."
+      }
+    },
+    "productsTitle": "Dastur yo'nalishlari",
+    "productsLead": "Har bir yo'nalishning to'liq shartlari va ariza topshirish tartibi O'zbekiston Milliy banki (NBU) saytida keltirilgan.",
+    "whoLabel": "Kimlar uchun",
+    "conditionsLabel": "Shartlar",
+    "details": "Batafsil",
+    "viewPoster": "Plakatni ko'rish",
+    "close": "Yopish",
+    "posterAlt": "Plakat: {{name}}",
+    "products": {
+      "firstStep": {
+        "title": "«Tadbirkorlikka ilk qadam»",
+        "desc": "Oliy ta'lim bitiruvchilari va yoshlarning biznes loyihalarini kredit orqali moliyalashtirish.",
+        "who": "O'zini o'zi band qilgan va biznesga ilk qadam qo'ymoqchi bo'lgan bitiruvchi hamda yoshlarga.",
+        "conditions": {
+          "amount": "Kredit summasi — 20 mln so'mgacha",
+          "term": "Kredit muddati — 18 oygacha",
+          "grace": "Imtiyozli davr — 6 oygacha",
+          "rate": "Markaziy bank asosiy stavkasi + 1%"
+        }
+      },
+      "bizStart": {
+        "title": "«Biznes start»",
+        "desc": "Bitiruvchi va yoshlarga mustaqil biznesni boshlash uchun kredit.",
+        "who": "Zarur biznes ko'nikmalariga ega bo'lib, tadbirkorlik subyekti sifatida mustaqil biznes boshlamoqchi bo'lgan bitiruvchi va yoshlarga.",
+        "conditions": {
+          "amount": "Kredit summasi — 300 mln so'mgacha",
+          "term": "Kredit muddati — 5 yilgacha (aylanma mablag'lar uchun 36 oygacha)",
+          "grace": "Imtiyozli davr — 1 yilgacha (aylanma mablag'lar uchun 6 oygacha)",
+          "rate": "Markaziy bank asosiy stavkasi + 1%"
+        }
+      },
+      "bizProgress": {
+        "title": "«Biznes progress»",
+        "desc": "Faoliyat yuritayotgan biznesni kengaytirish uchun kredit.",
+        "who": "Tadbirkorlik subyekti sifatida mustaqil biznes boshlagan va faoliyatini kengaytirmoqchi bo'lgan talaba hamda yoshlarga.",
+        "conditions": {
+          "amount": "Kredit summasi — 2 mlrd so'mgacha",
+          "term": "Kredit muddati — 7 yilgacha (aylanma mablag'lar uchun 36 oygacha)",
+          "grace": "Imtiyozli davr — 2 yilgacha (aylanma mablag'lar uchun 6 oygacha)",
+          "rate": "Markaziy bank asosiy stavkasi + 1%"
+        }
+      },
+      "studentInvest": {
+        "title": "«Talaba invest»",
+        "desc": "Bitiruvchi va yoshlarni ish bilan ta'minlagan tadbirkorlik subyektlarini kredit orqali moliyalashtirish.",
+        "who": "31 yoshga to'lmagan talaba va yoshlarni ish bilan ta'minlagan tadbirkorlik subyektlariga.",
+        "conditions": {
+          "amount": "Kredit summasi — 10 mlrd so'mgacha",
+          "term": "Kredit muddati — 7 yilgacha (aylanma mablag'lar uchun 36 oygacha)",
+          "grace": "Imtiyozli davr — 2 yilgacha (aylanma mablag'lar uchun 6 oygacha)",
+          "rate": "Markaziy bank asosiy stavkasi + 1%"
+        }
+      },
+      "firstProfession": {
+        "title": "«Mening birinchi kasbim»",
+        "desc": "Bitiruvchilarni kasbga tayyorlash jarayonini tashkil etish va moliyalashtirish.",
+        "who": "Oliy ta'lim tashkilotlari bitiruvchilariga.",
+        "conditions": {
+          "stipend": "Malaka oshirish davrida oylik 5 BHM gacha stipendiya",
+          "abroad": "Chet eldagi qisqa muddatli kurslar uchun 50 BHM gacha mablag'",
+          "businessPlan": "Biznes reja tayyorlash xarajatlari qoplanadi",
+          "expo": "«Talaba Expo 2026» kasb ko'rgazmalari orqali ish bilan ta'minlashga ko'maklashiladi"
+        }
+      }
+    },
+    "note": "Shartlar o'zgarishi mumkin: amaldagi ma'lumot va ariza topshirish tartibi uchun NBU saytiga murojaat qiling. BHM — bazaviy hisoblash miqdori.",
+    "ctaTitle": "Endi siz ham g'oyangizni real loyihaga aylantiring!",
+    "ctaText": "Batafsil ma'lumot olish va ariza topshirish uchun O'zbekiston Milliy banki bilan bog'laning."
   },
   "about": {
     "title": "Biz haqimizda",
@@ -772,6 +867,7 @@
       "regulations": "Normativ hujjatlar",
       "vacancies": "Bo'sh ish o'rinlari vakansiyalar",
       "hemis": "Elektron universitet HEMIS",
+      "futureStep": "Kelajakka qadam yoshlar bitiruvchilar kredit biznes NBU Milliy bank",
       "faq": "FAQ savol javob",
       "events": "Tadbirlar taqvimi",
       "achievements": "Yutuqlar mukofotlar",
