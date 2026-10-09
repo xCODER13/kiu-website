@@ -445,7 +445,10 @@
     "empty": "Haqiqiy rasmlar tez orada qo'shiladi",
     "close": "Yopish",
     "prev": "Oldingi rasm",
-    "next": "Keyingi rasm"
+    "next": "Keyingi rasm",
+    "sections": { "club": "Klublar va to'garaklar", "sport": "Sport va yutuqlar", "campus": "Kampus va yotoqxona hayoti" },
+    "photos": "Fotogalereya",
+    "more": "Batafsil"
   },
   "teachers": {
     "title": "Professor-o'qituvchilar",

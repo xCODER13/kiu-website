@@ -9,6 +9,11 @@ import useModalA11y from '../hooks/useModalA11y'
 
 const API = import.meta.env.VITE_API_URL
 
+// «Talabalar hayoti» bo'limlari (backend `utils/studentLifeSections.js` bilan bir xil kalitlar; ketma-ketlik — sahifadagi tartib)
+const SECTION_KEYS = ['club', 'sport', 'campus']
+// Havola `<a href>` ga tushadi: backend ham tekshiradi, bu yerda ikkinchi qatlam (faqat https://, bo'shliq/qo'shtirnoqsiz)
+const SAFE_LINK = /^https:\/\/[^\s<>"'`\\]+$/i
+
 // Katta rasm oynasi: fokus tuzog'i, Esc, scroll qulfi va fokusni qaytarish — `useModalA11y` (ApplyModal bilan bir xil).
 // Strelka tugmalari va ← → klaviaturasi Gallery'da (window'da) boshqariladi.
 function Lightbox({ photo, index, total, onClose, onPrev, onNext }) {
@@ -58,6 +63,8 @@ export default function Gallery() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [openIndex, setOpenIndex] = useState(null)   // lightbox'da ko'rsatilayotgan rasm tartib raqami
+  const [sections, setSections] = useState([])        // admin boshqaradigan klub / sport / kampus elementlari
+  const [sectionsLoading, setSectionsLoading] = useState(true)
 
   useEffect(() => {
     fetch(`${API}/api/gallery`)
@@ -66,6 +73,21 @@ export default function Gallery() {
       .catch(err => { console.error('Galereya yuklashda xatolik:', err); setError(true) })
       .finally(() => setLoading(false))
   }, [])
+
+  // Bo'limlar ixtiyoriy: yuklanmasa yoki bo'sh bo'lsa sahifa avvalgidek (faqat fotogalereya) ishlaydi, xato banner chiqmaydi.
+  // Javob massiv bo'lmasa yoki element noma'lum bo'limga tegishli bo'lsa e'tiborga olinmaydi.
+  useEffect(() => {
+    fetch(`${API}/api/student-life`)
+      .then(r => r.json())
+      .then(d => setSections(Array.isArray(d) ? d.filter(i => i && SECTION_KEYS.includes(i.section) && typeof i.title === 'string' && i.title) : []))
+      .catch(err => console.error("Talabalar hayoti bo'limlarini yuklashda xatolik:", err))
+      .finally(() => setSectionsLoading(false))
+  }, [])
+
+  const groups = useMemo(
+    () => SECTION_KEYS.map(key => ({ key, rows: sections.filter(i => i.section === key) })).filter(g => g.rows.length > 0),
+    [sections],
+  )
 
   // Har bir albom (title+desc+bir nechta rasm) grid'da alohida panelka
   // sifatida ko'rsatiladigan har bir rasmga "yoyiladi" — sarlavha/tavsif
@@ -80,6 +102,8 @@ export default function Gallery() {
   ), [items])
 
   const total = photos.length
+  const pending = loading || sectionsLoading
+  const hasSections = groups.length > 0
   const prev = () => setOpenIndex(i => (i - 1 + total) % total)
   const next = () => setOpenIndex(i => (i + 1) % total)
 
@@ -100,23 +124,59 @@ export default function Gallery() {
     <div className="fade-up">
       <PageHero title={t('gallery.title')} sub={t('gallery.subtitle')} note={<ContentLangNote />} />
 
-      <section className={`page-body${!loading && error ? ' page-body--error' : ''}${!loading && !error && photos.length === 0 ? ' page-body--empty' : ''}`}>
-        <div className={`container ${!loading && error ? 'container--920' : 'container-wide'}`}>
-          {loading && (
+      <section className={`page-body${!pending && error && !hasSections ? ' page-body--error' : ''}${!pending && !error && photos.length === 0 && !hasSections ? ' page-body--empty' : ''}`}>
+        <div className={`container ${!pending && error && !hasSections ? 'container--920' : 'container-wide'}`}>
+          {pending && (
             <div className="page-loading">
               <div className="spinner" />
               {t('common.loading')}
             </div>
           )}
 
-          {!loading && error && (
+          {!pending && hasSections && groups.map((g, gi) => (
+            <div key={g.key} className="student-life-section">
+              <h2 className={`section-title${gi > 0 ? ' page-block' : ''}`}>{t(`gallery.sections.${g.key}`)}</h2>
+              <div className="cards-3">
+                {g.rows.map((it, i) => (
+                  <div key={it._id} className={`rv-item reveal reveal-delay-${(i % 3) + 1}`}>
+                    <article className="card photo-card photo-card--static" data-slot={i % 6}>
+                      <div className="photo-card__media">
+                        {it.image && <ThumbImg src={it.image} alt="" loading="lazy" onError={e => { e.currentTarget.dataset.broken = 'true' }} />}
+                      </div>
+                      <div className="photo-card__body">
+                        <h3 className="photo-card__title" lang="uz">{it.title}</h3>
+                        {it.desc && <p className="photo-card__desc" lang="uz">{it.desc}</p>}
+                        {it.link && SAFE_LINK.test(it.link) && (
+                          <a
+                            href={it.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-primary btn-sm photo-card__link"
+                            aria-label={`${t('gallery.more')}: ${it.title}`}
+                          >
+                            {t('gallery.more')}
+                          </a>
+                        )}
+                      </div>
+                    </article>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {!pending && hasSections && !error && photos.length > 0 && (
+            <h2 className="section-title page-block">{t('gallery.photos')}</h2>
+          )}
+
+          {!pending && error && (
             <div className="notice-banner" data-tone="danger" role="alert">
               <Icon size={20}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></Icon>
               <span>{t('gallery.error')}</span>
             </div>
           )}
 
-          {!loading && !error && photos.length === 0 && (
+          {!pending && !error && photos.length === 0 && !hasSections && (
             <div className="photo-empty reveal">
               <div className="tile tile--64">
                 <Icon size={30}><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></Icon>
@@ -125,7 +185,7 @@ export default function Gallery() {
             </div>
           )}
 
-          {!loading && !error && photos.length > 0 && (
+          {!pending && !error && photos.length > 0 && (
             <div className="cards-3">
               {photos.map((p, i) => (
                 <div key={p.id} className={`rv-item reveal reveal-delay-${(i % 3) + 1}`}>
