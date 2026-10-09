@@ -290,7 +290,7 @@ export default function GalleryAdmin() {
       ) : items.length === 0 ? (
         !open && (
           <EmptyState
-            icon={Ic.gallery}
+            icon={Ic.image}
             title="Hali albom yo'q"
             action={<button type="button" className="btn btn-primary adm-empty-action" onClick={openNew}>{Ic.add}Yangi albom</button>}
           >

@@ -280,13 +280,11 @@ describe('Bosqich 6.11b: Yangiliklar, Yangilik sahifasi, karusel, Telegram panel
   const site = read('src/styles/site.css').replace(/\/\*[\s\S]*?\*\//g, '')
   const inline = f => (read(f).match(/style=\{/g) ?? []).length // `style={{…}}` va `style={cond ? {…} : undefined}`
 
-  it("toifa tokenlari: chip/placeholder ulushlari Light va Dark'da (Dark kuchliroq); karusel qoplamasi va scrim tokenlari e'lon qilingan", () => {
-    for (const n of ['--cat-chip-mix', '--cat-ph-1', '--cat-ph-2', '--carousel-tint', '--color-scrim-pill', '--color-scrim-ctrl'])
+  it("toifa tokenlari: chip ulushi Light va Dark'da (Dark kuchliroq); karusel qoplamasi va scrim tokenlari e'lon qilingan", () => {
+    for (const n of ['--cat-chip-mix', '--carousel-tint', '--color-scrim-pill', '--color-scrim-ctrl'])
       expect(tokens, n).toMatch(new RegExp(`${n}:`))
     expect(tokens).toMatch(/--cat-chip-mix:\s*12%/)
     expect(tokens).toMatch(/--cat-chip-mix:\s*18%/)
-    expect(tokens).toMatch(/--cat-ph-1:\s*16%/)
-    expect(tokens).toMatch(/--cat-ph-1:\s*22%/)
   })
 
   it("toifa chipi: fon `color-mix(--cat …)`, MATN `--color-text` (`--chart-3/4/5` oq fonda 4.5:1 dan past); nuqta `--cat`", () => {
@@ -480,11 +478,8 @@ describe('Bosqich 6.11c3: Tadbirlar, O\'qituvchilar, Galereya', () => {
   const tokens = read('src/styles/tokens.css')
   const inline = f => (read(f).match(/style=\{/g) ?? []).length
 
-  it("yangi tokenlar: galereya hover/nishon (Light + ikkala Dark blok), lightbox foni doim bir xil", () => {
-    expect(tokens).toMatch(/--gallery-hover-overlay:\s*rgb\(100 24 78 \/ 0\.55\)/)
-    expect((tokens.match(/--gallery-hover-overlay:\s*rgb\(18 8 14 \/ 0\.5\)/g) ?? []).length).toBe(2)
-    expect((tokens.match(/--gallery-badge-bg:/g) ?? []).length).toBe(3)
-    expect((tokens.match(/--gallery-badge-text:\s*#f3c5df/g) ?? []).length).toBe(2)
+  it("lightbox foni doim bir xil; eski galereya kartasi tokenlari (`--gallery-*`, `--cat-ph-*`) olib tashlangan", () => {
+    expect(tokens).not.toMatch(/--gallery-|--cat-ph-/)
     expect((tokens.match(/--color-lightbox-bg:/g) ?? []).length).toBe(1)
   })
 
@@ -515,13 +510,9 @@ describe('Bosqich 6.11c3: Tadbirlar, O\'qituvchilar, Galereya', () => {
     expect(read('src/styles/global.css')).not.toMatch(/\.teachers-layout/)
   })
 
-  it("Galereya: rasm 220 px, placeholder `--chart-1…6` (data-slot), hover qoplama tokendan, ko'tarilish/zoom faqat `no-preference`", () => {
-    expect(code).toMatch(/\.photo-card__media \{[^}]*height: 220px;/)
-    for (let i = 1; i <= 5; i++) expect(code).toContain(`.photo-card[data-slot="${i}"] { --ph: var(--chart-${i + 1}); }`)
-    expect(code).toMatch(/\.photo-card__zoom \{[^}]*background: var\(--gallery-hover-overlay\);[^}]*opacity: 0;/)
-    expect(code).toMatch(/\.photo-card:focus-visible \.photo-card__zoom \{ opacity: 1; \}/)
-    expect(code).toMatch(/\.photo-card__badge \{[^}]*var\(--gallery-badge-bg\);[^}]*var\(--gallery-badge-text\);/)
-    expect(code).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.photo-card:hover \.photo-card__media img/)
+  it("Galereya: eski `.photo-card*` / `.photo-empty` qoidalari olib tashlangan (karta endi `news-card`), lightbox qoladi", () => {
+    expect(code).not.toMatch(/\.photo-card|\.photo-empty/)
+    expect(code).toMatch(/\.photo-lightbox \{/)
   })
 
   it("Lightbox: fon `--color-lightbox-bg`, rasm 880 px gacha radius 16, tugmalar 46/54 px doira, qora soya", () => {

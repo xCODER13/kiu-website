@@ -595,7 +595,7 @@
 
   /* ══ Bosqich 6.11b: Yangiliklar + Yangilik sahifasi + karusel + Telegram paneli (qayta dizayn, spec 6.11) ═════
      Faqat token (hex yo'q). Toifa rangi — `--cat` (4.4 palitrasi tokeni; JSX da yagona inline qiymat).
-     Chip foni — `--cat-chip-mix`, placeholder — `--cat-ph-1/-2` (Dark da kuchliroq). Chip MATNI `--color-text`:
+     Chip foni — `--cat-chip-mix`. Chip MATNI `--color-text`:
      `--chart-3/4/5` oq fonda 4.5:1 dan past, shuning uchun rang faqat nuqta/chegara/fonda. */
 
   /* ── Tab ro'yxati va holatlar ─────────────────────────────────────── */
@@ -1882,89 +1882,6 @@
   @media (max-width: 560px) { .teachers-grid { grid-template-columns: minmax(0, 1fr); } }
 
   /* ── Galereya ─────────────────────────────────────────────────────── */
-  .card.photo-card { --ph: var(--chart-1); display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: 18px; cursor: pointer; }
-  .photo-card[data-slot="1"] { --ph: var(--chart-2); }
-  .photo-card[data-slot="2"] { --ph: var(--chart-3); }
-  .photo-card[data-slot="3"] { --ph: var(--chart-4); }
-  .photo-card[data-slot="4"] { --ph: var(--chart-5); }
-  .photo-card[data-slot="5"] { --ph: var(--chart-6); }
-  .photo-card__media {
-    position: relative;
-    height: 220px;
-    overflow: hidden;
-    background: linear-gradient(135deg,
-      color-mix(in oklab, var(--ph) var(--cat-ph-1), transparent),
-      color-mix(in oklab, var(--ph) var(--cat-ph-2), transparent));
-  }
-  .photo-card__media img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-  .photo-card__media img[data-broken="true"] { visibility: hidden; }
-  .photo-card__badge {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    padding: 4px 10px;
-    border: 1px solid var(--gallery-badge-border);
-    border-radius: 8px;
-    background: var(--gallery-badge-bg);
-    color: var(--gallery-badge-text);
-    font-size: 12px;
-    font-weight: 800;
-    line-height: normal;
-    letter-spacing: 0.06em;
-  }
-  .photo-card__zoom {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--gallery-hover-overlay);
-    color: rgb(255 255 255 / 1);
-    opacity: 0;
-    transition: opacity var(--duration-base);
-  }
-  .photo-card__zoom svg { box-sizing: border-box; width: 52px; height: 52px; padding: 15px; border-radius: 50%; background: rgb(255 255 255 / 0.22); }
-  .photo-card:hover .photo-card__zoom,
-  .photo-card:focus-visible .photo-card__zoom { opacity: 1; }
-  @media (prefers-reduced-motion: no-preference) {
-    .photo-card:hover .photo-card__media img,
-    .photo-card:focus-visible .photo-card__media img { transform: scale(1.05); }
-  }
-  .photo-card__body { padding: 18px 20px 22px; }
-
-  .photo-card__title {
-    display: -webkit-box;
-    margin: 0 0 6px;
-    overflow: hidden;
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.4;
-    color: var(--color-text);
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-  .photo-card__desc {
-    display: -webkit-box;
-    margin: 0;
-    overflow: hidden;
-    font-size: 0.875rem;
-    line-height: 1.55;
-    color: var(--color-text-muted);
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-  .photo-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    padding: 72px 24px;
-    border: 1.5px dashed var(--pill-border);
-    border-radius: 20px;
-    background: var(--color-surface-2);
-    text-align: center;
-  }
-  .photo-empty p { margin: 0; font-size: 1rem; line-height: 1.6; color: var(--color-text-muted); }
 
   /* Katta rasm oynasi: har doim to'q fon (ikkala temada), shuning uchun oq piktogramma/matn */
   .photo-lightbox {
@@ -2017,7 +1934,6 @@
     .photo-lightbox { padding: 16px; }
     .photo-lightbox__btn--prev,
     .photo-lightbox__btn--next { width: 44px; height: 44px; }
-    .photo-card__media { height: 200px; }
   }
 
   /* ════════════════════════════════════════════════════════════════════
