@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { API, H, errorMessage } from './shared/api'
 import { STATUS_BADGE, STATUS_LABELS } from './shared/constants'
 import { Ic } from './shared/Icons.jsx'
@@ -9,6 +9,10 @@ import ConfirmDialog from './shared/ConfirmDialog.jsx'
 // 6.23 (taxta: Admin-Apps): bitta komponent ikki sahifa — `type="admission"` (Qabul arizalari) va
 // `type="vacancy"` (Vakansiya arizalari). `window.confirm`/`alert` o'rniga ilovaning o'z dialogi va banneri,
 // yuklash xatosi jim «Ariza yo'q» o'rniga «Qayta urinish» bilan, holat — rang + ikonka + matn.
+//
+// 4.4: filtr, sahifalash va holatlar sanog'i SERVERDA (GET /applications?type=&status=&page=&limit=):
+// ilgari hamma ariza (shaxsiy ma'lumot) bitta so'rovda kelib, klientda filtrlanardi. Javob:
+// { items, total, page, limit, counts } — `counts` faqat `type` bo'yicha (chip hisoblagichlari).
 
 const STATUSES = ['new', 'reviewed', 'accepted', 'rejected']
 const FILTERS = ['all', ...STATUSES]
@@ -17,6 +21,7 @@ const STATUS_ICON = { new: Ic.statusNew, reviewed: Ic.statusReviewed, accepted: 
 // Xabar shundan uzun bo'lsa kesiladi va «To'liq o'qish» tugmasi chiqadi (avval 120 belgidan keyin matn butunlay yo'qolardi)
 const MESSAGE_LIMIT = 120
 const NETWORK_ERROR = "Server bilan bog'lanib bo'lmadi."
+const PAGE_SIZE = 20
 
 // Avatar: ismning dastlabki ikki so'zining bosh harflari (Unicode xavfsiz — surrogat juftlik bo'linmaydi)
 function initials(name) {
@@ -135,10 +140,49 @@ function ApplicationCard({ a, type, expanded, onToggle, busy, onStatus, onDelete
   )
 }
 
+// Server javobi kutilgan shaklda emas (proksi/xato sahifa yoki eski massiv formati) — bo'sh ro'yxat deb ko'rsatilmaydi
+function isListResponse(d) {
+  return !!d && Array.isArray(d.items) && typeof d.total === 'number' && !!d.counts && typeof d.counts === 'object'
+}
+
+// Holat o'zgargach ro'yxat va sanoqlar qayta yuklanmasdan mahalliy yangilanadi (server javobi qo'lda).
+// Tanlangan holat filtrida ariza endi mos kelmasa, u sahifadan chiqib ketadi (avvalgi klient filtri kabi).
+function withStatusChange(d, updated, filter) {
+  const old = d.items.find(a => a._id === updated._id)
+  if (!old) return d
+  const counts = { ...d.counts }
+  if (old.status !== updated.status) {
+    if (old.status in counts) counts[old.status] -= 1
+    if (updated.status in counts) counts[updated.status] += 1
+  }
+  const stays = filter === 'all' || updated.status === filter
+  return {
+    ...d,
+    counts,
+    total: stays ? d.total : d.total - 1,
+    items: stays ? d.items.map(a => (a._id === updated._id ? updated : a)) : d.items.filter(a => a._id !== updated._id),
+  }
+}
+
+function withoutApplication(d, id) {
+  const old = d.items.find(a => a._id === id)
+  if (!old) return d
+  const counts = { ...d.counts, all: d.counts.all - 1 }
+  if (old.status in counts) counts[old.status] -= 1
+  return { ...d, counts, total: d.total - 1, items: d.items.filter(a => a._id !== id) }
+}
+
+// Tur almashganda (Qabul ↔ Vakansiya) holat, sahifa va ochilgan kartalar tozalansin — `key` bilan qayta yaratiladi
 export default function ApplicationsAdmin({ type = 'admission' }) {
-  const res = useApiGet('/applications', 'Arizalarni yuklashda xatolik')
-  const { mutate, reload } = res
+  return <ApplicationsList key={type} type={type} />
+}
+
+function ApplicationsList({ type }) {
   const [filter, setFilter] = useState('all')
+  const [page, setPage] = useState(1)
+  const path = `/applications?type=${type}&page=${page}&limit=${PAGE_SIZE}${filter === 'all' ? '' : `&status=${filter}`}`
+  const res = useApiGet(path, 'Arizalarni yuklashda xatolik')
+  const { mutate, reload } = res
   const [expanded, setExpanded] = useState(() => new Set())
   const [pending, setPending] = useState(() => new Set())   // holati o'zgartirilayotgan arizalar (tanlagich o'chiq)
   const [toDelete, setToDelete] = useState(null)            // dialog ochiq bo'lgan ariza
@@ -147,20 +191,29 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
   const [refocus, setRefocus] = useState(0)
   const headingRef = useRef(null)
 
-  // Server `type`siz eski yozuvlarni ham qaytaradi → ular qabul arizasi hisoblanadi (backend filtri `?type=` ularni tashlab yuboradi)
-  const apps = useMemo(() => {
-    if (!Array.isArray(res.data)) return []
-    return res.data.filter(a => (type === 'vacancy' ? a.type === 'vacancy' : (!a.type || a.type === 'admission')))
-  }, [res.data, type])
+  const data = isListResponse(res.data) ? res.data : null
+  // Filtr/sahifa almashganda yangi javob kelguncha oldingi sanoqlar ko'rinib turadi (chiplar «–» bilan miltillamasin)
+  const shown = data ?? (isListResponse(res.previousData) ? res.previousData : null)
+  const items = data?.items ?? []
+  const counts = shown?.counts
 
-  const counts = useMemo(() => {
-    const c = { all: apps.length, new: 0, reviewed: 0, accepted: 0, rejected: 0 }
-    for (const a of apps) if (a.status in c) c[a.status] += 1
-    return c
-  }, [apps])
-
-  // Arizani o'chirgach, uni ochgan tugma yo'qoladi → fokus sahifa sarlavhasiga (klaviatura foydalanuvchisi yo'qolib qolmasin)
+  // Arizani o'chirgach, uni ochgan tugma yo'qoladi / sahifa almashgach tepaga: fokus sahifa sarlavhasiga (klaviatura foydalanuvchisi yo'qolib qolmasin)
   useEffect(() => { if (refocus > 0) headingRef.current?.focus() }, [refocus])
+
+  function changeFilter(next) {
+    setFilter(next)
+    setPage(1)
+  }
+
+  function goToPage(next) {
+    setPage(next)
+    setRefocus(n => n + 1)
+  }
+
+  // Sahifadagi oxirgi ariza ketgach (o'chirildi / filtrdan chiqdi) bo'sh sahifada qolmaslik uchun oldingisiga qaytiladi
+  function leavePageIfEmpty() {
+    if (page > 1 && items.length <= 1) setPage(page - 1)
+  }
 
   async function updateStatus(id, status) {
     if (pending.has(id)) return
@@ -171,7 +224,8 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
       if (!r.ok) setNotice(await errorMessage(r, "Statusni o'zgartirib bo'lmadi."))
       else {
         const updated = await r.json()
-        mutate(list => (Array.isArray(list) ? list.map(a => (a._id === id ? updated : a)) : list))
+        mutate(d => (isListResponse(d) ? withStatusChange(d, updated, filter) : d))
+        if (filter !== 'all' && updated.status !== filter) leavePageIfEmpty()
       }
     } catch {
       setNotice(NETWORK_ERROR)
@@ -189,7 +243,8 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
       // 404 — boshqa admin allaqachon o'chirgan (backend 1.8): natija bir xil, ro'yxatdan olib tashlanadi
       if (!r.ok && r.status !== 404) setNotice(await errorMessage(r, "O'chirib bo'lmadi."))
       else {
-        mutate(list => (Array.isArray(list) ? list.filter(a => a._id !== id) : list))
+        mutate(d => (isListResponse(d) ? withoutApplication(d, id) : d))
+        leavePageIfEmpty()
         setRefocus(n => n + 1)
       }
     } catch {
@@ -204,11 +259,11 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
     setExpanded(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n })
   }
 
-  // Server 200 qaytarib massiv bermasa (proksi/xato sahifa) ham bu xato — bo'sh ro'yxat deb ko'rsatilmaydi
-  const failed = res.error || (!res.loading && !Array.isArray(res.data))
-  const filtered = filter === 'all' ? apps : apps.filter(a => a.status === filter)
+  // Server 200 qaytarib kutilgan shaklda javob bermasa (proksi/xato sahifa) ham bu xato — bo'sh ro'yxat deb ko'rsatilmaydi
+  const failed = res.error || (!res.loading && !data)
   const title = type === 'vacancy' ? 'Vakansiya arizalari' : 'Qabul arizalari'
-  const countText = n => (failed ? '–' : String(n))
+  const countText = n => (failed || !counts ? '–' : String(n ?? 0))
+  const pages = data ? Math.max(1, Math.ceil(data.total / data.limit)) : 1
 
   return (
     <div>
@@ -217,15 +272,15 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
       <div className="adm-page-head">
         <div className="adm-page-head-title">
           <h2 className="adm-page-title" ref={headingRef} tabIndex={-1}>{title}</h2>
-          {!failed && <span className="adm-count-pill"><span className="adm-sr-only">Jami: </span>{apps.length}</span>}
+          {!failed && counts && <span className="adm-count-pill"><span className="adm-sr-only">Jami: </span>{counts.all}</span>}
         </div>
         <div className="adm-filters" role="group" aria-label="Holat bo'yicha filtr">
           {FILTERS.map(val => (
             <button key={val} type="button" className="adm-chip" data-active={filter === val} data-status={val === 'all' ? undefined : val}
-              aria-pressed={filter === val} onClick={() => setFilter(val)}>
+              aria-pressed={filter === val} onClick={() => changeFilter(val)}>
               {val !== 'all' && <span className="adm-chip-dot" aria-hidden="true" />}
               {FILTER_LABEL[val]}{' '}
-              <span className="adm-chip-count">{countText(counts[val])}</span>
+              <span className="adm-chip-count">{countText(counts?.[val])}</span>
             </button>
           ))}
         </div>
@@ -239,7 +294,7 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
         </ErrorPanel>
       )}
 
-      {!res.loading && !failed && apps.length === 0 && (
+      {!res.loading && !failed && data.counts.all === 0 && (
         <EmptyState icon={Ic.inbox} title="Hali ariza kelmagan">
           {type === 'vacancy'
             ? "Nomzodlar sayt orqali ariza yuborganda ular shu yerda ko'rinadi."
@@ -247,20 +302,28 @@ export default function ApplicationsAdmin({ type = 'admission' }) {
         </EmptyState>
       )}
 
-      {!res.loading && !failed && apps.length > 0 && filtered.length === 0 && (
+      {!res.loading && !failed && data.counts.all > 0 && items.length === 0 && (
         <EmptyState icon={Ic.inbox} title="Bu holatda ariza yo'q"
-          action={<button type="button" className="btn adm-btn-neutral" onClick={() => setFilter('all')}>{FILTER_LABEL.all}</button>}>
+          action={<button type="button" className="btn adm-btn-neutral" onClick={() => changeFilter('all')}>{FILTER_LABEL.all}</button>}>
           Boshqa holatni tanlang yoki filtrni tozalang.
         </EmptyState>
       )}
 
-      {!res.loading && !failed && filtered.length > 0 && (
+      {!res.loading && !failed && items.length > 0 && (
         <ul className="adm-app-list">
-          {filtered.map(a => (
+          {items.map(a => (
             <ApplicationCard key={a._id} a={a} type={type} expanded={expanded.has(a._id)} busy={pending.has(a._id)}
               onToggle={toggleExpanded} onStatus={updateStatus} onDelete={setToDelete} />
           ))}
         </ul>
+      )}
+
+      {!res.loading && !failed && pages > 1 && (
+        <nav className="adm-pager" aria-label="Sahifalar">
+          <button type="button" className="btn adm-btn-neutral" disabled={page <= 1} onClick={() => goToPage(page - 1)}>Oldingi</button>
+          <span className="adm-pager-info" aria-live="polite">Sahifa {page} / {pages}</span>
+          <button type="button" className="btn adm-btn-neutral" disabled={page >= pages} onClick={() => goToPage(page + 1)}>Keyingi</button>
+        </nav>
       )}
 
       {toDelete && (

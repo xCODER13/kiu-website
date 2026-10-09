@@ -16,7 +16,10 @@ import { API, H, errorMessage } from './api'
 // - `mutate(fn)` — yuklangan ma'lumotni mahalliy yangilash (holat o'zgartirilgach / ariza o'chirilgach
 //   butun ro'yxatni qayta yuklamasdan; server javobi allaqachon qo'lda).
 //
-// Qaytaradi: { data, error, loading, reload, mutate }. `label` — konsol xabari uchun (foydalanuvchiga ko'rsatilmaydi).
+// 4.4 (sahifalash) qo'shdi: `previousData` — oxirgi muvaffaqiyatli yuklangan javob (yangi `path` yuklanayotganda ham
+// qoladi; hisoblagichlar «–» bilan miltillamasligi uchun). Birinchi yuklash/xatodan keyin — null.
+//
+// Qaytaradi: { data, previousData, error, loading, reload, mutate }. `label` — konsol xabari uchun (foydalanuvchiga ko'rsatilmaydi).
 export function useApiGet(path, label) {
   const [nonce, setNonce] = useState(0)
   const [state, setState] = useState({ key: null, data: null, error: false })
@@ -45,6 +48,7 @@ export function useApiGet(path, label) {
   const settled = state.key === key
   return {
     data: settled ? state.data : null,
+    previousData: state.data,
     error: settled && state.error,
     loading: !settled,
     reload,

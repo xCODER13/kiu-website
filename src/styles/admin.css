@@ -1193,6 +1193,17 @@
     font-size: 0.90625rem;
     line-height: 1.5;
   }
+  /* Arizalar ro'yxati sahifalash (4.4) — mavjud tugma/rang tokenlari, yangi rang yo'q */
+  .adm-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+  .adm-pager .adm-btn-neutral { margin-top: 0; }
+  .adm-pager-info { font-size: 0.875rem; color: var(--color-text-muted); }
+
   /* Neytral ikkilamchi tugma (chegarali, brendsiz): «Barchasi», dialogdagi «Bekor qilish» */
   .adm-btn-neutral {
     margin-top: 6px;

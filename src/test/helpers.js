@@ -9,7 +9,8 @@ export function mockApi(routes = {}) {
     const path = String(url).replace('http://api.test/api', '')
     calls.push({ url: String(url), path, method, headers: init.headers || {}, body: init.body })
     const key = `${method} ${path}`
-    const route = routes[key]
+    // Query bilan marshrut topilmasa, queri'siz kalit sinaladi: 'GET /applications' → '/applications?type=..&page=1'
+    const route = routes[key] ?? routes[`${method} ${path.split('?')[0]}`]
     if (route === undefined) return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({}) })
     const r = typeof route === 'function' ? route({ path, method, body: init.body }) : route
     const res = r && typeof r === 'object' && 'status' in r && 'body' in r ? r : { status: 200, body: r }
@@ -17,7 +18,7 @@ export function mockApi(routes = {}) {
     return Promise.resolve({ ok: res.status >= 200 && res.status < 300, status: res.status, headers: new Headers(res.headers || {}), json: () => Promise.resolve(res.body) })
   })
   vi.stubGlobal('fetch', fn)
-  return { calls, fn, find: (method, path) => calls.filter(c => c.method === method && c.path === path) }
+  return { calls, fn, find: (method, path) => calls.filter(c => c.method === method && (c.path === path || c.path.split('?')[0] === path)) }
 }
 
 // Kartadagi tugmalarni topish: matn elementidan yuqoriga ko'tarilib, >=2 tugmasi bor konteynerni oladi
