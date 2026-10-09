@@ -64,7 +64,7 @@ async function update(req, res) {
       dept: d => DEPARTMENTS.includes(d),
       avatar: a => a.length <= 2,
     })
-    const updated = await Teacher.findByIdAndUpdate(req.params.id, { ...fields, image: resolved.image }, { new: true, runValidators: true }).select(HIDE)
+    const updated = await Teacher.findByIdAndUpdate(req.params.id, { ...fields, image: resolved.image }, { returnDocument: 'after', runValidators: true }).select(HIDE)
     if (!updated) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
       return res.status(404).json({ error: 'Topilmadi' })

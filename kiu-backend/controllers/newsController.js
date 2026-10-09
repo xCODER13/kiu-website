@@ -88,7 +88,7 @@ async function update(req, res) {
     const shortsUrl = req.body.shortsUrl || ''
     const updated = await News.findByIdAndUpdate(req.params.id,
       { title, content, category, image: imageUrl, shortsUrl, videoId: videoId || '' },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     )
     if (!updated) {
       if (uploadedPaths.length > 0) await deleteSupabaseImages(uploadedPaths).catch(() => {})
