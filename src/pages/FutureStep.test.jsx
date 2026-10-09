@@ -87,6 +87,13 @@ describe('FutureStep — plakatlar (qirqilmaydi, katta ko\'rinish)', () => {
     expect(rule).not.toMatch(/align-items: (start|flex-start)/)
   })
 
+  it("CSS: «Batafsil» tugmasi cho'zilmaydi va markazda (`align-self: center`, flex-ustunda `justify-self` ishlamaydi)", () => {
+    const css = readFileSync('src/styles/pages.css', 'utf-8')
+    const rule = css.match(/\.kq-product__link \{([^}]*)\}/)[1]
+    expect(rule).toMatch(/align-self: center/)
+    expect(rule).not.toMatch(/justify-self|stretch|width: 100%/)
+  })
+
   it("plakatni bosganda dialog ochiladi (to'liq rasm), Esc yoki yopish tugmasi bilan yopiladi", async () => {
     const user = userEvent.setup()
     render(<FutureStep />)
