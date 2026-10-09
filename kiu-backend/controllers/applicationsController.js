@@ -7,11 +7,11 @@ const { maskPhone } = require('../utils/phone')
 async function getAll(req, res) {
   try {
     const { type } = req.query
-    let filter = {}
+    let filter = { ...Application.ACTIVE } // o'chirilganlar (4.5) ro'yxatda ko'rinmaydi
     if (type === 'vacancy') {
-      filter = { type: 'vacancy' }
+      filter = { ...filter, type: 'vacancy' }
     } else if (type === 'admission') {
-      filter = { type: 'admission' }
+      filter = { ...filter, type: 'admission' }
     }
     res.json(await Application.find(filter).sort({ createdAt: -1 }))
   } catch (e) { fail(req, res, 500, e) }
@@ -88,6 +88,8 @@ async function create(req, res) {
     // validatsiya hook'ida to'ldiriladi — sanash aynan saqlanadigan qiymat bilan bo'ladi.
     await application.validate()
 
+    // Atayin `Application.ACTIVE`siz: soft-deleted arizalar ham sanaladi — aks holda admin o'chirgach
+    // spamer chegarani qaytadan aylanib o'tardi.
     const recent = await Application.countDocuments({
       phoneKey: application.phoneKey,
       createdAt: { $gte: new Date(Date.now() - PHONE_WINDOW_MS) },
@@ -119,7 +121,8 @@ async function update(req, res) {
       return res.status(400).json({ error: "Holat noto'g'ri" })
     }
 
-    const updated = await Application.findByIdAndUpdate(req.params.id, { status }, { returnDocument: 'after', runValidators: true })
+    // O'chirilgan (4.5) arizaning holatini o'zgartirib bo'lmaydi — 404
+    const updated = await Application.findOneAndUpdate({ _id: req.params.id, ...Application.ACTIVE }, { status }, { returnDocument: 'after', runValidators: true })
     if (!updated) return res.status(404).json({ error: 'Topilmadi' })
     res.json(updated)
   } catch (e) { fail(req, res, 400, e) }
@@ -127,7 +130,13 @@ async function update(req, res) {
 
 async function remove(req, res) {
   try {
-    const deleted = await Application.findByIdAndDelete(req.params.id)
+    // Soft delete (4.5): hujjat TRASH_DAYS kun turadi (xato bosilgan bo'lsa bazadan qo'lda tiklash mumkin:
+    // `deletedAt: null`), keyin TTL indeks o'chiradi. Allaqachon o'chirilgan ariza — 404 (jurnalga yozilmaydi).
+    const deleted = await Application.findOneAndUpdate(
+      { _id: req.params.id, ...Application.ACTIVE },
+      { $set: { deletedAt: new Date() } },
+      { projection: { _id: 1 } }
+    )
     if (!deleted) return res.status(404).json({ error: 'Topilmadi' })
     await audit.record('delete', req, { resource: 'applications', targetId: req.params.id })
     res.json({ success: true })

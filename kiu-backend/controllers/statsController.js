@@ -27,15 +27,15 @@ const SHORTS_FILTER = { videoId: { $nin: ['', null] } }
 
 async function getStats(req, res) {
   try {
-    const admFilter = { type: 'admission' }
+    const admFilter = { ...Application.ACTIVE, type: 'admission' }
     const [newsCount, shortsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps, galleryCount] = await Promise.all([
       News.countDocuments(ARTICLE_FILTER),
       News.countDocuments(SHORTS_FILTER),
       Event.countDocuments(),
       Teacher.countDocuments(),
       Application.countDocuments(admFilter),
-      Application.countDocuments({ status: 'new' }),
-      Application.countDocuments({ type: 'vacancy' }),
+      Application.countDocuments({ ...Application.ACTIVE, status: 'new' }),
+      Application.countDocuments({ ...Application.ACTIVE, type: 'vacancy' }),
       Gallery.countDocuments(),
     ])
     sendCached(res, { newsCount, shortsCount, eventsCount, teachersCount, appsCount, newApps, vacancyApps, galleryCount })
@@ -77,7 +77,7 @@ async function getApplicationsTrend(req, res) {
     const startTrunc = truncateToUnit(new Date(Date.now() - (range - 1) * UNIT_MS[granularity]), granularity)
 
     const rows = await Application.aggregate([
-      { $match: { createdAt: { $gte: startTrunc }, type: { $in: ['admission', 'vacancy'] } } },
+      { $match: { ...Application.ACTIVE, createdAt: { $gte: startTrunc }, type: { $in: ['admission', 'vacancy'] } } },
       {
         $group: {
           _id: {
@@ -167,7 +167,7 @@ async function getSortingHatFaculties(req, res) {
 async function getApplicationFaculties(req, res) {
   try {
     const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 20)
-    const match = { type: 'admission', faculty: { $regex: /\S/ } }
+    const match = { ...Application.ACTIVE, type: 'admission', faculty: { $regex: /\S/ } }
     const [rows, total] = await Promise.all([
       Application.aggregate([
         { $match: match },

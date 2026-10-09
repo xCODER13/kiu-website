@@ -1,6 +1,7 @@
 const News = require('../models/News')
 const { fail } = require('../middleware/errorHandler')
 const audit = require('../services/auditLog')
+const { shouldCountView } = require('../services/viewDedupe')
 const { uploadImagesToSupabase, deleteSupabaseImages } = require('../services/supabaseUpload')
 const { applyPagination } = require('../utils/pagination')
 const { rejectForeignImageUrls } = require('../utils/imageUrls')
@@ -103,7 +104,11 @@ async function update(req, res) {
 
 async function incrementView(req, res) {
   try {
-    await News.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } })
+    // Bir tashrifchi (IP) bir resursni 24 soatda bir marta sanaydi (4.6). Mavjud bo'lmagan id uchun jurnal
+    // yaratilmaydi (viewLimiter ostida ham bazani keraksiz yozuvlar bilan to'ldirib bo'lmasin).
+    if (await News.exists({ _id: req.params.id }) && await shouldCountView(req, 'news', req.params.id)) {
+      await News.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } })
+    }
     res.json({ success: true })
   } catch (e) { fail(req, res, 500, e) }
 }

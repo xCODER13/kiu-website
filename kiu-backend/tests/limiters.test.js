@@ -48,14 +48,16 @@ describe('viewLimiter — ochiq GET/view endpointlari (60 so\'rov / daqiqa / IP)
   })
 
   test("PUT /api/news/:id/view (auth'siz) ham cheklanadi: bitta IP daqiqasiga eng ko'pi bilan 60 ta ko'rish qo'sha oladi", async () => {
-    const item = await News.create({ title: 'Ko\'rishlar' })
+    // Bir IP bir yangilikni 24 soatda bir marta sanaydi (4.6) — shuning uchun 60 ta turli yangilik
+    const items = await News.create(Array.from({ length: 61 }, (_, i) => ({ title: `Ko'rishlar ${i}` })))
     const ip = nextIp()
-    const view = () => request(app).put(`/api/news/${item._id}/view`).set('X-Forwarded-For', ip)
+    const view = item => request(app).put(`/api/news/${item._id}/view`).set('X-Forwarded-For', ip)
 
-    for (let i = 0; i < 60; i++) expect((await view()).status).toBe(200)
-    expect((await view()).status).toBe(429)
+    for (let i = 0; i < 60; i++) expect((await view(items[i])).status).toBe(200)
+    expect((await view(items[60])).status).toBe(429)
 
-    expect((await News.findById(item._id)).views).toBe(60) // 429 olgan so'rov hisobga kirmagan
+    expect((await News.countDocuments({ views: 1 }))).toBe(60)
+    expect((await News.findById(items[60]._id)).views).toBe(0) // 429 olgan so'rov hisobga kirmagan
   })
 
   test("/health va /api/stats viewLimiter ostida emas", async () => {
