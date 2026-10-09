@@ -28,7 +28,9 @@ export function useApiGet(path, label) {
 
   useEffect(() => {
     const controller = new AbortController()
-    fetch(`${API}${path}`, { headers: H(), signal: controller.signal })
+    // `reload()` (nonce > 0) — foydalanuvchi aniq yangilashni so'ragan: brauzerning `Cache-Control: max-age` keshini (masalan /stats, 30 s — 5.2)
+    // chetlab, serverdan tekshirtiradi (`no-cache` = shartli so'rov, o'zgarmagan bo'lsa 304 — arzon). Birinchi yuklash keshdan foydalanadi.
+    fetch(`${API}${path}`, { headers: H(), signal: controller.signal, ...(nonce > 0 && { cache: 'no-cache' }) })
       .then(async res => {
         if (!res.ok) throw new Error(await errorMessage(res, `HTTP ${res.status}`))
         return res.json()
@@ -40,7 +42,7 @@ export function useApiGet(path, label) {
         setState({ key, data: null, error: true })
       })
     return () => controller.abort()
-  }, [path, label, key])
+  }, [path, label, key, nonce])
 
   const reload = useCallback(() => setNonce(n => n + 1), [])
   const mutate = useCallback(fn => setState(s => (s.data == null ? s : { ...s, data: fn(s.data) })), [])

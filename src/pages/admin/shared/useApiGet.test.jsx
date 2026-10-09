@@ -73,6 +73,16 @@ describe('useApiGet', () => {
     expect(fetch).toHaveBeenCalledTimes(2)
   })
 
+  it("`reload()` brauzer keshini chetlab o'tadi (`cache: 'no-cache'`), birinchi yuklash esa kesh sozlamasini o'zgartirmaydi (/stats 30 s, 5.2)", async () => {
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(ok({ a: 1 }))))
+    const { result } = renderHook(() => useApiGet('/stats', 'x'))
+    await waitFor(() => expect(result.current.data).toEqual({ a: 1 }))
+    expect(fetch.mock.calls[0][1]).not.toHaveProperty('cache')
+    act(() => result.current.reload())
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
+    expect(fetch.mock.calls[1][1].cache).toBe('no-cache')
+  })
+
   it('xatodan keyin `reload()` xatoni tozalaydi', async () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     let first = true
