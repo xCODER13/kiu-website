@@ -2,13 +2,32 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ApplicationsAdmin from './ApplicationsAdmin'
-import { mockApi, rowWith } from '../../test/helpers'
+import { mockApi as baseMockApi, rowWith } from '../../test/helpers'
 
 const A = [
   { _id: 'a1', name: 'Ali Valiyev', phone: '+998901111111', faculty: 'Iqtisodiyot', status: 'new', type: 'admission' },
   { _id: 'a2', name: 'Vali Aliyev', phone: '+998902222222', status: 'accepted' },              // eski yozuv: type yo'q → admission
   { _id: 'a3', name: 'Nodira Karimova', phone: '+998903333333', status: 'reviewed', type: 'vacancy', position: 'Dotsent', faculty: 'IT' },
 ]
+// Yangi backend (4.4) ni taqlid qiladi: serverda `type`/`status` filtri, sahifalash va holatlar sanog'i.
+// `type` yo'q (eski) yozuvlar qabul arizasi hisoblanadi (backend: `$in: ['admission', null]`).
+function listResponse(all, path) {
+  const q = new URL(path, 'http://x').searchParams
+  const type = q.get('type')
+  const limit = Math.min(Math.max(parseInt(q.get('limit')) || 20, 1), 50)
+  const page = Math.max(parseInt(q.get('page')) || 1, 1)
+  const ofType = all.filter(a => (type === 'vacancy' ? a.type === 'vacancy' : type === 'admission' ? (!a.type || a.type === 'admission') : true))
+  const counts = { all: ofType.length, new: 0, reviewed: 0, accepted: 0, rejected: 0 }
+  for (const a of ofType) if (a.status in counts) counts[a.status] += 1
+  const filtered = q.get('status') ? ofType.filter(a => a.status === q.get('status')) : ofType
+  return { items: filtered.slice((page - 1) * limit, page * limit), total: filtered.length, page, limit, counts }
+}
+// Qulaylik: `'GET /applications': [..]` massiv sifatida beriladi, mockApi uni server javobiga aylantiradi
+const mockApi = routes => baseMockApi({
+  ...routes,
+  ...(Array.isArray(routes['GET /applications']) ? { 'GET /applications': req => listResponse(routes['GET /applications'], req.path) } : {}),
+})
+
 beforeEach(() => localStorage.setItem('kiu_token', 'tok'))
 
 // Karta ichidagi `select` bo'yicha qatorni topish (kartadagi tugmalar uchun)
@@ -93,7 +112,7 @@ describe('ApplicationsAdmin', () => {
       calls += 1
       return calls === 1
         ? Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({ error: 'Baza xatosi' }) })
-        : Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(A) })
+        : Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(listResponse(A, '/applications?type=admission&page=1&limit=20')) })
     }))
     const user = userEvent.setup()
     const { container } = render(<ApplicationsAdmin />)
@@ -162,7 +181,7 @@ describe('ApplicationsAdmin', () => {
     let finish
     vi.stubGlobal('fetch', vi.fn((url, init = {}) => {
       if (init.method === 'PUT') return new Promise(resolve => { finish = () => resolve({ ok: true, status: 200, json: () => Promise.resolve({ ...A[0], status: 'reviewed' }) }) })
-      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(A) })
+      return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(listResponse(A, '/applications?type=admission&page=1&limit=20')) })
     }))
     const user = userEvent.setup()
     render(<ApplicationsAdmin />)
@@ -238,7 +257,7 @@ describe('ApplicationsAdmin', () => {
   })
 
   it('status PUT tarmoq xatosi — qulamaydi, banner', async () => {
-    vi.stubGlobal('fetch', vi.fn((u, init) => (init?.method === 'PUT' ? Promise.reject(new Error('net')) : Promise.resolve({ ok: true, json: () => Promise.resolve(A) }))))
+    vi.stubGlobal('fetch', vi.fn((u, init) => (init?.method === 'PUT' ? Promise.reject(new Error('net')) : Promise.resolve({ ok: true, json: () => Promise.resolve(listResponse(A, '/applications?type=admission&page=1&limit=20')) }))))
     const user = userEvent.setup()
     render(<ApplicationsAdmin />)
     const row = rowWith(await screen.findByText('Ali Valiyev'), 'select')
@@ -428,5 +447,160 @@ describe('ApplicationsAdmin', () => {
     await screen.findByText('Xurshid')
     expect(container.querySelector('.adm-app-msg img, .adm-app-msg b')).toBeNull()
     expect(container.querySelector('.adm-app-msg-text').textContent).toBe('<img src=x onerror=alert(1)><b>qalin</b>')
+  })
+})
+
+// ── 4.4: filtr, sahifalash va sanoqlar SERVERDA ──
+describe('ApplicationsAdmin — server tomonida filtr va sahifalash (4.4)', () => {
+  const many = n => Array.from({ length: n }, (_, i) => ({
+    _id: `p${i}`, name: `Abituriyent ${i}`, phone: '+998901111111', status: i % 3 === 0 ? 'accepted' : 'new', type: 'admission',
+  }))
+  const paths = api => api.find('GET', '/applications').map(c => c.path)
+
+  it('birinchi so\'rov: type, page=1, limit=20; status yo\'q (hamma ariza bir so\'rovda kelmaydi)', async () => {
+    const api = mockApi({ 'GET /applications': A })
+    render(<ApplicationsAdmin />)
+    await screen.findByText('Ali Valiyev')
+    expect(paths(api)).toEqual(['/applications?type=admission&page=1&limit=20'])
+  })
+
+  it('vakansiya sahifasi type=vacancy so\'raydi', async () => {
+    const api = mockApi({ 'GET /applications': A })
+    render(<ApplicationsAdmin type="vacancy" />)
+    await screen.findByText('Nodira Karimova')
+    expect(paths(api)).toEqual(['/applications?type=vacancy&page=1&limit=20'])
+  })
+
+  it('status chip\'i serverdan filtrlaydi (klientda emas): status=accepted so\'rovi ketadi, sanoqlar o\'zgarmaydi', async () => {
+    const api = mockApi({ 'GET /applications': A })
+    const user = userEvent.setup()
+    render(<ApplicationsAdmin />)
+    await screen.findByText('Ali Valiyev')
+    await user.click(screen.getByRole('button', { name: 'Qabul qilindi 1' }))
+    await screen.findByText('Vali Aliyev')
+    expect(paths(api)).toEqual([
+      '/applications?type=admission&page=1&limit=20',
+      '/applications?type=admission&page=1&limit=20&status=accepted',
+    ])
+    expect(screen.getByRole('button', { name: 'Barchasi 2' })).toBeInTheDocument()
+  })
+
+  it('filtr almashganda yangi javob kelguncha sanoqlar «–» bo\'lib qolmaydi (skelet faqat ro\'yxat o\'rnida)', async () => {
+    const held = new Promise(() => {})
+    mockApi({ 'GET /applications': req => (req.path.includes('status=') ? held : listResponse(A, req.path)) })
+    const user = userEvent.setup()
+    const { container } = render(<ApplicationsAdmin />)
+    await screen.findByText('Ali Valiyev')
+    await user.click(screen.getByRole('button', { name: 'Qabul qilindi 1' }))
+    expect(container.querySelector('[aria-busy="true"]')).not.toBeNull()
+    expect([...container.querySelectorAll('.adm-chip-count')].map(c => c.textContent)).toEqual(['2', '1', '0', '1', '0'])
+    expect(container.querySelector('.adm-count-pill')).toHaveTextContent('Jami: 2')
+  })
+
+  it('bir sahifaga sig\'sa sahifalash paneli yo\'q', async () => {
+    mockApi({ 'GET /applications': many(20) })
+    render(<ApplicationsAdmin />)
+    await screen.findByText('Abituriyent 0')
+    expect(screen.queryByRole('navigation', { name: 'Sahifalar' })).not.toBeInTheDocument()
+  })
+
+  it('sahifalash: «Keyingi» page=2 so\'raydi, «Oldingi» birinchi sahifada o\'chiq, oxirgisida «Keyingi» o\'chiq', async () => {
+    const api = mockApi({ 'GET /applications': many(45) })
+    const user = userEvent.setup()
+    render(<ApplicationsAdmin />)
+    await screen.findByText('Abituriyent 0')
+    expect(screen.getByText('Sahifa 1 / 3')).toBeInTheDocument()
+    expect(screen.getAllByRole('listitem')).toHaveLength(20)
+    expect(screen.getByRole('button', { name: 'Oldingi' })).toBeDisabled()
+
+    await user.click(screen.getByRole('button', { name: 'Keyingi' }))
+    await screen.findByText('Abituriyent 20')
+    expect(screen.queryByText('Abituriyent 0')).not.toBeInTheDocument()
+    expect(screen.getByText('Sahifa 2 / 3')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Keyingi' }))
+    await screen.findByText('Abituriyent 40')
+    expect(screen.getAllByRole('listitem')).toHaveLength(5)
+    expect(screen.getByRole('button', { name: 'Keyingi' })).toBeDisabled()
+    expect(paths(api).at(-1)).toBe('/applications?type=admission&page=3&limit=20')
+
+    await user.click(screen.getByRole('button', { name: 'Oldingi' }))
+    await screen.findByText('Abituriyent 20')
+  })
+
+  it('filtr almashganda 1-sahifaga qaytadi', async () => {
+    const api = mockApi({ 'GET /applications': many(45) })
+    const user = userEvent.setup()
+    render(<ApplicationsAdmin />)
+    await screen.findByText('Abituriyent 0')
+    await user.click(screen.getByRole('button', { name: 'Keyingi' }))
+    await screen.findByText('Abituriyent 20')
+    await user.click(screen.getByRole('button', { name: /^Yangi/ }))
+    await waitFor(() => expect(paths(api).at(-1)).toBe('/applications?type=admission&page=1&limit=20&status=new'))
+  })
+
+  it('sahifa almashganda fokus sarlavhaga o\'tadi (klaviatura foydalanuvchisi yo\'qolmaydi)', async () => {
+    mockApi({ 'GET /applications': many(45) })
+    const user = userEvent.setup()
+    render(<ApplicationsAdmin />)
+    await screen.findByText('Abituriyent 0')
+    await user.click(screen.getByRole('button', { name: 'Keyingi' }))
+    expect(screen.getByRole('heading', { name: 'Qabul arizalari' })).toHaveFocus()
+  })
+
+  it('o\'chirish sanoqlarni kamaytiradi', async () => {
+    mockApi({ 'GET /applications': A, 'DELETE /applications/a1': { success: true } })
+    const user = userEvent.setup()
+    const { container } = render(<ApplicationsAdmin />)
+    await screen.findByText('Ali Valiyev')
+    await user.click(within(card('Ali Valiyev')).getByRole('button', { name: /O'chir/ }))
+    await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: "O'chirish" }))
+    await waitFor(() => expect(screen.queryByText('Ali Valiyev')).not.toBeInTheDocument())
+    expect([...container.querySelectorAll('.adm-chip-count')].map(c => c.textContent)).toEqual(['1', '0', '0', '1', '0'])
+    expect(container.querySelector('.adm-count-pill')).toHaveTextContent('Jami: 1')
+  })
+
+  it('2-sahifadagi yagona arizani o\'chirgach 1-sahifaga qaytadi (bo\'sh sahifada qolmaydi)', async () => {
+    const api = mockApi({ 'GET /applications': many(21), 'DELETE /applications/p20': { success: true } })
+    const user = userEvent.setup()
+    render(<ApplicationsAdmin />)
+    await screen.findByText('Abituriyent 0')
+    await user.click(screen.getByRole('button', { name: 'Keyingi' }))
+    await screen.findByText('Abituriyent 20')
+    await user.click(within(card('Abituriyent 20')).getByRole('button', { name: /O'chir/ }))
+    await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: "O'chirish" }))
+    await waitFor(() => expect(paths(api).at(-1)).toBe('/applications?type=admission&page=1&limit=20'))
+  })
+
+  it('holat o\'zgargach sanoqlar yangilanadi; tanlangan filtrga endi mos kelmasa ariza sahifadan ketadi', async () => {
+    mockApi({ 'GET /applications': A, 'PUT /applications/a2': { ...A[1], status: 'rejected' } })
+    const user = userEvent.setup()
+    const { container } = render(<ApplicationsAdmin />)
+    await screen.findByText('Ali Valiyev')
+    await user.click(screen.getByRole('button', { name: 'Qabul qilindi 1' }))
+    await screen.findByText('Vali Aliyev')
+    await user.selectOptions(within(card('Vali Aliyev')).getByRole('combobox'), 'rejected')
+    await waitFor(() => expect(screen.queryByText('Vali Aliyev')).not.toBeInTheDocument())
+    expect([...container.querySelectorAll('.adm-chip-count')].map(c => c.textContent)).toEqual(['2', '1', '0', '0', '1'])
+    expect(screen.getByText("Bu holatda ariza yo'q")).toBeInTheDocument()
+  })
+
+  it('tur almashganda (Qabul ↔ Vakansiya) filtr va sahifa tozalanadi', async () => {
+    const api = mockApi({ 'GET /applications': A })
+    const user = userEvent.setup()
+    const { rerender } = render(<ApplicationsAdmin type="admission" />)
+    await screen.findByText('Ali Valiyev')
+    await user.click(screen.getByRole('button', { name: 'Qabul qilindi 1' }))
+    await screen.findByText('Vali Aliyev')
+    rerender(<ApplicationsAdmin type="vacancy" />)
+    await screen.findByText('Nodira Karimova')
+    expect(paths(api).at(-1)).toBe('/applications?type=vacancy&page=1&limit=20')
+    expect(screen.getByRole('button', { name: /^Barchasi/ })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('eski massiv formati (backend hali yangilanmagan) jim bo\'sh ro\'yxat emas, xato holati', async () => {
+    baseMockApi({ 'GET /applications': A })
+    render(<ApplicationsAdmin />)
+    expect(await screen.findByRole('alert')).toHaveTextContent("Arizalarni yuklab bo'lmadi.")
   })
 })
