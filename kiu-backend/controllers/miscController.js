@@ -1,6 +1,8 @@
 const { fail } = require('../middleware/errorHandler')
 const { sendTelegram, escapeTelegramHtml } = require('../services/telegram')
 const SortingHatLead = require('../models/SortingHatLead')
+const { maskPhone } = require('../utils/phone')
+const { sanitizeError } = require('../utils/safeError')
 
 async function sortingHatLead(req, res) {
   try {
@@ -15,7 +17,8 @@ async function sortingHatLead(req, res) {
     // bir elementni ham (name/phone kabi) Telegram HTML uchun escape qilamiz.
     const facultyList = Array.isArray(faculties) ? faculties : []
     const safeName = escapeTelegramHtml(name)
-    const safePhone = escapeTelegramHtml(phone)
+    // Telefon Telegram'ga maskalangan holda ketadi (4.3); to'liq raqam faqat DB'da
+    const safePhone = escapeTelegramHtml(maskPhone(phone))
     const safeFaculties = facultyList.map(f => escapeTelegramHtml(f))
 
     const msg = `🎓 <b>Yo'nalishni aniqlash — yangi natija</b>\n\n👤 <b>Ism:</b> ${safeName}\n📞 <b>Telefon:</b> ${safePhone}\n\n🏆 <b>Tavsiya etilgan yo'nalishlar:</b>\n${safeFaculties.map((f, i) => `${i + 1}. ${f}`).join('\n')}\n\n⏰ ${new Date().toLocaleString('uz-UZ')}`
@@ -33,7 +36,7 @@ async function sortingHatLead(req, res) {
         faculties: facultyList.map(f => String(f)),
       })
     } catch (dbErr) {
-      req.log.error({ err: dbErr }, '[SortingHat] Statistika uchun DB yozishda xatolik')
+      req.log.error({ err: sanitizeError(dbErr) }, '[SortingHat] Statistika uchun DB yozishda xatolik')
     }
 
     await sendTelegram(msg)

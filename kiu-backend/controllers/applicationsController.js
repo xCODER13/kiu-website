@@ -2,6 +2,7 @@ const Application = require('../models/Application')
 const { fail } = require('../middleware/errorHandler')
 const audit = require('../services/auditLog')
 const { sendTelegram, escapeTelegramHtml } = require('../services/telegram')
+const { maskPhone } = require('../utils/phone')
 
 async function getAll(req, res) {
   try {
@@ -20,10 +21,12 @@ async function getAll(req, res) {
 // orqali), shuning uchun Telegram xabariga qo'shishdan oldin escapeTelegramHtml
 // bilan tozalanadi — aks holda arizachi ism/xabar maydoniga <a href="..."> kabi
 // teg yozib, adminning Telegram kanaliga soxta (bosiladigan) link yuborishi mumkin edi.
+// Telefon maskalanadi (4.3): Telegram — uchinchi tomon xizmati, xabarlar u yerda cheksiz saqlanadi.
+// To'liq raqam faqat admin panelda (auth ortida) ko'rinadi.
 function buildTelegramMessage(application) {
   const isVacancy = application.type === 'vacancy'
   const name = escapeTelegramHtml(application.name)
-  const phone = escapeTelegramHtml(application.phone)
+  const phone = escapeTelegramHtml(maskPhone(application.phone))
   const email = escapeTelegramHtml(application.email)
   const position = escapeTelegramHtml(application.position)
   const faculty = escapeTelegramHtml(application.faculty)
@@ -62,6 +65,14 @@ const APPLICATION_FIELDS = ['name', 'phone', 'faculty', 'message', 'email', 'pos
 // (email) keraksiz yig'maslik. Admin panel va Telegram shabloni ham qabul arizasida ularni ko'rsatmaydi.
 const VACANCY_ONLY_FIELDS = ['email', 'position', 'education', 'experience']
 
+// Bir telefon raqamidan takroriy ariza chegarasi (4.3): oxirgi 24 soatda eng ko'pi bilan 3 ta
+// (turidan qat'i nazar). IP bo'yicha formLimiter spamni IP almashtirib aylanib o'tish mumkin —
+// bu esa bitta abonentni (yoki birovning raqamini) ariza bilan "bombalashni" to'xtatadi.
+// Tekshiruv va yozish atomik emas: bir vaqtdagi parallel so'rovlar chegaradan 1-2 taga oshishi
+// mumkin; formLimiter (10/15 daq/IP) buni cheklaydi, qat'iy kafolat kerak bo'lsa unique-indeks kerak.
+const PHONE_WINDOW_MS = 24 * 60 * 60 * 1000
+const PHONE_MAX_APPLICATIONS = 3
+
 async function create(req, res) {
   try {
     const body = {}
@@ -72,7 +83,21 @@ async function create(req, res) {
     if (body.type !== 'vacancy') for (const field of VACANCY_ONLY_FIELDS) delete body[field]
     body.status = 'new'
 
-    const application = await Application.create(body)
+    const application = new Application(body)
+    // Avval validatsiya (noto'g'ri telefon 400 bo'lib qoladi va hisobga kirmaydi); `phoneKey`
+    // validatsiya hook'ida to'ldiriladi — sanash aynan saqlanadigan qiymat bilan bo'ladi.
+    await application.validate()
+
+    const recent = await Application.countDocuments({
+      phoneKey: application.phoneKey,
+      createdAt: { $gte: new Date(Date.now() - PHONE_WINDOW_MS) },
+    })
+    if (recent >= PHONE_MAX_APPLICATIONS) {
+      req.log.warn({ phone: maskPhone(application.phone), recent }, '[APPLICATION] Bir raqamdan takroriy ariza rad etildi')
+      return res.status(429).json({ error: "Bu telefon raqamidan so'nggi 24 soatda juda ko'p ariza yuborilgan. Keyinroq urinib ko'ring." })
+    }
+
+    await application.save()
     sendTelegram(buildTelegramMessage(application))
     res.json(application)
   } catch (e) { fail(req, res, 400, e) }

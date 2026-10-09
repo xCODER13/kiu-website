@@ -44,7 +44,10 @@ describe('POST /api/applications — Telegram xabari', () => {
     expect(payload.parse_mode).toBe('HTML')
     expect(payload.text).toContain('Qabul arizasi')
     expect(payload.text).toContain('Ali Valiyev')
-    expect(payload.text).toContain('+998901234567')
+    // Telefon maskalanadi (4.3): to'liq raqam Telegram'ga chiqmaydi
+    expect(payload.text).toContain('+998 90 *** ** 67')
+    expect(payload.text).not.toContain('1234')
+    expect(payload.text).not.toContain('+998901234567')
     expect(payload.text).toContain('Informatika')
     expect(payload.text).toContain('Salom')
   })
@@ -136,7 +139,8 @@ describe('POST /api/applications — formLimiter', () => {
   test("ketma-ket ko'p so'rov (spam) 429 bilan to'xtatiladi", async () => {
     let blockedAt = null
     for (let i = 1; i <= 12; i++) {
-      const res = await request(app).post(URL).send(ADMISSION)
+      // Har so'rov boshqa raqamdan: telefon chegarasi (4.3) emas, aynan IP limiti tekshiriladi
+      const res = await request(app).post(URL).send({ ...ADMISSION, phone: `+99890${1000000 + i}` })
       if (res.status === 429) { blockedAt = i; break }
     }
     expect(blockedAt).not.toBeNull()

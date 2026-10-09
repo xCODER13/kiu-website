@@ -56,6 +56,9 @@ describe('POST /api/sorting-hat-lead', () => {
     expect(payload.chat_id).toBe('12345')
     expect(payload.parse_mode).toBe('HTML')
     expect(payload.text).toContain('Ali Valiyev')
+    // Telefon Telegram'ga maskalangan holda ketadi (4.3), DB'da esa to'liq saqlanadi (pastda)
+    expect(payload.text).toContain('+998 90 *** ** 67')
+    expect(payload.text).not.toContain('1234')
     expect(payload.text).toContain('1. Informatika')
     expect(payload.text).toContain('2. Iqtisodiyot')
 
@@ -90,13 +93,16 @@ describe('POST /api/sorting-hat-lead', () => {
 
   test("Telegram xabaridagi HTML foydalanuvchi kiritganda escape qilinadi (soxta link in'ektsiyasi)", async () => {
     const evil = '<a href="http://evil.example">bosing</a>'
-    const res = await request(app).post(URL).send({ name: evil, phone: '&<>', faculties: [evil] })
+    const res = await request(app).post(URL).send({ name: `${evil} & Ko`, phone: '&<>', faculties: [evil] })
     expect(res.status).toBe(200)
 
     const text = sentText()
     expect(text).not.toContain('<a href="http://evil.example">')
     expect(text).toContain('&lt;a href="http://evil.example"&gt;bosing&lt;/a&gt;')
-    expect(text).toContain('&amp;&lt;&gt;') // & avval escape qilinadi, ikki marta emas
+    expect(text).toContain('&lt;/a&gt; &amp; Ko') // & avval escape qilinadi, ikki marta emas
+    expect(text).not.toContain('&amp;lt;')
+    // Yaroqsiz telefon (raqamsiz) — maskalangan '***', kiritilgan matn xabarga o'tmaydi
+    expect(text).toContain('<b>Telefon:</b> ***')
     // Xabarning o'z (ishonchli) tegi saqlanib qolgan bo'lishi kerak
     expect(text).toContain('<b>Ism:</b>')
   })
