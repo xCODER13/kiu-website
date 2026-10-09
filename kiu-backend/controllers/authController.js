@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const logger = require('../logger')
 const { fail } = require('../middleware/errorHandler')
-const { revokeAllTokens } = require('../services/adminSessions')
+const { revokeAllTokens, getPasswordChangedAt } = require('../services/adminSessions')
 const { passwordProblem } = require('../utils/passwordPolicy')
 
 // Login javob vaqtini konstant qilish uchun — haqiqiy ADMIN_PASSWORD_HASH bilan
@@ -131,4 +131,19 @@ async function logoutAll(req, res) {
   }
 }
 
-module.exports = { login, changePassword, logoutAll }
+// Profil «Hisob» kartasi uchun: kim kirgan, parol oxirgi marta qachon almashtirilgan, sessiya qachon tugaydi.
+// Faqat shu uchta qiymat: parol hash'i, `iat`, JWT_SECRET va boshqa ichki maydonlar HECH QACHON qaytarilmaydi.
+async function me(req, res) {
+  try {
+    const exp = req.user?.exp
+    res.json({
+      username: req.user?.username ?? null,
+      passwordChangedAt: await getPasswordChangedAt(),
+      sessionExpiresAt: typeof exp === 'number' ? new Date(exp * 1000).toISOString() : null,
+    })
+  } catch (e) {
+    fail(req, res, 500, e)
+  }
+}
+
+module.exports = { login, changePassword, logoutAll, me }

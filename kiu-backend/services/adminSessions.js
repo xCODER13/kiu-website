@@ -81,6 +81,18 @@ async function getCutoffs() {
   }
 }
 
+// Parol oxirgi marta qachon almashtirilgani (ISO satr) yoki hech o'zgarmagan bo'lsa null — `GET /admin/me` uchun.
+// getCutoffs bilan bir xil manbalar (env va DB), kattasi olinadi.
+async function getPasswordChangedAt() {
+  await ensureFresh()
+  const candidates = [process.env.ADMIN_PASSWORD_CHANGED_AT, cache.passwordChangedAt]
+    .map(v => ({ v, sec: toSeconds(v) }))
+    .filter(c => c.sec != null)
+  if (candidates.length === 0) return null
+  const latest = candidates.reduce((a, b) => (b.sec > a.sec ? b : a))
+  return new Date(latest.v).toISOString()
+}
+
 // `iat` chegaradan oldin chiqarilganmi? Parol o'zgarishida `iat < chegara` (yangi parol bilan
 // shu soniyada kirgan token yaroqli), logout-all'da `iat <= chegara` (so'rovni yuborgan token
 // ham yaroqsiz bo'lishi uchun). Natijada logout-all'dan keyin 1 soniya ichida olingan token
@@ -106,4 +118,4 @@ function resetCache() {
   inflight = null
 }
 
-module.exports = { getCutoffs, revocationReason, revokeAllTokens, resetCache, CACHE_TTL_MS }
+module.exports = { getCutoffs, getPasswordChangedAt, revocationReason, revokeAllTokens, resetCache, CACHE_TTL_MS }
