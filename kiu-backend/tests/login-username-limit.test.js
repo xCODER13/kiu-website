@@ -47,8 +47,8 @@ describe('POST /api/admin/login — admin logini bo\'yicha umumiy limit (3.6)', 
     const byIp = await bad(ipA)
     expect(byIp.status).toBe(429)
 
-    // umumiy limit bloklagan javob
-    await failFromManyIps(30)
+    // umumiy limit bloklagan javob (ipA dagi 5 ta xato ham umumiy hisobda: 5 + 25 = 30)
+    await failFromManyIps(25)
     const byUsername = await good(nextIp())
     expect(byUsername.status).toBe(429)
 
