@@ -12,7 +12,7 @@ async function getAll(req, res) {
     // Tadbirlar taqvimi — eng yaqin sanadagi tadbir birinchi chiqadi
     // (avval createdAt bo'yicha edi, ya'ni qo'shilish tartibi — voqea
     // qachon bo'lishiga aloqasi yo'q edi)
-    const q = Event.find().sort({ eventDate: 1 })
+    const q = Event.find().sort({ eventDate: 1, _id: 1 })
     applyPagination(q, req.query)
     res.json(await q)
   } catch (e) { fail(req, res, 500, e) }

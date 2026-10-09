@@ -15,7 +15,7 @@ async function getOne(req, res) {
 
 async function getAll(req, res) {
   try {
-    const q = News.find().sort({ createdAt: -1 })
+    const q = News.find().sort({ createdAt: -1, _id: -1 })
     applyPagination(q, req.query)
     res.json(await q)
   } catch (e) { fail(req, res, 500, e) }

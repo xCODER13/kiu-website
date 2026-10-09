@@ -7,7 +7,7 @@ const { rejectForeignImageUrls } = require('../utils/imageUrls')
 
 async function getAll(req, res) {
   try {
-    const q = Gallery.find().sort({ createdAt: -1 })
+    const q = Gallery.find().sort({ createdAt: -1, _id: -1 })
     applyPagination(q, req.query)
     res.json(await q)
   } catch (e) { fail(req, res, 500, e) }

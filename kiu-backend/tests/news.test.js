@@ -126,3 +126,22 @@ describe('News CRUD', () => {
     expect(await News.findById(news._id)).toBeNull()
   })
 })
+
+// Sahifalash barqarorligi (2.4): createdAt bir xil bo'lsa ham sahifalar takrorlanmaydi/yo'qolmaydi,
+// tartib `_id` bo'yicha aniq (sort tiebreaker).
+describe('Sahifalash: bir xil createdAt', () => {
+  test('limit=2 bilan hamma sahifalar birlashtirilganda 5 ta yozuv takrorsiz, aniq tartibda', async () => {
+    const same = new Date('2026-01-01T00:00:00Z')
+    await News.collection.insertMany(Array.from({ length: 5 }, (_, i) => ({ title: `T${i}`, createdAt: same, updatedAt: same, views: 0 })))
+
+    const ids = []
+    for (const page of [1, 2, 3]) {
+      const res = await request(app).get(`/api/news?limit=2&page=${page}`)
+      expect(res.status).toBe(200)
+      ids.push(...res.body.map(n => n._id))
+    }
+    expect(ids).toHaveLength(5)
+    expect(new Set(ids).size).toBe(5)
+    expect(ids).toEqual([...ids].sort().reverse()) // createdAt teng → _id kamayish tartibida
+  })
+})

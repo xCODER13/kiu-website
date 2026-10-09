@@ -72,3 +72,21 @@ describe('Events CRUD', () => {
     expect((await Event.findById(event._id)).views).toBe(1)
   })
 })
+
+// Sahifalash barqarorligi (2.4): eventDate bir xil bo'lsa ham sahifalar takrorlanmaydi/yo'qolmaydi.
+describe('Sahifalash: bir xil eventDate', () => {
+  test('limit=2 bilan hamma sahifalar birlashtirilganda 5 ta yozuv takrorsiz, aniq tartibda', async () => {
+    const same = new Date('2026-06-01T00:00:00Z')
+    await Event.collection.insertMany(Array.from({ length: 5 }, (_, i) => ({ title: `E${i}`, eventDate: same, views: 0, createdAt: same, updatedAt: same })))
+
+    const ids = []
+    for (const page of [1, 2, 3]) {
+      const res = await request(app).get(`/api/events?limit=2&page=${page}`)
+      expect(res.status).toBe(200)
+      ids.push(...res.body.map(e => e._id))
+    }
+    expect(ids).toHaveLength(5)
+    expect(new Set(ids).size).toBe(5)
+    expect(ids).toEqual([...ids].sort()) // eventDate teng → _id o'sish tartibida
+  })
+})

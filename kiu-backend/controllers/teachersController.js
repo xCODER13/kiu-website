@@ -18,7 +18,7 @@ function getDepartments(req, res) {
 
 async function getAll(req, res) {
   try {
-    const q = Teacher.find().select(HIDE).sort({ createdAt: -1 })
+    const q = Teacher.find().select(HIDE).sort({ createdAt: -1, _id: -1 })
     applyPagination(q, req.query)
     res.json(await q)
   } catch (e) { fail(req, res, 500, e) }
