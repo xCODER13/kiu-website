@@ -4,7 +4,7 @@ import FormField from './shared/FormField.jsx'
 import AvatarField from './shared/AvatarField.jsx'
 import { ErrorBanner } from './shared/StateViews.jsx'
 import { formatCount, fieldProps } from './shared/helpers'
-import { TEACHER_NAME_MAX, TEACHER_ROLE_MAX, TEACHER_AVATAR_MAX, KAFEDRALAR } from './shared/constants'
+import { TEACHER_NAME_MAX, TEACHER_ROLE_MAX, TEACHER_AVATAR_MAX } from './shared/constants'
 
 // O'qituvchi formasi (6.27 — taxta: Admin-Teachers «Yangi o'qituvchi» / «Tahrirlash»). Boshqariladigan komponent: holat va tarmoq
 // so'rovlari `TeachersAdmin` da. Tartib: To'liq ism → Lavozim | Kafedra → Bosh harflar (yarim kenglik) → Foto. `NewsForm` bilan
@@ -12,6 +12,7 @@ import { TEACHER_NAME_MAX, TEACHER_ROLE_MAX, TEACHER_AVATAR_MAX, KAFEDRALAR } fr
 // server xatosi forma tepasida banner (forma va tanlangan foto saqlanib qoladi).
 export default function TeachersForm({
   isEditing,
+  departments,
   values,
   onChange,
   errors,
@@ -29,7 +30,7 @@ export default function TeachersForm({
 
   // Eski yoki o'zgargan kafedra nomi (ro'yxatda yo'q): qiymat ko'rinib turadi, lekin tanlab bo'lmaydi — ogohlantirish chiqadi
   // (avval `<select>` mos `option` topmasa bo'sh ko'rinardi va `dept` bo'sh ketardi).
-  const unknownDept = !!values.dept && !KAFEDRALAR.includes(values.dept)
+  const unknownDept = !!values.dept && !departments.includes(values.dept)
   const deptWarn = unknownDept && !errors.dept
   const deptProps = fieldProps('teacher-dept', { error: errors.dept })
   if (deptWarn) deptProps['aria-describedby'] = 'teacher-dept-warn'
@@ -98,7 +99,7 @@ export default function TeachersForm({
               >
                 <option value="">— Kafedrani tanlang —</option>
                 {unknownDept && <option value={values.dept}>{values.dept}</option>}
-                {KAFEDRALAR.map(k => <option key={k} value={k}>{k}</option>)}
+                {departments.map(k => <option key={k} value={k}>{k}</option>)}
               </select>
               <span className="adm-select-icon" aria-hidden="true">{Ic.chevronDown}</span>
             </div>

@@ -145,6 +145,53 @@ describe('TeachersAdmin: qidiruv va kafedra filtri', () => {
   })
 })
 
+describe("TeachersAdmin: kafedralar ro'yxati (GET /teachers/departments)", () => {
+  const NEW_DEPT = 'Yangi texnologiyalar kafedrasi'
+
+  it("forma va filtr serverdan kelgan ro'yxatni ishlatadi (yangi kafedra kod o'zgarishisiz paydo bo'ladi)", async () => {
+    mockApi({ 'GET /teachers': [T1], 'GET /teachers/departments': [NEW_DEPT, 'Aniq fanlar kafedrasi'] })
+    const user = userEvent.setup()
+    render(<TeachersAdmin />)
+    await screen.findByRole('heading', { name: 'Karimov Ali Vali' })
+    await waitFor(() => expect(within(filterSelect()).getByRole('option', { name: NEW_DEPT })).toBeInTheDocument())
+    // eski qattiq ro'yxatdagi, serverda yo'q kafedra tanlovda yo'q
+    expect(within(filterSelect()).queryByRole('option', { name: 'Ijtimoiy fanlar kafedrasi' })).toBeNull()
+    await openForm(user)
+    expect(within(deptSelect()).getByRole('option', { name: NEW_DEPT })).toBeInTheDocument()
+  })
+
+  it("server ro'yxati bo'lmasa (xato / bo'sh / massiv emas) — o'rnatilgan nusxa ishlatiladi, forma bo'sh qolmaydi", async () => {
+    for (const bad of [{ status: 500, body: { error: 'x' } }, [], { not: 'array' }, [1, 2]]) {
+      mockApi({ 'GET /teachers': [T1], 'GET /teachers/departments': bad })
+      const user = userEvent.setup()
+      const { unmount } = render(<TeachersAdmin />)
+      await screen.findByRole('heading', { name: 'Karimov Ali Vali' })
+      await openForm(user)
+      expect(within(deptSelect()).getByRole('option', { name: 'Aniq fanlar kafedrasi' })).toBeInTheDocument()
+      expect(within(deptSelect()).getAllByRole('option')).toHaveLength(6) // 5 kafedra + «— Kafedrani tanlang —»
+      unmount()
+    }
+  })
+
+  it("saqlashda kafedra serverdagi ro'yxatga qarab tekshiriladi", async () => {
+    const api = mockApi({
+      'GET /teachers': [],
+      'GET /teachers/departments': [NEW_DEPT],
+      'POST /teachers': { _id: 't9', name: 'Yangi Ustoz', role: 'Professor', dept: NEW_DEPT },
+    })
+    const user = userEvent.setup()
+    render(<TeachersAdmin />)
+    await waitFor(() => expect(api.find('GET', '/teachers/departments')).toHaveLength(1))
+    await openForm(user)
+    await user.type(nameInput(), 'Yangi Ustoz')
+    await user.type(roleInput(), 'Professor')
+    await user.selectOptions(deptSelect(), NEW_DEPT)
+    await submit(user)
+    await waitFor(() => expect(api.find('POST', '/teachers')).toHaveLength(1))
+    expect(api.find('POST', '/teachers')[0].body.get('dept')).toBe(NEW_DEPT)
+  })
+})
+
 describe('TeachersAdmin: forma', () => {
   it("validatsiya: ism, lavozim va kafedra — maydon ostida xabar (alert() emas); POST ketmaydi", async () => {
     const api = mockApi({ 'GET /teachers': [] })

@@ -47,7 +47,9 @@ export const GALLERY_DESC_MAX = 500
 export const ALBUM_MOSAIC = 3
 
 // O'qituvchilar (6.27): chegaralar models/Teacher.js bilan bir xil (ism, lavozim — 200). `avatar` modelda 20, formada 2 (10.4).
-// Kafedralar ro'yxati — formadagi tanlagich; «ro'yxatda yo'q» eski qiymatlar uchun alohida holat bor (TeachersForm).
+// Kafedralar ro'yxati — ZAXIRA nusxa: asosiy manba `GET /api/teachers/departments` (TeachersAdmin); server javob bermaguncha yoki xato bo'lsa
+// shu ishlatiladi. Backend `utils/departments.js` bilan bir xil bo'lishi `teachers-validation.test.js` da tekshiriladi.
+// «Ro'yxatda yo'q» eski qiymatlar uchun alohida holat bor (TeachersForm).
 export const TEACHER_NAME_MAX = 200
 export const TEACHER_ROLE_MAX = 200
 export const TEACHER_AVATAR_MAX = 2

@@ -69,6 +69,12 @@ function TeacherCard({ item, onEdit, onDelete }) {
 
 export default function TeachersAdmin() {
   const res = useApiGet('/teachers', "O'qituvchilarni yuklash")
+  // Ruxsat etilgan kafedralar — serverdan (YAGONA manba, 1.5). Yuklanguncha yoki xato bo'lsa `KAFEDRALAR` nusxasi ishlatiladi:
+  // forma va filtr hech qachon bo'sh qolmaydi (nusxa backend ro'yxati bilan testda solishtiriladi).
+  const deptRes = useApiGet('/teachers/departments', 'Kafedralarni yuklash')
+  const departments = Array.isArray(deptRes.data) && deptRes.data.length && deptRes.data.every(d => typeof d === 'string')
+    ? deptRes.data
+    : KAFEDRALAR
   const failed = res.error || (!res.loading && !Array.isArray(res.data))
   const items = useMemo(() => (Array.isArray(res.data) ? res.data : []), [res.data])
 
@@ -76,9 +82,9 @@ export default function TeachersAdmin() {
   const [query, setQuery] = useState('')
   const [deptFilter, setDeptFilter] = useState('')
   const deptOptions = useMemo(() => {
-    const extra = [...new Set(items.map(t => t.dept).filter(d => d && !KAFEDRALAR.includes(d)))].sort()
-    return [...KAFEDRALAR, ...extra]
-  }, [items])
+    const extra = [...new Set(items.map(t => t.dept).filter(d => d && !departments.includes(d)))].sort()
+    return [...departments, ...extra]
+  }, [items, departments])
   const q = query.trim().toLowerCase()
   const visible = useMemo(
     () => items.filter(t => (!deptFilter || t.dept === deptFilter) && (!q || (t.name || '').toLowerCase().includes(q))),
@@ -181,7 +187,7 @@ export default function TeachersAdmin() {
     if (!name) errs.name = "To'liq ismni kiriting."
     if (!role) errs.role = 'Lavozimni kiriting.'
     if (!values.dept) errs.dept = 'Kafedrani tanlang.'
-    else if (!KAFEDRALAR.includes(values.dept)) errs.dept = "Kafedrani ro'yxatdan tanlang."
+    else if (!departments.includes(values.dept)) errs.dept = "Kafedrani ro'yxatdan tanlang."
     setErrors(errs)
     if (errs.name) return nameRef.current?.focus()
     if (errs.role) return document.getElementById('teacher-role')?.focus()
@@ -262,6 +268,7 @@ export default function TeachersAdmin() {
       {open && (
         <TeachersForm
           isEditing={!!editing}
+          departments={departments}
           values={values}
           onChange={change}
           errors={errors}
