@@ -13,4 +13,12 @@ function applyPagination(query, { page, limit } = {}) {
   return query.skip((pg - 1) * lim).limit(lim)
 }
 
-module.exports = { applyPagination }
+// Sahifa raqami va hajmini xavfsiz sonlarga aylantiradi (konvert/`skip` uchun). `limit` — [1, max], standart defaultLimit;
+// yaroqsiz (NaN, 0, manfiy) qiymat standartga/chegaraga tushadi.
+function parsePage({ page, limit } = {}, { defaultLimit = 20, max = 100 } = {}) {
+  const lim = Math.min(Math.max(parseInt(limit) || defaultLimit, 1), max)
+  const pg = Math.max(parseInt(page) || 1, 1)
+  return { page: pg, limit: lim, skip: (pg - 1) * lim }
+}
+
+module.exports = { applyPagination, parsePage }
