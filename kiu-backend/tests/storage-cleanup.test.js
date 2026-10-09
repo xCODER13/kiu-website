@@ -21,6 +21,7 @@ const News = require('../models/News')
 const Event = require('../models/Event')
 const Teacher = require('../models/Teacher')
 const Gallery = require('../models/Gallery')
+const StudentLife = require('../models/StudentLife')
 const { getAuthToken } = require('./helpers')
 
 const PNG = Buffer.from('89504e470d0a1a0a', 'hex')
@@ -31,6 +32,7 @@ const E1 = cdn('events/3333-e.png')
 const T1 = cdn('teachers/4444-t.png')
 const G1 = cdn('gallery/5555-g1.png')
 const G2 = cdn('gallery/6666-g2.png')
+const S1 = cdn('student-life/7777-s1.png')
 const LEGACY = 'https://old-host.example/eski.png'
 
 let auth
@@ -230,5 +232,41 @@ describe('DB yozuvi muvaffaqiyatsiz bo\'lsa — eski rasm O\'CHMAYDI', () => {
     const res = await call('put', `/api/news/${news._id}`).field('title', 'N').field('existingImages', JSON.stringify([N1, 'https://evil.example/p.gif']))
     expect(res.status).toBe(400)
     expect(mockRemove).not.toHaveBeenCalled()
+  })
+})
+
+describe('student-life (Talabalar hayoti bo\'limlari)', () => {
+  test("DELETE: rasm (thumbnail bilan) DB'dan keyin Storage'dan o'chadi", async () => {
+    const item = await StudentLife.create({ section: 'club', title: 'Shaxmat klubi', image: S1 })
+    const res = await call('delete', `/api/student-life/${item._id}`)
+    expect(res.status).toBe(200)
+    expect(allRemoved()).toEqual(['student-life/7777-s1.png', 'student-life/7777-s1.png.thumb.webp'])
+    expect(await StudentLife.countDocuments()).toBe(0)
+  })
+
+  test("DELETE: boshqa student-life yozuvi shu rasmga havola qilsa — fayl o'chmaydi", async () => {
+    const a = await StudentLife.create({ section: 'club', title: 'A', image: S1 })
+    await StudentLife.create({ section: 'sport', title: 'B', image: S1 })
+    expect((await call('delete', `/api/student-life/${a._id}`)).status).toBe(200)
+    expect(mockRemove).not.toHaveBeenCalled()
+  })
+
+  test("PUT: rasm almashtirildi — eskisi o'chadi; o'zgarmasa — hech narsa", async () => {
+    const item = await StudentLife.create({ section: 'campus', title: 'Yotoqxona', image: S1 })
+    const same = await call('put', `/api/student-life/${item._id}`).field({ title: 'Yotoqxona 2', existingImage: S1 })
+    expect(same.status).toBe(200)
+    expect(mockRemove).not.toHaveBeenCalled()
+    const res = await call('put', `/api/student-life/${item._id}`)
+      .field({ existingImage: S1 })
+      .attach('imageFile', PNG, { filename: 'new.png', contentType: 'image/png' })
+    expect(res.status).toBe(200)
+    expect(removedPaths()).toEqual(['student-life/7777-s1.png'])
+  })
+
+  test("POST: yuklangan fayl `student-life/` papkasiga yoziladi", async () => {
+    const res = await call('post', '/api/student-life').field({ section: 'club', title: 'Debat' })
+      .attach('imageFile', PNG, { filename: 'a.png', contentType: 'image/png' })
+    expect(res.status).toBe(200)
+    expect(res.body.image).toMatch(/^https:\/\/cdn\.test\/student-life\/[0-9a-f-]{36}-a\.png$/)
   })
 })

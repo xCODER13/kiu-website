@@ -5,7 +5,7 @@
 // Qoidalar (qaytarib bo'lmaydigan amal bo'lgani uchun qattiq):
 //  1. TARTIB: avval DB yozuvi, keyin Storage. Chaqiruvchi bu funksiyani DB o'zgarishi MUVAFFAQIYATLI
 //     bo'lgandan keyin chaqiradi. Teskari tartibda DB xatosi rasmni yo'qotib, yozuvni esa saqlab qolardi.
-//  2. Faqat BIZNING bucket'dagi, faqat ruxsat etilgan papkalardagi (news/events/teachers/gallery),
+//  2. Faqat BIZNING bucket'dagi, faqat ruxsat etilgan papkalardagi (news/events/teachers/gallery/student-life),
 //     `papka/fayl` ko'rinishidagi yo'llar o'chiriladi. Yo'l bazadagi URL'dan bucket prefiksi orqali
 //     chiqariladi — begona/eski tashqi URL'ga tegilmaydi.
 //  3. Boshqa hujjat hamon shu rasmga havola qilsa, fayl O'CHIRILMAYDI (yangi hujjatga boshqa hujjatning
@@ -20,9 +20,10 @@ const News = require('../models/News')
 const Event = require('../models/Event')
 const Teacher = require('../models/Teacher')
 const Gallery = require('../models/Gallery')
+const StudentLife = require('../models/StudentLife')
 
 // supabaseUpload.ALLOWED_FOLDERS bilan bir xil (u eksport qilinmaydi); yuklash faqat shu papkalarga yozadi.
-const FOLDERS = ['news', 'events', 'teachers', 'gallery']
+const FOLDERS = ['news', 'events', 'teachers', 'gallery', 'student-life']
 
 const escapeRegExp = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
@@ -42,13 +43,14 @@ function toStoragePath(url, prefix) {
 // Bazadagi biror hujjat hamon shu rasmga havola qiladimi (News.image — satr yoki JSON-satr, Gallery.images — massiv).
 async function isStillReferenced(rest) {
   const re = new RegExp(escapeRegExp(rest))
-  const [n, e, t, g] = await Promise.all([
+  const [n, e, t, g, s] = await Promise.all([
     News.exists({ image: re }),
     Event.exists({ image: re }),
     Teacher.exists({ image: re }),
     Gallery.exists({ images: re }),
+    StudentLife.exists({ image: re }),
   ])
-  return Boolean(n || e || t || g)
+  return Boolean(n || e || t || g || s)
 }
 
 // Tahrirlashda: eski ro'yxatda bor, yangisida yo'q URL'lar (bo'sh qiymatlarsiz, takrorsiz).

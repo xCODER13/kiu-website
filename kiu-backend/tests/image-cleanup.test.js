@@ -17,6 +17,7 @@ const News = require('../models/News')
 const Event = require('../models/Event')
 const Teacher = require('../models/Teacher')
 const Gallery = require('../models/Gallery')
+const StudentLife = require('../models/StudentLife')
 const { removeStoredImages, removedUrls, toStoragePath } = require('../services/imageCleanup')
 
 const P = 'https://cdn.test/'
@@ -26,7 +27,7 @@ const req = () => ({ log: { warn: jest.fn(), error: jest.fn() } })
 
 let spies
 function references(value) {
-  spies = [News, Event, Teacher, Gallery].map(M => jest.spyOn(M, 'exists').mockResolvedValue(value))
+  spies = [News, Event, Teacher, Gallery, StudentLife].map(M => jest.spyOn(M, 'exists').mockResolvedValue(value))
 }
 
 beforeAll(() => {
@@ -43,7 +44,7 @@ describe('toStoragePath', () => {
   test("bizning bucket'dagi papka/fayl -> yo'l; eski yuklashlardagi %20 dekodlanadi, rest esa kodlanganicha qoladi", () => {
     expect(toStoragePath(A, P)).toEqual({ path: 'news/aaaa-a.png', rest: 'news/aaaa-a.png' })
     expect(toStoragePath(`${P}events/eski%20rasm.jpg`, P)).toEqual({ path: 'events/eski rasm.jpg', rest: 'events/eski%20rasm.jpg' })
-    for (const folder of ['news', 'events', 'teachers', 'gallery']) {
+    for (const folder of ['news', 'events', 'teachers', 'gallery', 'student-life']) {
       expect(toStoragePath(`${P}${folder}/x.png`, P)).not.toBeNull()
     }
   })
@@ -99,12 +100,13 @@ describe('removeStoredImages', () => {
     expect(mockRemove).toHaveBeenCalledWith(['news/bbbb-b.png', 'news/bbbb-b.png.thumb.webp'])
   })
 
-  test("havola tekshiruvi 4 ta kolleksiyani qamraydi (Gallery — `images` massivi)", async () => {
+  test("havola tekshiruvi 5 ta kolleksiyani qamraydi (Gallery — `images` massivi, StudentLife — `image`)", async () => {
     await removeStoredImages(req(), [A])
     expect(News.exists).toHaveBeenCalledWith({ image: expect.any(RegExp) })
     expect(Event.exists).toHaveBeenCalledWith({ image: expect.any(RegExp) })
     expect(Teacher.exists).toHaveBeenCalledWith({ image: expect.any(RegExp) })
     expect(Gallery.exists).toHaveBeenCalledWith({ images: expect.any(RegExp) })
+    expect(StudentLife.exists).toHaveBeenCalledWith({ image: expect.any(RegExp) })
   })
 
   test("regex maxsus belgilari escape qilinadi (nuqta har qanday belgiga mos kelmasin)", async () => {

@@ -63,7 +63,7 @@ function detectImageMime(buffer) {
 // aks holda eski va yangi rasm URL'lari turli joylarda tarqalib ketadi.
 // Whitelist — folder parametri controller kodidan keladi (foydalanuvchi
 // kiritmaydi), lekin himoya sifatida baribir cheklaymiz.
-const ALLOWED_FOLDERS = new Set(['news', 'events', 'teachers', 'gallery'])
+const ALLOWED_FOLDERS = new Set(['news', 'events', 'teachers', 'gallery', 'student-life'])
 
 // Asosiy yuklash mantig'i — public URL bilan bir qatorda Storage yo'lini
 // (`path`) ham qaytaradi. `path` keyinchalik qisman muvaffaqiyatsizlikda
