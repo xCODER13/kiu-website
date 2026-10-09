@@ -80,6 +80,13 @@ describe('FutureStep — plakatlar (qirqilmaydi, katta ko\'rinish)', () => {
     expect(lb).not.toMatch(/object-fit: cover/)
   })
 
+  it("CSS: karta ustunlari vertikal markazlangan — matn tepasi va pastidagi bo'sh joy teng (`align-items: center`)", () => {
+    const css = readFileSync('src/styles/pages.css', 'utf-8')
+    const rule = css.match(/\.card\.kq-product \{([^}]*)\}/)[1]
+    expect(rule).toMatch(/align-items: center/)
+    expect(rule).not.toMatch(/align-items: (start|flex-start)/)
+  })
+
   it("plakatni bosganda dialog ochiladi (to'liq rasm), Esc yoki yopish tugmasi bilan yopiladi", async () => {
     const user = userEvent.setup()
     render(<FutureStep />)
