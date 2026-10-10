@@ -129,6 +129,7 @@
         "dorm": { "title": "Zamonaviy yotoqxona", "desc": "Qulay va arzon talabalar turar joyi" }
       }
     },
+    "programs": { "badge": "Yo'nalishlar", "title": "Ta'lim yo'nalishlari", "subtitle": "Bakalavriat va magistratura — o'zingizga mos yo'nalishni tanlang", "all": "Barcha yo'nalishlar" },
     "news": {
       "badge": "Yangiliklar",
       "title": "So'nggi yangiliklar",

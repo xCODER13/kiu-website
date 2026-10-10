@@ -168,3 +168,38 @@ describe('Home — qayta dizayn (Bosqich 6.11c5)', () => {
     expect(container.querySelector('.home-hero [style], .home-about [style]')).toBeNull()
   })
 })
+
+describe("Home — «Yo'nalishlar» bo'limi (Biz haqimizdan keyin, Yangiliklardan oldin)", () => {
+  it("bo'lim tartibi: Hero → Biz haqimizda → Yo'nalishlar → Yangiliklar", () => {
+    mockApi({ 'GET /news': [] })
+    const { container } = renderHome()
+    const order = [...container.querySelectorAll('section')].map(s => s.className.split(' ')[0])
+    expect(order).toEqual(['home-hero', 'home-about', 'home-programs', 'home-news'])
+  })
+
+  it("10 ta bakalavriat kartasi — har biri /faculty ga havola; nom, davomiylik, narx ko'rsatiladi; ikonkalar dekorativ", () => {
+    mockApi({ 'GET /news': [] })
+    const { container } = renderHome()
+    const section = container.querySelector('.home-programs')
+    const cards = section.querySelectorAll('a.home-program')
+    expect(cards).toHaveLength(10)
+    cards.forEach(a => {
+      expect(a).toHaveAttribute('href', '/faculty')
+      expect(a.querySelector('h3')).not.toBeEmptyDOMElement()
+      expect(a.querySelector('.home-program__price')).toHaveTextContent(/so'm\/yil/)
+      a.querySelectorAll('svg').forEach(svg => expect(svg.closest('[aria-hidden="true"]')).not.toBeNull())
+    })
+    expect(within(section).getByRole('heading', { level: 2 })).toHaveTextContent("Ta'lim yo'nalishlari")
+    expect(within(section).getByText('Dasturiy injiniring')).toBeInTheDocument()
+    expect(container.querySelectorAll('.home-program[data-featured]')).toHaveLength(0)
+  })
+
+  it("«Barcha yo'nalishlar» — btn-primary havola (/faculty), ichma-ich `<button>` yo'q", () => {
+    mockApi({ 'GET /news': [] })
+    const { container } = renderHome()
+    const all = screen.getByRole('link', { name: /Barcha yo'nalishlar/ })
+    expect(all).toHaveClass('btn', 'btn-primary')
+    expect(all).toHaveAttribute('href', '/faculty')
+    expect(container.querySelectorAll('.home-programs a button')).toHaveLength(0)
+  })
+})
