@@ -2290,6 +2290,7 @@
   .home-about__grid > * { min-width: 0; }
   .home-about__text-col { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
   .home-about .section-badge,
+  .home-programs .section-badge,
   .home-news .section-badge {
     margin: 0;
     padding: 8px 14px;
@@ -2328,6 +2329,54 @@
     box-shadow: var(--shadow-card-active);
   }
   .card.home-feature:hover .tile { background: var(--color-brand-fill); color: var(--color-on-brand); box-shadow: var(--shadow-tile-active); }
+
+  /* ── Yo'nalishlar ─────────────────────────────────────────────────── */
+  /* Pastki bo'shliqni keyingi bo'lim (`.home-news`, tepa 88 px) beradi — Biz haqimizda → Yangiliklar oralig'i saqlanadi */
+  .home-programs { padding: 8px 0 0; }
+  .home-programs__inner { display: flex; flex-direction: column; gap: 32px; }
+  .home-programs__head { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+  .home-programs__sub { margin: 0; font-size: 0.96875rem; line-height: 18px; color: var(--color-text-muted); }
+  /* 5 ta karta: desktopda bitta qator (5 ustun); mobilda 2 ustun — oxirgi (toq) karta o'rtada */
+  .home-programs__grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+  .home-programs__grid > * { min-width: 0; }
+  .home-programs__more { margin-top: 8px; text-align: center; }
+  .card.home-program {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+    padding: 24px 16px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-text);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card-board);
+  }
+  .home-program .tile { width: 56px; height: 56px; border-radius: 16px; transition: background-color var(--duration-base), color var(--duration-base), box-shadow var(--duration-base); }
+  .home-program__name { flex-grow: 1; margin: 0; font-size: 0.9375rem; font-weight: 700; line-height: 1.35; color: var(--color-text); }
+  .home-program__meta { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 6px; font-size: 12.5px; line-height: 1.3; color: var(--color-text-muted); }
+  .home-program__clock { display: inline-flex; color: var(--color-accent-text); }
+  .home-program__sep { opacity: 0.45; }
+  .home-program__price {
+    padding: 5px 11px;
+    border: 1px solid var(--pill-border);
+    border-radius: var(--radius-pill);
+    background: var(--pill-bg);
+    color: var(--color-brand);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: normal;
+  }
+  /* Hover/fokusda "faol" ko'rinish — `.home-feature` bilan bir xil */
+  .card.home-program:hover,
+  .card.home-program:focus-visible {
+    border-color: var(--border-card-active);
+    background: var(--gradient-card-active);
+    box-shadow: var(--shadow-card-active);
+  }
+  .card.home-program:hover .tile,
+  .card.home-program:focus-visible .tile { background: var(--color-brand-fill); color: var(--color-on-brand); box-shadow: var(--shadow-tile-active); }
 
   /* ── Yangiliklar ──────────────────────────────────────────────────── */
   .home-news { padding: 88px 0; }
@@ -2415,6 +2464,8 @@
   @media (max-width: 860px) {
     .home-hero { padding: 48px 0 40px; }
     .home-about { padding: 56px 0 48px; }
+    .home-programs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .home-programs__grid > :last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - 8px); }
     .home-hero__grid,
     .home-about__grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
     .home-hero__photo { order: -1; }

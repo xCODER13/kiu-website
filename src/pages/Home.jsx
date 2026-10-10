@@ -7,6 +7,7 @@ import useApi from '../hooks/useApi'
 import useJsonLd from '../hooks/useJsonLd'
 import HeroSection from './home/HeroSection'
 import AboutSection from './home/AboutSection'
+import ProgramsSection from './home/ProgramsSection'
 import NewsSection from './home/NewsSection'
 
 const API = import.meta.env.VITE_API_URL
@@ -75,6 +76,7 @@ export default function Home() {
     <div className="fade-up">
       <HeroSection />
       <AboutSection />
+      <ProgramsSection />
       <NewsSection
         newsLoading={newsLoading} articles={articles} newsError={newsError}
         featured={featured} latest3={latest3}

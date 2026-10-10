@@ -129,6 +129,7 @@
         "dorm": { "title": "Modern dormitory", "desc": "Comfortable and affordable student housing" }
       }
     },
+    "programs": { "badge": "Programs", "title": "Study programs", "subtitle": "Bachelor's and master's degrees — choose the program that suits you", "all": "All programs" },
     "news": { "badge": "News", "title": "Latest news", "subtitle": "The latest updates from KIU", "error": "Could not connect to the news server.", "empty": "There is no news yet.", "all": "All news", "more": "Read more", "prev": "Previous", "next": "Next", "itemN": "News {{n}}" }
   },
   "admission": {

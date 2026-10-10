@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Link } from '../../i18n/router'
 import { IC } from './Icons.jsx'
+import { programIcon } from './ProgramIcons.jsx'
 import { fmt, localizeProgram } from './utils'
 
 /* ── Modal ─────────────────────────────────────────────────── */
@@ -74,7 +75,7 @@ export default function FacultyModal({ f: program, degree, onClose }) {
 
         {/* Sarlavha */}
         <div className="fac-modal__title-row">
-          <div className="fac-icon fac-icon--lg">{IC[f.icon](24)}</div>
+          <div className="fac-icon fac-icon--lg">{programIcon(f, 34, IC)}</div>
           <h2 id="faculty-modal-title" className="fac-modal__title">{f.name}</h2>
         </div>
 
