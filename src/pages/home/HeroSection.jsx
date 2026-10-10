@@ -24,10 +24,6 @@ export default function HeroSection() {
 
           {/* Chap — matn */}
           <div className="home-hero__text">
-            <span className="enter hero-badge">
-              <span className="hero-badge__dot" aria-hidden="true" />
-              {t('home.hero.badge', { from: config.admission.year, to: parseInt(config.admission.year) + 1 })}
-            </span>
             <h1 className="enter enter-delay-1 home-hero__title">{head}<span className="hl-brand">{tail}</span></h1>
             <p className="enter enter-delay-2 home-hero__lead">{t('home.hero.lead')}</p>
             {/* Havola tugma ko'rinishida (avval `<a><button>` — ichma-ich interaktiv element edi) */}

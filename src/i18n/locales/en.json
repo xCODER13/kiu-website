@@ -113,7 +113,7 @@
   },
   "home": {
     "stats": { "students": "Students", "teachers": "Teachers", "programs": "Programs", "founded": "Year founded" },
-    "hero": { "badge": "Admissions {{from}}–{{to}} are open", "lead": "Education, research and professional development to international standards — in the heart of Kashkadarya.", "ctaAdmission": "Admission info", "ctaPrograms": "Programs", "photoAlt": "KIU main building", "campus1": "Campus 1" },
+    "hero": { "lead": "Education, research and professional development to international standards — in the heart of Kashkadarya.", "ctaAdmission": "Admission info", "ctaPrograms": "Programs", "photoAlt": "KIU main building", "campus1": "Campus 1" },
     "about": {
       "badge": "Since 2022",
       "title": "About Karshi International University",

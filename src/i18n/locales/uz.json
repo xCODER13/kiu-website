@@ -113,7 +113,7 @@
   },
   "home": {
     "stats": { "students": "Talaba", "teachers": "O'qituvchi", "programs": "Yo'nalish", "founded": "Tashkil yili" },
-    "hero": { "badge": "{{from}}–{{to}} qabul ochiq", "lead": "Xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish — Qashqadaryo qalbida.", "ctaAdmission": "Qabul haqida", "ctaPrograms": "Yo'nalishlar", "photoAlt": "KIU bosh bino", "campus1": "1-kampus" },
+    "hero": { "lead": "Xalqaro standartlarda ta'lim, ilmiy tadqiqot va professional rivojlanish — Qashqadaryo qalbida.", "ctaAdmission": "Qabul haqida", "ctaPrograms": "Yo'nalishlar", "photoAlt": "KIU bosh bino", "campus1": "1-kampus" },
     "about": {
       "badge": "2022 yildan buyon",
       "title": "Qarshi Xalqaro Universiteti haqida",

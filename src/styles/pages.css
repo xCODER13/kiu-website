@@ -2202,7 +2202,6 @@
   .home-hero__text,
   .home-hero__photo { min-width: 0; }
   .home-hero__text { display: flex; flex-direction: column; gap: 22px; }
-  .home-hero .hero-badge { align-self: flex-start; margin: 0; padding: 8px 14px; line-height: 1; font-size: 12px; letter-spacing: 0.08em; background: var(--pill-bg); border-color: var(--pill-border); }
   .home-hero__title {
     margin: 0;
     font-size: clamp(2.25rem, 1.2rem + 3.6vw, 3.5rem);
