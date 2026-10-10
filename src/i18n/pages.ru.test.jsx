@@ -76,7 +76,7 @@ describe('Home (RU)', () => {
     mockApi({ 'GET /news': [] })
     at('/ru', <Home />)
     expect(screen.getByRole('heading', { level: 1, name: 'Каршинский международный университет' })).toBeInTheDocument()
-    expect(screen.getByText('Приём 2026–2027 открыт')).toBeInTheDocument()
+    expect(screen.queryByText('Приём 2026–2027 открыт')).not.toBeInTheDocument()
     expect(screen.getByText('О Каршинском международном университете')).toBeInTheDocument()
     for (const label of ['Студентов', 'Преподавателей', 'Направлений', 'Год основания']) {
       expect(screen.getAllByText(label).length).toBeGreaterThan(0)

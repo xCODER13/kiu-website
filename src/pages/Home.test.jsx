@@ -97,7 +97,8 @@ describe('Home — qayta dizayn (Bosqich 6.11c5)', () => {
     expect(img).toHaveAttribute('width', '768')
     expect(img).toHaveAttribute('height', '512')
     expect(img).toHaveAttribute('fetchpriority', 'high')
-    expect(container.querySelector('.hero-badge__dot')).toHaveAttribute('aria-hidden', 'true')
+    // "Qabul ochiq" badge'i hero'dan olib tashlangan
+    expect(container.querySelector('.home-hero .hero-badge')).toBeNull()
   })
 
   it("Biz haqimizda: 4 ta afzallik kartasi, hech biri doimiy \"faol\" belgilanmagan (`data-featured` yo'q); ikonkalar dekorativ", () => {
