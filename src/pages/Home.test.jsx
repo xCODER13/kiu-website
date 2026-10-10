@@ -177,12 +177,15 @@ describe("Home — «Yo'nalishlar» bo'limi (Biz haqimizdan keyin, Yangiliklarda
     expect(order).toEqual(['home-hero', 'home-about', 'home-programs', 'home-news'])
   })
 
-  it("10 ta bakalavriat kartasi — har biri /faculty ga havola; nom, davomiylik, narx ko'rsatiladi; ikonkalar dekorativ", () => {
+  it("5 ta tanlangan yo'nalish kartasi (Iqtisodiyot, Dasturiy injiniring, Neft va gaz ishi, Filologiya, Boshlang'ich ta'lim) — har biri /faculty ga havola; nom, davomiylik, narx ko'rsatiladi; ikonkalar dekorativ", () => {
     mockApi({ 'GET /news': [] })
     const { container } = renderHome()
     const section = container.querySelector('.home-programs')
     const cards = section.querySelectorAll('a.home-program')
-    expect(cards).toHaveLength(10)
+    expect(cards).toHaveLength(5)
+    expect([...cards].map(a => a.querySelector('h3').textContent)).toEqual([
+      'Iqtisodiyot', 'Dasturiy injiniring', 'Neft va gaz ishi', 'Filologiya va tillarni o\'qitish', 'Boshlang\'ich ta\'lim',
+    ])
     cards.forEach(a => {
       expect(a).toHaveAttribute('href', '/faculty')
       expect(a.querySelector('h3')).not.toBeEmptyDOMElement()

@@ -5,8 +5,13 @@ import { IC } from '../faculty/Icons.jsx'
 import { BAKALAVR } from '../faculty/data'
 import { fmt } from '../faculty/utils'
 
+// Bosh sahifada ko'rsatiladigan yo'nalishlar (tartib bo'yicha); qolganlari /faculty sahifasida.
+// Karta nomi/narxi/davomiyligi faculty/data.js dan olinadi — `id` o'zgarsa, bu ro'yxat ham yangilanadi.
+const HOME_PROGRAM_IDS = ['economics', 'softwareEng', 'oilGas', 'philology', 'primary']
+const HOME_PROGRAMS = HOME_PROGRAM_IDS.map(id => BAKALAVR.find(p => p.id === id)).filter(Boolean)
+
 // "Yo'nalishlar" bo'limi ("Biz haqimizda" dan keyin): Yangiliklar bo'limi kabi markazlashgan sarlavha,
-// so'ng bakalavriat yo'nalishlari kartalari (/faculty sahifasi bilan bir xil ma'lumot manbai — faculty/data.js)
+// so'ng 5 ta tanlangan yo'nalish kartalari (/faculty sahifasi bilan bir xil ma'lumot manbai — faculty/data.js)
 // va "Barcha yo'nalishlar" tugmasi. Karta — butun havola: modal /faculty sahifasida ochiladi.
 // Karta "faol" ko'rinishi (wine chegara + gradient) faqat hover/fokusda, `.home-feature` bilan bir xil.
 export default function ProgramsSection() {
@@ -21,7 +26,7 @@ export default function ProgramsSection() {
         </div>
 
         <div className="home-programs__grid">
-          {BAKALAVR.map((p, i) => (
+          {HOME_PROGRAMS.map((p, i) => (
             <div key={p.id} className={`rv-item reveal reveal-delay-${(i % 5) + 1}`}>
               <NavLink to="/faculty" className="card card--lift home-program">
                 {/* IC ikonkalari dekorativ: nom matnda bor */}

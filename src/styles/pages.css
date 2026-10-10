@@ -2336,7 +2336,7 @@
   .home-programs__inner { display: flex; flex-direction: column; gap: 32px; }
   .home-programs__head { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
   .home-programs__sub { margin: 0; font-size: 0.96875rem; line-height: 18px; color: var(--color-text-muted); }
-  /* 10 ta karta: 5 ustun (2 qator) → 2 ustun (5 qator); qoldiqsiz bo'linadi */
+  /* 5 ta karta: desktopda bitta qator (5 ustun); mobilda 2 ustun — oxirgi (toq) karta o'rtada */
   .home-programs__grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
   .home-programs__grid > * { min-width: 0; }
   .home-programs__more { margin-top: 8px; text-align: center; }
@@ -2465,6 +2465,7 @@
     .home-hero { padding: 48px 0 40px; }
     .home-about { padding: 56px 0 48px; }
     .home-programs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .home-programs__grid > :last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - 8px); }
     .home-hero__grid,
     .home-about__grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
     .home-hero__photo { order: -1; }
