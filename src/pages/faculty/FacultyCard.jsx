@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { IC } from './Icons.jsx'
+import { programIcon } from './ProgramIcons.jsx'
 import { fmt, localizeProgram } from './utils'
 
 /* ── Faculty Card ──────────────────────────────────────────── */
@@ -26,7 +27,7 @@ export default function FacultyCard({ f: program, index, onClick }) {
       // data.js da rang maydoni yo'q (6.11, 10.4 CSS injection qoidasi; maydon 6.19 da olib tashlandi)
       style={{ animationDelay: `${index * 0.05}s` }}
     >
-      <div className="fac-icon">{IC[f.icon](24)}</div>
+      <div className="fac-icon">{programIcon(f, 30, IC)}</div>
 
       <h2 className="fac-name">{f.name}</h2>
 

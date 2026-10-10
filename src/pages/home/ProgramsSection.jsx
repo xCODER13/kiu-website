@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink } from '../../i18n/router'
 import Icon from '../../components/Icon'
 import { IC } from '../faculty/Icons.jsx'
+import { programIcon } from '../faculty/ProgramIcons.jsx'
 import { BAKALAVR } from '../faculty/data'
 import { fmt } from '../faculty/utils'
 
@@ -30,7 +31,7 @@ export default function ProgramsSection() {
             <div key={p.id} className={`rv-item reveal reveal-delay-${(i % 5) + 1}`}>
               <NavLink to="/faculty" className="card card--lift home-program">
                 {/* IC ikonkalari dekorativ: nom matnda bor */}
-                <span className="tile tile--46" aria-hidden="true">{IC[p.icon](22)}</span>
+                <span className="tile tile--46" aria-hidden="true">{programIcon(p, 34, IC)}</span>
                 <h3 className="home-program__name">{t(`faculty.programs.${p.id}.name`)}</h3>
                 <span className="home-program__meta">
                   <span aria-hidden="true" className="home-program__clock">{IC.clock(13)}</span>
