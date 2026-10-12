@@ -534,6 +534,12 @@
     "loadMore": "Загрузить ещё (осталось: {{count}})",
     "openLink": "Открыть ссылку",
     "view": "Смотреть",
+    "photoCount_one": "{{count}} фото",
+    "photoCount_few": "{{count}} фото",
+    "photoCount_many": "{{count}} фото",
+    "photoCount_other": "{{count}} фото",
+    "noImages": "Нет фото",
+    "imagesFailed": "Фото не загрузилось",
     "sectionsEmpty": "Разделов пока нет"
   },
   "teachers": {

@@ -524,6 +524,10 @@
     "loadMore": "Load more ({{count}} left)",
     "openLink": "Open link",
     "view": "View",
+    "photoCount_one": "{{count}} photo",
+    "photoCount_other": "{{count}} photos",
+    "noImages": "No photos",
+    "imagesFailed": "Photo failed to load",
     "sectionsEmpty": "No sections yet"
   },
   "teachers": {

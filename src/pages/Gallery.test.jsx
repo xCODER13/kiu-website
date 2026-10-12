@@ -27,61 +27,85 @@ describe('Gallery (public): fotogalereya', () => {
     expect(await screen.findByText("Haqiqiy rasmlar tez orada qo'shiladi")).toBeInTheDocument()
   })
 
-  it('har bir albomning har rasmi alohida karta sifatida ko\'rsatiladi', async () => {
+  it('har bir albom — bitta karta (rasmlari alohida karta bo\'lmaydi)', async () => {
     mockApi({ 'GET /gallery': [ALBUM1, ALBUM2] })
-    render(<Gallery />)
-    // ALBUM1 ikki rasmga ega — ikkisi ham "1-kampus" nomi bilan alohida karta
-    expect(await screen.findAllByAltText('1-kampus')).toHaveLength(2)
-    expect(screen.getAllByAltText('2-kampus')).toHaveLength(1)
-    expect(screen.getAllByText('Kampus binosi')).toHaveLength(2)
+    const { container } = render(<Gallery />)
+    expect(await screen.findByRole('heading', { level: 2, name: '1-kampus' })).toBeInTheDocument()
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(2)
+    expect(container.querySelectorAll('.card.news-card')).toHaveLength(2)
+    expect(screen.getAllByText('Kampus binosi')).toHaveLength(1)
   })
 
   it('karta yangiliklar kartasi bilan bir xil: `news-card`, sana va ko\'rishlar soni yo\'q', async () => {
     mockApi({ 'GET /gallery': [ALBUM1] })
     const { container } = render(<Gallery />)
-    await screen.findAllByAltText('1-kampus')
-    expect(container.querySelectorAll('.card.news-card')).toHaveLength(2)
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
+    expect(container.querySelectorAll('.card.news-card')).toHaveLength(1)
     expect(container.querySelector('.news-card-date')).toBeNull()
     expect(container.querySelector('.news-card-views')).toBeNull()
     expect(container.querySelector('.news-grid')).not.toBeNull()
   })
 
-  it('karta bosilganda lightbox ochiladi, sarlavha/tavsif bilan', async () => {
-    mockApi({ 'GET /gallery': [ALBUM1] })
+  it("mozaika (admin kartasidek): birinchi 3 rasm, `data-count`, «N ta rasm» belgisi", async () => {
+    const five = { _id: 'a5', title: 'Besh rasm', desc: '', images: Array.from({ length: 5 }, (_, i) => `https://s/5-${i}.jpg`) }
+    mockApi({ 'GET /gallery': [ALBUM1, ALBUM2, five] })
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: 'Besh rasm' })
+    const mosaics = [...container.querySelectorAll('.album-mosaic')]
+    expect(mosaics.map(m => m.getAttribute('data-count'))).toEqual(['2', '1', '3'])
+    expect(mosaics.map(m => m.querySelectorAll('.album-tile').length)).toEqual([2, 1, 3])
+    expect(mosaics.map(m => m.querySelector('.album-badge').textContent)).toEqual(['2 ta rasm', '1 ta rasm', '5 ta rasm'])
+    // kartadagi rasmlar bezak: alt bo'sh, sarlavha h2 da
+    expect(container.querySelectorAll('.album-tile[alt=""]')).toHaveLength(6)
+  })
+
+  it("rasmsiz albom (bo'sh yoki massiv bo'lmagan `images`) ko'rsatilmaydi", async () => {
+    mockApi({ 'GET /gallery': [{ ...ALBUM1, images: [] }, { ...ALBUM2, images: null }] })
     render(<Gallery />)
-    const tiles = await screen.findAllByAltText('1-kampus')
-    fireEvent.click(tiles[0].closest('.card'))
-    expect(screen.getAllByText('1-kampus').length).toBeGreaterThanOrEqual(2) // karta + lightbox
-    expect(screen.getAllByText('Kampus binosi').length).toBeGreaterThanOrEqual(2)
+    expect(await screen.findByText("Haqiqiy rasmlar tez orada qo'shiladi")).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { level: 2 })).not.toBeInTheDocument()
+  })
+
+  it('karta bosilganda albom rasmlari lightbox da ochiladi, sarlavha/tavsif va `1 / N` bilan', async () => {
+    mockApi({ 'GET /gallery': [ALBUM1] })
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
+    fireEvent.click(container.querySelector('.card'))
+    const dialog = screen.getByRole('dialog', { name: '1-kampus' })
+    expect(within(dialog).getByText('Kampus binosi')).toBeInTheDocument()
+    expect(dialog.querySelector('.photo-lightbox__img')).toHaveAttribute('src', 'https://s/1.jpg')
+    expect(dialog.querySelector('.photo-lightbox__count')).toHaveTextContent('1 / 2')
   })
 
   it('lightbox yopish tugmasi bilan yopiladi', async () => {
     mockApi({ 'GET /gallery': [ALBUM1] })
-    render(<Gallery />)
-    const tiles = await screen.findAllByAltText('1-kampus')
-    fireEvent.click(tiles[0].closest('.card'))
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
+    fireEvent.click(container.querySelector('.card'))
     fireEvent.click(screen.getByRole('button', { name: 'Yopish' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
   it('lightbox Escape tugmasi bilan yopiladi', async () => {
     mockApi({ 'GET /gallery': [ALBUM1] })
-    render(<Gallery />)
-    const tiles = await screen.findAllByAltText('1-kampus')
-    fireEvent.click(tiles[0].closest('.card'))
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
+    fireEvent.click(container.querySelector('.card'))
     fireEvent.keyDown(window, { key: 'Escape' })
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
-  it('lightbox → (keyingi) barcha albomlar orasida ketma-ket o\'tadi', async () => {
+  it("lightbox faqat ochilgan albom rasmlari ichida aylanadi (boshqa albomga o'tmaydi)", async () => {
     mockApi({ 'GET /gallery': [ALBUM1, ALBUM2] })
-    render(<Gallery />)
-    const tiles = await screen.findAllByAltText('1-kampus')
-    fireEvent.click(tiles[1].closest('.card')) // ALBUM1'ning 2-rasmi (index 1)
-    fireEvent.keyDown(window, { key: 'ArrowRight' }) // index 2 → ALBUM2'ning rasmi
-    expect(screen.getAllByText('2-kampus').length).toBeGreaterThanOrEqual(2)
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
+    fireEvent.click(container.querySelectorAll('.card')[0])
+    fireEvent.keyDown(window, { key: 'ArrowRight' })
+    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('2 / 2')
+    fireEvent.keyDown(window, { key: 'ArrowRight' }) // aylanma: yana 1-rasm, ALBUM2 emas
+    expect(screen.getByRole('dialog', { name: '1-kampus' }).querySelector('.photo-lightbox__count')).toHaveTextContent('1 / 2')
     fireEvent.keyDown(window, { key: 'ArrowLeft' })
-    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('2 / 3')
+    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('2 / 2')
   })
 
   it("fetch xatosi (tarmoq) — xato xabari ko'rsatiladi", async () => {
@@ -102,40 +126,50 @@ describe('Gallery (public): fotogalereya', () => {
   it("XSS: albom nomidagi HTML matn sifatida ko'rsatiladi", async () => {
     mockApi({ 'GET /gallery': [{ ...ALBUM1, title: '<img src=x onerror=alert(1)>' }] })
     render(<Gallery />)
-    await screen.findAllByAltText('<img src=x onerror=alert(1)>')
+    expect(await screen.findByRole('heading', { level: 2, name: '<img src=x onerror=alert(1)>' })).toBeInTheDocument()
     expect(document.querySelector('img[src="x"]')).toBeNull()
   })
 
   it("lightbox: role=dialog + aria-modal, sarlavha nomi bilan; hisoblagich `N / jami`", async () => {
     mockApi({ 'GET /gallery': [ALBUM1, ALBUM2] })
-    render(<Gallery />)
-    const tiles = await screen.findAllByAltText('1-kampus')
-    fireEvent.click(tiles[1].closest('.card'))
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
+    fireEvent.click(container.querySelectorAll('.card')[0])
     const dialog = screen.getByRole('dialog', { name: '1-kampus' })
     expect(dialog).toHaveAttribute('aria-modal', 'true')
     // portal: `.fade-up` ning transformi `position: fixed` ni qamab qo'ymasligi uchun oyna document.body ga chiqariladi
     expect(dialog.closest('.photo-lightbox').parentElement).toBe(document.body)
-    expect(dialog.querySelector('.photo-lightbox__count')).toHaveTextContent('2 / 3')
+    expect(dialog.querySelector('.photo-lightbox__count')).toHaveTextContent('1 / 2')
     fireEvent.click(screen.getByRole('button', { name: 'Keyingi rasm' }))
-    expect(screen.getByRole('dialog', { name: '2-kampus' }).querySelector('.photo-lightbox__count')).toHaveTextContent('3 / 3')
+    expect(screen.getByRole('dialog', { name: '1-kampus' }).querySelector('.photo-lightbox__count')).toHaveTextContent('2 / 2')
   })
 
   it("lightbox aylanma: oxirgi rasmdan keyingisi — birinchi, birinchidan oldingisi — oxirgi", async () => {
-    mockApi({ 'GET /gallery': [ALBUM1, ALBUM2] })
-    render(<Gallery />)
-    const tiles = await screen.findAllByAltText('2-kampus')
-    fireEvent.click(tiles[0].closest('.card'))            // index 2 (oxirgi)
-    fireEvent.click(screen.getByRole('button', { name: 'Keyingi rasm' }))
-    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('1 / 3')
+    mockApi({ 'GET /gallery': [ALBUM1] })
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
+    fireEvent.click(container.querySelector('.card'))
     fireEvent.click(screen.getByRole('button', { name: 'Oldingi rasm' }))
-    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('3 / 3')
+    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('2 / 2')
+    fireEvent.click(screen.getByRole('button', { name: 'Keyingi rasm' }))
+    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('1 / 2')
+  })
+
+  it("bitta rasmli albom: lightbox `1 / 1`, strelkalar aylanib o'sha rasmga qaytadi", async () => {
+    mockApi({ 'GET /gallery': [ALBUM2] })
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: '2-kampus' })
+    fireEvent.click(container.querySelector('.card'))
+    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('1 / 1')
+    fireEvent.click(screen.getByRole('button', { name: 'Keyingi rasm' }))
+    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('1 / 1')
   })
 
   it("strelka tugmasi bosilganda lightbox yopilmaydi (stopPropagation); fon bosilsa yopiladi", async () => {
     mockApi({ 'GET /gallery': [ALBUM1] })
-    render(<Gallery />)
-    const tiles = await screen.findAllByAltText('1-kampus')
-    fireEvent.click(tiles[0].closest('.card'))
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
+    fireEvent.click(container.querySelector('.card'))
     fireEvent.click(screen.getByRole('button', { name: 'Keyingi rasm' }))
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     fireEvent.click(document.querySelector('.photo-lightbox'))
@@ -146,9 +180,9 @@ describe('Gallery (public): fotogalereya', () => {
     mockApi({ 'GET /gallery': [ALBUM1] })
     const user = userEvent.setup()
     render(<Gallery />)
-    await screen.findAllByAltText('1-kampus')
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
     expect(document.querySelector('.news-card')).not.toHaveAttribute('role')
-    const btn = screen.getAllByRole('button', { name: "Ko'rish: 1-kampus" })[0]
+    const btn = screen.getByRole('button', { name: "Ko'rish: 1-kampus" })
     btn.focus()
     await user.keyboard('{Enter}')
     expect(screen.getByRole('dialog')).toBeInTheDocument()
@@ -157,12 +191,16 @@ describe('Gallery (public): fotogalereya', () => {
     expect(btn).toHaveFocus() // yopilganda fokus tugmaga qaytadi
   })
 
-  it("rasm yuklanmasa `data-broken`, inline style yo'q", async () => {
+  it("mozaikada rasm yuklanmasa o'sha katak `data-broken`, inline style yo'q; hammasi yuklanmasa «Rasm yuklanmadi»", async () => {
     mockApi({ 'GET /gallery': [ALBUM1, ALBUM2] })
-    render(<Gallery />)
-    const imgs = await screen.findAllByAltText('1-kampus')
-    fireEvent.error(imgs[0])
-    expect(imgs[0]).toHaveAttribute('data-broken', 'true')
+    const { container } = render(<Gallery />)
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
+    const tiles = container.querySelectorAll('.album-tile')
+    fireEvent.error(tiles[0])
+    expect(tiles[0]).toHaveAttribute('data-broken', 'true')
+    expect(container.querySelectorAll('.album-fallback')).toHaveLength(0) // 1-albomning 2-rasmi hali bor
+    fireEvent.error(tiles[2]) // 2-albom — yagona rasm
+    expect(screen.getByText('Rasm yuklanmadi')).toBeInTheDocument()
     expect(document.body.querySelector('[style]')).toBeNull()
   })
 
@@ -181,32 +219,20 @@ describe('Gallery (public): fotogalereya', () => {
     const root = document.createElement('div')
     root.id = 'root'
     document.body.appendChild(root)
-    render(<Gallery />, { container: root.appendChild(document.createElement('div')) })
-    const tiles = await screen.findAllByAltText('1-kampus')
+    const { container } = render(<Gallery />, { container: root.appendChild(document.createElement('div')) })
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
     expect(root.inert).toBeFalsy() // jsdom'da `inert` xossasi dastlab yo'q
-    fireEvent.click(tiles[0].closest('.card'))
+    fireEvent.click(container.querySelector('.card'))
     expect(root.inert).toBe(true)
     fireEvent.click(screen.getByRole('button', { name: 'Yopish' }))
     expect(root.inert).toBe(false)
     root.remove()
   })
 
-  it("albom chiplari: «Barchasi» + har albom (soni bilan); tanlansa faqat shu albom, lightbox ham shu ro'yxat ichida aylanadi", async () => {
+  it("albomlar uchun chiplar yo'q (har albom o'zi karta)", async () => {
     mockApi({ 'GET /gallery': [ALBUM1, ALBUM2] })
-    render(<Gallery />)
-    await screen.findAllByAltText('1-kampus')
-    const chips = [...document.querySelectorAll('.news-cat')].map(c => c.textContent)
-    expect(chips).toEqual(['Barchasi3', '1-kampus2', '2-kampus1'])
-    fireEvent.click(screen.getByRole('button', { name: /^2-kampus/ }))
-    expect(screen.queryAllByAltText('1-kampus')).toHaveLength(0)
-    fireEvent.click(screen.getByAltText('2-kampus').closest('.card'))
-    expect(document.querySelector('.photo-lightbox__count')).toHaveTextContent('1 / 1')
-  })
-
-  it("bitta albom bo'lsa chiplar chiqmaydi", async () => {
-    mockApi({ 'GET /gallery': [ALBUM2] })
     const { container } = render(<Gallery />)
-    await screen.findByAltText('2-kampus')
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
     expect(container.querySelector('.news-cats')).toBeNull()
   })
 
@@ -214,25 +240,25 @@ describe('Gallery (public): fotogalereya', () => {
     mockApi({ 'GET /gallery': [ALBUM1, ALBUM2] })
     const user = userEvent.setup()
     render(<Gallery />)
-    await screen.findAllByAltText('1-kampus')
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
     const input = screen.getByRole('textbox', { name: 'Talabalar hayoti ichida qidiring...' })
     await user.type(input, 'BINOSI')
-    expect(screen.getAllByAltText('1-kampus')).toHaveLength(2)
-    expect(screen.queryByAltText('2-kampus')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: '1-kampus' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { level: 2, name: '2-kampus' })).not.toBeInTheDocument()
     await user.clear(input)
     await user.type(input, 'zzz')
     expect(screen.getByText('"zzz" bo\'yicha hech narsa topilmadi')).toBeInTheDocument()
   })
 
-  it("«Ko'proq yuklash»: avval 6 ta, tugma bosilsa yana 6 ta", async () => {
-    const big = { _id: 'big', title: 'Katta albom', desc: '', images: Array.from({ length: 8 }, (_, i) => `https://s/${i}.jpg`) }
-    mockApi({ 'GET /gallery': [big] })
+  it("«Ko'proq yuklash»: avval 6 ta albom, tugma bosilsa qolgani", async () => {
+    const many = Array.from({ length: 8 }, (_, i) => ({ _id: `m${i}`, title: `Albom ${i}`, desc: '', images: [`https://s/m${i}.jpg`] }))
+    mockApi({ 'GET /gallery': many })
     const user = userEvent.setup()
     render(<Gallery />)
-    await screen.findAllByAltText('Katta albom')
-    expect(screen.getAllByAltText('Katta albom')).toHaveLength(6)
+    await screen.findByRole('heading', { level: 2, name: 'Albom 0' })
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(6)
     await user.click(screen.getByRole('button', { name: "Ko'proq yuklash (2 ta qoldi)" }))
-    expect(screen.getAllByAltText('Katta albom')).toHaveLength(8)
+    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(8)
     expect(screen.queryByRole('button', { name: /Ko'proq yuklash/ })).not.toBeInTheDocument()
   })
 })
@@ -246,15 +272,15 @@ describe("Gallery (public): Talabalar hayoti bo'limlari", () => {
     expect(tabBtn("Bo'limlar")).toHaveAttribute('aria-pressed', 'true')
     expect(tabBtn('Fotogalereya')).toHaveAttribute('aria-pressed', 'false')
     expect(tabBtn("Bo'limlar")).toHaveTextContent('2')
-    expect(tabBtn('Fotogalereya')).toHaveTextContent('2')
+    expect(tabBtn('Fotogalereya')).toHaveTextContent('Fotogalereya1')
     // albom rasmlari hali ko'rinmaydi
-    expect(screen.queryByAltText('1-kampus')).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { level: 2, name: '1-kampus' })).not.toBeInTheDocument()
   })
 
   it("bo'limlar bo'sh bo'lsa sahifa «Fotogalereya» tabini o'zi ochadi", async () => {
     mockApi({ 'GET /gallery': [ALBUM1], 'GET /student-life': [] })
     render(<Gallery />)
-    await screen.findAllByAltText('1-kampus')
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
     expect(tabBtn('Fotogalereya')).toHaveAttribute('aria-pressed', 'true')
     expect(tabBtn("Bo'limlar")).toHaveAttribute('aria-pressed', 'false')
   })
@@ -267,7 +293,7 @@ describe("Gallery (public): Talabalar hayoti bo'limlari", () => {
     await user.type(screen.getByRole('textbox'), 'Yotoq')
     expect(screen.queryByText('Debat klubi')).not.toBeInTheDocument()
     await user.click(tabBtn('Fotogalereya'))
-    expect(await screen.findAllByAltText('1-kampus')).toHaveLength(2)
+    expect(await screen.findByRole('heading', { level: 2, name: '1-kampus' })).toBeInTheDocument()
     expect(screen.queryByText('Yotoqxona')).not.toBeInTheDocument()
     await user.click(tabBtn("Bo'limlar"))
     expect(screen.getByText('Debat klubi')).toBeInTheDocument()
@@ -278,7 +304,7 @@ describe("Gallery (public): Talabalar hayoti bo'limlari", () => {
     mockApi({ 'GET /gallery': [ALBUM1], 'GET /student-life': [] })
     const user = userEvent.setup()
     render(<Gallery />)
-    await screen.findAllByAltText('1-kampus')
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
     await user.click(tabBtn("Bo'limlar"))
     expect(screen.getByText("Hozircha bo'limlar yo'q")).toBeInTheDocument()
   })
@@ -489,7 +515,7 @@ describe("Gallery (public): Talabalar hayoti bo'limlari", () => {
       ? Promise.reject(new Error('network'))
       : Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([ALBUM2]) })))
     render(<Gallery />)
-    expect(await screen.findAllByAltText('2-kampus')).toHaveLength(1)
+    expect(await screen.findByRole('heading', { level: 2, name: '2-kampus' })).toBeInTheDocument()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
@@ -507,9 +533,10 @@ describe("Gallery (public): Talabalar hayoti bo'limlari", () => {
     // Har ikkala URL ham albom massivini qaytaradi: elementlarda `section` yo'q → bo'limlar bo'sh
     vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve([ALBUM1]) })))
     const { container, unmount } = render(<Gallery />)
-    await screen.findAllByAltText('1-kampus')
+    await screen.findByRole('heading', { level: 2, name: '1-kampus' })
     expect(tabBtn('Fotogalereya')).toHaveAttribute('aria-pressed', 'true')
-    expect(container.querySelectorAll('.news-card')).toHaveLength(2)
+    // Bitta albom = bitta karta (ichidagi rasmlar soniga bog'liq emas)
+    expect(container.querySelectorAll('.news-card')).toHaveLength(1)
     unmount()
 
     mockApi({ 'GET /gallery': [], 'GET /student-life': [{ ...CLUB, section: 'bayram' }] })
