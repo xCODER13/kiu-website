@@ -53,16 +53,53 @@ function SectionCard({ item, label, onOpen }) {
   )
 }
 
-function PhotoCard({ photo, onOpen }) {
+// Mozaika (admin paneldagi albom kartasi bilan bir xil): birinchi 3 rasm — 1 ta to'liq, 2 ta yarim-yarim, 3 ta katta + ikkita kichik.
+// Ko'rsatilgan hamma rasm yuklanmasa — «Rasm yuklanmadi» bloki; bitta rasm yuklanmasa — faqat o'sha katak xiralashadi.
+const ALBUM_MOSAIC = 3
+
+const ImageIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+)
+
+function AlbumMosaic({ images }) {
+  const { t } = useTranslation()
+  const shown = images.slice(0, ALBUM_MOSAIC)
+  const [failed, setFailed] = useState(() => new Set())
+  const lost = shown.length === 0 || shown.every((_, i) => failed.has(i))
+  return (
+    <div className="album-mosaic" data-count={shown.length} data-lost={lost ? 'true' : undefined}>
+      {lost ? (
+        <div className="album-fallback">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+          <span>{shown.length === 0 ? t('gallery.noImages') : t('gallery.imagesFailed')}</span>
+        </div>
+      ) : shown.map((src, i) => (
+        <ThumbImg
+          key={`${i}:${src}`}
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="album-tile"
+          onError={e => { e.currentTarget.dataset.broken = 'true'; setFailed(f => new Set(f).add(i)) }}
+        />
+      ))}
+      <span className="album-badge"><ImageIcon />{t('gallery.photoCount', { count: images.length })}</span>
+    </div>
+  )
+}
+
+// Albom — bitta karta (admin paneldagidek): mozaika + «N ta rasm» belgisi, sarlavha, tavsif; bosilsa albom rasmlari katta oynada ochiladi.
+function AlbumCard({ album, onOpen }) {
   const { t } = useTranslation()
   return (
-    <div className="card card-link news-card news-card--click" data-section="photo" onClick={onOpen}>
-      <ThumbImg src={photo.img} alt={photo.title} loading="lazy" className="news-card-img" onError={e => { e.currentTarget.dataset.broken = 'true' }} />
+    <div className="card card-link news-card news-card--click" data-section="photo" onClick={() => onOpen(album)}>
+      <AlbumMosaic images={album.images} />
       <div className="news-card-body">
-        <h2 lang="uz" className="news-card-title">{photo.title}</h2>
-        {photo.desc && <p lang="uz" className="news-card-text">{photo.desc}</p>}
+        <h2 lang="uz" className="news-card-title">{album.title}</h2>
+        {album.desc && <p lang="uz" className="news-card-text">{album.desc}</p>}
         <div className="news-card-foot news-card-foot--end">
-          <button type="button" className="btn btn-primary btn-sm news-card-btn" aria-label={`${t('gallery.view')}: ${photo.title}`}>
+          <button type="button" className="btn btn-primary btn-sm news-card-btn" aria-label={`${t('gallery.view')}: ${album.title}`}>
             {t('gallery.view')}
             <ArrowIcon />
           </button>
@@ -112,19 +149,15 @@ export default function Gallery() {
       .finally(() => setSectionsLoading(false))
   }, [])
 
-  // Har bir albom (title+desc+bir nechta rasm) har bir rasmga "yoyiladi": sarlavha/tavsif albomdan meros qilinadi,
-  // chip — albom (`group` = albom id).
-  const photos = useMemo(() => albums.flatMap(album =>
-    (album.images || []).map((img, i) => ({ id: `${album._id}_${i}`, group: album._id, title: album.title, desc: album.desc, img }))
-  ), [albums])
+  // Har bir albom — bitta karta (admin paneldagidek). Rasmsiz albom ko'rsatilmaydi; massiv bo'lmagan `images` e'tiborsiz qoldiriladi.
+  const albumItems = useMemo(() => albums
+    .map(a => ({ id: a._id, group: a._id, title: a.title || '', desc: a.desc || '', images: Array.isArray(a.images) ? a.images.filter(Boolean) : [] }))
+    .filter(a => a.images.length > 0),
+  [albums])
 
   const sectionGroups = useMemo(
     () => SECTION_KEYS.filter(key => sections.some(i => i.section === key)).map(key => ({ key, section: key, label: t(`gallery.sections.${key}`) })),
     [sections, t],
-  )
-  const albumGroups = useMemo(
-    () => albums.filter(a => photos.some(p => p.group === a._id)).map(a => ({ key: a._id, label: a.title })),
-    [albums, photos],
   )
   // Bo'limlar chiplar tartibida (klub → sport → kampus), har birida admin `order` tartibi (backend allaqachon shunday beradi)
   const orderedSections = useMemo(
@@ -135,6 +168,12 @@ export default function Gallery() {
   const pending = loading || sectionsLoading
   // Bo'limlar bo'sh bo'lsa sahifa o'zi «Fotogalereya» tabini ochadi; foydalanuvchi tanlasa — uning tanlovi
   const activeTab = tab ?? (sections.length > 0 ? 'sections' : 'photos')
+
+  // Albom ochilganda katta oyna shu albomning rasmlari ichida aylanadi (1 / N)
+  const openAlbum = album => setLightbox({
+    list: album.images.map((img, i) => ({ id: `${album.id}_${i}`, title: album.title, desc: album.desc, img })),
+    index: 0,
+  })
 
   const total = lightbox ? lightbox.list.length : 0
   const closeLightbox = () => setLightbox(null)
@@ -155,13 +194,13 @@ export default function Gallery() {
 
   const tabs = [
     { key: 'sections', label: t('gallery.tabs.sections'), count: sections.length, icon: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></> },
-    { key: 'photos', label: t('gallery.photos'), count: photos.length, icon: <><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></> },
+    { key: 'photos', label: t('gallery.photos'), count: albumItems.length, icon: <><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></> },
   ]
 
   const showSectionsEmpty = !pending && activeTab === 'sections' && sections.length === 0
-  const showPhotosEmpty = !pending && activeTab === 'photos' && photos.length === 0 && !error
+  const showPhotosEmpty = !pending && activeTab === 'photos' && albumItems.length === 0 && !error
   // Tab bo'sh bo'lsa sahifa pastga cho'zilmasin (footer ko'tarilib ketmasin): avvalgi `page-body--error|empty` qoidasi
-  const tabEmpty = activeTab === 'sections' ? sections.length === 0 : photos.length === 0
+  const tabEmpty = activeTab === 'sections' ? sections.length === 0 : albumItems.length === 0
   const bodyMod = !pending && tabEmpty ? (error ? ' page-body--error' : ' page-body--empty') : ''
 
   return (
@@ -217,14 +256,12 @@ export default function Gallery() {
             />
           )}
 
-          {!pending && activeTab === 'photos' && photos.length > 0 && (
+          {!pending && activeTab === 'photos' && albumItems.length > 0 && (
             <ItemsBrowser
               key="photos"
-              items={photos}
-              groups={albumGroups}
-              renderCard={(p, i, list) => (
-                <PhotoCard key={p.id} photo={p} onOpen={() => setLightbox({ list, index: i })} />
-              )}
+              items={albumItems}
+              groups={[]}
+              renderCard={a => <AlbumCard key={a.id} album={a} onOpen={openAlbum} />}
             />
           )}
         </div>

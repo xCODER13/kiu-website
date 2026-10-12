@@ -527,6 +527,16 @@ describe('Bosqich 6.11c3: Tadbirlar, O\'qituvchilar, Galereya', () => {
     expect(code).toMatch(/\.notice-banner\[data-tone="danger"\] \{[^}]*color-mix\(in srgb, var\(--color-danger\) 7%, transparent\)/)
   })
 
+  it("Fotogalereya albom kartasi: `.album-mosaic` 200 px, 2/3 rasm layouti, `data-broken` xira, badge — token ranglar (admin kartasi bilan bir xil)", () => {
+    expect(code).toMatch(/\.album-mosaic \{[^}]*height: 200px;[^}]*overflow: hidden;/)
+    expect(code).toMatch(/\.album-mosaic\[data-count="2"\] \{[^}]*grid-template-columns: 1fr 1fr;/)
+    expect(code).toMatch(/\.album-mosaic\[data-count="3"\] \{[^}]*grid-template-columns: 2fr 1fr;[^}]*grid-template-rows: 1fr 1fr;/)
+    expect(code).toMatch(/\.album-tile\[data-broken="true"\] \{[^}]*opacity: 0?\.2;/)
+    expect(code).toMatch(/\.album-badge \{[^}]*background: var\(--color-scrim-thumb\);[^}]*color: var\(--neutral-0\);/)
+    const albumBlock = code.slice(code.indexOf('.album-mosaic'), code.indexOf('.album-badge'))
+    expect(albumBlock).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+  })
+
   it("Events, Teachers, Gallery: inline style yo'q, hex/rgba yo'q, PageHero ishlatiladi; Teachers email `mailto` havola sifatida; eski `✕` matni yo'q", () => {
     for (const f of ['Events', 'Teachers', 'Gallery']) {
       const path = `src/pages/${f}.jsx`

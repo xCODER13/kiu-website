@@ -535,6 +535,10 @@
     "loadMore": "Ko'proq yuklash ({{count}} ta qoldi)",
     "openLink": "Havolani ochish",
     "view": "Ko'rish",
+    "photoCount_one": "{{count}} ta rasm",
+    "photoCount_other": "{{count}} ta rasm",
+    "noImages": "Rasm yo'q",
+    "imagesFailed": "Rasm yuklanmadi",
     "sectionsEmpty": "Hozircha bo'limlar yo'q"
   },
   "teachers": {
