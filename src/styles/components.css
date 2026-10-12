@@ -79,10 +79,6 @@
   .btn-secondary:hover:not(:disabled, [aria-disabled="true"]) { background: var(--color-brand-subtle); }
   .btn-secondary:active:not(:disabled, [aria-disabled="true"]) { background: var(--color-brand-subtle-2); }
 
-  .btn-ghost { color: var(--color-brand); }
-  .btn-ghost:hover:not(:disabled, [aria-disabled="true"]) { background: var(--color-brand-subtle); }
-  .btn-ghost:active:not(:disabled, [aria-disabled="true"]) { background: var(--color-brand-subtle-2); }
-
   /* Xavfli amal: rang yolg'iz emas — matnda ham ko'rsatilsin, SVG ikonka qo'shiladi */
   .btn-danger {
     border-color: var(--color-danger);
@@ -91,14 +87,12 @@
   .btn-danger:hover:not(:disabled, [aria-disabled="true"]) { background: var(--color-danger-bg); }
   .btn-danger:active:not(:disabled, [aria-disabled="true"]) { box-shadow: inset 0 0 0 1px var(--color-danger); }
 
-  /* `.btn-gold` — `.btn-accent` ning eski nomi (aliasi) */
-  .btn-accent, .btn-gold {
+  .btn-accent {
     background: var(--color-accent);
     color: var(--color-on-accent);
     box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), 0 8px 20px var(--glow-accent);
   }
-  .btn-accent:hover:not(:disabled, [aria-disabled="true"]),
-  .btn-gold:hover:not(:disabled, [aria-disabled="true"]) {
+  .btn-accent:hover:not(:disabled, [aria-disabled="true"]) {
     background: var(--color-accent-hover);
     box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), 0 8px 24px var(--glow-accent-strong);
   }
@@ -148,8 +142,7 @@
     transform: none;
   }
   .btn-primary:disabled, .btn-primary[aria-disabled="true"],
-  .btn-accent:disabled, .btn-accent[aria-disabled="true"],
-  .btn-gold:disabled, .btn-gold[aria-disabled="true"] {
+  .btn-accent:disabled, .btn-accent[aria-disabled="true"] {
     background: var(--color-disabled-bg);
     color: var(--color-text-muted);
   }
@@ -158,7 +151,6 @@
     border-color: var(--color-border);
     color: var(--color-text-muted);
   }
-  .btn-ghost:disabled, .btn-ghost[aria-disabled="true"] { color: var(--color-text-subtle); }
   .btn[aria-busy="true"] { pointer-events: none; cursor: progress; }
   /* Loading spinner: faqat CSS, rang matndan (currentColor) — har variantda kontrast saqlanadi */
   .btn[aria-busy="true"]::after {
@@ -217,7 +209,7 @@
   }
   .input::placeholder { color: var(--color-text-muted); }
   .input:disabled { background: var(--color-surface-2); color: var(--color-text-muted); cursor: not-allowed; }
-  .input[aria-invalid="true"], .input.is-invalid { border-color: var(--color-danger); }
+  .input[aria-invalid="true"] { border-color: var(--color-danger); }
   .field-error {
     display: flex;
     align-items: center;
@@ -240,7 +232,6 @@
     font-weight: 600;
     line-height: 1.6;
   }
-  .badge-brand   { background: var(--color-brand-subtle-2); color: var(--color-brand); }
   .badge-success { background: var(--color-success-bg);     color: var(--color-success); }
   .badge-warning { background: var(--color-warning-bg);     color: var(--color-warning); }
   .badge-danger  { background: var(--color-danger-bg);      color: var(--color-danger); }
@@ -262,7 +253,7 @@
     transition: background-color var(--duration-base), border-color var(--duration-base), color var(--duration-base);
   }
   .icon-btn:hover { background: var(--color-brand-subtle); color: var(--color-brand); }
-  .icon-btn[aria-expanded="true"], .icon-btn.is-active {
+  .icon-btn[aria-expanded="true"] {
     background: var(--color-brand-subtle);
     border-color: var(--color-brand);
     color: var(--color-brand);

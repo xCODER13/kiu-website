@@ -462,10 +462,6 @@
     line-height: 1.2;
     color: var(--color-text);
   }
-  .adm-loading {
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-  }
   .adm-error {
     font-size: var(--text-sm);
     color: var(--color-danger);

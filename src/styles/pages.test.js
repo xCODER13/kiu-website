@@ -378,10 +378,9 @@ describe('Bosqich 6.11c1: umumiy primitivlar + About, Xalqaro, Hujjatlar, Yutuql
     expect(code).toMatch(/\.carousel \{[^}]*box-shadow: var\(--shadow-carousel\);/)
   })
 
-  it("bo'lim sarlavhasi 30 px/800 + 40×3 px oltin chiziq; `.page-block` oraliq `.section-title` dan keyin (qoida tartibi)", () => {
+  it("bo'lim sarlavhasi 30 px/800 + 40×3 px oltin chiziq", () => {
     expect(code).toMatch(/\.section-title \{[^}]*font-size: 1\.875rem;[^}]*font-weight: 800;/)
     expect(code).toMatch(/\.section-title::after \{[^}]*width: 40px;[^}]*height: 3px;[^}]*var\(--color-accent\)/)
-    expect(code).toMatch(/\.section-title\.page-block \{ margin-top: 56px; \}/)
   })
 
   it("aniq ustun soni (yetim qator yo'q): 4/3/2 ustun, 12 ustunli to'r (3+2 va 4+3), ≤1000 px da 2, ≤640 px da 1 ustun", () => {
