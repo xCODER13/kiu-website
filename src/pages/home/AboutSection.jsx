@@ -32,7 +32,7 @@ export default function AboutSection() {
           {/* O'ng — 2-kampus rasmi */}
           <div className="reveal reveal-delay-2 home-about__photo">
             <div className="home-about__frame">
-              <img src="/gallery/2-kampus.png" alt={t('home.about.campus2Alt')} width="768" height="512" loading="lazy" />
+              <img src="/gallery/2-kampus.webp" alt={t('home.about.campus2Alt')} width="768" height="512" loading="lazy" />
               <span className="campus-label">
                 <Icon size={14}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></Icon>
                 {t('home.about.campus2')}

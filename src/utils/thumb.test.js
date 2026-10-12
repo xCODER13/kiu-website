@@ -14,7 +14,7 @@ describe('thumbUrl (backend 2.2 nom qoidasi)', () => {
 
   it.each([
     ['tashqi URL', 'https://example.com/rasm.png'],
-    ['lokal rasm', '/gallery/2-kampus.png'],
+    ['lokal rasm', '/gallery/2-kampus.webp'],
     ['blob', 'blob:https://kiu.uz/1234'],
     ['data', 'data:image/png;base64,AAAA'],
     ['begona papka', `${BASE}/other/x.png`],
