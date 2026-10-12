@@ -9,12 +9,10 @@ const APPLICATION_STATUSES = Application.schema.path('status').enumValues
 const LIST_PAGE_SIZE = 20
 const LIST_PAGE_MAX = 50
 
-// `type=admission` — `type` maydoni umuman yo'q eski hujjatlarni ham qamraydi (`$in: [.., null]` yo'q maydonga ham mos):
-// ular qabul arizasi hisoblanadi (ilgari buni klient filtrlardi). scripts/backfill-application-type.js ularni
-// `type: 'admission'` qilib bo'lgach, bu tolerantlikni olib tashlash mumkin.
+// Har yangi arizada `type` doim yoziladi (model default 'admission'), shuning uchun filtr aniq moslik.
+// Noma'lum `type` e'tiborsiz qoldiriladi (hamma tur).
 function typeFilter(type) {
-  if (type === 'vacancy') return { type: 'vacancy' }
-  if (type === 'admission') return { type: { $in: ['admission', null] } }
+  if (type === 'vacancy' || type === 'admission') return { type }
   return {}
 }
 

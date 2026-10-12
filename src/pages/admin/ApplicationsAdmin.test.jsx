@@ -6,11 +6,11 @@ import { mockApi as baseMockApi, rowWith } from '../../test/helpers'
 
 const A = [
   { _id: 'a1', name: 'Ali Valiyev', phone: '+998901111111', faculty: 'Iqtisodiyot', status: 'new', type: 'admission' },
-  { _id: 'a2', name: 'Vali Aliyev', phone: '+998902222222', status: 'accepted' },              // eski yozuv: type yo'q → admission
+  { _id: 'a2', name: 'Vali Aliyev', phone: '+998902222222', status: 'accepted' },              // fixture: type yo'q → admission
   { _id: 'a3', name: 'Nodira Karimova', phone: '+998903333333', status: 'reviewed', type: 'vacancy', position: 'Dotsent', faculty: 'IT' },
 ]
 // Yangi backend (4.4) ni taqlid qiladi: serverda `type`/`status` filtri, sahifalash va holatlar sanog'i.
-// `type` yo'q (eski) yozuvlar qabul arizasi hisoblanadi (backend: `$in: ['admission', null]`).
+// Fixture'larda `type` yozilmagan yozuvlar qabul arizasi deb olinadi (qisqalik uchun; haqiqiy backend `type` ni doim yozadi).
 function listResponse(all, path) {
   const q = new URL(path, 'http://x').searchParams
   const type = q.get('type')
