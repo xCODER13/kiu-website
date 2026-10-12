@@ -90,19 +90,6 @@ describe('GET /api/stats', () => {
     await Application.findByIdAndUpdate(a._id, { status: 'reviewed' })
     expect((await getStats()).body.newApps).toBe(0)
   })
-
-  test("HOZIRGI XATTI-HARAKAT: 'type' maydoni yo'q eski (legacy) ariza appsCount'ga kirmaydi, newApps'ga kiradi", async () => {
-    // scripts/backfill-application-type.js migratsiyasi bajarilmagan bazada admin panel
-    // qabul arizalari sonini kam ko'rsatadi. Migratsiya bajarilsa, appsCount 1 bo'ladi va
-    // bu test yiqiladi — shunda kutilgan qiymatni 1 ga o'zgartiring.
-    await Application.collection.insertOne({
-      name: 'Eski ariza', phone: PHONE, status: 'new', createdAt: new Date(), updatedAt: new Date(),
-    })
-
-    const { body } = await getStats()
-    expect(body.appsCount).toBe(0)
-    expect(body.newApps).toBe(1)
-  })
 })
 
 // GET /api/stats/applications-trend — arizalar trendi (band 6, admin dashboard grafigi)

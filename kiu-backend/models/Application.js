@@ -52,8 +52,7 @@ ApplicationSchema.pre('validate', function () {
 ApplicationSchema.index({ phoneKey: 1, createdAt: -1 })
 
 // /api/stats va /api/applications ko'p marta {type,status} bo'yicha filtrlaydi va
-// createdAt bo'yicha saralaydi. To'liq foyda uchun legacy (type maydonisiz) hujjatlarni
-// backfill qilish kerak — bu keyingi bosqichdagi migratsiya bilan birga qilinadi.
+// createdAt bo'yicha saralaydi.
 ApplicationSchema.index({ type: 1, status: 1, createdAt: -1 })
 
 // O'chirilgan ariza (shaxsiy ma'lumot!) bazada qancha turadi. Faqat `deletedAt` Date bo'lgan hujjatlar

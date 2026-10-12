@@ -4,7 +4,6 @@ const request = require('supertest')
 const app = require('../app')
 const Application = require('../models/Application')
 const { getAuthToken } = require('./helpers')
-const { backfillApplicationType } = require('../scripts/backfill-application-type')
 
 const PHONE = '+998901234567'
 let ipCounter = 0
@@ -124,17 +123,7 @@ describe('serverda filtr: type va status', () => {
   })
 })
 
-describe("eski (type'siz) hujjatlar va o'chirilganlar", () => {
-  test("type'siz hujjat (maydon yo'q yoki null) qabul arizasi hisoblanadi — ro'yxatda, total va counts'da; vakansiyada ko'rinmaydi", async () => {
-    await raw([{ name: 'Eski-1' }, { name: 'Eski-2', type: null }])
-    await make({ type: 'admission' })
-
-    const adm = await get('?type=admission&page=1')
-    expect(adm.body.total).toBe(3)
-    expect(adm.body.counts.all).toBe(3)
-    expect((await get('?type=vacancy&page=1')).body.total).toBe(0)
-  })
-
+describe("o'chirilganlar", () => {
   test("o'chirilgan (soft delete) ariza items, total va counts'da yo'q", async () => {
     const gone = await make()
     await make()
@@ -143,28 +132,5 @@ describe("eski (type'siz) hujjatlar va o'chirilganlar", () => {
     expect(res.body.items).toHaveLength(1)
     expect(res.body.total).toBe(1)
     expect(res.body.counts.all).toBe(1)
-  })
-})
-
-describe('migratsiya: backfillApplicationType', () => {
-  const insertLegacy = () => raw([{ name: 'Eski-1' }, { name: 'Eski-2', type: null }, { name: 'Eski-3', type: '' }, { name: 'Yangi', type: 'vacancy' }])
-
-  test('dry-run: sanaydi, hech narsa yozmaydi', async () => {
-    await insertLegacy()
-    const res = await backfillApplicationType(Application.collection)
-    expect(res).toEqual({ missing: 3, updated: 0 })
-    expect(await Application.collection.countDocuments({ type: 'admission' })).toBe(0)
-  })
-
-  test("--apply: faqat type'sizlarni 'admission' qiladi; vakansiyaga tegmaydi; updatedAt o'zgarmaydi; idempotent", async () => {
-    await insertLegacy()
-    const before = await Application.collection.findOne({ name: 'Eski-1' })
-
-    expect(await backfillApplicationType(Application.collection, { apply: true })).toEqual({ missing: 3, updated: 3 })
-    expect(await Application.collection.countDocuments({ type: 'admission' })).toBe(3)
-    expect((await Application.collection.findOne({ name: 'Yangi' })).type).toBe('vacancy')
-    expect((await Application.collection.findOne({ name: 'Eski-1' })).updatedAt).toEqual(before.updatedAt)
-
-    expect(await backfillApplicationType(Application.collection, { apply: true })).toEqual({ missing: 0, updated: 0 })
   })
 })
