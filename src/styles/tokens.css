@@ -215,7 +215,6 @@
     --glow-accent-strong: rgb(212 175 55 / 0.65);
 
     /* Gradientlar */
-    --gradient-hero:      linear-gradient(135deg, var(--wine-50) 0%, var(--wine-100) 40%, var(--wine-200) 100%);
     --gradient-hero-soft: linear-gradient(135deg, var(--color-brand-subtle), var(--color-brand-subtle-2));
     --gradient-auth:      linear-gradient(180deg, rgb(127 32 99 / 0.14) 0%, rgb(127 32 99 / 0.05) 55%, rgb(127 32 99 / 0) 100%), var(--wine-50);   /* admin kirish foni: tepadan pastga (6.21) */
     --gradient-dark:      linear-gradient(135deg, var(--neutral-900), var(--wine-900));
@@ -247,9 +246,8 @@
     --gradient-sidebar:   linear-gradient(180deg, rgb(159 51 126 / 0.38) 0%, rgb(159 51 126 / 0) 100%), var(--neutral-900);   /* 6.21: footer kabi tepadan pastga */
     --gradient-media:     radial-gradient(60% 90% at 70% 20%, rgb(159 51 126 / 0.55) 0%, rgb(159 51 126 / 0) 70%), radial-gradient(40% 70% at 95% 90%, rgb(212 175 55 / 0.22) 0%, rgb(212 175 55 / 0) 70%), linear-gradient(135deg, var(--wine-900), var(--dark-bg) 60%, var(--dark-deep));
 
-    /* Dekorativ rasm/placeholder xiraligi (Dark'da biroz pasayadi) */
+    /* Dekorativ rasm xiraligi (Dark'da biroz pasayadi) */
     --opacity-avatar:      1;
-    --opacity-placeholder: 1;
 
     /* ── Tipografiya ──────────────────────────────────────────────── */
     /* Hozirgi stek saqlandi (vizual farq 0); system-ui zaxirasi Bosqich 2 da. */
@@ -368,7 +366,6 @@
       --chart-5:        #c98500;
       --chart-6:        #008300;
 
-      --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
       --gradient-footer:      linear-gradient(180deg, rgb(159 51 126 / 0.55) 0%, rgb(127 32 99 / 0.20) 55%, rgb(127 32 99 / 0) 100%), var(--dark-deep);   /* 6.20: tepadan pastga (oldin 3 ta radial dog') */
       --shadow-nav:           0 10px 30px rgb(0 0 0 / 0.35);
       --dropdown-bg:          var(--color-surface-3);
@@ -460,7 +457,6 @@
       --cat-chip-mix:         18%;
 
       --opacity-avatar:       0.9;
-      --opacity-placeholder:  0.7;
     }
   }
 
@@ -518,7 +514,6 @@
     --chart-5:        #c98500;
     --chart-6:        #008300;
 
-    --gradient-hero:        linear-gradient(135deg, var(--dark-bg) 0%, var(--wine-900) 45%, var(--dark-surface-2) 100%);
     --gradient-footer:      linear-gradient(180deg, rgb(159 51 126 / 0.55) 0%, rgb(127 32 99 / 0.20) 55%, rgb(127 32 99 / 0) 100%), var(--dark-deep);   /* 6.20: tepadan pastga (oldin 3 ta radial dog') */
     --shadow-nav:           0 10px 30px rgb(0 0 0 / 0.35);
     --dropdown-bg:          var(--color-surface-3);
@@ -610,6 +605,5 @@
     --cat-chip-mix:         18%;
 
     --opacity-avatar:       0.9;
-    --opacity-placeholder:  0.7;
   }
 }

@@ -146,14 +146,11 @@
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 /* Teachers sahifasi responsive qoidalari — pages.css (6.11c3) */
-details[open] .details-arrow { transform: rotate(180deg); }
-.details-arrow { transition: transform .2s; }
 
 /* Navbar dropdown guruhlari — site.css (6.12a) */
 
 /* Dekorativ rasm/placeholder xiraligi — qiymat tokenda (Dark'da pasayadi) */
 .teacher-avatar { opacity: var(--opacity-avatar); }
-.gallery-placeholder { opacity: var(--opacity-placeholder); }
 
 /* Logotip (Logo.jsx): rang currentColor'dan — Light/Dark'da token almashadi */
 .site-logo { display: block; flex-shrink: 0; color: var(--color-brand); }

@@ -6,17 +6,6 @@
    Faqat token ishlatiladi; istisno — `rgb(255 255 255 / a)` / `rgb(0 0 0 / a)` (to'q yuza ustidagi matn, qoplama, soya). */
 
 @layer components {
-  /* ── Umumiy: sahifa "hero" bloki ──────────────────────────────────── */
-  .page-hero {
-    padding: 3rem 2rem 1rem;
-    background: var(--gradient-hero);
-    border-bottom: 1px solid var(--color-border);
-    text-align: center;
-  }
-  .page-hero-title { font-size: 2rem; color: var(--color-text); margin-bottom: 0.5rem; }
-  .page-hero-sub { font-size: 14px; color: var(--color-text-muted); }
-  .page-hero-sub--narrow { max-width: 560px; margin: 0 auto; }
-
   /* Bo'lim "badge"i (Home, SortingHat). Ichki sahifa hero'sida — .hero-badge (PageHero) */
   .section-badge {
     display: inline-flex;
@@ -36,7 +25,6 @@
 
   /* ── Umumiy: tablar. Faol holat — `data-active` (rol o'zgarmagan: testlar `button` bo'yicha qidiradi) ── */
   .tabs { display: flex; gap: 4px; }
-  .tabs-bar { border-bottom: 1px solid var(--color-border); background: var(--color-bg); }
   .tab {
     padding: 10px 24px;
     background: none;
@@ -50,7 +38,6 @@
     color: var(--color-text-muted);
     transition: all 0.2s;
   }
-  .tabs-bar .tab { padding: 12px 20px; }
   .tab[data-active="true"] { color: var(--color-brand); border-bottom-color: var(--color-brand); }
 
   /* ── Umumiy: ikonka katak, panel, yuklanish ───────────────────────── */
@@ -137,7 +124,7 @@
 
   /* ══ Bosqich 6.11a: umumiy ichki hero + Qabul + Yo'nalishlar (qayta dizayn, spec 6.11) ═════════
      Faqat token (hex yo'q); yangi ranglar tokens.css da (`--color-accent-text`, `--gradient-banner`, `--hero-dot` ...).
-     `.page-hero` (Yangiliklar, Vakansiyalar) hozircha o'zgarmagan — ular o'z guruhida `.inner-hero` ga o'tadi. */
+     Yangiliklar va Vakansiyalar ham o'z guruhida `.inner-hero` ga o'tgan. */
 
   /* ── Umumiy: ichki sahifa hero'si ───────────────────────────────────
      6.12d: hero'ning O'Z foni yo'q (burchak yorug'ligi ham, `--band-tint` ham, `mask-image` ham). Fonni sahifaning o'zi beradi:
@@ -1128,7 +1115,6 @@
     border-radius: var(--radius-pill);
     background: var(--color-accent);
   }
-  .section-title.page-block { margin-top: 56px; }
   @media (max-width: 640px) { .section-title { font-size: 1.5rem; } }
 
   /* ── Reveal o'rami va "ko'tariluvchi" karta ──────────────────────── */

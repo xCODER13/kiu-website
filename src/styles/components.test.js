@@ -37,13 +37,9 @@ describe('components.css', () => {
   })
 
   it('barcha tugma variantlari mavjud', () => {
-    for (const v of ['primary', 'secondary', 'ghost', 'danger', 'accent', 'gold']) {
+    for (const v of ['primary', 'secondary', 'danger', 'accent']) {
       expect(code).toContain(`.btn-${v}`)
     }
-  })
-
-  it("`.btn-gold` — `.btn-accent` bilan bir qoida (alias)", () => {
-    expect(code).toMatch(/\.btn-accent, \.btn-gold \{/)
   })
 })
 
