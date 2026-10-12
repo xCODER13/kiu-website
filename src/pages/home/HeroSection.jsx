@@ -45,7 +45,7 @@ export default function HeroSection() {
           <div className="enter enter-delay-2 home-hero__photo">
             <div className="home-hero__frame">
               <img
-                src="/gallery/Asosiy-kampus.webp"
+                src="/gallery/1-kampus.webp"
                 alt={t('home.hero.photoAlt')}
                 width="768"
                 height="512"
